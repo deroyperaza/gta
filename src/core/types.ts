@@ -1,0 +1,78 @@
+// Shared type definitions. Kept engine-agnostic so systems can be reused
+// (e.g. by a future multiplayer server or new neighborhoods).
+
+export type District = 'downtown' | 'parkslope' | 'bedstuy' | 'bushwick';
+
+export const DISTRICTS: Record<District, { name: string; color: string; blurb: string }> = {
+  downtown: { name: 'Downtown Brooklyn', color: '#4f8cff', blurb: 'Courthouses, cops, and corporate lobbies with very cold air conditioning.' },
+  parkslope: { name: 'Park Slope', color: '#ff7ab8', blurb: 'Brownstones, strollers, and 14 kinds of oat milk.' },
+  bedstuy: { name: 'Bed-Stuy', color: '#ffb23f', blurb: 'Stoops, murals, community fridges, and the best gossip in the borough.' },
+  bushwick: { name: 'Bushwick', color: '#a46bff', blurb: 'Warehouses, galleries, and at least one guy building a theremin.' },
+};
+
+export type ItemId =
+  | 'groceries' | 'clothing' | 'medical' | 'art' | 'flyers' | 'signs' | 'donations' | 'posters';
+
+export type FlagValue = boolean | number | string;
+
+/** A bundle of state changes. Used by dialogue, missions, pickups, rewards. */
+export interface Effect {
+  solidarity?: number;
+  power?: number;
+  attention?: number;
+  trust?: Partial<Record<District, number>>;
+  items?: Partial<Record<ItemId, number>>;
+  rel?: Record<string, number>;
+  flags?: Record<string, FlagValue>;
+  /** Increment numeric flags */
+  inc?: Record<string, number>;
+  /** Mission variables for the currently active mission */
+  mvar?: Record<string, number>;
+  /** Adjust active mission timer (seconds) */
+  time?: number;
+  startMission?: string;
+  /** Free-form event broadcast on the bus as `event:<name>` */
+  event?: string;
+  toast?: string;
+}
+
+/** A predicate over game state, used by dialogue choices & start nodes. */
+export interface Cond {
+  flag?: string;
+  notFlag?: string;
+  missionStatus?: { id: string; is: MissionStatus | MissionStatus[] };
+  missionStage?: { id: string; is: number | number[] };
+  item?: { id: ItemId; min: number };
+  mvarMin?: Record<string, number>;
+  mvarMax?: Record<string, number>;
+  flagMin?: Record<string, number>;
+  any?: Cond[];
+}
+
+export type MissionStatus = 'locked' | 'available' | 'active' | 'complete';
+
+export interface MissionProgress {
+  status: MissionStatus;
+  stage: number;
+  vars: Record<string, number>;
+  optionalDone: Record<string, boolean>;
+  timeLeft: number | null;
+  attempts: number;
+}
+
+export interface SaveData {
+  version: number;
+  solidarity: number;
+  power: number;
+  attention: number;
+  trust: Record<District, number>;
+  inventory: Record<ItemId, number>;
+  relationships: Record<string, number>;
+  flags: Record<string, FlagValue>;
+  missions: Record<string, MissionProgress>;
+  activeMission: string | null;
+  player: { x: number; y: number; onBike: boolean };
+  posters: { x: number; y: number; v: number }[];
+  playTime: number;
+  savedAt?: number;
+}

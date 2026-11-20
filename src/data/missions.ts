@@ -1,0 +1,88 @@
+import { state } from '../core/state';
+import type { District, Effect } from '../core/types';
+
+export interface StageDef {
+  text: () => string;
+  /** World entity ids to mark with waypoints */
+  targets: () => string[];
+  done: () => boolean;
+  /** Start a countdown (seconds) when this stage begins */
+  timer?: number;
+  /** Keep an already-running timer going through this stage */
+  timed?: boolean;
+}
+export interface OptionalDef { id: string; text: string; done: () => boolean; reward: Effect }
+export interface MissionDef {
+  id: string; number: number; title: string; tagline: string; district: District; giver: string;
+  stages: StageDef[];
+  optional?: OptionalDef[];
+  rewards?: () => Effect;
+  next?: string;
+  comingSoon?: boolean;
+  onFail?: () => void;
+  failText?: string;
+}
+
+const f = (k: string) => !!state.flag(k);
+
+export const MISSIONS: MissionDef[] = [
+  {
+    id: 'stock', number: 1, title: 'STOCK THE BLOCK', district: 'bedstuy', giver: 'dee',
+    tagline: 'The Gates Ave community fridge is down to one lime. Fix that.',
+    stages: [
+      { text: () => 'Meet Dee at the Community Fridge in Bed-Stuy', targets: () => ['dee'], done: () => f('stb_accepted') },
+      {
+        text: () => {
+          const n = ['stb_coop', 'stb_bodega', 'stb_bakery'].filter(f).length;
+          return `Collect donated groceries (${n}/3): Co-op · Bodega · Bakery`;
+        },
+        targets: () => [['stb_coop', 'brendan'], ['stb_bodega', 'farouk'], ['stb_bakery', 'juni']].filter(([k]) => !f(k)).map(([, id]) => id),
+        done: () => f('stb_coop') && f('stb_bodega') && f('stb_bakery'),
+        timer: 150,
+      },
+      { text: () => 'Restock the Community Fridge [E]', targets: () => ['fridge'], done: () => f('stb_restocked'), timed: true },
+      { text: () => 'Tell Dee the fridge is full', targets: () => ['dee'], done: () => f('stb_thanked') },
+    ],
+    optional: [
+      { id: 'bike', text: 'Ride a BK Spokes bike', done: () => f('rode_bike'), reward: { solidarity: 20 } },
+      { id: 'flyers', text: 'Hand out 5 fridge flyers', done: () => (state.d.activeMission === 'stock' ? (state.mission('stock').vars.flyers ?? 0) : 0) >= 5, reward: { attention: 5, trust: { bedstuy: 5 }, solidarity: 30 } },
+      { id: 'cat', text: 'Earn the blessing of Commissioner Whiskers', done: () => f('pet_cat'), reward: { solidarity: 15, rel: { farouk: 5 } } },
+      { id: 'fast', text: 'Restock with 0:45+ on the clock', done: () => f('stb_restocked') && f('stb_fast'), reward: { solidarity: 50 } },
+    ],
+    rewards: () => ({ solidarity: 250, power: 2, trust: { bedstuy: 15 }, rel: { dee: 10 } }),
+    failText: 'The produce wilted. Somewhere, a kale leaf weeps. Dee is disappointed but not surprised.',
+    onFail: () => {
+      state.clearFlagsWithPrefix('stb_');
+      state.d.inventory.groceries = 0;
+    },
+    next: 'circle',
+  },
+  {
+    id: 'circle', number: 2, title: 'THE CIRCLE', district: 'bedstuy', giver: 'hattie',
+    tagline: 'A noise dispute between neighbors is about to become a war. Facilitate a restorative justice circle.',
+    stages: [
+      { text: () => 'Join Ms. Hattie\'s circle at the Gates Ave Community Center', targets: () => ['hattie'], done: () => f('circle_done') },
+    ],
+    rewards: () => {
+      const r = state.flag('circle_result');
+      if (r === 'good') return { solidarity: 300, power: 3, trust: { bedstuy: 20 }, toast: 'NEW TENANT ASSOCIATION FORMED' };
+      if (r === 'ok') return { solidarity: 160, power: 1, trust: { bedstuy: 10 } };
+      return { solidarity: 60, trust: { bedstuy: 2 } };
+    },
+    next: 'march',
+  },
+  {
+    id: 'march', number: 3, title: 'THE PEOPLE VS. THE POWER', district: 'downtown', giver: 'gary', comingSoon: true,
+    tagline: 'A demonstration is forming at Borough Hall. Recruit, marshal, and march — without letting it boil over.', stages: [], next: 'rent',
+  },
+  {
+    id: 'rent', number: 4, title: 'RENT IS TOO DAMN HIGH', district: 'bushwick', giver: 'juni', comingSoon: true,
+    tagline: 'Build a spectacular public installation about rent strikes with Juni\'s collective.', stages: [], next: 'board',
+  },
+  {
+    id: 'board', number: 5, title: 'THE COMMUNITY BOARD FROM HELL', district: 'downtown', giver: 'tyler', comingSoon: true,
+    tagline: 'Tyler wants 400 luxury units. The community board meets at 7. Skye is livestreaming. Godspeed.', stages: [],
+  },
+];
+
+export const MISSION_BY_ID = Object.fromEntries(MISSIONS.map((m) => [m.id, m])) as Record<string, MissionDef>;

@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>GET TOGETHER &amp; AGITATE — L</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Nunito:wght@600;800;900&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <div id="game"></div>
+  <div id="sunset"></div>
+
+  <!-- ============ HUD ============ -->
+  <div id="hud" class="hidden">
+    <div id="stats">
+      <div class="logo-mini"><span class="L">L</span><span>GET TOGETHER<br/>&amp; AGITATE</span></div>
+      <div class="meter sol"><label>SOLIDARITY <em id="sol-lvl">LV 1</em></label><div class="track"><i id="sol-fill"></i></div><b id="sol-val">0</b></div>
+      <div class="row">
+        <div class="chip pow" title="Organizing Power: your ability to mobilize people">✊ <b id="pow-val">1</b></div>
+        <div class="meter att" title="Public Attention"><label>ATTENTION</label><div class="track"><i id="att-fill"></i></div><b id="att-val">0</b></div>
+      </div>
+      <div class="meter trust"><label>TRUST · <span id="trust-name">—</span></label><div class="track"><i id="trust-fill"></i></div><b id="trust-val">0</b></div>
+    </div>
+
+    <div id="minimap-frame"><div class="mm-n">N</div></div>
+    <div id="hud-buttons"><button id="hud-map" title="Map (M)">MAP <kbd>M</kbd></button><button id="hud-journal" title="Journal (J)">JOURNAL <kbd>J</kbd></button><button id="hud-pause" title="Pause (Esc)">❚❚</button></div>
+
+    <div id="objective">
+      <div id="obj-title">MISSION</div>
+      <div id="obj-text"></div>
+      <div id="obj-dist"></div>
+      <ul id="obj-optional"></ul>
+    </div>
+    <div id="timer"></div>
+    <div id="inventory"></div>
+    <div id="prompt"></div>
+    <div id="toasts"></div>
+    <div id="district"></div>
+    <div id="mission-intro"></div>
+
+    <div id="touch-pad"><div id="touch-knob"></div></div>
+    <div id="touch-btns"><button id="touch-e">E</button><button id="touch-sp">⎵</button></div>
+  </div>
+
+  <!-- ============ DIALOGUE ============ -->
+  <div id="dialogue">
+    <div class="dlg-box">
+      <canvas id="dlg-portrait" width="120" height="150"></canvas>
+      <div class="dlg-main">
+        <div class="dlg-head"><span id="dlg-name">Name</span><em id="dlg-title"></em><div id="dlg-rel"></div></div>
+        <div id="dlg-text"></div>
+        <div id="dlg-choices"></div>
+        <div id="dlg-more">▼ E / SPACE</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ TITLE ============ -->
+  <div id="title" class="overlay">
+    <div class="title-wrap">
+      <div class="logo">
+        <div class="logo-L">L</div>
+        <div class="logo-words"><span>GET TOGETHER</span><span class="amp">&amp;</span><span>AGITATE</span></div>
+      </div>
+      <div class="edition">EDITION L · BROOKLYN, NY · ORGANIZING IS THE NEW OUTLAW BEHAVIOR</div>
+      <div class="menu">
+        <button id="btn-new">NEW GAME<small>Start fresh out of jury duty</small></button>
+        <button id="btn-continue">CONTINUE<small>No save yet</small></button>
+        <button id="btn-help">HOW TO PLAY<small>Controls &amp; tips</small></button>
+      </div>
+      <div class="disclaimer">A satirical work of fiction. Any resemblance to your co-op board is purely coincidental.</div>
+    </div>
+  </div>
+
+  <!-- ============ PAUSE ============ -->
+  <div id="pause" class="overlay">
+    <div class="card pause-card">
+      <h2>PAUSED</h2>
+      <p class="sub">The revolution will wait. Briefly.</p>
+      <button data-act="resume">RESUME</button>
+      <button data-act="save">SAVE GAME</button>
+      <button data-act="load">LOAD GAME</button>
+      <button data-act="journal">JOURNAL</button>
+      <button data-act="map">MAP</button>
+      <button data-act="help">CONTROLS</button>
+      <button data-act="title">SAVE &amp; QUIT TO TITLE</button>
+      <p class="sub" id="pause-save"></p>
+    </div>
+  </div>
+
+  <div id="journal" class="overlay"><div class="panel-bg"></div><div class="panel"><div class="panel-head"><h2>ORGANIZER'S JOURNAL</h2><button class="close">✕</button></div><div class="panel-body"></div></div></div>
+  <div id="map" class="overlay"><div class="panel-bg"></div><div class="panel map-panel"><div class="panel-head"><h2>BROOKLYN (MOSTLY)</h2><button class="close">✕</button></div><div class="map-wrap"><canvas id="map-canvas"></canvas></div><p class="sub">★ Yellow = current objective · Districts beyond the map edges are coming in future builds.</p></div></div>
+  <div id="passed" class="overlay"></div>
+
+  <div id="help" class="overlay">
+    <div class="card help-card">
+      <h2>HOW TO PLAY</h2>
+      <div class="keys">
+        <div><kbd>WASD</kbd>/<kbd>↑↓←→</kbd> Move</div>
+        <div><kbd>SHIFT</kbd> Sprint</div>
+        <div><kbd>E</kbd> Talk / interact</div>
+        <div><kbd>SPACE</kbd> Hand flyer · put up poster</div>
+        <div><kbd>B</kbd> Hop off bike</div>
+        <div><kbd>1-4</kbd> Pick dialogue choice</div>
+        <div><kbd>M</kbd> Map</div>
+        <div><kbd>J</kbd> Mission journal</div>
+        <div><kbd>ESC</kbd> Pause</div>
+      </div>
+      <p>Follow the <b style="color:#ffd23f">yellow arrow</b> and <b style="color:#ffd23f">!</b> markers to your objective. Grab a BK Spokes bike at a dock to move faster. Hand out flyers and slap up posters to raise <b>Public Attention</b>. Help people to build <b>Solidarity</b> and neighborhood <b>Trust</b>.</p>
+      <p class="sub">Your progress auto-saves when you pass a mission. Save anytime from the pause menu.</p>
+      <button id="help-close">GOT IT</button>
+    </div>
+  </div>
+
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>
