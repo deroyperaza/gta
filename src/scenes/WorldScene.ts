@@ -25,6 +25,7 @@ export class WorldScene extends Phaser.Scene {
   player!: Phaser.Physics.Arcade.Sprite;
   keys!: Record<string, Phaser.Input.Keyboard.Key>;
   cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
+  dragSteer = false;
   peds!: Pedestrians;
   traffic!: Traffic;
   minimap!: Phaser.Cameras.Scene2D.Camera;
@@ -104,6 +105,13 @@ export class WorldScene extends Phaser.Scene {
     // Input
     const K = Phaser.Input.Keyboard.KeyCodes;
     this.cursors = this.input.keyboard!.createCursorKeys();
+    // Drag-to-walk: only when the press starts on open ground, not on a character or button.
+    this.input.on('pointerdown', (_p: Phaser.Input.Pointer, over: unknown[]) => { this.dragSteer = over.length === 0; });
+    this.input.on('pointerup', () => { this.dragSteer = false; });
+    this.input.on('gameout', () => { this.dragSteer = false; });
+    // Releasing over the HUD or outside the canvas must also stop the walk.
+    const stopDrag = () => { this.dragSteer = false; };
+    window.addEventListener('pointerup', stopDrag); window.addEventListener('mouseup', stopDrag); window.addEventListener('blur', stopDrag);
     this.keys = this.input.keyboard!.addKeys({ W: K.W, A: K.A, S: K.S, D: K.D, E: K.E, SPACE: K.SPACE, SHIFT: K.SHIFT, B: K.B }) as Record<string, Phaser.Input.Keyboard.Key>;
     this.input.keyboard!.addCapture([K.SPACE, K.UP, K.DOWN, K.LEFT, K.RIGHT]);
 
@@ -218,7 +226,7 @@ export class WorldScene extends Phaser.Scene {
       spr.play({ key: `${key}-idle` });
       const blocker = solids.create(s.x, s.y - 8, undefined) as Phaser.Physics.Arcade.Image;
       blocker.setVisible(false); (blocker.body as Phaser.Physics.Arcade.StaticBody).setSize(22, 14);
-      const tag = this.add.text(s.x, s.y - 34, n.short.toUpperCase(), { fontFamily: '"Helvetica Neue", Inter, Arial, sans-serif', fontSize: '12px', fontStyle: '700', color: n.color, shadow: { offsetX: 0, offsetY: 1, color: 'rgba(0,0,0,.9)', blur: 4, fill: true } }).setOrigin(0.5).setDepth(1e5);
+      const tag = this.add.text(s.x, s.y - 40, n.short.toUpperCase(), { fontFamily: 'Nunito, "Helvetica Neue", Arial, sans-serif', fontSize: '15px', fontStyle: '900', color: '#16101f', backgroundColor: n.color, padding: { x: 7, y: 3 }, shadow: { offsetX: 2, offsetY: 2, color: '#16101f', blur: 0, fill: false, stroke: false } }).setOrigin(0.5).setDepth(1e5);
       this.miniIgnore.push(tag, spr);
       this.npcSprites[n.id] = spr;
       this.entityPos[n.id] = s;
@@ -493,6 +501,13 @@ export class WorldScene extends Phaser.Scene {
       const U = this.cursors.up.isDown || this.keys.W.isDown, D = this.cursors.down.isDown || this.keys.S.isDown;
       const tv = ui.touchVector();
       let vx = (R ? 1 : 0) - (L ? 1 : 0) + tv.x, vy = (D ? 1 : 0) - (U ? 1 : 0) + tv.y;
+      // Press and drag anywhere on the street: the player walks toward the pointer.
+      const ptr = this.input.activePointer;
+      if (this.dragSteer && ptr.isDown) {
+        const wp = ptr.positionToCamera(this.cameras.main) as Phaser.Math.Vector2;
+        const dx = wp.x - this.player.x, dy = wp.y - this.player.y, dist = Math.hypot(dx, dy);
+        if (dist > 14) { const k = Math.min(1, dist / 70); vx += (dx / dist) * k; vy += (dy / dist) * k; }
+      }
       const len = Math.hypot(vx, vy);
       const sprint = this.keys.SHIFT.isDown;
       const speed = this.onBike ? (sprint ? BIKE_RUN : BIKE) : sprint ? RUN : WALK;
