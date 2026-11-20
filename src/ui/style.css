@@ -22,6 +22,7 @@ kbd { display: inline-block; min-width: 1.6em; padding: 1px 6px; border: 2px sol
 #hud.hidden { display: none; }
 #hud button { pointer-events: auto; }
 #stats { position: absolute; left: 16px; top: 16px; width: 290px; padding: 10px 14px 12px; background: rgba(22,16,31,.82); border: 3px solid var(--ink); border-radius: 14px; box-shadow: 5px 5px 0 var(--purple); transform: rotate(-0.6deg); }
+.logo-mini img { height: 46px; width: auto; display: block; filter: drop-shadow(2px 2px 0 rgba(0,0,0,.5)); }
 .logo-mini { display: flex; align-items: center; gap: 8px; font: 15px/0.95 var(--display); letter-spacing: 1px; margin-bottom: 6px; }
 .logo-mini .L { font-size: 34px; font-style: italic; background: linear-gradient(160deg, var(--purple), var(--pink) 50%, var(--orange)); -webkit-background-clip: text; background-clip: text; color: transparent; -webkit-text-stroke: 1.5px #fff; padding-right: 4px; }
 .meter { display: grid; grid-template-columns: 1fr auto; grid-template-rows: auto 12px; column-gap: 8px; margin-top: 6px; }
@@ -134,7 +135,9 @@ body.touch #touch-btns { display: flex; gap: 14px; position: absolute; right: 30
 #title { z-index: 35; background: radial-gradient(ellipse at 50% 120%, rgba(255,138,61,.85), rgba(255,79,163,.55) 35%, rgba(42,20,82,.85) 75%); }
 .title-wrap { text-align: center; padding: 20px; }
 .logo { position: relative; display: inline-block; padding: 10px 40px; }
-.logo-L { font: italic clamp(200px, 36vh, 400px)/0.8 var(--display); background: linear-gradient(165deg, var(--purple) 15%, var(--pink) 50%, var(--orange) 85%); -webkit-background-clip: text; background-clip: text; color: transparent; -webkit-text-stroke: 6px var(--ink); filter: drop-shadow(10px 10px 0 var(--ink)); transform: skewX(-8deg); animation: Lfloat 3s ease-in-out infinite alternate; }
+.logo-img { height: clamp(220px, 46vh, 460px); width: auto; max-width: 90vw; object-fit: contain; filter: drop-shadow(8px 10px 0 rgba(20,8,30,.55)); animation: logoFloat 3s ease-in-out infinite alternate; }
+.logo-L { font: italic clamp(200px, 36vh, 400px)/0.8 var(--display); background: linear-gradient(165deg, var(--purple) 15%, var(--pink) 50%, var(--orange) 85%); -webkit-background-clip: text; background-clip: text; color: transparent; -webkit-text-stroke: 6px var(--ink); filter: drop-shadow(10px 10px 0 var(--ink)); transform: skewX(-8deg); animation: logoFloat 3s ease-in-out infinite alternate; }
+@keyframes logoFloat { to { transform: translateY(-8px); } }
 @keyframes Lfloat { to { transform: skewX(-8deg) translateY(-10px) rotate(-1deg); } }
 .logo-words { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; transform: rotate(-6deg); }
 .logo-words span { font: clamp(46px, 8.5vh, 96px)/0.85 var(--display); letter-spacing: 3px; color: #fff; -webkit-text-stroke: 3px var(--ink); text-shadow: 6px 6px 0 var(--ink), 9px 9px 0 var(--purple); white-space: nowrap; }

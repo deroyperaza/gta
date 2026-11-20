@@ -1,4 +1,4 @@
-# HANDOFF: GET TOGETHER & AGITATE (Edition L, Brooklyn)
+# HANDOFF: GATHER AND TAKE ACTION (Edition L, Brooklyn)
 
 An open-world satirical organizing game, playable in the browser. Built with TypeScript, Phaser 3.80 and Vite. All art is drawn in code, so there are no image assets, paid services or API keys.
 

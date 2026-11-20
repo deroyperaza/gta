@@ -1,4 +1,4 @@
-# GET TOGETHER & AGITATE — Edition L (Brooklyn)
+# GATHER AND TAKE ACTION — Edition L (Brooklyn)
 
 An open-world satirical organizing game. Grand Theft Auto energy, except the crimes are mutual aid.
 
