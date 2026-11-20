@@ -107,6 +107,12 @@ export const NPCS: NpcDef[] = [
     bio: 'Started on snack duty. Now she knows the school budget better than the people who wrote it.',
     idle: ['Snack duty is a gateway. Ask me how I know.', 'CEC meetings are public. Bring a question and a granola bar.'],
   },
+  {
+    id: 'jon', name: 'Jon', short: 'Jon', title: 'Film Editor', district: 'bushwick', spot: 'jon', color: '#c9b8ff',
+    look: { skin: '#d8a080', hair: '#7a726a', style: 'curly', shirt: '#18181c', pants: '#18181c', shoes: '#0a0a0a', acc: 'tie' },
+    bio: 'Cuts comedy for a living. Can find the ninety good seconds in any nine-minute speech, including yours.',
+    idle: ['Cut the throat-clearing. Start with the point.', 'Every block deserves a show. Some deserve a series.'],
+  },
 ];
 
 export const NPC_BY_ID = Object.fromEntries(NPCS.map((n) => [n.id, n])) as Record<string, NpcDef>;

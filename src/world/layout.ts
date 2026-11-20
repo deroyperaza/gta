@@ -94,7 +94,7 @@ const BLOCKS: Record<string, BlockSpec> = {
     { id: 'commcenter', type: 'community', w: 8, name: 'GATES AVE COMMUNITY CENTER', spot: 'hattie' } ] },
   '4,2': { kind: 'row' },
   // ---------- BUSHWICK ----------
-  '5,0': { kind: 'row', landmarks: [{ id: 'studio9000', type: 'studio', w: 6, name: 'STUDIO 9000' }] },
+  '5,0': { kind: 'row', landmarks: [{ id: 'studio9000', type: 'studio', w: 6, name: 'STUDIO 9000', spot: 'jon' }] },
   '5,1': { kind: 'row', landmarks: [
     { id: 'sourdough', type: 'bakery', w: 6, name: 'SOURDOUGH COLLECTIVE', spot: 'juni' },
     { id: 'gww', type: 'gallery', w: 5, name: 'GALLERY WITHOUT WALLS' } ] },

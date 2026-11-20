@@ -382,4 +382,27 @@ export const DIALOGUES: Record<string, Dialogue> = {
       after: { speaker: 'danae', text: 'Snack duty is a gateway. Ask me how I know.' },
     },
   },
+
+  // ============================================================ JON · public access media
+  jon: {
+    entries: [{ cond: { notFlag: 'met_jon' }, node: 'intro' }, { node: 'after' }],
+    nodes: {
+      intro: {
+        speaker: 'jon', text: 'Every movement needs an editor. Your speech is nine minutes. The good part is ninety seconds. I found it.',
+        choices: [
+          { text: 'Teach me to cut.', next: 'cut', effects: { rel: { jon: 5 }, flags: { met_jon: true } } },
+          { text: 'Where do I air it?', next: 'air', effects: { flags: { met_jon: true } } },
+          { text: 'Can you make me look taller?', next: 'taller', effects: { rel: { jon: 2 }, flags: { met_jon: true } } },
+        ],
+      },
+      cut: { speaker: 'jon', text: 'Rule one: cut the throat-clearing. Nobody needs three minutes of "so, um, thanks for having me." Start with the point.' },
+      air: { speaker: 'jon', text: 'BRIC runs Brooklyn\'s public access channels. Not a streamer. Not an algorithm. Public.', next: 'air2' },
+      air2: {
+        speaker: 'jon', text: 'Brooklyn residents can take media classes there and get community shows on the air. Your block deserves a show.',
+        choices: [{ text: 'Pitching my show tonight.', effects: { rel: { jon: 6 }, solidarity: 10, attention: 4, trust: { bushwick: 3 }, toast: 'POCKET CIVICS · PUBLIC ACCESS TV' } }],
+      },
+      taller: { speaker: 'jon', text: 'I can make you look right. Taller is a lighting problem.' },
+      after: { speaker: 'jon', text: 'Every block deserves a show. Some deserve a series.' },
+    },
+  },
 };

@@ -7,8 +7,8 @@ h1{font-size:12px;letter-spacing:.14em;text-transform:uppercase;opacity:.55;font
 canvas{display:block;width:100%;height:auto;margin:0 0 28px;border-radius:6px}
 .bare .wrap{padding:0;max-width:1280px}.bare h1{display:none}.bare canvas{margin:0;border-radius:0}
 </style></head><body>
-<div class="wrap"><h1>Character study · Style A, Golden Hour · Jenna, Deroy, Nell, Bridgette, Adrian &amp; Danae</h1>
-<canvas id="deroy"></canvas><canvas id="jenna"></canvas><canvas id="nell"></canvas><canvas id="bridgette"></canvas><canvas id="adrian"></canvas><canvas id="danae"></canvas></div>
+<div class="wrap"><h1>Character study · Style A, Golden Hour · Jenna, Deroy, Nell, Bridgette, Adrian, Danae &amp; Jon</h1>
+<canvas id="deroy"></canvas><canvas id="jenna"></canvas><canvas id="nell"></canvas><canvas id="bridgette"></canvas><canvas id="adrian"></canvas><canvas id="danae"></canvas><canvas id="jon"></canvas></div>
 <script>
 // Street-level conversation scenes for two real-person characters, painted in the Farouk (charview.html) style.
 const W = 1280, H = 720, SC = 1.5, INK = '#24160f';
@@ -98,6 +98,19 @@ const CH = {
     civics: { title: 'Schools have a seat for you', body: "Every NYC public school has a School Leadership Team, with parents and staff in equal numbers, that helps shape the school's plan and budget. Each district's Community Education Council holds meetings the public can attend." },
     flyer: ['PTA + SLT', 'YOUR SEAT IS OPEN', 'THURS · 6 PM', 'childcare provided'],
     stone: ['#9a5e46', '#643a2c'],
+  },
+  jon: {
+    seed: 6060, name: 'JON', color: '#c9b8ff', rel: .6,
+    place: "STUDIO 9000   ·   BUSHWICK   ·   6:42 PM",
+    w: 64, top: 120, jaw: 84, chin: 112, sw: 210, eyeX: 30, mw: 30, grinA: .3,
+    skin: ['#f2c6a8', '#d8a080', '#946048'], iris: '#5a8ab0',
+    brow: ['#4a4038', '#6a6058', '#3a3028'], browAmp: 6, browW: [1.6, 2.8],
+    beard: { fill: [[0, 'rgba(100,88,78,.55)'], [.35, 'rgba(92,80,70,.96)'], [1, '#7a6e64']], dots: ['#4a4038', '#5a5048', '#6a6058', '#7e746a'], salt: 420, must: '#5e5248' },
+    line: ['Every movement needs an editor. Your speech is nine minutes.', "The good part is ninety seconds. I found it."],
+    choices: [['1', 'Teach me to cut.'], ['2', 'Where do I air it?'], ['3', 'Can you make me look taller?']],
+    civics: { title: 'Brooklyn has public access TV', body: "BRIC runs Brooklyn's public access channels. Brooklyn residents can take media classes there and get their own community programs on the air." },
+    flyer: ['PUBLIC ACCESS', 'MAKE YOUR OWN SHOW', 'CLASS · TUES 7 PM', 'cameras provided'],
+    stone: ['#5c6167', '#3e4246'],
   },
 };
 
@@ -351,6 +364,84 @@ function wavyFront(p) {
   for (let i = 0; i < 80; i++) { const s = rnd() < .5 ? -1 : 1, x = cx + 20 + s * R(0, p.w + 10), y = R(cy - 150, cy + 10); ctx.strokeStyle = pick(['#6e4630', '#8a5a3a', '#2a170e', '#a06a42']); ctx.lineWidth = R(1.2, 2.8); ctx.beginPath(); ctx.moveTo(x, y); ctx.bezierCurveTo(x + s * 14, y + 10, x - s * 6, y + 22, x + s * 10, y + 34); ctx.stroke(); }
   ctx.strokeStyle = 'rgba(255,200,140,.28)'; ctx.lineWidth = 6; ctx.beginPath(); ctx.moveTo(cx + 10, cy - 142); ctx.quadraticCurveTo(cx - 40, cy - 132, cx - 66, cy - 80); ctx.stroke();
   ctx.restore(); top(); ctx.strokeStyle = INK; ctx.lineWidth = 2.6; ctx.stroke();
+}
+// Jon: black tuxedo, white shirt, bow tie; shoulder-length salt-and-pepper curls
+function tux(p) {
+  torso(p.sw); ctx.fillStyle = lg(cx - p.sw, 0, cx + p.sw, 0, [[0, '#2a2a30'], [.5, '#18181c'], [1, '#0a0a0c']]); ctx.fill();
+  ctx.save(); torso(p.sw); ctx.clip();
+  ctx.fillStyle = '#f6f4f0'; ctx.beginPath(); ctx.moveTo(cx - 46, cy + 112); ctx.lineTo(cx + 46, cy + 112); ctx.lineTo(cx + 26, H); ctx.lineTo(cx - 26, H); ctx.closePath(); ctx.fill();
+  ctx.strokeStyle = 'rgba(0,0,0,.12)'; ctx.lineWidth = 1.5; line(cx, cy + 150, cx, H);
+  ctx.fillStyle = '#111'; for (const y of [cy + 210, cy + 270, cy + 330]) { ell(cx, y, 4, 4); ctx.fill(); }
+  for (const s of [-1, 1]) {
+    ctx.beginPath(); ctx.moveTo(cx + s * 46, cy + 110); ctx.lineTo(cx + s * 30, H); ctx.lineTo(cx + s * 100, H); ctx.lineTo(cx + s * 128, cy + 200); ctx.lineTo(cx + s * 70, cy + 120); ctx.closePath();
+    ctx.fillStyle = lg(cx, cy + 110, cx + s * 120, cy + 300, [[0, '#3a3a42'], [1, '#141418']]); ctx.fill();
+    ctx.fillStyle = 'rgba(255,240,220,.12)'; ctx.beginPath(); ctx.moveTo(cx + s * 48, cy + 114); ctx.lineTo(cx + s * 120, cy + 204); ctx.lineTo(cx + s * 112, cy + 206); ctx.lineTo(cx + s * 44, cy + 124); ctx.fill();
+    ctx.strokeStyle = INK; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.moveTo(cx + s * 46, cy + 110); ctx.lineTo(cx + s * 128, cy + 200); ctx.lineTo(cx + s * 30, H); ctx.stroke();
+  }
+  ctx.restore(); torso(p.sw); ctx.strokeStyle = INK; ctx.lineWidth = 3; ctx.stroke();
+}
+function bowtie(p) {
+  const [L, M, D] = p.skin;
+  ctx.fillStyle = lg(cx - 45, 0, cx + 45, 0, [[0, M], [1, D]]); ctx.beginPath(); ctx.moveTo(cx - 38, cy + 70); ctx.lineTo(cx - 40, cy + 116); ctx.lineTo(cx + 40, cy + 116); ctx.lineTo(cx + 38, cy + 70); ctx.fill();
+  ctx.fillStyle = '#f6f4f0'; ctx.beginPath(); ctx.moveTo(cx - 46, cy + 104); ctx.lineTo(cx - 6, cy + 134); ctx.lineTo(cx - 40, cy + 140); ctx.closePath(); ctx.fill(); ctx.beginPath(); ctx.moveTo(cx + 46, cy + 104); ctx.lineTo(cx + 6, cy + 134); ctx.lineTo(cx + 40, cy + 140); ctx.closePath(); ctx.fill();
+  ctx.strokeStyle = INK; ctx.lineWidth = 2; ctx.stroke();
+  ctx.fillStyle = '#0e0e10'; ctx.beginPath(); ctx.moveTo(cx, cy + 134); ctx.lineTo(cx - 40, cy + 118); ctx.quadraticCurveTo(cx - 46, cy + 136, cx - 40, cy + 154); ctx.closePath(); ctx.fill();
+  ctx.beginPath(); ctx.moveTo(cx, cy + 134); ctx.lineTo(cx + 40, cy + 118); ctx.quadraticCurveTo(cx + 46, cy + 136, cx + 40, cy + 154); ctx.closePath(); ctx.fill();
+  ctx.fillStyle = '#26262a'; ctx.beginPath(); ctx.roundRect(cx - 9, cy + 126, 18, 17, 4); ctx.fill();
+}
+const JON_HAIR = (y0, y1) => lg(0, y0, 0, y1, [[0, '#b0a89e'], [.3, '#8a8278'], [.7, '#5a524a'], [1, '#2e2824']]);
+function jonMane() {
+  // fullest at the temples, tapering into wavy ends at the collar
+  ctx.beginPath(); ctx.moveTo(cx, cy - 176);
+  ctx.bezierCurveTo(cx - 96, cy - 182, cx - 140, cy - 120, cx - 128, cy - 60);
+  ctx.bezierCurveTo(cx - 146, cy - 36, cx - 118, cy - 14, cx - 132, cy + 12);
+  ctx.bezierCurveTo(cx - 146, cy + 40, cx - 112, cy + 50, cx - 118, cy + 76);
+  ctx.bezierCurveTo(cx - 114, cy + 98, cx - 88, cy + 96, cx - 80, cy + 80);
+  ctx.lineTo(cx + 80, cy + 80);
+  ctx.bezierCurveTo(cx + 90, cy + 98, cx + 118, cy + 96, cx + 120, cy + 72);
+  ctx.bezierCurveTo(cx + 116, cy + 46, cx + 148, cy + 38, cx + 134, cy + 10);
+  ctx.bezierCurveTo(cx + 120, cy - 16, cx + 148, cy - 38, cx + 130, cy - 62);
+  ctx.bezierCurveTo(cx + 142, cy - 122, cx + 96, cy - 182, cx, cy - 176); ctx.closePath();
+}
+// tapered S-curve lock of hair along a cubic bezier
+function lock(p0, p1, p2, p3, w0, colr, hi) {
+  const N = 18, Lp = [], Rp = [];
+  const B = (t, a, b, c2, d) => (1 - t) ** 3 * a + 3 * (1 - t) ** 2 * t * b + 3 * (1 - t) * t * t * c2 + t ** 3 * d;
+  for (let i = 0; i <= N; i++) {
+    const t = i / N, x = B(t, p0[0], p1[0], p2[0], p3[0]), y = B(t, p0[1], p1[1], p2[1], p3[1]);
+    const t2 = Math.min(1, t + .02), x2 = B(t2, p0[0], p1[0], p2[0], p3[0]), y2 = B(t2, p0[1], p1[1], p2[1], p3[1]);
+    let nx = -(y2 - y), ny = x2 - x; const l = Math.hypot(nx, ny) || 1; nx /= l; ny /= l;
+    const w = w0 * (0.55 + 0.45 * Math.sin(Math.PI * Math.min(1, t * 1.25))) * (1 - t * .55);
+    Lp.push([x + nx * w / 2, y + ny * w / 2]); Rp.push([x - nx * w / 2, y - ny * w / 2]);
+  }
+  ctx.beginPath(); ctx.moveTo(Lp[0][0], Lp[0][1]); Lp.forEach(q => ctx.lineTo(q[0], q[1])); Rp.reverse().forEach(q => ctx.lineTo(q[0], q[1])); ctx.closePath();
+  ctx.fillStyle = colr; ctx.fill(); ctx.strokeStyle = 'rgba(28,22,18,.55)'; ctx.lineWidth = 1; ctx.stroke();
+  ctx.strokeStyle = hi; ctx.lineWidth = Math.max(1.2, w0 * .16); ctx.lineCap = 'round';
+  ctx.beginPath(); ctx.moveTo(B(.12, p0[0], p1[0], p2[0], p3[0]), B(.12, p0[1], p1[1], p2[1], p3[1]));
+  for (let i = 3; i <= 14; i++) { const t = i / N; ctx.lineTo(B(t, p0[0], p1[0], p2[0], p3[0]) - 2, B(t, p0[1], p1[1], p2[1], p3[1])); } ctx.stroke();
+}
+function curlsBack(p) {
+  // dark base so gaps between locks read as depth, not background
+  ctx.beginPath(); ctx.moveTo(cx, cy - 160); ctx.bezierCurveTo(cx - 104, cy - 164, cx - 116, cy - 60, cx - 106, cy + 10); ctx.quadraticCurveTo(cx - 100, cy + 56, cx - 74, cy + 60); ctx.lineTo(cx + 74, cy + 60); ctx.quadraticCurveTo(cx + 100, cy + 56, cx + 106, cy + 10); ctx.bezierCurveTo(cx + 116, cy - 60, cx + 104, cy - 164, cx, cy - 160); ctx.closePath();
+  ctx.fillStyle = '#2e2824'; ctx.fill();
+  // side locks falling from the temples to the collar, rippling outward
+  for (const s of [-1, 1]) for (let k = 0; k < 14; k++) {
+    const rx = cx + s * (p.w - 16 + R(0, 22)), ry = cy - 120 + k * 10;
+    const tipY = Math.min(cy + 96, ry + R(80, 130));
+    lock([rx, ry], [rx + s * R(26, 44), ry + 30], [rx + s * R(-6, 14), tipY - 40], [rx + s * R(14, 40), tipY], R(15, 24),
+      pick(['#4a423c', '#5a524a', '#6a625a', '#3a322c']), pick(['rgba(200,192,182,.45)', 'rgba(170,162,152,.4)']));
+  }
+}
+function curlsFront(p) {
+  // locks rise from a high hairline, sweep back over the crown and roll down the sides
+  for (let i = 0; i < 17; i++) {
+    const t = -1 + (i / 16) * 2 + R(-.04, .04), s = t < 0 ? -1 : 1, a = Math.abs(t);
+    const rx = cx + t * (p.w - 10), ry = cy - 104 + a * a * 30;
+    const tx = cx + t * (p.w + 34) + s * a * 20, ty = cy - 150 + a * 110;
+    lock([rx, ry], [rx + t * 8, ry - 50], [cx + t * (p.w + 10) + s * a * 10, cy - 176 + a * 40], [tx, ty], R(16, 24),
+      pick(['#9a928a', '#8a8278', '#a8a096', '#7a726a', '#b4aca2']), pick(['rgba(240,232,220,.55)', 'rgba(255,240,220,.45)']));
+  }
+  ctx.strokeStyle = 'rgba(255,230,195,.3)'; ctx.lineWidth = 7; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(cx - 6, cy - 160); ctx.quadraticCurveTo(cx - 46, cy - 150, cx - 70, cy - 106); ctx.stroke();
 }
 function neck(p) {
   const [L, M, D] = p.skin;
@@ -645,6 +736,9 @@ function render(id) {
   if (id === 'deroy') {
     tee(c, false); leatherJacket(c); neck(c); ears(c); skin(c); eyes(c, false, true); brows(c); nose(c, 1.05); outline(c);
     beard(c); grin(c, '#b0655a'); moustache(c); hairShort(c); glasses(c);
+  } else if (id === 'jon') {
+    curlsBack(c); tux(c); bowtie(c); skin(c); eyes(c, false, true); brows(c); nose(c, 1.06); outline(c);
+    beard(c); grin(c, '#b06258'); moustache(c); curlsFront(c);
   } else if (id === 'danae') {
     wavyBack(c); knit(c); knitNeck(c); skin(c); eyes(c, true, false); browShapes(c); nose(c, 1.02); outline(c);
     grin(c, '#c8645e'); wavyFront(c);
@@ -664,5 +758,5 @@ function render(id) {
   if (BARE) grade(); else { player(); grade(); ui(c); }
 }
 const BARE = new URLSearchParams(location.search).has('bare'); if (BARE) document.body.classList.add('bare');
-document.fonts.ready.then(() => { render('deroy'); render('jenna'); render('nell'); render('bridgette'); render('adrian'); render('danae'); });
+document.fonts.ready.then(() => { render('deroy'); render('jenna'); render('nell'); render('bridgette'); render('adrian'); render('danae'); render('jon'); });
 </script></body></html>
