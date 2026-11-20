@@ -223,6 +223,7 @@ export class WorldScene extends Phaser.Scene {
       this.npcSprites[n.id] = spr;
       this.entityPos[n.id] = s;
       this.interactables.push({ id: n.id, x: s.x, y: s.y, r: 64, label: () => `Talk to ${n.short}`, act: () => this.talk(n) });
+      this.makeNpcClickable(n, spr, tag);
     }
     // Commissioner Whiskers
     const cs = this.layout.spots.cat;
@@ -305,6 +306,35 @@ export class WorldScene extends Phaser.Scene {
       this.tweens.add({ targets: mm, scale: 1.7, duration: 500, yoyo: true, repeat: -1 });
       this.minimap.ignore(m); this.cameras.main.ignore(mm);
       this.markers.push(m); this.mmMarkers.push(mm);
+    }
+  }
+
+  // Hover + click on a named character (sprite or name tag) = the "Talk to X" prompt.
+  private makeNpcClickable(n: NpcDef, spr: Phaser.GameObjects.Sprite, tag: Phaser.GameObjects.Text) {
+    const ring = this.add.circle(spr.x, spr.y, 24).setStrokeStyle(2, 0xffd36b, 0.95).setFillStyle(0xffd36b, 0.14).setDepth(spr.depth - 1).setVisible(false);
+    this.miniIgnore.push(ring);
+    const zone = this.add.zone(spr.x, spr.y - 8, 56, 64).setInteractive({ useHandCursor: true });
+    tag.setInteractive({ useHandCursor: true });
+    const over = () => {
+      ring.setVisible(true);
+      tag.setScale(1.15);
+      spr.setTint(0xfff1c4);
+    };
+    const out = () => {
+      ring.setVisible(false);
+      tag.setScale(1);
+      spr.clearTint();
+    };
+    const click = () => {
+      if (this.mode !== 'play' || ui.blocking() || performance.now() - this.lastDialogueEnd < 250) return;
+      const d = Math.hypot(spr.x - this.player.x, spr.y - this.player.y);
+      if (d <= 64) this.talk(n);
+      else bus.emit('ui:toast', `WALK CLOSER TO TALK TO ${n.short.toUpperCase()}`);
+    };
+    for (const o of [zone, tag]) {
+      o.on('pointerover', over);
+      o.on('pointerout', out);
+      o.on('pointerdown', click);
     }
   }
 

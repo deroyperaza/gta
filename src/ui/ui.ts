@@ -61,6 +61,7 @@ class UI {
     if (this.dialogueOpen) {
       if (/^[1-4]$/.test(k) && Number(k) <= this.choiceCount) { this.pickVisible(Number(k) - 1); e.preventDefault(); return; }
       if (k === 'e' || k === ' ' || k === 'enter') { this.advanceDialogue(); e.preventDefault(); }
+      if (k === 'escape') { dialogue.end(); e.preventDefault(); }
       return;
     }
     if (this.panel === 'passed') { if (performance.now() - this.passedAt > 900) this.closePanel(); return; }
@@ -135,6 +136,7 @@ class UI {
       bus.emit(a.dataset.act === 'action' ? 'ui:action' : 'ui:interact');
     });
     $('#dialogue').addEventListener('click', (e) => {
+      if ((e.target as HTMLElement).closest('#dlg-close')) { e.stopPropagation(); dialogue.end(); return; }
       const btn = (e.target as HTMLElement).closest('[data-choice]');
       if (btn) this.pick(Number(btn.getAttribute('data-choice')));
       else this.advanceDialogue();
