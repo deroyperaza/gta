@@ -12,10 +12,13 @@ button { font-family: inherit; cursor: pointer; }
 kbd { display: inline-block; min-width: 1.6em; padding: 1px 6px; border: 2px solid var(--ink); border-bottom-width: 4px; border-radius: 6px; background: #fff; color: var(--ink); font: 800 12px var(--body); text-align: center; }
 
 /* Eternal golden hour */
+/* Golden Hour grade (Style A): warm soft-light wash, low sun glow from the top-left, vignette */
 #sunset { position: fixed; inset: 0; pointer-events: none; z-index: 1;
-  background: linear-gradient(180deg, rgba(123,63,228,.32) 0%, rgba(255,79,163,.12) 45%, rgba(255,138,61,.28) 100%);
+  background: linear-gradient(135deg, rgba(255,176,102,.85) 0%, rgba(255,122,89,.6) 50%, rgba(106,42,138,.75) 100%);
   mix-blend-mode: soft-light; }
-#sunset::after { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at center, transparent 55%, rgba(30,10,50,.55) 100%); }
+#sunglow { position: fixed; inset: 0; pointer-events: none; z-index: 1; mix-blend-mode: screen;
+  background: radial-gradient(circle at 0% 0%, rgba(255,170,90,.38), rgba(255,170,90,0) 62%); }
+#sunset::after { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at center, transparent 50%, rgba(12,4,18,.9) 100%); }
 
 /* ---------------------------------------------------------------- HUD */
 #hud { position: fixed; inset: 0; pointer-events: none; z-index: 5; }

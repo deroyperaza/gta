@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 import { BLOCK_H, BLOCK_W, COLS, ROWS, TILE, WORLD_H, WORLD_W } from '../world/layout';
 
 interface Vehicle {
-  sprite: Phaser.GameObjects.Image;
+  sprite: Phaser.GameObjects.Image; shadow: Phaser.GameObjects.Image;
   axis: 'x' | 'y'; dir: 1 | -1; lane: number; speed: number; cur: number; len: number; bike: boolean;
 }
 
@@ -40,8 +40,9 @@ export class Traffic {
     const x = axis === 'y' ? lane : pos, y = axis === 'y' ? pos : lane;
     const s = this.scene.add.image(x, y, key);
     s.rotation = axis === 'y' ? (dir === 1 ? Math.PI : 0) : dir === 1 ? Math.PI / 2 : -Math.PI / 2;
+    const shadow = this.scene.add.image(x, y, `${key}-shd`).setRotation(s.rotation).setDepth(-4);
     const speed = bike ? Phaser.Math.Between(80, 110) : Phaser.Math.Between(110, 190);
-    this.vehicles.push({ sprite: s, axis, dir, lane, speed, cur: speed, len: s.height, bike });
+    this.vehicles.push({ sprite: s, shadow, axis, dir, lane, speed, cur: speed, len: s.height, bike });
   }
 
   update(dt: number, player: { x: number; y: number }, pushPlayer: (dx: number, dy: number) => void) {
@@ -66,6 +67,7 @@ export class Traffic {
       const wrapped = np > max + 80 ? -80 : np < -80 ? max + 80 : np;
       if (v.axis === 'y') s.y = wrapped; else s.x = wrapped;
       s.setDepth(s.y + 20);
+      v.shadow.setPosition(s.x + 9, s.y + 3);
 
       // Collision with player: shove them sideways out of the lane.
       const w = v.axis === 'y' ? 20 : v.len / 2, h = v.axis === 'y' ? v.len / 2 : 20;

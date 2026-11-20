@@ -306,10 +306,11 @@ class UI {
     const cv = $<HTMLCanvasElement>('#dlg-portrait');
     const ctx = cv.getContext('2d')!;
     ctx.clearRect(0, 0, cv.width, cv.height);
-    const tex = this.world?.textures.get(key);
+    const front = this.world?.textures.exists(`${key}-front`);
+    const tex = this.world?.textures.get(front ? `${key}-front` : key);
     if (!tex || tex.key === '__MISSING') return;
     const src = tex.getSourceImage() as HTMLCanvasElement;
-    const fw = key.startsWith('npc-') || key.startsWith('vendor') || key === 'player' ? 36 : src.width;
+    const fw = front ? 36 : src.width;
     const fh = src.height;
     const s = Math.min((cv.width - 10) / fw, (cv.height - 10) / fh);
     ctx.imageSmoothingEnabled = true;

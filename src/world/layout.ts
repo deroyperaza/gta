@@ -207,7 +207,7 @@ export function generateLayout(): WorldLayout {
       const w = lm.w * TILE, h = 5 * TILE, x = cxp - w / 2, y = iy * TILE;
       buildings.push({ id: lm.id, type: lm.type, name: lm.name, district: dist, x, y, w, h, variant: 0 });
       markBlocked(blocked, x, y, w, h);
-      if (lm.spot) spots[lm.spot] = { x: cxp + 40, y: y + h + 48 };
+      if (lm.spot) spots[lm.spot] = { x: cxp + 120, y: y + h + 48 };
       continue;
     }
     if (spec.kind === 'garden') {

@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { MAP_H, MAP_W, TILE, WALKABLE, districtAt, type WorldLayout } from '../world/layout';
-import { makeCharacter, PAL, type Look } from '../world/textures';
+import { PAL, type Look } from '../world/textures';
+import { makeCharacter } from '../world/golden';
 import type { District } from '../core/types';
 
 export interface Ped {
@@ -32,7 +33,7 @@ export class Pedestrians {
       const tx = R.between(0, MAP_W - 1), ty = R.between(0, MAP_H - 1);
       if (!this.walkable(tx * TILE + 16, ty * TILE + 16)) continue;
       const v = R.between(0, 15);
-      const s = scene.add.sprite(tx * TILE + 16, ty * TILE + 16, `ped${v}`, 0).setOrigin(0.5, 0.92);
+      const s = scene.add.sprite(tx * TILE + 16, ty * TILE + 16, `ped${v}`, 0).setOrigin(0.5, 0.5);
       s.play(`ped${v}-walk`);
       const p: Ped = { sprite: s, vx: 0, vy: 0, speed: R.between(28, 55), timer: 0, district: districtAt(s.x, s.y), gotFlyer: false, pause: 0 };
       this.pickDir(p);
@@ -63,7 +64,7 @@ export class Pedestrians {
       const nx = s.x + p.vx * p.speed * dt, ny = s.y + p.vy * p.speed * dt;
       if (this.walkable(nx + p.vx * 10, ny + p.vy * 6)) { s.x = nx; s.y = ny; if (visible && !s.anims.isPlaying) s.anims.resume(); }
       else this.pickDir(p);
-      if (p.vx) s.setFlipX(p.vx < 0);
+      s.setRotation(Math.atan2(p.vy, p.vx) + Math.PI / 2);
       s.setDepth(s.y);
     }
   }

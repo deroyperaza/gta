@@ -10,7 +10,8 @@ import { dialogue } from '../systems/dialogue';
 import { missions } from '../systems/missions';
 import { ui } from '../ui/ui';
 import { T, TILE, WORLD_H, WORLD_W, districtAt, generateLayout, type BuildingDef, type WorldLayout } from '../world/layout';
-import { buildingKey, makeBikeRider, makeBuilding, makeCharacter, makeProps, makeTiles, makeVehicles } from '../world/textures';
+import { makeProps } from '../world/textures';
+import { buildingKey, makeBikeRider, makeBuilding, makeCharacter, makeStreetProps, makeTiles, makeVehicles, shadowKey, SHADOW_PAD } from '../world/golden';
 
 interface Interactable {
   id: string; x: number; y: number; r: number;
@@ -50,7 +51,7 @@ export class WorldScene extends Phaser.Scene {
 
   create() {
     this.layout = generateLayout();
-    makeTiles(this); makeVehicles(this); makeProps(this);
+    makeTiles(this); makeVehicles(this); makeStreetProps(this); makeProps(this);
     makeCharacter(this, 'player', PLAYER_LOOK);
     makeBikeRider(this, 'player-bike', PLAYER_LOOK);
     for (const n of NPCS) makeCharacter(this, `npc-${n.id}`, n.look);
@@ -67,7 +68,7 @@ export class WorldScene extends Phaser.Scene {
     this.anims.create({ key: 'player-walk', frames: this.anims.generateFrameNumbers('player', { frames: [0, 1] }), frameRate: 7, repeat: -1 });
     this.anims.create({ key: 'bike-roll', frames: this.anims.generateFrameNumbers('player-bike', { frames: [0, 1] }), frameRate: 9, repeat: -1 });
     const start = this.layout.spots.playerStart;
-    this.player = this.physics.add.sprite(start.x, start.y, 'player', 0).setOrigin(0.5, 0.92);
+    this.player = this.physics.add.sprite(start.x, start.y, 'player', 0).setOrigin(0.5, 0.5);
     this.player.setCollideWorldBounds(true);
     this.setPlayerBody();
     this.physics.add.collider(this.player, solids);
@@ -83,7 +84,7 @@ export class WorldScene extends Phaser.Scene {
     // Cameras
     const cam = this.cameras.main;
     cam.setBounds(0, 0, WORLD_W, WORLD_H);
-    cam.setBackgroundColor('#2a1c45');
+    cam.setBackgroundColor('#2b2622');
     cam.startFollow(this.player, true, 0.12, 0.12);
     this.applyZoom();
     this.setupMinimap();
@@ -123,13 +124,15 @@ export class WorldScene extends Phaser.Scene {
   private buildBuildings(solids: Phaser.Physics.Arcade.StaticGroup) {
     for (const b of this.layout.buildings) {
       makeBuilding(this, b);
+      const shd = this.add.image(b.x - SHADOW_PAD, b.y - SHADOW_PAD, shadowKey(b)).setOrigin(0, 0).setDepth(-5);
+      this.miniIgnore.push(shd);
       const img = solids.create(b.x + b.w / 2, b.y + b.h / 2, buildingKey(b)) as Phaser.Physics.Arcade.Image;
       img.setDepth(b.y + b.h);
       // Slightly inset collision so the player can hug facades
       (img.body as Phaser.Physics.Arcade.StaticBody).setSize(b.w - 4, b.h - 6).setOffset(2, 0);
     }
     for (const l of this.layout.labels) {
-      const t = this.add.text(l.x, l.y - 40, l.text.toUpperCase(), { fontFamily: 'Bangers, Impact', fontSize: '34px', color: '#ffffff', stroke: '#16101f', strokeThickness: 7 }).setOrigin(0.5).setDepth(5).setAlpha(0.85);
+      const t = this.add.text(l.x, l.y - 40, l.text.toUpperCase().split('').join(' '), { fontFamily: '"Helvetica Neue", Inter, Arial, sans-serif', fontSize: '22px', fontStyle: '300', color: '#f4ece0', shadow: { offsetX: 0, offsetY: 2, color: 'rgba(0,0,0,.6)', blur: 6, fill: true } }).setOrigin(0.5).setDepth(5).setAlpha(0.8);
       this.miniIgnore.push(t);
     }
   }
@@ -171,8 +174,7 @@ export class WorldScene extends Phaser.Scene {
     // Vendors
     const vend = (id: string, key: string, cartKey: string, spot: { x: number; y: number }, name: string, lines: string[], gift: string) => {
       const cart = this.add.image(spot.x + 50, spot.y, cartKey).setOrigin(0.5, 0.92).setDepth(spot.y);
-      const v = this.add.sprite(spot.x, spot.y, key, 0).setOrigin(0.5, 0.92).setDepth(spot.y + 1);
-      this.tweens.add({ targets: v, scaleY: 1.04, duration: 700, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
+      const v = this.add.sprite(spot.x, spot.y, key, 0).setOrigin(0.5, 0.5).setDepth(spot.y + 1).setRotation(Math.PI);
       this.miniIgnore.push(cart, v);
       this.interactables.push({
         id, x: spot.x + 20, y: spot.y, r: 70, label: () => `Talk to ${name}`,
@@ -199,13 +201,12 @@ export class WorldScene extends Phaser.Scene {
       const s = this.layout.spots[n.spot];
       if (!s) { console.warn('no spot for', n.id); continue; }
       const key = `npc-${n.id}`;
-      this.anims.create({ key: `${key}-idle`, frames: this.anims.generateFrameNumbers(key, { frames: [0, 0, 0, 1] }), frameRate: 2, repeat: -1 });
-      const spr = this.add.sprite(s.x, s.y, key, 0).setOrigin(0.5, 0.92).setDepth(s.y);
-      spr.play({ key: `${key}-idle`, startFrame: Phaser.Math.Between(0, 3) });
-      this.tweens.add({ targets: spr, scaleY: 1.05, duration: 600 + Math.random() * 300, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
+      this.anims.create({ key: `${key}-idle`, frames: this.anims.generateFrameNumbers(key, { frames: [0] }), frameRate: 1, repeat: -1 });
+      const spr = this.add.sprite(s.x, s.y, key, 0).setOrigin(0.5, 0.5).setDepth(s.y).setRotation(Math.PI);
+      spr.play({ key: `${key}-idle` });
       const blocker = solids.create(s.x, s.y - 8, undefined) as Phaser.Physics.Arcade.Image;
       blocker.setVisible(false); (blocker.body as Phaser.Physics.Arcade.StaticBody).setSize(22, 14);
-      const tag = this.add.text(s.x, s.y - 60, n.short, { fontFamily: 'Bangers, Impact', fontSize: '15px', color: n.color, stroke: '#16101f', strokeThickness: 4 }).setOrigin(0.5).setDepth(1e5);
+      const tag = this.add.text(s.x, s.y - 34, n.short.toUpperCase(), { fontFamily: '"Helvetica Neue", Inter, Arial, sans-serif', fontSize: '12px', fontStyle: '700', color: n.color, shadow: { offsetX: 0, offsetY: 1, color: 'rgba(0,0,0,.9)', blur: 4, fill: true } }).setOrigin(0.5).setDepth(1e5);
       this.miniIgnore.push(tag, spr);
       this.npcSprites[n.id] = spr;
       this.entityPos[n.id] = s;
@@ -286,7 +287,7 @@ export class WorldScene extends Phaser.Scene {
     this.markers = []; this.mmMarkers = [];
     for (const id of missions.targets()) {
       const p = this.entityPos[id]; if (!p) continue;
-      const m = this.add.image(p.x, p.y - 84, 'excl').setDepth(1e6);
+      const m = this.add.image(p.x, p.y - 52, 'excl').setDepth(1e6);
       this.tweens.add({ targets: m, y: p.y - 96, duration: 450, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
       const mm = this.add.image(p.x, p.y, 'mm-target').setDepth(2e6).setScale(1.3);
       this.tweens.add({ targets: mm, scale: 1.7, duration: 500, yoyo: true, repeat: -1 });
@@ -333,8 +334,8 @@ export class WorldScene extends Phaser.Scene {
   }
   private setPlayerBody() {
     const body = this.player.body as Phaser.Physics.Arcade.Body;
-    if (this.onBike) { body.setSize(30, 14).setOffset(11, 40); }
-    else { body.setSize(18, 12).setOffset(9, 38); }
+    if (this.onBike) { body.setSize(22, 22).setOffset(13, 13); }
+    else { body.setSize(16, 16).setOffset(10, 10); }
   }
 
   private nearestInteractable(): Interactable | null {
@@ -454,7 +455,7 @@ export class WorldScene extends Phaser.Scene {
         vx /= Math.max(1, len); vy /= Math.max(1, len);
         body.setVelocity(vx * speed, vy * speed);
         if (Math.abs(vx) > 0.1) this.facing = vx < 0 ? -1 : 1;
-        this.player.setFlipX(this.facing < 0);
+        this.player.setRotation(Math.atan2(vy, vx) + Math.PI / 2);
         const anim = this.onBike ? 'bike-roll' : 'player-walk';
         if (this.player.anims.currentAnim?.key !== anim || !this.player.anims.isPlaying) this.player.play(anim);
         this.player.anims.timeScale = sprint ? 1.6 : 1;
