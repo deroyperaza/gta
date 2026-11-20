@@ -20,27 +20,32 @@ Other scripts: `npm run build` (typecheck + production bundle in `dist/`), `npm 
 | Key | Action |
 | --- | --- |
 | WASD / Arrows | Move |
+| Press + drag | Walk toward the pointer (mouse or finger) |
+| Click a character | Talk to them (when close), or a "walk closer" hint |
 | Shift | Sprint |
 | E | Talk / interact (NPCs, fridge, bike docks, vendors, the cat) |
 | Space | Hand a flyer to a nearby pedestrian · put up a poster on a wall |
 | B | Hop off your bike |
 | 1–4 | Pick a dialogue choice |
 | M / J / Esc | Map / Mission journal / Pause (save, load, quit) |
+| Esc or × | Close a conversation |
 
 Touch devices get a virtual joystick plus E / Space buttons.
 
 ## What's in this build
 
-- **Map:** 6×5 blocks of fictional Brooklyn: Downtown (Borough Plaza, Hall of Mild Justice, Synergy Tower, Luxe Lofts), Park Slope (Righteous Turnip Co-op, Perspective Park and its pond, a community garden), Bed-Stuy (the Community Fridge mural, Farouk's bodega, Tenants United Hall, the Gates Ave Community Center, Kingston Courts) and Bushwick (Sourdough Collective, galleries, the Former Pickle Factory).
-- **Living streets:** about 90 wandering pedestrians with district-specific chatter, lane-following traffic that brakes and honks, cyclists, BK Spokes bike docks, and vendors.
-- **10 recurring NPCs** with bios, relationship scores and opinions of their own. Dee and Juni disagree about whether the fridge is charity or solidarity.
-- **Systems:** Solidarity (with levels), Organizing Power, Public Attention, per-district Community Trust, per-NPC relationships, and a mutual aid inventory (8 item types).
-- **Mission 1, STOCK THE BLOCK** (fully playable): meet Dee, collect from the co-op, bodega and bakery against a 2:30 clock (dialogue pauses it; Brendan's land-labor-and-lettuce acknowledgment costs you 15 seconds), restock the fridge, and earn up to 4 bonus objectives. Failing resets the mission.
-- **Mission 2, THE CIRCLE** (fully playable): facilitate a restorative justice circle. Your choices change hidden understanding scores for Marcus and Priya, plus an "underlying needs" score, and these decide which agreements become available. There are three outcomes with different rewards.
-- **Missions 3–5** are defined in the journal and teased by Gary, Tyler and Skye. They're slated for the next phase.
-- Save/load through localStorage (auto-saves on mission pass), plus a title screen, pause menu, map and journal.
+**Live:** https://deroyperaza.github.io/gta/ (GitHub Pages, deployed by `.github/workflows/pages.yml` on every push to `main`).
 
-All art is drawn procedurally with Canvas 2D at boot (`src/world/textures.ts`). There are no image assets or API keys.
+- **Map:** 9×7 blocks of fictional Brooklyn in real-world order (north up), across 10 neighborhoods: Downtown, Bed-Stuy, Bushwick, Red Hook, Park Slope, Crown Heights, Prospect Lefferts Gardens (PLG), Sunset Park, Flatbush and Coney Island. There are beach, boardwalk and waterfront blocks, and Perspective Park sits between Park Slope and PLG.
+- **Living streets:** about 170 pedestrians with neighborhood chatter, traffic, cyclists, 11 BK Spokes bike docks and vendors.
+- **The cast:** eight characters based on real friends, each with a painted portrait, a movie-style title and a civic lesson tied to their real work. See [docs/CAST.md](docs/CAST.md).
+- **Ten satirical NPCs** (Dee, Brendan, Farouk, Juni, Ms. Hattie, Gary, Tyler, Skye, Marcus, Priya) with relationship scores. Ms. Hattie also teaches community boards.
+- **Pocket Civics:** every lesson ends in a `POCKET CIVICS · …` toast plus Solidarity and neighborhood Trust. They don't collect in the journal yet.
+- **Systems:** Solidarity (with levels), Organizing Power, Public Attention, per-neighborhood Trust, relationships, and a mutual aid inventory.
+- **Missions 1–2** are fully playable. Missions 3–5 are teased in the journal.
+- Save/load through localStorage, plus a title screen, pause menu, map and journal.
+
+The world art is drawn in code with Canvas 2D (`src/world/golden.ts`, `src/world/textures.ts`). The only image assets are the cast portraits in `public/portraits/`, which were painted with ChatGPT from photos. There are no API keys.
 
 ## Architecture
 
