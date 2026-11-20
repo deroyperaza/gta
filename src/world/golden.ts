@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { T, TILE, type BuildingDef, type BuildingType } from './layout';
 import { makeCharacter as makeFrontCharacter, type Look } from './textures';
+import { makeBust } from './portraits';
 
 /**
  * Golden Hour renderer (Style A from style-study/moodboard.html).
@@ -415,6 +416,7 @@ function drawWalker(c: Ctx, L: Look, f: number, scale = PS) {
 /** Top-down walker (2 stride frames, facing up) plus a front-facing portrait under `${key}-front`. */
 export function makeCharacter(scene: Phaser.Scene, key: string, look: Look) {
   makeFrontCharacter(scene, `${key}-front`, look);
+  if (!key.startsWith('ped')) makeBust(scene, key, look);
   if (scene.textures.exists(key)) return;
   const tex = scene.textures.createCanvas(key, PED * 2, PED)!;
   const c = tex.getContext();
@@ -431,6 +433,20 @@ function drawBike(c: Ctx, frameColor: string, f: number, L = 40) {
   c.fillStyle = frameColor; c.fillRect(L / 2 - 6, -4, 5, 8);
   c.fillStyle = 'rgba(255,255,255,.5)'; c.fillRect(-L / 2 + 6 + (f ? 2 : 0), -0.6, 3, 1.2);
   c.restore();
+}
+
+/** Ground marker that makes the player's character unmistakable (GTA-style). */
+export function makePlayerMarker(scene: Phaser.Scene) {
+  canvas(scene, 'player-ring', 72, 72, (c) => {
+    const cx = 36, cy = 36;
+    c.fillStyle = rg(c, cx, cy, 8, 34, [[0, 'rgba(255,210,63,.0)'], [0.55, 'rgba(255,210,63,.28)'], [0.8, 'rgba(255,210,63,.12)'], [1, 'rgba(255,210,63,0)']]); ell(c, cx, cy, 34, 34); c.fill();
+    c.strokeStyle = 'rgba(255,224,110,.95)'; c.lineWidth = 2.5; ell(c, cx, cy, 22, 22); c.stroke();
+    c.strokeStyle = 'rgba(20,10,4,.35)'; c.lineWidth = 1; ell(c, cx, cy, 24, 24); c.stroke();
+  });
+  canvas(scene, 'player-chevron', 24, 16, (c) => {
+    c.fillStyle = '#ffe06e'; c.strokeStyle = 'rgba(20,10,4,.6)'; c.lineWidth = 1.5;
+    c.beginPath(); c.moveTo(12, 1); c.lineTo(22, 14); c.lineTo(12, 10); c.lineTo(2, 14); c.closePath(); c.fill(); c.stroke();
+  });
 }
 
 export function makeBikeRider(scene: Phaser.Scene, key: string, look: Look) {

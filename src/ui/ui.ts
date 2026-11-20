@@ -127,6 +127,13 @@ class UI {
     $('#hud-journal').onclick = () => this.openPanel('journal');
     $('#hud-map').onclick = () => this.openPanel('map');
     $('#hud-pause').onclick = () => this.openPanel('pause');
+    // Clicking (or tapping) an on-screen prompt does the same as its key
+    $('#prompt').addEventListener('pointerdown', (e) => {
+      const a = (e.target as HTMLElement).closest<HTMLElement>('.pa');
+      if (!a || this.dialogueOpen) return;
+      e.preventDefault(); e.stopPropagation();
+      bus.emit(a.dataset.act === 'action' ? 'ui:action' : 'ui:interact');
+    });
     $('#dialogue').addEventListener('click', (e) => {
       const btn = (e.target as HTMLElement).closest('[data-choice]');
       if (btn) this.pick(Number(btn.getAttribute('data-choice')));
@@ -306,6 +313,11 @@ class UI {
     const cv = $<HTMLCanvasElement>('#dlg-portrait');
     const ctx = cv.getContext('2d')!;
     ctx.clearRect(0, 0, cv.width, cv.height);
+    if (this.world?.textures.exists(`${key}-bust`)) {
+      const img = this.world.textures.get(`${key}-bust`).getSourceImage() as HTMLCanvasElement;
+      ctx.drawImage(img, 0, 0, cv.width, cv.height);
+      return;
+    }
     const front = this.world?.textures.exists(`${key}-front`);
     const tex = this.world?.textures.get(front ? `${key}-front` : key);
     if (!tex || tex.key === '__MISSING') return;

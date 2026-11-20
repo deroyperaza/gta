@@ -11,7 +11,7 @@ import { missions } from '../systems/missions';
 import { ui } from '../ui/ui';
 import { T, TILE, WORLD_H, WORLD_W, districtAt, generateLayout, type BuildingDef, type WorldLayout } from '../world/layout';
 import { makeProps } from '../world/textures';
-import { buildingKey, makeBikeRider, makeBuilding, makeCharacter, makeStreetProps, makeTiles, makeVehicles, shadowKey, SHADOW_PAD } from '../world/golden';
+import { buildingKey, makeBikeRider, makeBuilding, makeCharacter, makePlayerMarker, makeStreetProps, makeTiles, makeVehicles, shadowKey, SHADOW_PAD } from '../world/golden';
 
 interface Interactable {
   id: string; x: number; y: number; r: number;
@@ -41,6 +41,8 @@ export class WorldScene extends Phaser.Scene {
   miniIgnore: Phaser.GameObjects.GameObject[] = [];
   mode: 'title' | 'play' = 'title';
   onBike = false;
+  playerRing!: Phaser.GameObjects.Image;
+  playerChevron!: Phaser.GameObjects.Image;
   district: District | null = null;
   lastDialogueEnd = 0;
   facing = 1;
@@ -69,7 +71,12 @@ export class WorldScene extends Phaser.Scene {
     this.anims.create({ key: 'bike-roll', frames: this.anims.generateFrameNumbers('player-bike', { frames: [0, 1] }), frameRate: 9, repeat: -1 });
     const start = this.layout.spots.playerStart;
     this.player = this.physics.add.sprite(start.x, start.y, 'player', 0).setOrigin(0.5, 0.5);
-    this.player.setCollideWorldBounds(true);
+    this.player.setCollideWorldBounds(true).setScale(1.2);
+    makePlayerMarker(this);
+    this.playerRing = this.add.image(start.x, start.y, 'player-ring');
+    this.playerChevron = this.add.image(start.x, start.y, 'player-chevron');
+    this.miniIgnore.push(this.playerRing, this.playerChevron);
+    this.tweens.add({ targets: this.playerRing, scale: { from: 0.9, to: 1.12 }, alpha: { from: 1, to: 0.65 }, duration: 900, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
     this.setPlayerBody();
     this.physics.add.collider(this.player, solids);
     this.physics.add.collider(this.player, this.groundLayer);
@@ -463,6 +470,8 @@ export class WorldScene extends Phaser.Scene {
 
     }
     this.player.setDepth(this.player.y);
+    this.playerRing.setPosition(this.player.x, this.player.y).setDepth(this.player.y - 1).setVisible(this.mode === 'play');
+    { const a = this.player.rotation - Math.PI / 2, d = this.onBike ? 34 : 28; this.playerChevron.setPosition(this.player.x + Math.cos(a) * d, this.player.y + Math.sin(a) * d).setRotation(this.player.rotation).setDepth(this.player.y + 1).setVisible(this.mode === 'play'); }
     state.d.player.x = this.player.x; state.d.player.y = this.player.y;
 
     // World sim
@@ -476,11 +485,11 @@ export class WorldScene extends Phaser.Scene {
       const it = this.nearestInteractable();
       const ped = !it ? this.nearPed() : null;
       const parts: string[] = [];
-      if (it) parts.push(`<b>E</b> ${it.label()}`);
-      else if (ped) parts.push('<b>E</b> Chat');
+      if (it) parts.push(`<span class="pa" data-act="interact"><b>E</b> ${it.label()}</span>`);
+      else if (ped) parts.push('<span class="pa" data-act="interact"><b>E</b> Chat</span>');
       const fped = this.peds.nearest(this.player.x, this.player.y, 60, (p) => !p.gotFlyer);
-      if (fped && state.count('flyers') > 0) parts.push('<b>SPACE</b> Hand flyer');
-      else if (this.nearWall() && state.count('posters') > 0) parts.push('<b>SPACE</b> Put up poster');
+      if (fped && state.count('flyers') > 0) parts.push('<span class="pa" data-act="action"><b>SPACE</b> Hand flyer</span>');
+      else if (this.nearWall() && state.count('posters') > 0) parts.push('<span class="pa" data-act="action"><b>SPACE</b> Put up poster</span>');
       ui.setPrompt(parts.join('&nbsp;&nbsp;·&nbsp;&nbsp;'));
     } else ui.setPrompt('');
 
