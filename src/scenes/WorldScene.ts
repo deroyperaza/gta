@@ -260,9 +260,10 @@ export class WorldScene extends Phaser.Scene {
   }
   private layoutMinimap() {
     if (!this.minimap) return;
-    const size = Math.min(200, Math.floor(this.scale.width * 0.28));
-    this.minimap.setViewport(this.scale.width - size - 18, 18, size, size);
-    bus.emit('minimap:layout', { x: this.scale.width - size - 18, y: 18, size });
+    const phone = this.scale.width <= 600 || this.scale.height <= 500, m = phone ? 8 : 18;
+    const size = phone ? Math.min(104, Math.floor(this.scale.height * 0.28)) : Math.min(200, Math.floor(this.scale.width * 0.28));
+    this.minimap.setViewport(this.scale.width - size - m, m, size, size);
+    bus.emit('minimap:layout', { x: this.scale.width - size - m, y: m, size });
   }
   private applyZoom() {
     const w = this.scale.width;

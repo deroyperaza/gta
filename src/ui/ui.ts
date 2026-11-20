@@ -41,7 +41,7 @@ class UI {
     bus.on('mission:started', (def: MissionDef) => this.missionIntro(def));
     bus.on('world:district', (_d: District, info: { name: string; color: string; blurb: string }) => this.districtBanner(info));
     bus.on('minimap:layout', (r: { x: number; y: number; size: number }) => {
-      const f = $('#minimap-frame'); f.style.right = '18px'; f.style.top = `${r.y}px`; f.style.width = `${r.size}px`; f.style.height = `${r.size}px`;
+      const f = $('#minimap-frame'); f.style.right = `${Math.max(0, window.innerWidth - r.x - r.size)}px`; f.style.top = `${r.y}px`; f.style.width = `${r.size}px`; f.style.height = `${r.size}px`;
     });
     window.addEventListener('keydown', (e) => this.onKey(e));
     this.bindButtons();
