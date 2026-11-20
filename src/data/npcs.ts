@@ -95,6 +95,18 @@ export const NPCS: NpcDef[] = [
     bio: 'Runs a voter registration table at Borough Hall with a clipboard, a mint fanny pack and zero tolerance for "my vote doesn\'t matter."',
     idle: ['Registered? Great. Now register a friend.', 'Nine days of early voting. Pick a day. Any day.'],
   },
+  {
+    id: 'adrian', name: 'Adrian', short: 'Adrian', title: 'Director of Soccer Justice (self-appointed)', district: 'parkslope', spot: 'adrian', color: '#ff7ab8',
+    look: { skin: '#d09c7c', hair: '#2a1c14', style: 'bun', shirt: '#1c1c20', pants: '#1e2640', shoes: '#111', acc: 'glasses' },
+    bio: 'Coaches every kid on the field, including the ones who are not on his team. Carries a whistle and the moral high ground.',
+    idle: ['The small kids get the ball sometimes. That is soccer justice.', 'Whistle, cones, permit. The holy trinity.'],
+  },
+  {
+    id: 'danae', name: 'Danae', short: 'Danae', title: 'School Leadership Team Parent', district: 'parkslope', spot: 'danae', color: '#ff9a7a',
+    look: { skin: '#e0a88a', hair: '#2a170e', style: 'curly', shirt: '#f08a78', pants: '#c8885a', shoes: '#c8322a' },
+    bio: 'Started on snack duty. Now she knows the school budget better than the people who wrote it.',
+    idle: ['Snack duty is a gateway. Ask me how I know.', 'CEC meetings are public. Bring a question and a granola bar.'],
+  },
 ];
 
 export const NPC_BY_ID = Object.fromEntries(NPCS.map((n) => [n.id, n])) as Record<string, NpcDef>;

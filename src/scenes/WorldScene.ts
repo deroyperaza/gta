@@ -53,7 +53,7 @@ export class WorldScene extends Phaser.Scene {
 
   preload() {
     // Hand-painted likeness portraits (style-study/portraits.html) win over the generated busts.
-    for (const id of ['deroy', 'jenna', 'nell', 'bridgette']) this.load.image(`npc-${id}-bust`, `portraits/${id}.jpg`);
+    for (const id of ['deroy', 'jenna', 'nell', 'bridgette', 'adrian', 'danae']) this.load.image(`npc-${id}-bust`, `portraits/${id}.jpg`);
   }
 
   create() {

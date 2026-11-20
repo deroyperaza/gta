@@ -75,7 +75,7 @@ const BLOCKS: Record<string, BlockSpec> = {
   '0,3': { kind: 'park', name: 'Perspective Park' },
   '0,4': { kind: 'pond', name: 'Perspective Park' },
   '2,3': { kind: 'garden', name: 'Fifth Ave Community Garden' },
-  '1,3': { kind: 'row', landmarks: [{ id: 'yoga', type: 'boutique', w: 5, name: 'HOT YOGA FOR CAPITALISTS' }] },
+  '1,3': { kind: 'row', landmarks: [{ id: 'yoga', type: 'boutique', w: 5, name: 'HOT YOGA FOR CAPITALISTS', spot: 'danae' }] },
   '1,4': { kind: 'row' },
   '2,4': { kind: 'row', landmarks: [{ id: 'laundry1', type: 'laundromat', w: 4, name: 'SUDS OF SOLIDARITY', spot: 'nell' }] },
   // ---------- BED-STUY ----------
@@ -179,6 +179,7 @@ export function generateLayout(): WorldLayout {
       // paths
       for (let x = bx + 1; x < bx + bw - 1; x++) set(x, by + 7, T.PLAZA);
       for (let y = by + 1; y < by + bh - 1; y++) set(bx + 9, y, T.PLAZA);
+      if (spec.kind === 'park' && !spots.adrian) spots.adrian = { x: px(bx + 12), y: px(by + 7) + 16 };
       if (spec.kind === 'pond') {
         for (let y = by + 2; y < by + 13; y++) for (let x = bx + 2; x < bx + 17; x++) {
           const dx = (x - (bx + 9.5)) / 7, dy = (y - (by + 10)) / 3.6;

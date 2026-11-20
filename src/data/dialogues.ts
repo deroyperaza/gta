@@ -336,4 +336,50 @@ export const DIALOGUES: Record<string, Dialogue> = {
       after: { speaker: 'bridgette', text: 'Registered? Great. Now register a friend. That\'s how this works.' },
     },
   },
+
+  // ============================================================ ADRIAN · park field permits
+  adrian: {
+    entries: [{ cond: { notFlag: 'met_adrian' }, node: 'intro' }, { node: 'after' }],
+    nodes: {
+      intro: {
+        speaker: 'adrian', text: 'Director of Soccer Justice. Self-appointed. The field is public. The schedule belongs to whoever files the permit.',
+        choices: [
+          { text: 'Appoint me deputy.', next: 'deputy', effects: { rel: { adrian: 5 }, flags: { met_adrian: true } } },
+          { text: 'How do we get field time?', next: 'permit', effects: { flags: { met_adrian: true } } },
+          { text: 'Is that a real job?', next: 'job', effects: { rel: { adrian: 2 }, flags: { met_adrian: true } } },
+        ],
+      },
+      deputy: { speaker: 'adrian', text: 'Done. Your first duty: make sure the small kids get the ball sometimes. That is soccer justice.' },
+      permit: { speaker: 'adrian', text: 'Organized games on NYC Parks fields need a Parks permit. Teams and leagues apply for season time.', next: 'permit2' },
+      permit2: {
+        speaker: 'adrian', text: 'Get the neighborhood league on the permit schedule and the field stops being first-come, first-shoved.',
+        choices: [{ text: 'Filing for Saturday mornings.', effects: { rel: { adrian: 6 }, solidarity: 10, trust: { parkslope: 3 }, toast: 'POCKET CIVICS · PARK FIELD PERMITS' } }],
+      },
+      job: { speaker: 'adrian', text: 'Self-appointed, like all the best jobs. My only powers are a whistle and the moral high ground.' },
+      after: { speaker: 'adrian', text: 'Whistle, cones, permit. The holy trinity.' },
+    },
+  },
+
+  // ============================================================ DANAE · school leadership teams
+  danae: {
+    entries: [{ cond: { notFlag: 'met_danae' }, node: 'intro' }, { node: 'after' }],
+    nodes: {
+      intro: {
+        speaker: 'danae', text: 'Every public school has a School Leadership Team. Half parents, half staff. Half of everybody is busy. Join anyway.',
+        choices: [
+          { text: 'I\'ll take snack duty.', next: 'snacks', effects: { rel: { danae: 5 }, flags: { met_danae: true } } },
+          { text: 'What does it actually do?', next: 'slt', effects: { flags: { met_danae: true } } },
+          { text: 'I don\'t have kids.', next: 'nokids', effects: { rel: { danae: 2 }, flags: { met_danae: true } } },
+        ],
+      },
+      snacks: { speaker: 'danae', text: 'Snack duty is how everyone starts. Then one day you\'re on the team asking where the budget went.' },
+      slt: { speaker: 'danae', text: 'Every NYC public school has one. Parents and staff in equal numbers, helping shape the school\'s plan and how the budget gets used.', next: 'slt2' },
+      slt2: {
+        speaker: 'danae', text: 'And each district has a Community Education Council that meets in public. Anyone can show up and speak.',
+        choices: [{ text: 'Putting it on my calendar.', effects: { rel: { danae: 6 }, solidarity: 10, trust: { parkslope: 3 }, toast: 'POCKET CIVICS · SCHOOL LEADERSHIP TEAMS' } }],
+      },
+      nokids: { speaker: 'danae', text: 'It\'s still your neighborhood and your tax money. Community Education Council meetings are public. Come anyway.' },
+      after: { speaker: 'danae', text: 'Snack duty is a gateway. Ask me how I know.' },
+    },
+  },
 };
