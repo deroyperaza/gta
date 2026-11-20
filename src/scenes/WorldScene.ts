@@ -51,6 +51,11 @@ export class WorldScene extends Phaser.Scene {
 
   constructor() { super('world'); }
 
+  preload() {
+    // Hand-painted likeness portraits (style-study/portraits.html) win over the generated busts.
+    for (const id of ['deroy', 'jenna', 'nell', 'bridgette']) this.load.image(`npc-${id}-bust`, `portraits/${id}.jpg`);
+  }
+
   create() {
     this.layout = generateLayout();
     makeTiles(this); makeVehicles(this); makeStreetProps(this); makeProps(this);

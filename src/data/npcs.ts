@@ -71,6 +71,30 @@ export const NPCS: NpcDef[] = [
     bio: 'ER nurse at Kings County, works 7pm–7am. Sleeps from 9am to 3pm, theoretically.',
     idle: ['I have been awake since a previous administration.', 'Please speak at a volume appropriate for a hospital.'],
   },
+  {
+    id: 'deroy', name: 'Deroy', short: 'Deroy', title: 'Community Board Regular', district: 'bedstuy', spot: 'deroy', color: '#ffb347',
+    look: { skin: '#d6a07a', hair: '#1a1310', style: 'short', shirt: '#b8723a', pants: '#1a1a1c', acc: 'glasses', shoes: '#2a1a12' },
+    bio: 'Has not missed a community board meeting in years. Brings a thermos, a printed agenda and notes in the margins.',
+    idle: ['Board meets Tuesday. The folding table misses you.', 'Public session is where the magic happens. Two minutes at the mic.'],
+  },
+  {
+    id: 'jenna', name: 'Jenna', short: 'Jenna', title: 'Tenant Organizer', district: 'bedstuy', spot: 'jenna', color: '#7fd1ff',
+    look: { skin: '#dcab86', hair: '#120a06', style: 'long', shirt: '#3f74c2', pants: '#141414', shoes: '#111' },
+    bio: 'Knows every neighbor by name, every lease renewal date, and which super actually answers the phone.',
+    idle: ['The first move is never the rent strike. It\'s knowing your neighbors\' names.', 'Group chat, sign-in sheet, good seltzer. That\'s the whole recipe.'],
+  },
+  {
+    id: 'nell', name: 'Nell', short: 'Nell', title: '311 Power User', district: 'parkslope', spot: 'nell', color: '#9be37b',
+    look: { skin: '#d9a888', hair: '#5a504a', style: 'short', shirt: '#efe9dd', pants: '#1f2a44', shoes: '#111' },
+    bio: 'Has filed more 311 reports than anyone on the block. Treats every ticket number like a trophy.',
+    idle: ['That pothole has a ticket number. It also has a name. It\'s Gerald.', 'File it. File it again. Post the number.'],
+  },
+  {
+    id: 'bridgette', name: 'Bridgette', short: 'Bridgette', title: 'Voter Registration Captain', district: 'downtown', spot: 'bridgette', color: '#ffd23f',
+    look: { skin: '#e2b094', hair: '#5e3e28', style: 'bun', shirt: '#88a4c4', pants: '#88a4c4', shoes: '#f2f2f2', acc: 'clipboard' },
+    bio: 'Runs a voter registration table at Borough Hall with a clipboard, a mint fanny pack and zero tolerance for "my vote doesn\'t matter."',
+    idle: ['Registered? Great. Now register a friend.', 'Nine days of early voting. Pick a day. Any day.'],
+  },
 ];
 
 export const NPC_BY_ID = Object.fromEntries(NPCS.map((n) => [n.id, n])) as Record<string, NpcDef>;

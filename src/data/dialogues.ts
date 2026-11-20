@@ -244,4 +244,96 @@ export const DIALOGUES: Record<string, Dialogue> = {
       idle: { speaker: 'skye', text: 'My detox tea sponsor wants to "partner with the movement." I said the movement doesn\'t drink tea. Juni said the movement drinks whatever\'s free.' },
     },
   },
+
+  // ============================================================ DEROY · community boards
+  deroy: {
+    entries: [{ cond: { notFlag: 'met_deroy' }, node: 'intro' }, { node: 'after' }],
+    nodes: {
+      intro: {
+        speaker: 'deroy', text: 'Community board meets Tuesday. Fifty seats, one folding table, nobody under sixty. That\'s not apathy. That\'s an opening.',
+        choices: [
+          { text: 'I\'ll bring snacks.', next: 'snacks', effects: { rel: { deroy: 5 }, flags: { met_deroy: true } } },
+          { text: 'What do they actually decide?', next: 'decide', effects: { flags: { met_deroy: true } } },
+          { text: 'Is there parking?', next: 'parking', effects: { rel: { deroy: 2 }, flags: { met_deroy: true } } },
+        ],
+      },
+      snacks: { speaker: 'deroy', text: 'Snacks are a power move. Bring enough for the opposition. Then sign up for the public session. Two minutes at the mic, and they have to listen.' },
+      decide: { speaker: 'deroy', text: 'Brooklyn has 18 community boards. Each has up to 50 unpaid neighbors, appointed by the Borough President. They weigh in on rezonings, liquor licenses, bike lanes.', next: 'decide2' },
+      decide2: {
+        speaker: 'deroy', text: 'The vote is advisory, but the city hears it. And every meeting has a public session where anyone can speak. Including you. Especially you.',
+        choices: [{ text: 'Tuesday. I\'ll be there.', effects: { rel: { deroy: 6 }, solidarity: 10, trust: { bedstuy: 3 }, toast: 'POCKET CIVICS · COMMUNITY BOARDS' } }],
+      },
+      parking: { speaker: 'deroy', text: 'There\'s alternate side parking. Which is, coincidentally, also on the agenda. Come fight about it like a real New Yorker.' },
+      after: { speaker: 'deroy', text: 'You came back. Board still meets Tuesday. The folding table misses you.' },
+    },
+  },
+
+  // ============================================================ JENNA · tenant associations
+  jenna: {
+    entries: [{ cond: { notFlag: 'met_jenna' }, node: 'intro' }, { node: 'after' }],
+    nodes: {
+      intro: {
+        speaker: 'jenna', text: 'You don\'t need permission to start a tenants association. You need a group chat, a sign-in sheet and the good seltzer.',
+        choices: [
+          { text: 'I\'ll make the group chat.', next: 'chat', effects: { rel: { jenna: 5 }, flags: { met_jenna: true } } },
+          { text: 'Wait, is that legal?', next: 'legal', effects: { flags: { met_jenna: true } } },
+          { text: 'Define "good seltzer."', next: 'seltzer', effects: { rel: { jenna: 2 }, flags: { met_jenna: true } } },
+        ],
+      },
+      chat: { speaker: 'jenna', text: 'Name it something boring so the landlord\'s nephew doesn\'t join. Then knock on every door. Every. Door.' },
+      legal: { speaker: 'jenna', text: 'Legal and protected. New York Real Property Law section 230. Your landlord can\'t harass you or punish you for organizing.', next: 'legal2' },
+      legal2: {
+        speaker: 'jenna', text: 'And if the building has a community room, tenant groups can meet in it. Bring the seltzer. Make it a whole thing.',
+        choices: [{ text: 'Knocking on doors tonight.', effects: { rel: { jenna: 6 }, solidarity: 10, trust: { bedstuy: 3 }, toast: 'POCKET CIVICS · TENANTS CAN ORGANIZE' } }],
+      },
+      seltzer: { speaker: 'jenna', text: 'Not the one that tastes like a rumor of lime. The one that bites back. Like a tenants association.' },
+      after: { speaker: 'jenna', text: 'The first move is never the rent strike. The first move is knowing your neighbors\' names.' },
+    },
+  },
+
+  // ============================================================ NELL · 311
+  nell: {
+    entries: [{ cond: { notFlag: 'met_nell' }, node: 'intro' }, { node: 'after' }],
+    nodes: {
+      intro: {
+        speaker: 'nell', text: 'You want the city to fix that streetlight? Don\'t pray. File a 311. Then file it again. Then post the ticket number.',
+        choices: [
+          { text: 'Let\'s make it a group project.', next: 'group', effects: { rel: { nell: 5 }, flags: { met_nell: true } } },
+          { text: 'What\'s the number again?', next: 'number', effects: { flags: { met_nell: true } } },
+          { text: 'Can I 311 my landlord?', next: 'landlord', effects: { rel: { nell: 3 }, flags: { met_nell: true } } },
+        ],
+      },
+      group: { speaker: 'nell', text: 'Now you\'re talking. Ten neighbors, ten reports, one pothole. The city loves a pattern. So do reporters.' },
+      number: { speaker: 'nell', text: 'Three. One. One. Call it, use the app or go online. Every request gets a tracking number.', next: 'number2' },
+      number2: {
+        speaker: 'nell', text: 'And the city publishes them on NYC Open Data. So when that pothole turns one, you can throw it a birthday party. With receipts.',
+        choices: [{ text: 'Filing my first one now.', effects: { rel: { nell: 6 }, solidarity: 10, trust: { parkslope: 3 }, toast: 'POCKET CIVICS · 311' } }],
+      },
+      landlord: { speaker: 'nell', text: 'No heat or hot water? Yes. 311 sends it to HPD, the city\'s housing agency, and they can send an inspector. Winter is when 311 earns its keep.' },
+      after: { speaker: 'nell', text: 'That pothole on Fifth has a ticket number. It also has a name. It\'s Gerald.' },
+    },
+  },
+
+  // ============================================================ BRIDGETTE · voting
+  bridgette: {
+    entries: [{ cond: { notFlag: 'met_bridgette' }, node: 'intro' }, { node: 'after' }],
+    nodes: {
+      intro: {
+        speaker: 'bridgette', text: 'Election Day isn\'t a day anymore. It\'s nine days of early voting. You have no excuses left. Only options.',
+        choices: [
+          { text: 'Sign me up.', next: 'signup', effects: { rel: { bridgette: 5 }, flags: { met_bridgette: true } } },
+          { text: 'What if I\'m not registered?', next: 'register', effects: { flags: { met_bridgette: true } } },
+          { text: 'What if I moved?', next: 'moved', effects: { rel: { bridgette: 2 }, flags: { met_bridgette: true } } },
+        ],
+      },
+      signup: { speaker: 'bridgette', text: 'Love that. Now look at your group chat and pick the one friend who always says "I\'ll do it later." That\'s your assignment.' },
+      register: { speaker: 'bridgette', text: 'In New York you can register up to 10 days before an election. It takes five minutes. I timed it. Twice.', next: 'register2' },
+      register2: {
+        speaker: 'bridgette', text: 'Then early voting runs for nine days before Election Day. Pick the line, the day and the time that work for you.',
+        choices: [{ text: 'Registering right now.', effects: { rel: { bridgette: 6 }, solidarity: 10, trust: { downtown: 3 }, toast: 'POCKET CIVICS · REGISTER AND VOTE EARLY' } }],
+      },
+      moved: { speaker: 'bridgette', text: 'Then update your address before the deadline, same as registering. New apartment, same democracy.' },
+      after: { speaker: 'bridgette', text: 'Registered? Great. Now register a friend. That\'s how this works.' },
+    },
+  },
 };

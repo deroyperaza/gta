@@ -5,9 +5,10 @@ html,body{margin:0;background:#0b0708;color:#fff;font:14px "Helvetica Neue",Aria
 .wrap{max-width:1280px;margin:0 auto;padding:24px 16px}
 h1{font-size:12px;letter-spacing:.14em;text-transform:uppercase;opacity:.55;font-weight:700;margin:0 0 14px}
 canvas{display:block;width:100%;height:auto;margin:0 0 28px;border-radius:6px}
+.bare .wrap{padding:0;max-width:1280px}.bare h1{display:none}.bare canvas{margin:0;border-radius:0}
 </style></head><body>
-<div class="wrap"><h1>Character study · Style A, Golden Hour · Jenna, Deroy &amp; Nell</h1>
-<canvas id="deroy"></canvas><canvas id="jenna"></canvas><canvas id="nell"></canvas></div>
+<div class="wrap"><h1>Character study · Style A, Golden Hour · Jenna, Deroy, Nell &amp; Bridgette</h1>
+<canvas id="deroy"></canvas><canvas id="jenna"></canvas><canvas id="nell"></canvas><canvas id="bridgette"></canvas></div>
 <script>
 // Street-level conversation scenes for two real-person characters, painted in the Farouk (charview.html) style.
 const W = 1280, H = 720, SC = 1.5, INK = '#24160f';
@@ -61,6 +62,18 @@ const CH = {
     civics: { title: '311 leaves a paper trail', body: "Potholes, dead streetlights, no heat in winter: report it to 311 by phone, app or web. Every request gets a number you can track, and the city publishes them on NYC Open Data, so neighbors and reporters can see what gets fixed." },
     flyer: ['311 PARTY', 'REPORT EVERY POTHOLE', 'SAT · 11 AM', 'bring your phone'],
     stone: ['#8a5240', '#5e3428'],
+  },
+  bridgette: {
+    seed: 2468, name: 'BRIDGETTE', color: '#ffd23f', rel: .65,
+    place: "BOROUGH HALL PLAZA   ·   DOWNTOWN BROOKLYN   ·   6:42 PM",
+    w: 64, top: 118, jaw: 80, chin: 108, sw: 196, eyeX: 29, mw: 36, grinA: .25,
+    skin: ['#f6d4ba', '#e2b094', '#a8725c'], iris: '#5a5434',
+    brow: ['#4a3426', '#5a4030', '#3a281c'], browAmp: 9, browW: [1.3, 2.2],
+    line: ["Election Day isn't a day anymore. It's nine days of early voting.", 'You have no excuses left. Only options.'],
+    choices: [['1', 'Sign me up.'], ['2', "What if I'm not registered?"], ['3', 'What if I moved?']],
+    civics: { title: 'Register, then vote early', body: "In New York you can register up to 10 days before an election. Early voting runs for nine days before Election Day, so you can pick the line, the day and the time that work for you." },
+    flyer: ['VOTER REGISTRATION', 'TABLE TODAY', '10 DAYS BEFORE', 'takes five minutes'],
+    stone: ['#a89478', '#6e5e4a'],
   },
 };
 
@@ -175,6 +188,46 @@ function hairSilver(p) {
   ctx.strokeStyle = 'rgba(255,225,190,.35)'; ctx.lineWidth = 5; ctx.beginPath(); ctx.moveTo(cx - 36, cy - 124); ctx.quadraticCurveTo(cx - 4, cy - 142, cx + 34, cy - 136); ctx.stroke();
   ctx.restore();
   hp(); ctx.strokeStyle = INK; ctx.lineWidth = 3; ctx.stroke();
+}
+// Bridgette: stonewashed denim jumpsuit, zipper, chest pockets, gold chains, mint crossbody strap
+function jumpsuit(p) {
+  torso(p.sw); ctx.fillStyle = lg(cx - p.sw, 0, cx + p.sw, 0, [[0, '#a8c0d8'], [.45, '#88a4c4'], [1, '#4e6684']]); ctx.fill();
+  ctx.save(); torso(p.sw); ctx.clip();
+  for (let i = 0; i < 2600; i++) { ctx.fillStyle = pick(['rgba(255,255,255,.22)', 'rgba(220,232,245,.3)', 'rgba(40,60,90,.2)']); ctx.fillRect(R(cx - p.sw - 30, cx + p.sw + 30), R(cy + 90, H), R(1, 3), R(.6, 1.4)); }
+  // collar points
+  for (const s of [-1, 1]) { ctx.beginPath(); ctx.moveTo(cx + s * 40, cy + 104); ctx.lineTo(cx + s * 96, cy + 136); ctx.lineTo(cx + s * 30, cy + 186); ctx.closePath(); ctx.fillStyle = s < 0 ? '#b4cbe0' : '#7a96b6'; ctx.fill(); ctx.strokeStyle = INK; ctx.lineWidth = 2.5; ctx.stroke(); }
+  // chest pockets with stitching
+  for (const s of [-1, 1]) { const x = cx + s * 120 - 48; ctx.fillStyle = 'rgba(40,60,90,.14)'; ctx.fillRect(x, cy + 230, 96, 100); ctx.setLineDash([5, 4]); ctx.strokeStyle = 'rgba(230,190,120,.75)'; ctx.lineWidth = 1.6; ctx.strokeRect(x + 4, cy + 234, 88, 92); ctx.beginPath(); ctx.moveTo(x, cy + 262); ctx.lineTo(x + 96, cy + 262); ctx.stroke(); ctx.setLineDash([]); ctx.strokeStyle = INK; ctx.lineWidth = 2; ctx.strokeRect(x, cy + 230, 96, 100); }
+  // zipper
+  ctx.strokeStyle = '#2a2a2e'; ctx.lineWidth = 7; line(cx + 6, cy + 186, cx + 10, H); ctx.strokeStyle = '#b8b2a6'; ctx.lineWidth = 2; ctx.setLineDash([3, 3]); line(cx + 6, cy + 186, cx + 10, H); ctx.setLineDash([]);
+  ctx.fillStyle = '#c8c2b4'; ctx.fillRect(cx + 1, cy + 196, 11, 18);
+  // mint crossbody strap
+  ctx.strokeStyle = '#bfe6d6'; ctx.lineWidth = 15; line(cx + 120, cy + 130, cx - 120, H + 20); ctx.strokeStyle = 'rgba(40,80,70,.5)'; ctx.lineWidth = 1.5; line(cx + 124, cy + 124, cx - 114, H + 26); line(cx + 116, cy + 136, cx - 126, H + 14);
+  ctx.restore(); torso(p.sw); ctx.strokeStyle = INK; ctx.lineWidth = 3; ctx.stroke();
+}
+function necklaces() {
+  ctx.strokeStyle = '#d8b04a'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(cx - 34, cy + 112); ctx.quadraticCurveTo(cx, cy + 156, cx + 34, cy + 112); ctx.stroke();
+  ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(cx - 38, cy + 116); ctx.quadraticCurveTo(cx, cy + 176, cx + 38, cy + 116); ctx.stroke();
+  ctx.fillStyle = '#f2d06b'; ell(cx, cy + 146, 3, 3); ctx.fill();
+}
+function openNeck(p) {
+  const [L, M, D] = p.skin;
+  ctx.fillStyle = lg(cx - 45, 0, cx + 45, 0, [[0, M], [1, D]]); ctx.beginPath(); ctx.moveTo(cx - 40, cy + 70); ctx.lineTo(cx - 42, cy + 112); ctx.lineTo(cx - 30, cy + 186); ctx.lineTo(cx + 30, cy + 186); ctx.lineTo(cx + 42, cy + 112); ctx.lineTo(cx + 40, cy + 70); ctx.fill();
+  ctx.fillStyle = 'rgba(40,20,10,.3)'; ctx.beginPath(); ctx.moveTo(cx - 40, cy + 90); ctx.quadraticCurveTo(cx, cy + 124, cx + 40, cy + 90); ctx.lineTo(cx + 40, cy + 80); ctx.lineTo(cx - 40, cy + 80); ctx.fill();
+}
+// medium-brown hair, center part, pulled back, tucked behind the ears with a few loose wisps
+function hairPulledBack(p) {
+  ctx.beginPath(); ctx.moveTo(cx, cy - 146); ctx.bezierCurveTo(cx - p.w - 34, cy - 140, cx - p.w - 26, cy + 40, cx - p.w + 6, cy + 96); ctx.lineTo(cx + p.w - 6, cy + 96); ctx.bezierCurveTo(cx + p.w + 26, cy + 40, cx + p.w + 34, cy - 140, cx, cy - 146); ctx.closePath();
+  ctx.fillStyle = lg(0, cy - 140, 0, cy + 96, [[0, '#5a3c28'], [1, '#2e1c10']]); ctx.fill(); ctx.strokeStyle = INK; ctx.lineWidth = 2.6; ctx.stroke();
+}
+function hairPulled(p) {
+  const hp = () => { ctx.beginPath(); ctx.moveTo(cx - p.w - 4, cy - 30); ctx.bezierCurveTo(cx - p.w - 10, cy - 120, cx - 30, cy - 150, cx, cy - 146); ctx.bezierCurveTo(cx + 30, cy - 150, cx + p.w + 10, cy - 120, cx + p.w + 4, cy - 30); ctx.bezierCurveTo(cx + p.w - 6, cy - 70, cx + 34, cy - 96, cx + 4, cy - 100); ctx.lineTo(cx - 4, cy - 100); ctx.bezierCurveTo(cx - 34, cy - 96, cx - p.w + 6, cy - 70, cx - p.w - 4, cy - 30); ctx.closePath(); };
+  hp(); ctx.fillStyle = lg(0, cy - 150, 0, cy - 30, [[0, '#6e4a32'], [1, '#3e2818']]); ctx.fill();
+  ctx.save(); hp(); ctx.clip(); ctx.lineCap = 'round';
+  for (let i = 0; i < 70; i++) { const s = rnd() < .5 ? -1 : 1, x = cx + s * R(0, 10), y = cy - R(104, 146); ctx.strokeStyle = pick(['#8a6040', '#a07450', '#4a301e', '#5e3e28', '#b48a5e']); ctx.lineWidth = R(1.2, 2.6); ctx.beginPath(); ctx.moveTo(x, y); ctx.bezierCurveTo(x + s * 50, y - 6, x + s * (p.w + 6), y + 40, x + s * (p.w + R(0, 8)), y + R(90, 120)); ctx.stroke(); }
+  ctx.strokeStyle = 'rgba(255,200,140,.3)'; ctx.lineWidth = 6; ctx.beginPath(); ctx.moveTo(cx - 8, cy - 140); ctx.quadraticCurveTo(cx - 46, cy - 128, cx - 62, cy - 86); ctx.stroke();
+  ctx.restore(); hp(); ctx.strokeStyle = INK; ctx.lineWidth = 2.6; ctx.stroke();
+  ctx.strokeStyle = '#4a301e'; ctx.lineWidth = 1.4; for (const [x0, s] of [[cx - p.w + 2, -1], [cx + p.w - 4, 1]]) { ctx.beginPath(); ctx.moveTo(x0, cy - 40); ctx.quadraticCurveTo(x0 + s * 6, cy - 6, x0 - s * 2, cy + 22); ctx.stroke(); }
 }
 function neck(p) {
   const [L, M, D] = p.skin;
@@ -468,6 +521,9 @@ function render(id) {
   if (id === 'deroy') {
     tee(c, false); leatherJacket(c); neck(c); ears(c); skin(c); eyes(c, false, true); brows(c); nose(c, 1.05); outline(c);
     beard(c); grin(c, '#b0655a'); moustache(c); hairShort(c); glasses(c);
+  } else if (id === 'bridgette') {
+    hairPulledBack(c); jumpsuit(c); openNeck(c); necklaces(); ears(c); skin(c); eyes(c, true, false); browShapes(c); nose(c, 1.05); outline(c);
+    grin(c, '#c4645e'); hairPulled(c);
   } else if (id === 'nell') {
     plainTee(c); vneck(c); ears(c); skin(c); eyes(c, true, false); brows(c); nose(c, 1); outline(c);
     grin(c, '#c06a60'); hairSilver(c);
@@ -475,7 +531,8 @@ function render(id) {
     hairBack(c); tee(c, true); souvenirJacket(c); neck(c); skin(c); eyes(c, true, false); browShapes(c); nose(c, .9); outline(c);
     grin(c, '#c4645e'); hairFront(c);
   }
-  player(); grade(); ui(c);
+  if (BARE) grade(); else { player(); grade(); ui(c); }
 }
-document.fonts.ready.then(() => { render('deroy'); render('jenna'); render('nell'); });
+const BARE = new URLSearchParams(location.search).has('bare'); if (BARE) document.body.classList.add('bare');
+document.fonts.ready.then(() => { render('deroy'); render('jenna'); render('nell'); render('bridgette'); });
 </script></body></html>

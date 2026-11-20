@@ -59,7 +59,7 @@ const BLOCKS: Record<string, BlockSpec> = {
     { id: 'boroughhall', type: 'government', w: 9, name: 'BOROUGH HALL', spot: 'gary' } ] },
   '0,1': { kind: 'row', landmarks: [
     { id: 'synergy', type: 'tower', w: 5, name: 'SYNERGY TOWER' },
-    { id: 'permits', type: 'government', w: 5, name: 'DEPT. OF PERMITS & DELAYS' },
+    { id: 'permits', type: 'government', w: 5, name: 'DEPT. OF PERMITS & DELAYS', spot: 'bridgette' },
     { id: 'luxe', type: 'sales', w: 5, name: 'LUXE LOFTS', spot: 'tyler' } ] },
   '1,1': { kind: 'row', landmarks: [
     { id: 'gentrifico', type: 'tower', w: 6, name: 'GENTRIFICO HOLDINGS' },
@@ -77,11 +77,11 @@ const BLOCKS: Record<string, BlockSpec> = {
   '2,3': { kind: 'garden', name: 'Fifth Ave Community Garden' },
   '1,3': { kind: 'row', landmarks: [{ id: 'yoga', type: 'boutique', w: 5, name: 'HOT YOGA FOR CAPITALISTS' }] },
   '1,4': { kind: 'row' },
-  '2,4': { kind: 'row', landmarks: [{ id: 'laundry1', type: 'laundromat', w: 4, name: 'SUDS OF SOLIDARITY' }] },
+  '2,4': { kind: 'row', landmarks: [{ id: 'laundry1', type: 'laundromat', w: 4, name: 'SUDS OF SOLIDARITY', spot: 'nell' }] },
   // ---------- BED-STUY ----------
-  '2,0': { kind: 'row', landmarks: [{ id: 'church', type: 'church', w: 5, name: 'FIRST CHURCH OF THE BLOCK PARTY' }] },
+  '2,0': { kind: 'row', landmarks: [{ id: 'church', type: 'church', w: 5, name: 'FIRST CHURCH OF THE BLOCK PARTY', spot: 'deroy' }] },
   '2,1': { kind: 'row', landmarks: [
-    { id: 'tenanthall', type: 'tenant', w: 6, name: 'TENANTS UNITED HALL' },
+    { id: 'tenanthall', type: 'tenant', w: 6, name: 'TENANTS UNITED HALL', spot: 'jenna' },
     { id: 'laundry2', type: 'laundromat', w: 4, name: 'SPIN CITY WASH' } ] },
   '3,0': { kind: 'row' },
   '3,1': { kind: 'row', landmarks: [
