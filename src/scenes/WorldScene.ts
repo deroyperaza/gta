@@ -281,7 +281,10 @@ export class WorldScene extends Phaser.Scene {
     this.posterLayer.forEach((p) => p.destroy()); this.posterLayer = [];
     for (const p of state.d.posters) this.addPosterSprite(p.x, p.y, p.v);
     const { x, y, onBike } = state.d.player;
-    if (x > 0) this.player.setPosition(x, y);
+    // Saves from before the Nov 2026 map re-layout can sit inside a building now; fall back to the start.
+    const blocked = this.layout.buildings.some((b) => x >= b.x && x <= b.x + b.w && y >= b.y && y <= b.y + b.h);
+    if (x > 0 && !blocked) this.player.setPosition(x, y);
+    else { const s = this.layout.spots.playerStart; this.player.setPosition(s.x, s.y); }
     this.toggleBike(onBike, true);
     this.mode = 'play';
     this.cameras.main.startFollow(this.player, true, 0.12, 0.12);

@@ -43,14 +43,15 @@ interface Landmark { id: string; type: BuildingType; w: number; name: string; sp
 interface BlockSpec { kind: BlockKind; name?: string; landmarks?: Landmark[] }
 
 export function districtOfBlock(c: number, r: number): District {
-  // Outer ring added Nov 2026; the original 6 x 5 core keeps its positions so saves stay valid.
-  if (c >= 6) return r <= 2 ? 'crownheights' : r <= 4 ? 'redhook' : 'coneyisland';
-  if (r >= 5) return c <= 2 ? 'sunsetpark' : 'flatbush';
-  if (r === 4 && c >= 3) return 'plg'; // Prospect Lefferts Gardens, added Nov 20 2026 between Bushwick-ish and Flatbush
-  if (c <= 1 && r <= 1) return 'downtown';
-  if (c <= 2 && r >= 2) return 'parkslope';
-  if (c >= 5 || r >= 3) return 'bushwick';
-  return 'bedstuy';
+  // Laid out to match real Brooklyn (north up). Re-mapped Nov 20 2026:
+  // Bushwick NE of Bed-Stuy, Crown Heights south of Bed-Stuy, Red Hook on the west waterfront.
+  if (r >= 5) return c <= 2 ? 'sunsetpark' : c <= 5 ? 'flatbush' : 'coneyisland';
+  if (r <= 1) return c <= 1 ? 'downtown' : c <= 4 ? 'bedstuy' : 'bushwick';
+  if (c === 0) return 'redhook';
+  if (c <= 2) return 'parkslope';
+  if (r === 2 && c <= 4) return 'bedstuy';
+  if (r === 4 && c <= 5) return 'plg';
+  return 'crownheights';
 }
 
 // Hand-authored blocks. Key = "c,r".
@@ -76,12 +77,12 @@ const BLOCKS: Record<string, BlockSpec> = {
   '2,2': { kind: 'row', landmarks: [
     { id: 'synergycenter', type: 'nonprofit', w: 6, name: 'CENTER FOR PROGRESSIVE SYNERGY' },
     { id: 'oat', type: 'coffee', w: 4, name: '14 OAT MILKS' } ] },
-  '0,3': { kind: 'park', name: 'Perspective Park' },
-  '0,4': { kind: 'pond', name: 'Perspective Park' },
-  '2,3': { kind: 'garden', name: 'Fifth Ave Community Garden' },
-  '1,3': { kind: 'row', landmarks: [{ id: 'yoga', type: 'boutique', w: 5, name: 'HOT YOGA FOR CAPITALISTS', spot: 'danae' }] },
-  '1,4': { kind: 'row' },
-  '2,4': { kind: 'row', landmarks: [{ id: 'laundry1', type: 'laundromat', w: 4, name: 'SUDS OF SOLIDARITY' }] },
+  '2,3': { kind: 'park', name: 'Perspective Park' },
+  '2,4': { kind: 'pond', name: 'Perspective Park' },
+  '1,4': { kind: 'garden', name: 'Fifth Ave Community Garden' },
+  '1,3': { kind: 'row', landmarks: [
+    { id: 'yoga', type: 'boutique', w: 5, name: 'HOT YOGA FOR CAPITALISTS', spot: 'danae' },
+    { id: 'laundry1', type: 'laundromat', w: 4, name: 'SUDS OF SOLIDARITY' } ] },
   // ---------- BED-STUY ----------
   '2,0': { kind: 'row', landmarks: [{ id: 'church', type: 'church', w: 5, name: 'FIRST CHURCH OF THE BLOCK PARTY', spot: 'deroy' }] },
   '2,1': { kind: 'row', landmarks: [
@@ -102,10 +103,8 @@ const BLOCKS: Record<string, BlockSpec> = {
   '5,1': { kind: 'row', landmarks: [
     { id: 'sourdough', type: 'bakery', w: 6, name: 'SOURDOUGH COLLECTIVE', spot: 'juni' },
     { id: 'gww', type: 'gallery', w: 5, name: 'GALLERY WITHOUT WALLS' } ] },
-  '5,2': { kind: 'row' },
-  '4,3': { kind: 'lot', landmarks: [{ id: 'wh1', type: 'warehouse', w: 8, name: 'FORMER PICKLE FACTORY' }] },
-  '3,3': { kind: 'row', landmarks: [{ id: 'ugallery', type: 'gallery', w: 5, name: 'THE UNDERGROUND (2ND FLOOR)' }] },
-  '5,3': { kind: 'row' }, 
+  '7,0': { kind: 'lot', landmarks: [{ id: 'wh1', type: 'warehouse', w: 8, name: 'FORMER PICKLE FACTORY' }] },
+  '6,0': { kind: 'row', landmarks: [{ id: 'ugallery', type: 'gallery', w: 5, name: 'THE UNDERGROUND (2ND FLOOR)' }] },
   // ---------- PROSPECT LEFFERTS GARDENS ----------
   '3,4': { kind: 'row', landmarks: [
     { id: 'plgta', type: 'tenant', w: 7, name: 'LEFFERTS TENANTS ASSOCIATION', spot: 'nell' },
@@ -115,27 +114,24 @@ const BLOCKS: Record<string, BlockSpec> = {
     { id: 'plglegal', type: 'government', w: 6, name: 'FREE TENANT LAWYERS, 2ND FL' },
     { id: 'plgcoffee', type: 'coffee', w: 4, name: 'LIMESTONE COFFEE' } ] },
   // ---------- CROWN HEIGHTS ----------
-  '6,0': { kind: 'row', landmarks: [
+  '3,3': { kind: 'row', landmarks: [
     { id: 'paradehq', type: 'community', w: 7, name: 'LABOR DAY PARADE HQ' },
     { id: 'roti', type: 'bakery', w: 5, name: 'ROTI & ROTI & ROTI' } ] },
-  '7,0': { kind: 'row', landmarks: [{ id: 'chtenants', type: 'tenant', w: 7, name: 'CROWN HEIGHTS TENANT UNION' }] },
-  '8,0': { kind: 'row' },
-  '6,1': { kind: 'row', landmarks: [
+  '4,3': { kind: 'row', landmarks: [{ id: 'chtenants', type: 'tenant', w: 7, name: 'CROWN HEIGHTS TENANT UNION' }] },
+  '5,3': { kind: 'row', landmarks: [
     { id: 'farmacy', type: 'coffee', w: 5, name: 'FRANKLIN AVE FARMACY' },
     { id: 'panyard', type: 'studio', w: 6, name: 'STEEL PAN YARD' } ] },
-  '7,1': { kind: 'park', name: 'Brower-ish Park' },
-  '8,1': { kind: 'row', landmarks: [{ id: 'chchurch', type: 'church', w: 5, name: 'GREATER HOPE & HOUSING CHURCH' }] },
-  '6,2': { kind: 'row' }, '7,2': { kind: 'row' },
-  '8,2': { kind: 'court', name: 'Eastern Parkway Courts' },
+  '6,3': { kind: 'park', name: 'Brower-ish Park' },
+  '7,3': { kind: 'row', landmarks: [{ id: 'chchurch', type: 'church', w: 5, name: 'GREATER HOPE & HOUSING CHURCH' }] },
+  '8,3': { kind: 'court', name: 'Eastern Parkway Courts' },
   // ---------- RED HOOK ----------
-  '6,3': { kind: 'lot', landmarks: [{ id: 'flatpack', type: 'warehouse', w: 9, name: 'FLAT-PACK FURNITURE MEGASTORE' }] },
-  '7,3': { kind: 'row', landmarks: [
+  '0,4': { kind: 'lot', landmarks: [
+    { id: 'flatpack', type: 'warehouse', w: 9, name: 'FLAT-PACK FURNITURE MEGASTORE' },
+    { id: 'floodcondos', type: 'sales', w: 7, name: 'FLOODVIEW LUXURY CONDOS' } ] },
+  '0,2': { kind: 'row', landmarks: [
     { id: 'pupusas', type: 'bakery', w: 5, name: 'BALLFIELD PUPUSAS' },
     { id: 'rhhouses', type: 'apartment', w: 6, name: 'RED HOOK HOUSES' } ] },
-  '8,3': { kind: 'court', name: 'Red Hook Ballfields' },
-  '6,4': { kind: 'waterfront', name: 'Red Hook Piers' },
-  '7,4': { kind: 'waterfront', name: 'Valentino-ish Pier' },
-  '8,4': { kind: 'lot', landmarks: [{ id: 'floodcondos', type: 'sales', w: 7, name: 'FLOODVIEW LUXURY CONDOS' }] },
+  '0,3': { kind: 'waterfront', name: 'Red Hook Piers' },
   // ---------- CONEY ISLAND ----------
   '6,5': { kind: 'row', landmarks: [
     { id: 'arcade', type: 'boutique', w: 6, name: 'SKEE-BALL & SOLIDARITY ARCADE' },
@@ -357,7 +353,7 @@ export function generateLayout(): WorldLayout {
     spots[name] = { x, y };
   };
   dock('dock-downtown', 1, 0, 3); dock('dock-bedstuy', 3, 1, 15); dock('dock-parkslope', 1, 2, 15); dock('dock-bushwick', 5, 1, 15);
-  dock('dock-crownheights', 6, 1, 3); dock('dock-redhook', 7, 3, 15); dock('dock-coney', 7, 5, 15); dock('dock-flatbush', 4, 5, 3); dock('dock-sunsetpark', 1, 5, 15); dock('dock-plg', 4, 4, 15);
+  dock('dock-crownheights', 5, 3, 15); dock('dock-redhook', 0, 2, 15); dock('dock-coney', 7, 5, 15); dock('dock-flatbush', 4, 5, 3); dock('dock-sunsetpark', 1, 5, 15); dock('dock-plg', 4, 4, 15);
   // Vendors
   spots.churro = { x: 8 * TILE, y: (3 * BLOCK_H + ROAD + 6) * TILE + 20 };
   spots.halal = { x: spots.plazaSpawn.x + 260, y: spots.plazaSpawn.y + 10 };
