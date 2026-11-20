@@ -219,3 +219,6 @@ body.touch #touch-btns { display: flex; gap: 14px; position: absolute; right: 30
   .panel-body { grid-template-columns: 1fr; } #district .dname { font-size: 40px; }
   #objective { max-width: 56vw; } #obj-text { font-size: 14px; }
 }
+
+/* Neighborhood banner never shows under an open conversation */
+body:has(#dialogue.open) #district { visibility: hidden; }

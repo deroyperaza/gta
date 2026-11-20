@@ -390,6 +390,29 @@ export const DIALOGUES: Record<string, Dialogue> = {
     },
   },
 
+  // ============================================================ EMILY · block party permits
+  emily: {
+    entries: [{ cond: { notFlag: 'met_emily' }, node: 'intro' }, { node: 'after' }],
+    nodes: {
+      intro: {
+        speaker: 'emily', text: 'I design cakes people cry at. Five tiers, sugar flowers, the works. But the best thing I ever made was a block party.',
+        choices: [
+          { text: 'How do you throw one?', next: 'permit', effects: { rel: { emily: 5 }, flags: { met_emily: true } } },
+          { text: 'Why a block party?', next: 'why', effects: { flags: { met_emily: true } } },
+          { text: 'Can I get a free cake?', next: 'cake', effects: { rel: { emily: 2 }, flags: { met_emily: true } } },
+        ],
+      },
+      why: { speaker: 'emily', text: 'Because neighbors who\'ve eaten cake together show up for each other later. At the tenant meeting. At the community board. It\'s organizing with frosting.', next: 'permit' },
+      permit: { speaker: 'emily', text: 'You need a block party permit from the city. Apply online at least 60 days ahead. It costs $25. The neighbors on your block have to sign on, and your community board weighs in.', next: 'permit2' },
+      permit2: {
+        speaker: 'emily', text: 'Then the street is yours for the day. No cars. Kids in the road. Music until 7. A cake in the middle like a monument.',
+        choices: [{ text: 'Filing for June.', effects: { rel: { emily: 6 }, solidarity: 10, attention: 3, trust: { coneyisland: 3 }, toast: 'POCKET CIVICS · BLOCK PARTY PERMITS' } }],
+      },
+      cake: { speaker: 'emily', text: 'File the permit and I\'ll bring the centerpiece. That\'s the deal. The permit is the hard part. The cake is the easy part.', next: 'permit' },
+      after: { speaker: 'emily', text: 'Sixty days out. Twenty-five dollars. One street with no cars. Go.' },
+    },
+  },
+
   // ============================================================ JON · public access media
   jon: {
     entries: [{ cond: { notFlag: 'met_jon' }, node: 'intro' }, { node: 'after' }],

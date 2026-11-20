@@ -113,6 +113,12 @@ export const NPCS: NpcDef[] = [
     bio: 'Cuts comedy for a living. Can find the ninety good seconds in any nine-minute speech, including yours.',
     idle: ['Cut the throat-clearing. Start with the point.', 'Every block deserves a show. Some deserve a series.'],
   },
+  {
+    id: 'emily', name: 'Emily', short: 'Emily', title: 'The Showstopper', district: 'coneyisland', spot: 'boardwalk', color: '#ffb0d0',
+    look: { skin: '#e8b898', hair: '#c9a46a', style: 'long', shirt: '#141414', pants: '#2a2a30', shoes: '#111', acc: 'glasses' },
+    bio: 'Creative director for showstopper cakes. Thinks every neighborhood deserves a centerpiece, and a permit to put it in the street.',
+    idle: ['Sixty days. Twenty-five dollars. One street with no cars.', 'Every block party needs a showstopper.'],
+  },
 ];
 
 export const NPC_BY_ID = Object.fromEntries(NPCS.map((n) => [n.id, n])) as Record<string, NpcDef>;
