@@ -408,7 +408,7 @@ class UI {
       a[0] += (k * BLOCK_W + ROAD + BLOCK_W / 2) * s; a[1] += (r * BLOCK_H + ROAD + BLOCK_H / 2) * s; a[2]++;
     }
     for (const [d, [sx, sy, n]] of Object.entries(acc)) {
-      const t = DISTRICTS[d as District].name.toUpperCase(), color = DISTRICTS[d as District].color;
+      const t = (DISTRICTS[d as District].short ?? DISTRICTS[d as District].name).toUpperCase(), color = DISTRICTS[d as District].color;
       c.lineWidth = 6; c.strokeStyle = '#16101f'; c.strokeText(t, sx / n, sy / n); c.fillStyle = color; c.fillText(t, sx / n, sy / n);
     }
     const w = this.world as any;

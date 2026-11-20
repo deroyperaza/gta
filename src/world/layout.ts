@@ -46,6 +46,7 @@ export function districtOfBlock(c: number, r: number): District {
   // Outer ring added Nov 2026; the original 6 x 5 core keeps its positions so saves stay valid.
   if (c >= 6) return r <= 2 ? 'crownheights' : r <= 4 ? 'redhook' : 'coneyisland';
   if (r >= 5) return c <= 2 ? 'sunsetpark' : 'flatbush';
+  if (r === 4 && c >= 3) return 'plg'; // Prospect Lefferts Gardens, added Nov 20 2026 between Bushwick-ish and Flatbush
   if (c <= 1 && r <= 1) return 'downtown';
   if (c <= 2 && r >= 2) return 'parkslope';
   if (c >= 5 || r >= 3) return 'bushwick';
@@ -80,7 +81,7 @@ const BLOCKS: Record<string, BlockSpec> = {
   '2,3': { kind: 'garden', name: 'Fifth Ave Community Garden' },
   '1,3': { kind: 'row', landmarks: [{ id: 'yoga', type: 'boutique', w: 5, name: 'HOT YOGA FOR CAPITALISTS', spot: 'danae' }] },
   '1,4': { kind: 'row' },
-  '2,4': { kind: 'row', landmarks: [{ id: 'laundry1', type: 'laundromat', w: 4, name: 'SUDS OF SOLIDARITY', spot: 'nell' }] },
+  '2,4': { kind: 'row', landmarks: [{ id: 'laundry1', type: 'laundromat', w: 4, name: 'SUDS OF SOLIDARITY' }] },
   // ---------- BED-STUY ----------
   '2,0': { kind: 'row', landmarks: [{ id: 'church', type: 'church', w: 5, name: 'FIRST CHURCH OF THE BLOCK PARTY', spot: 'deroy' }] },
   '2,1': { kind: 'row', landmarks: [
@@ -104,7 +105,15 @@ const BLOCKS: Record<string, BlockSpec> = {
   '5,2': { kind: 'row' },
   '4,3': { kind: 'lot', landmarks: [{ id: 'wh1', type: 'warehouse', w: 8, name: 'FORMER PICKLE FACTORY' }] },
   '3,3': { kind: 'row', landmarks: [{ id: 'ugallery', type: 'gallery', w: 5, name: 'THE UNDERGROUND (2ND FLOOR)' }] },
-  '5,3': { kind: 'row' }, '3,4': { kind: 'row' }, '4,4': { kind: 'row' }, '5,4': { kind: 'row' },
+  '5,3': { kind: 'row' }, 
+  // ---------- PROSPECT LEFFERTS GARDENS ----------
+  '3,4': { kind: 'row', landmarks: [
+    { id: 'plgta', type: 'tenant', w: 7, name: 'LEFFERTS TENANTS ASSOCIATION', spot: 'nell' },
+    { id: 'plgroti', type: 'bakery', w: 4, name: 'DOUBLES & DOUBLES' } ] },
+  '4,4': { kind: 'row', landmarks: [{ id: 'plgarms', type: 'apartment', w: 8, name: 'THE PARKSIDE-ISH ARMS' }] },
+  '5,4': { kind: 'row', landmarks: [
+    { id: 'plglegal', type: 'government', w: 6, name: 'FREE TENANT LAWYERS, 2ND FL' },
+    { id: 'plgcoffee', type: 'coffee', w: 4, name: 'LIMESTONE COFFEE' } ] },
   // ---------- CROWN HEIGHTS ----------
   '6,0': { kind: 'row', landmarks: [
     { id: 'paradehq', type: 'community', w: 7, name: 'LABOR DAY PARADE HQ' },
@@ -166,6 +175,7 @@ const FILLER: Record<District, BuildingType[]> = {
   coneyisland: ['apartment', 'apartment', 'bodega', 'boutique'],
   flatbush: ['apartment', 'bodega', 'laundromat', 'apartment', 'church'],
   sunsetpark: ['warehouse', 'bodega', 'apartment', 'bakery'],
+  plg: ['brownstone', 'apartment', 'apartment', 'laundromat'],
 };
 const HEIGHT: Record<BuildingType, [number, number]> = {
   brownstone: [6, 7], coffee: [5, 5], boutique: [5, 6], nonprofit: [7, 7], coop: [6, 6], bodega: [5, 5],
@@ -347,7 +357,7 @@ export function generateLayout(): WorldLayout {
     spots[name] = { x, y };
   };
   dock('dock-downtown', 1, 0, 3); dock('dock-bedstuy', 3, 1, 15); dock('dock-parkslope', 1, 2, 15); dock('dock-bushwick', 5, 1, 15);
-  dock('dock-crownheights', 6, 1, 3); dock('dock-redhook', 7, 3, 15); dock('dock-coney', 7, 5, 15); dock('dock-flatbush', 4, 5, 3); dock('dock-sunsetpark', 1, 5, 15);
+  dock('dock-crownheights', 6, 1, 3); dock('dock-redhook', 7, 3, 15); dock('dock-coney', 7, 5, 15); dock('dock-flatbush', 4, 5, 3); dock('dock-sunsetpark', 1, 5, 15); dock('dock-plg', 4, 4, 15);
   // Vendors
   spots.churro = { x: 8 * TILE, y: (3 * BLOCK_H + ROAD + 6) * TILE + 20 };
   spots.halal = { x: spots.plazaSpawn.x + 260, y: spots.plazaSpawn.y + 10 };

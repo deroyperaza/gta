@@ -11,7 +11,7 @@ function fresh(): SaveData {
     solidarity: 0,
     power: 1,
     attention: 0,
-    trust: { downtown: 0, parkslope: 10, bedstuy: 10, bushwick: 5, crownheights: 0, redhook: 0, coneyisland: 0, flatbush: 0, sunsetpark: 0 },
+    trust: { downtown: 0, parkslope: 10, bedstuy: 10, bushwick: 5, crownheights: 0, redhook: 0, coneyisland: 0, flatbush: 0, sunsetpark: 0, plg: 0 },
     inventory: { groceries: 0, clothing: 0, medical: 0, art: 0, flyers: 0, signs: 0, donations: 0, posters: 0 },
     relationships: {},
     flags: {},

@@ -180,7 +180,15 @@ export const DIALOGUES: Record<string, Dialogue> = {
       good3: { speaker: 'hattie', text: 'And THAT is how a tenant association gets started. Two tired people and a common enemy. Good work, baby.', choices: [{ text: '(Pass the talking stick back.)', effects: { flags: { circle_done: true }, rel: { marcus: 10, priya: 10, hattie: 10 } } }] },
       ok: { speaker: 'hattie', text: 'It\'s a deal. Not a friendship. But a deal\'s a start. Somebody still has to fix that floor.', choices: [{ text: '(Pass the talking stick back.)', effects: { flags: { circle_done: true }, rel: { marcus: 3, priya: 3 } } }] },
       bad: { speaker: 'hattie', text: 'The landlord, baby? He\'s the reason that floor sounds like a drum. ...We\'ll sit again next week. Circles are patient.', choices: [{ text: '(Pass the stick back, sheepishly.)', effects: { flags: { circle_done: true }, rel: { hattie: -3 } } }] },
-      after: { speaker: 'hattie', text: 'Movements move at the speed of trust. You\'re building some. Now go rest — or don\'t, I\'m not your mother. Downtown\'s about to get loud.' },
+      after: {
+        speaker: 'hattie', text: 'Movements move at the speed of trust. You\'re building some. Now go rest — or don\'t, I\'m not your mother. Downtown\'s about to get loud.',
+        choices: [{ text: 'Where do grown-ups fight about the neighborhood?', next: 'cb' }, { text: 'Yes, Ms. Hattie.' }],
+      },
+      cb: { speaker: 'hattie', text: 'Community board. Brooklyn has 18 of them. Up to 50 unpaid neighbors each, appointed by the Borough President. They weigh in on rezonings, liquor licenses, bike lanes.', next: 'cb2' },
+      cb2: {
+        speaker: 'hattie', text: 'Their vote is advisory, but the city hears it. Every meeting has a public session where anybody can speak for two minutes. I have not missed one since 1987.',
+        choices: [{ text: 'See you at the next one.', effects: { rel: { hattie: 4 }, solidarity: 6, trust: { bedstuy: 2 }, toast: 'POCKET CIVICS · COMMUNITY BOARDS' } }],
+      },
     },
   },
 
@@ -245,141 +253,140 @@ export const DIALOGUES: Record<string, Dialogue> = {
     },
   },
 
-  // ============================================================ DEROY · community boards
+  // ============================================================ DEROY · storytelling + AI accountability
   deroy: {
     entries: [{ cond: { notFlag: 'met_deroy' }, node: 'intro' }, { node: 'after' }],
     nodes: {
       intro: {
-        speaker: 'deroy', text: 'Community board meets Tuesday. Fifty seats, one folding table, nobody under sixty. That\'s not apathy. That\'s an opening.',
+        speaker: 'deroy', text: 'Facts don\'t move people. Stories do. "Rents are up 30%" gets a nod. "Ms. Alvarez paid rent here for 40 years" gets a crowd.',
         choices: [
-          { text: 'I\'ll bring snacks.', next: 'snacks', effects: { rel: { deroy: 5 }, flags: { met_deroy: true } } },
-          { text: 'What do they actually decide?', next: 'decide', effects: { flags: { met_deroy: true } } },
-          { text: 'Is there parking?', next: 'parking', effects: { rel: { deroy: 2 }, flags: { met_deroy: true } } },
+          { text: 'So how do I tell ours?', next: 'story', effects: { rel: { deroy: 5 }, flags: { met_deroy: true } } },
+          { text: 'And where does AI fit in?', next: 'ai', effects: { flags: { met_deroy: true } } },
+          { text: 'Can I just make a logo?', next: 'logo', effects: { rel: { deroy: 2 }, flags: { met_deroy: true } } },
         ],
       },
-      snacks: { speaker: 'deroy', text: 'Snacks are a power move. Bring enough for the opposition. Then sign up for the public session. Two minutes at the mic, and they have to listen.' },
-      decide: { speaker: 'deroy', text: 'Brooklyn has 18 community boards. Each has up to 50 unpaid neighbors, appointed by the Borough President. They weigh in on rezonings, liquor licenses, bike lanes.', next: 'decide2' },
-      decide2: {
-        speaker: 'deroy', text: 'The vote is advisory, but the city hears it. And every meeting has a public session where anyone can speak. Including you. Especially you.',
-        choices: [{ text: 'Tuesday. I\'ll be there.', effects: { rel: { deroy: 6 }, solidarity: 10, trust: { bedstuy: 3 }, toast: 'POCKET CIVICS · COMMUNITY BOARDS' } }],
+      story: { speaker: 'deroy', text: 'One real person. One clear stake. One thing we\'re asking for. Lead with what we share, not who we\'re mad at. That\'s narrative change: you\'re not winning an argument, you\'re changing what feels normal.', next: 'ai' },
+      ai: { speaker: 'deroy', text: 'Here\'s a story most people don\'t know. In New York City, if a company uses AI to screen job applicants, it has to get an independent bias audit every year and post the results.', next: 'ai2' },
+      ai2: {
+        speaker: 'deroy', text: 'And they have to tell you beforehand. It\'s Local Law 144. You can report a company that skips it to the city\'s Department of Consumer and Worker Protection. AI can do good. Somebody has to check its homework.',
+        choices: [{ text: 'Telling that story tonight.', effects: { rel: { deroy: 6 }, solidarity: 10, attention: 3, trust: { bedstuy: 3 }, toast: 'POCKET CIVICS · AI HIRING AUDITS' } }],
       },
-      parking: { speaker: 'deroy', text: 'There\'s alternate side parking. Which is, coincidentally, also on the agenda. Come fight about it like a real New Yorker.' },
-      after: { speaker: 'deroy', text: 'You came back. Board still meets Tuesday. The folding table misses you.' },
+      logo: { speaker: 'deroy', text: 'A logo is the last thing. First you figure out who you are and what you want. Then the logo just says it out loud. Ask me how I know.' },
+      after: { speaker: 'deroy', text: 'One person. One stake. One ask. Tell it again until the neighborhood tells it for you.' },
     },
   },
 
-  // ============================================================ JENNA · tenant associations
+  // ============================================================ JENNA · participatory budgeting + facilitation
   jenna: {
     entries: [{ cond: { notFlag: 'met_jenna' }, node: 'intro' }, { node: 'after' }],
     nodes: {
       intro: {
-        speaker: 'jenna', text: 'You don\'t need permission to start a tenants association. You need a group chat, a sign-in sheet and the good seltzer.',
+        speaker: 'jenna', text: 'People don\'t come back to meetings. They come back to people. The secret is the one-on-one before the meeting, not the meeting itself.',
         choices: [
-          { text: 'I\'ll make the group chat.', next: 'chat', effects: { rel: { jenna: 5 }, flags: { met_jenna: true } } },
-          { text: 'Wait, is that legal?', next: 'legal', effects: { flags: { met_jenna: true } } },
-          { text: 'Define "good seltzer."', next: 'seltzer', effects: { rel: { jenna: 2 }, flags: { met_jenna: true } } },
+          { text: 'Teach me the one-on-one.', next: 'oneonone', effects: { rel: { jenna: 5 }, flags: { met_jenna: true } } },
+          { text: 'What do we gather people around?', next: 'pb', effects: { flags: { met_jenna: true } } },
+          { text: 'Do you bring snacks?', next: 'snacks', effects: { rel: { jenna: 2 }, flags: { met_jenna: true } } },
         ],
       },
-      chat: { speaker: 'jenna', text: 'Name it something boring so the landlord\'s nephew doesn\'t join. Then knock on every door. Every. Door.' },
-      legal: { speaker: 'jenna', text: 'Legal and protected. New York Real Property Law section 230. Your landlord can\'t harass you or punish you for organizing.', next: 'legal2' },
-      legal2: {
-        speaker: 'jenna', text: 'And if the building has a community room, tenant groups can meet in it. Bring the seltzer. Make it a whole thing.',
-        choices: [{ text: 'Knocking on doors tonight.', effects: { rel: { jenna: 6 }, solidarity: 10, trust: { bedstuy: 3 }, toast: 'POCKET CIVICS · TENANTS CAN ORGANIZE' } }],
+      oneonone: { speaker: 'jenna', text: 'Coffee. Twenty minutes. Ask what they care about and then actually listen. Don\'t pitch. By the end they\'ll tell you what they\'d show up for.', next: 'pb' },
+      pb: { speaker: 'jenna', text: 'Try this: The People\'s Money. New Yorkers decide how to spend part of the city budget in their borough. You pitch ideas, then everyone votes.', next: 'pb2' },
+      pb2: {
+        speaker: 'jenna', text: 'Anyone 11 and up can vote, whatever their immigration status. That means the kids on your block get a ballot. Gather them.',
+        choices: [{ text: 'Hosting an idea session.', effects: { rel: { jenna: 6 }, solidarity: 10, trust: { bedstuy: 3 }, toast: 'POCKET CIVICS · THE PEOPLE\'S MONEY' } }],
       },
-      seltzer: { speaker: 'jenna', text: 'Not the one that tastes like a rumor of lime. The one that bites back. Like a tenants association.' },
-      after: { speaker: 'jenna', text: 'The first move is never the rent strike. The first move is knowing your neighbors\' names.' },
+      snacks: { speaker: 'jenna', text: 'Always. But I put the snacks at the back of the room so people have to walk past each other. Facilitation is mostly furniture.' },
+      after: { speaker: 'jenna', text: 'Who did you have coffee with this week? That\'s the whole question.' },
     },
   },
 
-  // ============================================================ NELL · 311
+  // ============================================================ NELL · tenants' rights
   nell: {
     entries: [{ cond: { notFlag: 'met_nell' }, node: 'intro' }, { node: 'after' }],
     nodes: {
       intro: {
-        speaker: 'nell', text: 'You want the city to fix that streetlight? Don\'t pray. File a 311. Then file it again. Then post the ticket number.',
+        speaker: 'nell', text: 'Landlord dragging you to Housing Court? Don\'t show up alone. In this city, a lot of tenants have a right to a free lawyer.',
         choices: [
-          { text: 'Let\'s make it a group project.', next: 'group', effects: { rel: { nell: 5 }, flags: { met_nell: true } } },
-          { text: 'What\'s the number again?', next: 'number', effects: { flags: { met_nell: true } } },
-          { text: 'Can I 311 my landlord?', next: 'landlord', effects: { rel: { nell: 3 }, flags: { met_nell: true } } },
+          { text: 'Wait, a free lawyer?', next: 'rtc', effects: { rel: { nell: 5 }, flags: { met_nell: true } } },
+          { text: 'How do I know if my rent is legal?', next: 'rent', effects: { flags: { met_nell: true } } },
+          { text: 'Can we start a tenants association?', next: 'ta', effects: { rel: { nell: 3 }, flags: { met_nell: true } } },
         ],
       },
-      group: { speaker: 'nell', text: 'Now you\'re talking. Ten neighbors, ten reports, one pothole. The city loves a pattern. So do reporters.' },
-      number: { speaker: 'nell', text: 'Three. One. One. Call it, use the app or go online. Every request gets a tracking number.', next: 'number2' },
-      number2: {
-        speaker: 'nell', text: 'And the city publishes them on NYC Open Data. So when that pothole turns one, you can throw it a birthday party. With receipts.',
-        choices: [{ text: 'Filing my first one now.', effects: { rel: { nell: 6 }, solidarity: 10, trust: { parkslope: 3 }, toast: 'POCKET CIVICS · 311' } }],
+      rtc: { speaker: 'nell', text: 'Right to Counsel. NYC was the first city to pass it. If your household makes at or below 200% of the federal poverty line, you get a lawyer in eviction cases. Free.', next: 'rtc2' },
+      rtc2: {
+        speaker: 'nell', text: 'Most tenants who have a lawyer get to stay home. Most who show up alone don\'t. So call 311 and ask for Right to Counsel before your court date.',
+        choices: [{ text: 'Telling the whole building.', effects: { rel: { nell: 6 }, solidarity: 10, trust: { plg: 3 }, toast: 'POCKET CIVICS · RIGHT TO COUNSEL' } }],
       },
-      landlord: { speaker: 'nell', text: 'No heat or hot water? Yes. 311 sends it to HPD, the city\'s housing agency, and they can send an inspector. Winter is when 311 earns its keep.' },
-      after: { speaker: 'nell', text: 'That pothole on Fifth has a ticket number. It also has a name. It\'s Gerald.' },
+      rent: { speaker: 'nell', text: 'If you\'re rent stabilized, ask the state\'s housing agency, Homes and Community Renewal, for your rent history. It\'s free. If the numbers don\'t add up, that\'s an overcharge case.', next: 'rtc' },
+      ta: { speaker: 'nell', text: 'Yes. Organizing is protected by state law, and your landlord can\'t retaliate. Group chat, sign-in sheet, door knocking. And for no heat, 311 sends an HPD inspector.', next: 'rtc' },
+      after: { speaker: 'nell', text: 'Never go to Housing Court alone. Say it with me.' },
     },
   },
 
-  // ============================================================ BRIDGETTE · voting
+  // ============================================================ BRIDGETTE · voting rights after prison + Clean Slate
   bridgette: {
     entries: [{ cond: { notFlag: 'met_bridgette' }, node: 'intro' }, { node: 'after' }],
     nodes: {
       intro: {
-        speaker: 'bridgette', text: 'Election Day isn\'t a day anymore. It\'s nine days of early voting. You have no excuses left. Only options.',
+        speaker: 'bridgette', text: 'I spent ten years as a public defender. Know who never gets asked to register? People who\'ve done time. Most of them don\'t know they can vote.',
         choices: [
-          { text: 'Sign me up.', next: 'signup', effects: { rel: { bridgette: 5 }, flags: { met_bridgette: true } } },
-          { text: 'What if I\'m not registered?', next: 'register', effects: { flags: { met_bridgette: true } } },
-          { text: 'What if I moved?', next: 'moved', effects: { rel: { bridgette: 2 }, flags: { met_bridgette: true } } },
+          { text: 'They can vote?', next: 'vote', effects: { rel: { bridgette: 5 }, flags: { met_bridgette: true } } },
+          { text: 'What about their records?', next: 'slate', effects: { flags: { met_bridgette: true } } },
+          { text: 'How do I register anyone?', next: 'register', effects: { rel: { bridgette: 2 }, flags: { met_bridgette: true } } },
         ],
       },
-      signup: { speaker: 'bridgette', text: 'Love that. Now look at your group chat and pick the one friend who always says "I\'ll do it later." That\'s your assignment.' },
-      register: { speaker: 'bridgette', text: 'In New York you can register up to 10 days before an election. It takes five minutes. I timed it. Twice.', next: 'register2' },
-      register2: {
-        speaker: 'bridgette', text: 'Then early voting runs for nine days before Election Day. Pick the line, the day and the time that work for you.',
-        choices: [{ text: 'Registering right now.', effects: { rel: { bridgette: 6 }, solidarity: 10, trust: { downtown: 3 }, toast: 'POCKET CIVICS · REGISTER AND VOTE EARLY' } }],
+      vote: { speaker: 'bridgette', text: 'Since 2021, in New York, your right to vote comes back the day you\'re released from prison. Even on parole. You just have to register again.', next: 'slate' },
+      slate: { speaker: 'bridgette', text: 'And the Clean Slate Act seals old convictions: three years after a misdemeanor, eight after most felonies, if there\'s nothing new. The courts have until 2027 to make the sealing automatic.', next: 'slate2' },
+      slate2: {
+        speaker: 'bridgette', text: 'Sealed means a landlord or employer can\'t hold it against you. People get to be more than the worst day of their life. Tell that story.',
+        choices: [{ text: 'Setting up a table at the reentry center.', effects: { rel: { bridgette: 6 }, solidarity: 10, trust: { downtown: 3 }, toast: 'POCKET CIVICS · VOTING AFTER PRISON' } }],
       },
-      moved: { speaker: 'bridgette', text: 'Then update your address before the deadline, same as registering. New apartment, same democracy.' },
-      after: { speaker: 'bridgette', text: 'Registered? Great. Now register a friend. That\'s how this works.' },
+      register: { speaker: 'bridgette', text: 'Register up to 10 days before an election, then early voting runs for nine days. Five minutes online. I timed it. Twice.', next: 'vote' },
+      after: { speaker: 'bridgette', text: 'Registered? Great. Now register someone nobody else asked.' },
     },
   },
 
-  // ============================================================ ADRIAN · park field permits
+  // ============================================================ ADRIAN · Open Streets
   adrian: {
     entries: [{ cond: { notFlag: 'met_adrian' }, node: 'intro' }, { node: 'after' }],
     nodes: {
       intro: {
-        speaker: 'adrian', text: 'Director of Soccer Justice. Self-appointed. The field is public. The schedule belongs to whoever files the permit.',
+        speaker: 'adrian', text: 'Director of Soccer Justice. Self-appointed. Also, I design spaces for a living. And the biggest public space in Brooklyn is the street.',
         choices: [
           { text: 'Appoint me deputy.', next: 'deputy', effects: { rel: { adrian: 5 }, flags: { met_adrian: true } } },
-          { text: 'How do we get field time?', next: 'permit', effects: { flags: { met_adrian: true } } },
+          { text: 'How do we take the street back?', next: 'open', effects: { flags: { met_adrian: true } } },
           { text: 'Is that a real job?', next: 'job', effects: { rel: { adrian: 2 }, flags: { met_adrian: true } } },
         ],
       },
-      deputy: { speaker: 'adrian', text: 'Done. Your first duty: make sure the small kids get the ball sometimes. That is soccer justice.' },
-      permit: { speaker: 'adrian', text: 'Organized games on NYC Parks fields need a Parks permit. Teams and leagues apply for season time.', next: 'permit2' },
-      permit2: {
-        speaker: 'adrian', text: 'Get the neighborhood league on the permit schedule and the field stops being first-come, first-shoved.',
-        choices: [{ text: 'Filing for Saturday mornings.', effects: { rel: { adrian: 6 }, solidarity: 10, trust: { parkslope: 3 }, toast: 'POCKET CIVICS · PARK FIELD PERMITS' } }],
+      deputy: { speaker: 'adrian', text: 'Done. First duty: make sure the small kids get the ball sometimes. Second duty: help me close the block.', next: 'open' },
+      open: { speaker: 'adrian', text: 'Open Streets. Community groups, schools and merchants apply to the city\'s transportation department, DOT, to close a street to cars on set days.', next: 'open2' },
+      open2: {
+        speaker: 'adrian', text: 'You run it, the city backs it. Barricades, chalk, a pickup game, chairs for the grandmothers. The block becomes a plaza. Applications open every fall.',
+        choices: [{ text: 'Applying for Saturdays.', effects: { rel: { adrian: 6 }, solidarity: 10, trust: { parkslope: 3 }, toast: 'POCKET CIVICS · OPEN STREETS' } }],
       },
-      job: { speaker: 'adrian', text: 'Self-appointed, like all the best jobs. My only powers are a whistle and the moral high ground.' },
-      after: { speaker: 'adrian', text: 'Whistle, cones, permit. The holy trinity.' },
+      job: { speaker: 'adrian', text: 'Soccer justice is self-appointed. Designing spaces is the day job. Same idea: who gets to use it, and how do you make room for everybody?' },
+      after: { speaker: 'adrian', text: 'Whistle, cones, barricades. The holy trinity.' },
     },
   },
 
-  // ============================================================ DANAE · school leadership teams
+  // ============================================================ DANAE · Culture Pass + IDNYC
   danae: {
     entries: [{ cond: { notFlag: 'met_danae' }, node: 'intro' }, { node: 'after' }],
     nodes: {
       intro: {
-        speaker: 'danae', text: 'Every public school has a School Leadership Team. Half parents, half staff. Half of everybody is busy. Join anyway.',
+        speaker: 'danae', text: 'I build museum exhibitions. Know what breaks my heart? Kids who live ten minutes from a museum and think it isn\'t for them.',
         choices: [
-          { text: 'I\'ll take snack duty.', next: 'snacks', effects: { rel: { danae: 5 }, flags: { met_danae: true } } },
-          { text: 'What does it actually do?', next: 'slt', effects: { flags: { met_danae: true } } },
-          { text: 'I don\'t have kids.', next: 'nokids', effects: { rel: { danae: 2 }, flags: { met_danae: true } } },
+          { text: 'How do we get them in?', next: 'pass', effects: { rel: { danae: 5 }, flags: { met_danae: true } } },
+          { text: 'Isn\'t it expensive?', next: 'pass', effects: { flags: { met_danae: true } } },
+          { text: 'What\'s your favorite exhibit?', next: 'fave', effects: { rel: { danae: 2 }, flags: { met_danae: true } } },
         ],
       },
-      snacks: { speaker: 'danae', text: 'Snack duty is how everyone starts. Then one day you\'re on the team asking where the budget went.' },
-      slt: { speaker: 'danae', text: 'Every NYC public school has one. Parents and staff in equal numbers, helping shape the school\'s plan and how the budget gets used.', next: 'slt2' },
-      slt2: {
-        speaker: 'danae', text: 'And each district has a Community Education Council that meets in public. Anyone can show up and speak.',
-        choices: [{ text: 'Putting it on my calendar.', effects: { rel: { danae: 6 }, solidarity: 10, trust: { parkslope: 3 }, toast: 'POCKET CIVICS · SCHOOL LEADERSHIP TEAMS' } }],
+      pass: { speaker: 'danae', text: 'Culture Pass. With a Brooklyn Public Library card you can reserve free passes to more than a hundred museums, gardens and theaters.', next: 'pass2' },
+      pass2: {
+        speaker: 'danae', text: 'And IDNYC, the free city ID, gets you free one-year memberships at a bunch of museums. Library card plus city ID. That\'s a whole year of culture for zero dollars.',
+        choices: [{ text: 'Library card drive this weekend.', effects: { rel: { danae: 6 }, solidarity: 10, trust: { parkslope: 3 }, toast: 'POCKET CIVICS · CULTURE PASS + IDNYC' } }],
       },
-      nokids: { speaker: 'danae', text: 'It\'s still your neighborhood and your tax money. Community Education Council meetings are public. Come anyway.' },
-      after: { speaker: 'danae', text: 'Snack duty is a gateway. Ask me how I know.' },
+      fave: { speaker: 'danae', text: 'Whichever one a kid is standing in front of with their mouth open. That\'s the exhibit working.', next: 'pass' },
+      after: { speaker: 'danae', text: 'Library card. City ID. Museums. In that order.' },
     },
   },
 
@@ -395,10 +402,10 @@ export const DIALOGUES: Record<string, Dialogue> = {
           { text: 'Can you make me look taller?', next: 'taller', effects: { rel: { jon: 2 }, flags: { met_jon: true } } },
         ],
       },
-      cut: { speaker: 'jon', text: 'Rule one: cut the throat-clearing. Nobody needs three minutes of "so, um, thanks for having me." Start with the point.' },
+      cut: { speaker: 'jon', text: 'Rule one: cut the throat-clearing. Nobody needs three minutes of "so, um, thanks for having me." Start with the point. Then get it on the air.', next: 'air' },
       air: { speaker: 'jon', text: 'BRIC runs Brooklyn\'s public access channels. Not a streamer. Not an algorithm. Public.', next: 'air2' },
       air2: {
-        speaker: 'jon', text: 'Brooklyn residents can take media classes there and get community shows on the air. Your block deserves a show.',
+        speaker: 'jon', text: 'Brooklyn residents can take media classes there, borrow gear and get community shows on the air. Your block deserves a show.',
         choices: [{ text: 'Pitching my show tonight.', effects: { rel: { jon: 6 }, solidarity: 10, attention: 4, trust: { bushwick: 3 }, toast: 'POCKET CIVICS · PUBLIC ACCESS TV' } }],
       },
       taller: { speaker: 'jon', text: 'I can make you look right. Taller is a lighting problem.' },
