@@ -7,7 +7,7 @@ import { MISSIONS, type MissionDef } from '../data/missions';
 import { NPCS, NPC_BY_ID } from '../data/npcs';
 import { dialogue } from '../systems/dialogue';
 import { missions } from '../systems/missions';
-import { MAP_H, MAP_W, T, TILE, type WorldLayout } from '../world/layout';
+import { BLOCK_H, BLOCK_W, COLS, MAP_H, MAP_W, ROAD, ROWS, T, TILE, districtOfBlock, type WorldLayout } from '../world/layout';
 
 /**
  * DOM overlay UI: HUD, dialogue, journal, map, pause, title, mission screens.
@@ -392,7 +392,7 @@ class UI {
     const c = cv.getContext('2d')!;
     const col: Record<number, string> = {
       [T.ASPHALT]: '#3d3354', [T.LANE_V]: '#3d3354', [T.LANE_H]: '#3d3354', [T.INTERSECTION]: '#3d3354', [T.CROSS_V]: '#4d4366', [T.CROSS_H]: '#4d4366',
-      [T.SIDEWALK]: '#a991b2', [T.CURB]: '#a991b2', [T.GRASS]: '#58b956', [T.PLAZA]: '#e8cfa8', [T.GARDEN]: '#8b5a3c', [T.WATER]: '#3aa4f0', [T.YARD]: '#6f9d52', [T.COURT]: '#e8743b', [T.LOT]: '#a59db3',
+      [T.SIDEWALK]: '#a991b2', [T.CURB]: '#a991b2', [T.GRASS]: '#58b956', [T.PLAZA]: '#e8cfa8', [T.GARDEN]: '#8b5a3c', [T.WATER]: '#3aa4f0', [T.YARD]: '#6f9d52', [T.COURT]: '#e8743b', [T.LOT]: '#a59db3', [T.SAND]: '#f0d79a',
     };
     for (let y = 0; y < MAP_H; y++) for (let x = 0; x < MAP_W; x++) { c.fillStyle = col[L.tiles[y][x]] ?? '#000'; c.fillRect(x * s, y * s, s, s); }
     for (const b of L.buildings) {
@@ -401,8 +401,16 @@ class UI {
       c.globalAlpha = 1; c.strokeStyle = '#16101f'; c.lineWidth = 2; c.strokeRect((b.x / TILE) * s, (b.y / TILE) * s, (b.w / TILE) * s, (b.h / TILE) * s);
     }
     c.font = 'bold 22px Bangers, Impact'; c.textAlign = 'center';
-    const dl: [string, number, number, string][] = [['DOWNTOWN', 0.15, 0.1, DISTRICTS.downtown.color], ['BED-STUY', 0.55, 0.1, DISTRICTS.bedstuy.color], ['PARK SLOPE', 0.25, 0.62, DISTRICTS.parkslope.color], ['BUSHWICK', 0.78, 0.68, DISTRICTS.bushwick.color]];
-    for (const [t, fx, fy, color] of dl) { c.lineWidth = 6; c.strokeStyle = '#16101f'; c.strokeText(t, cv.width * fx, cv.height * fy); c.fillStyle = color; c.fillText(t, cv.width * fx, cv.height * fy); }
+    // District names at the center of each district's blocks
+    const acc: Record<string, [number, number, number]> = {};
+    for (let r = 0; r < ROWS; r++) for (let k = 0; k < COLS; k++) {
+      const d = districtOfBlock(k, r); const a = (acc[d] ??= [0, 0, 0]);
+      a[0] += (k * BLOCK_W + ROAD + BLOCK_W / 2) * s; a[1] += (r * BLOCK_H + ROAD + BLOCK_H / 2) * s; a[2]++;
+    }
+    for (const [d, [sx, sy, n]] of Object.entries(acc)) {
+      const t = DISTRICTS[d as District].name.toUpperCase(), color = DISTRICTS[d as District].color;
+      c.lineWidth = 6; c.strokeStyle = '#16101f'; c.strokeText(t, sx / n, sy / n); c.fillStyle = color; c.fillText(t, sx / n, sy / n);
+    }
     const w = this.world as any;
     const targets = new Set(missions.targets());
     c.font = 'bold 13px Nunito, Arial';

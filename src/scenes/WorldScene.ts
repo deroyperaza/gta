@@ -87,7 +87,7 @@ export class WorldScene extends Phaser.Scene {
     this.physics.add.collider(this.player, this.groundLayer);
 
     this.buildNpcs(solids);
-    this.peds = new Pedestrians(this, this.layout, 90);
+    this.peds = new Pedestrians(this, this.layout, 170);
     this.traffic = new Traffic(this, (x, y) => this.floatText(x, y - 30, Phaser.Utils.Array.GetRandom(['HONK!', 'BEEP!', 'MOVE!', 'YO!']), '#ffd23f'));
 
     // Waypoint arrow

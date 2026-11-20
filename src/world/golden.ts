@@ -50,7 +50,7 @@ function grit(c: Ctx, x: number, y: number, w: number, h: number, n: number, col
 // ------------------------------------------------------------------ GROUND
 export function makeTiles(scene: Phaser.Scene) {
   seed = 11;
-  canvas(scene, 'tiles', TILE * 15, TILE, (c) => {
+  canvas(scene, 'tiles', TILE * 16, TILE, (c) => {
     const at = (i: number, fn: (x: number) => void) => { c.save(); c.beginPath(); c.rect(i * TILE, 0, TILE, TILE); c.clip(); fn(i * TILE); c.restore(); };
     const asphalt = (x: number, base = '#34363a') => {
       c.fillStyle = base; c.fillRect(x, 0, TILE, TILE);
@@ -100,6 +100,10 @@ export function makeTiles(scene: Phaser.Scene) {
       grit(c, x, 0, TILE, TILE, 120, ['rgba(111,122,60,.6)', 'rgba(79,90,42,.5)', 'rgba(122,106,85,.6)', 'rgba(62,55,47,.6)', 'rgba(138,128,112,.5)'], 0.8, 2.6);
     });
     at(T.CURB, (x) => concrete(x, '#9e978b'));
+    at(T.SAND, (x) => {
+      c.fillStyle = '#d9b77e'; c.fillRect(x, 0, TILE, TILE);
+      grit(c, x, 0, TILE, TILE, 70, ['rgba(255,236,196,.45)', 'rgba(150,110,60,.35)', 'rgba(200,160,100,.4)'], 0.5, 1.4);
+    });
   });
 }
 

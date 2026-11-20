@@ -12,18 +12,18 @@ export const TILE = 32;
 export const ROAD = 3;
 export const BLOCK_W = 22; // road + block
 export const BLOCK_H = 18;
-export const COLS = 6;
-export const ROWS = 5;
-export const MAP_W = COLS * BLOCK_W + ROAD; // 135 tiles
-export const MAP_H = ROWS * BLOCK_H + ROAD; // 93 tiles
+export const COLS = 9;
+export const ROWS = 7;
+export const MAP_W = COLS * BLOCK_W + ROAD; // 201 tiles
+export const MAP_H = ROWS * BLOCK_H + ROAD; // 129 tiles
 export const WORLD_W = MAP_W * TILE;
 export const WORLD_H = MAP_H * TILE;
 
 export enum T {
   ASPHALT = 0, LANE_V = 1, LANE_H = 2, SIDEWALK = 3, GRASS = 4, PLAZA = 5, CROSS_V = 6, CROSS_H = 7,
-  GARDEN = 8, WATER = 9, YARD = 10, INTERSECTION = 11, COURT = 12, LOT = 13, CURB = 14,
+  GARDEN = 8, WATER = 9, YARD = 10, INTERSECTION = 11, COURT = 12, LOT = 13, CURB = 14, SAND = 15,
 }
-export const WALKABLE = new Set([T.SIDEWALK, T.GRASS, T.PLAZA, T.GARDEN, T.YARD, T.COURT, T.LOT, T.CURB]);
+export const WALKABLE = new Set([T.SIDEWALK, T.GRASS, T.PLAZA, T.GARDEN, T.YARD, T.COURT, T.LOT, T.CURB, T.SAND]);
 
 export type BuildingType =
   | 'brownstone' | 'coffee' | 'boutique' | 'nonprofit' | 'coop' | 'bodega' | 'mural' | 'tenant'
@@ -38,11 +38,14 @@ export interface BuildingDef {
 export interface PropDef { kind: string; x: number; y: number; solid?: boolean; variant?: number }
 export interface Spot { x: number; y: number }
 
-type BlockKind = 'row' | 'park' | 'pond' | 'plaza' | 'garden' | 'court' | 'lot';
+type BlockKind = 'row' | 'park' | 'pond' | 'plaza' | 'garden' | 'court' | 'lot' | 'beach' | 'waterfront';
 interface Landmark { id: string; type: BuildingType; w: number; name: string; spot?: string }
 interface BlockSpec { kind: BlockKind; name?: string; landmarks?: Landmark[] }
 
 export function districtOfBlock(c: number, r: number): District {
+  // Outer ring added Nov 2026; the original 6 x 5 core keeps its positions so saves stay valid.
+  if (c >= 6) return r <= 2 ? 'crownheights' : r <= 4 ? 'redhook' : 'coneyisland';
+  if (r >= 5) return c <= 2 ? 'sunsetpark' : 'flatbush';
   if (c <= 1 && r <= 1) return 'downtown';
   if (c <= 2 && r >= 2) return 'parkslope';
   if (c >= 5 || r >= 3) return 'bushwick';
@@ -102,6 +105,55 @@ const BLOCKS: Record<string, BlockSpec> = {
   '4,3': { kind: 'lot', landmarks: [{ id: 'wh1', type: 'warehouse', w: 8, name: 'FORMER PICKLE FACTORY' }] },
   '3,3': { kind: 'row', landmarks: [{ id: 'ugallery', type: 'gallery', w: 5, name: 'THE UNDERGROUND (2ND FLOOR)' }] },
   '5,3': { kind: 'row' }, '3,4': { kind: 'row' }, '4,4': { kind: 'row' }, '5,4': { kind: 'row' },
+  // ---------- CROWN HEIGHTS ----------
+  '6,0': { kind: 'row', landmarks: [
+    { id: 'paradehq', type: 'community', w: 7, name: 'LABOR DAY PARADE HQ' },
+    { id: 'roti', type: 'bakery', w: 5, name: 'ROTI & ROTI & ROTI' } ] },
+  '7,0': { kind: 'row', landmarks: [{ id: 'chtenants', type: 'tenant', w: 7, name: 'CROWN HEIGHTS TENANT UNION' }] },
+  '8,0': { kind: 'row' },
+  '6,1': { kind: 'row', landmarks: [
+    { id: 'farmacy', type: 'coffee', w: 5, name: 'FRANKLIN AVE FARMACY' },
+    { id: 'panyard', type: 'studio', w: 6, name: 'STEEL PAN YARD' } ] },
+  '7,1': { kind: 'park', name: 'Brower-ish Park' },
+  '8,1': { kind: 'row', landmarks: [{ id: 'chchurch', type: 'church', w: 5, name: 'GREATER HOPE & HOUSING CHURCH' }] },
+  '6,2': { kind: 'row' }, '7,2': { kind: 'row' },
+  '8,2': { kind: 'court', name: 'Eastern Parkway Courts' },
+  // ---------- RED HOOK ----------
+  '6,3': { kind: 'lot', landmarks: [{ id: 'flatpack', type: 'warehouse', w: 9, name: 'FLAT-PACK FURNITURE MEGASTORE' }] },
+  '7,3': { kind: 'row', landmarks: [
+    { id: 'pupusas', type: 'bakery', w: 5, name: 'BALLFIELD PUPUSAS' },
+    { id: 'rhhouses', type: 'apartment', w: 6, name: 'RED HOOK HOUSES' } ] },
+  '8,3': { kind: 'court', name: 'Red Hook Ballfields' },
+  '6,4': { kind: 'waterfront', name: 'Red Hook Piers' },
+  '7,4': { kind: 'waterfront', name: 'Valentino-ish Pier' },
+  '8,4': { kind: 'lot', landmarks: [{ id: 'floodcondos', type: 'sales', w: 7, name: 'FLOODVIEW LUXURY CONDOS' }] },
+  // ---------- CONEY ISLAND ----------
+  '6,5': { kind: 'row', landmarks: [
+    { id: 'arcade', type: 'boutique', w: 6, name: 'SKEE-BALL & SOLIDARITY ARCADE' },
+    { id: 'hotdog', type: 'bakery', w: 5, name: 'HOT DOG HALL OF FAME' } ] },
+  '7,5': { kind: 'row', landmarks: [{ id: 'mermaid', type: 'gallery', w: 6, name: 'MERMAID PARADE WORKSHOP' }] },
+  '8,5': { kind: 'row', landmarks: [{ id: 'coneyhouses', type: 'apartment', w: 7, name: 'SURFSIDE TOWERS' }] },
+  '6,6': { kind: 'beach', name: 'Coney Island Beach' },
+  '7,6': { kind: 'beach', name: 'The Boardwalk' },
+  '8,6': { kind: 'beach', name: 'Polar Bear Plunge Point' },
+  // ---------- FLATBUSH ----------
+  '3,5': { kind: 'row', landmarks: [
+    { id: 'patty', type: 'bakery', w: 5, name: 'PATTY & COCO BREAD' },
+    { id: 'fbtenants', type: 'tenant', w: 6, name: 'FLATBUSH TENANTS COALITION' } ] },
+  '4,5': { kind: 'row', landmarks: [{ id: 'kingsish', type: 'community', w: 8, name: 'THE KINGS-ISH THEATRE' }] },
+  '5,5': { kind: 'row', landmarks: [{ id: 'dollarvan', type: 'sales', w: 5, name: 'DOLLAR VAN DISPATCH' }] },
+  '3,6': { kind: 'row' },
+  '4,6': { kind: 'park', name: 'Parade Grounds' },
+  '5,6': { kind: 'row', landmarks: [{ id: 'fbchurch', type: 'church', w: 5, name: 'CHURCH OF THE TUESDAY MEETING' }] },
+  // ---------- SUNSET PARK ----------
+  '0,5': { kind: 'park', name: 'Sunset Park (The Actual Park)' },
+  '1,5': { kind: 'row', landmarks: [
+    { id: 'taqueria', type: 'bakery', w: 5, name: 'FIFTH AVE TAQUERIA' },
+    { id: 'dimsum', type: 'bakery', w: 6, name: 'EIGHTH AVE DIM SUM PALACE' } ] },
+  '2,5': { kind: 'lot', landmarks: [{ id: 'induscity', type: 'warehouse', w: 9, name: 'INDUSTRY-ISH CITY' }] },
+  '0,6': { kind: 'waterfront', name: 'Sunset Waterfront' },
+  '1,6': { kind: 'row', landmarks: [{ id: 'spcb', type: 'government', w: 6, name: 'COMMUNITY BOARD 7-ISH' }] },
+  '2,6': { kind: 'row' },
 };
 
 const FILLER: Record<District, BuildingType[]> = {
@@ -109,6 +161,11 @@ const FILLER: Record<District, BuildingType[]> = {
   parkslope: ['brownstone', 'brownstone', 'brownstone', 'coffee', 'boutique'],
   bedstuy: ['brownstone', 'brownstone', 'apartment', 'laundromat'],
   bushwick: ['warehouse', 'studio', 'apartment', 'warehouse'],
+  crownheights: ['brownstone', 'apartment', 'bodega', 'brownstone', 'laundromat'],
+  redhook: ['warehouse', 'warehouse', 'apartment', 'studio'],
+  coneyisland: ['apartment', 'apartment', 'bodega', 'boutique'],
+  flatbush: ['apartment', 'bodega', 'laundromat', 'apartment', 'church'],
+  sunsetpark: ['warehouse', 'bodega', 'apartment', 'bakery'],
 };
 const HEIGHT: Record<BuildingType, [number, number]> = {
   brownstone: [6, 7], coffee: [5, 5], boutique: [5, 6], nonprofit: [7, 7], coop: [6, 6], bodega: [5, 5],
@@ -196,6 +253,22 @@ export function generateLayout(): WorldLayout {
       props.push({ kind: 'bench', x: px(bx + 13), y: px(by + 6) + 20 });
       continue;
     }
+    if (spec.kind === 'beach') {
+      // Boardwalk across the top, sand, then the Atlantic
+      for (let y = by + 1; y < by + bh - 1; y++) for (let x = bx + 1; x < bx + bw - 1; x++) set(x, y, y < by + 4 ? T.PLAZA : y < by + 10 ? T.SAND : T.WATER);
+      for (let x = bx + 3; x < bx + bw - 2; x += 5) { props.push({ kind: 'bench', x: px(x), y: px(by + 2) + 10 }); props.push({ kind: 'lamp', x: px(x + 2) + 16, y: px(by + 1) + 26 }); }
+      if (rand() < 0.7) props.push({ kind: 'trash', x: px(bx + 2) + 12, y: px(by + 3) + 14 });
+      if (spec.name === 'The Boardwalk') spots.boardwalk = { x: cxp, y: px(by + 5) + 8 };
+      continue;
+    }
+    if (spec.kind === 'waterfront') {
+      // Industrial pier: yard up top, a pier poking into the harbor
+      for (let y = by + 1; y < by + bh - 1; y++) for (let x = bx + 1; x < bx + bw - 1; x++) set(x, y, y < by + 6 ? T.LOT : T.WATER);
+      for (let y = by + 6; y < by + bh - 1; y++) for (let x = bx + 7; x < bx + 12; x++) set(x, y, T.PLAZA);
+      for (let x = bx + 2; x < bx + bw - 2; x += 4) props.push({ kind: rand() < 0.5 ? 'crate' : 'dumpster', x: px(x) + 16, y: px(by + 2) + 22, solid: true, variant: Math.floor(rand() * 3) });
+      props.push({ kind: 'bench', x: px(bx + 9), y: px(by + bh - 3) });
+      continue;
+    }
     if (spec.kind === 'plaza') {
       fill(T.PLAZA);
       for (let y = by + 1; y < by + bh - 1; y++) for (let x = bx + 1; x < bx + bw - 1; x++) set(x, y, T.PLAZA);
@@ -274,6 +347,7 @@ export function generateLayout(): WorldLayout {
     spots[name] = { x, y };
   };
   dock('dock-downtown', 1, 0, 3); dock('dock-bedstuy', 3, 1, 15); dock('dock-parkslope', 1, 2, 15); dock('dock-bushwick', 5, 1, 15);
+  dock('dock-crownheights', 6, 1, 3); dock('dock-redhook', 7, 3, 15); dock('dock-coney', 7, 5, 15); dock('dock-flatbush', 4, 5, 3); dock('dock-sunsetpark', 1, 5, 15);
   // Vendors
   spots.churro = { x: 8 * TILE, y: (3 * BLOCK_H + ROAD + 6) * TILE + 20 };
   spots.halal = { x: spots.plazaSpawn.x + 260, y: spots.plazaSpawn.y + 10 };

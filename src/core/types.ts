@@ -1,13 +1,18 @@
 // Shared type definitions. Kept engine-agnostic so systems can be reused
 // (e.g. by a future multiplayer server or new neighborhoods).
 
-export type District = 'downtown' | 'parkslope' | 'bedstuy' | 'bushwick';
+export type District = 'downtown' | 'parkslope' | 'bedstuy' | 'bushwick' | 'crownheights' | 'redhook' | 'coneyisland' | 'flatbush' | 'sunsetpark';
 
 export const DISTRICTS: Record<District, { name: string; color: string; blurb: string }> = {
   downtown: { name: 'Downtown Brooklyn', color: '#4f8cff', blurb: 'Courthouses, cops, and corporate lobbies with very cold air conditioning.' },
   parkslope: { name: 'Park Slope', color: '#ff7ab8', blurb: 'Brownstones, strollers, and 14 kinds of oat milk.' },
   bedstuy: { name: 'Bed-Stuy', color: '#ffb23f', blurb: 'Stoops, murals, community fridges, and the best gossip in the borough.' },
   bushwick: { name: 'Bushwick', color: '#a46bff', blurb: 'Warehouses, galleries, and at least one guy building a theremin.' },
+  crownheights: { name: 'Crown Heights', color: '#3fd0a0', blurb: 'Steel pans, roti shops, and a tenant union that wins.' },
+  redhook: { name: 'Red Hook', color: '#ff6b4a', blurb: 'Piers, pupusas, and floodwater nobody planned for.' },
+  coneyisland: { name: 'Coney Island', color: '#ffd23f', blurb: 'The boardwalk, the beach, and a Ferris wheel older than your landlord.' },
+  flatbush: { name: 'Flatbush', color: '#ff9a3f', blurb: 'Beef patties, block parties, and the loudest dollar vans in the borough.' },
+  sunsetpark: { name: 'Sunset Park', color: '#5ab8ff', blurb: 'Tacos, dim sum, and the best skyline view nobody posts.' },
 };
 
 export type ItemId =
