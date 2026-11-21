@@ -165,7 +165,7 @@ export function makeBuildingShadow(scene: Phaser.Scene, b: BuildingDef) {
     c.filter = 'blur(4px)';
     c.fillStyle = `rgba(14,8,22,${SUN_SHADOW.alpha})`;
     const x0 = PAD, y0 = PAD, x1 = PAD + b.w, y1 = PAD + b.h;
-    if (b.type === 'arena') { for (let k = 0; k <= 6; k++) { ell(c, (x0 + x1) / 2 + (dx * k) / 6, (y0 + y1) / 2 + (dy * k) / 6, b.w / 2, b.h / 2); c.fill(); } return; }
+    if (b.type === 'arena') { for (let k = 0; k <= 6; k++) { rr(c, x0 + (dx * k) / 6, y0 + (dy * k) / 6, b.w, b.h, b.h * 0.42); c.fill(); } return; }
     c.beginPath(); c.moveTo(x0, y0); c.lineTo(x1, y0); c.lineTo(x1 + dx, y0 + dy); c.lineTo(x1 + dx, y1 + dy); c.lineTo(x0 + dx, y1 + dy); c.lineTo(x0, y1); c.closePath(); c.fill();
   });
 }
@@ -652,43 +652,69 @@ export function makeBridgeTower(scene: Phaser.Scene, key: string, w: number, h: 
  * weathered-steel ribbons, a green roof, and the bright south face of the bowl.
  */
 function drawArena(c: Ctx, b: BuildingDef) {
-  const { w, h } = b, cx = w / 2, cy = h / 2, rx = w / 2 - 1, ry = h / 2 - 1;
-  // body: rusted steel, darker toward the top
-  c.save(); c.beginPath(); c.ellipse(cx, cy, rx, ry, 0, 0, Math.PI * 2); c.clip();
-  c.fillStyle = lg(c, 0, 0, 0, h, [[0, '#4a2a1e'], [0.55, '#7a4630'], [1, '#a8643e']]); c.fillRect(0, 0, w, h);
-  // the ribbons: offset ellipses sweeping around the bowl
-  for (let k = 0; k < 9; k++) {
-    const t = k / 9;
-    c.strokeStyle = k % 2 ? 'rgba(30,14,8,.55)' : 'rgba(214,140,92,.35)'; c.lineWidth = k % 2 ? 2.2 : 1.4;
-    c.beginPath(); c.ellipse(cx + Math.sin(t * 6) * 6, cy + ry * 0.18 + t * 6, rx * (0.98 - t * 0.04), ry * (0.95 - t * 0.05), Math.sin(t * 3) * 0.05, 0.05 * Math.PI, 0.95 * Math.PI); c.stroke();
+  // From above, the real arena is a big rounded rectangle: a lawn of green roof
+  // edged by a thin band of rusted steel ribbons, with its name painted on the grass.
+  const { w, h } = b, R = h * 0.42;
+  // ribbon band (thicker along the south face, where you see the facade)
+  c.fillStyle = lg(c, 0, 0, 0, h, [[0, '#5a3020'], [0.7, '#7a4630'], [1, '#9a5a38']]); rr(c, 1, 1, w - 2, h - 2, R); c.fill();
+  for (let k = 0; k < 7; k++) {
+    c.strokeStyle = k % 2 ? 'rgba(28,12,6,.6)' : 'rgba(222,150,100,.45)'; c.lineWidth = k % 2 ? 1.6 : 1;
+    const i = 2 + k * 1.6; rr(c, i, i, w - i * 2, h - i * 2 + k * 0.9, R - i); c.stroke();
   }
-  // lattice fins on the visible south face
-  c.strokeStyle = 'rgba(40,20,12,.35)'; c.lineWidth = 1;
-  for (let a = 0.08; a < 0.92; a += 0.035) { const ang = a * Math.PI, x = cx + Math.cos(ang) * rx, y = cy + Math.sin(ang) * ry; c.beginPath(); c.moveTo(x, y); c.lineTo(cx + Math.cos(ang) * rx * 0.74, cy + Math.sin(ang) * ry * 0.5); c.stroke(); }
+  c.save(); rr(c, 1, 1, w - 2, h - 2, R); c.clip();
+  c.strokeStyle = 'rgba(30,14,8,.45)'; c.lineWidth = 1; for (let x = R * 0.6; x < w - R * 0.6; x += 5) line(c, x, h - 13, x, h - 2);
   c.restore();
-  // green roof, set back and up from the rim
-  const gx = cx, gy = cy - ry * 0.16, grx = rx * 0.72, gry = ry * 0.56;
-  c.fillStyle = '#2e1c14'; ell(c, gx, gy, grx + 4, gry + 4); c.fill();
-  c.fillStyle = rg(c, gx - grx * 0.2, gy - gry * 0.3, 4, grx, [[0, '#8fb65a'], [1, '#3d6128']]); ell(c, gx, gy, grx, gry); c.fill();
-  c.strokeStyle = 'rgba(30,50,20,.4)'; c.lineWidth = 1; for (let k = 1; k <= 5; k++) { c.beginPath(); c.ellipse(gx, gy, grx * (k / 5), gry * (k / 5), 0, 0, Math.PI * 2); c.stroke(); }
-  // rim highlight + name on the front band
-  c.strokeStyle = 'rgba(255,190,130,.5)'; c.lineWidth = 1.5; c.beginPath(); c.ellipse(cx, cy, rx - 1, ry - 1, 0, 0.1 * Math.PI, 0.9 * Math.PI); c.stroke();
-  if (b.name) { c.fillStyle = 'rgba(14,10,8,.82)'; rr(c, cx - w * 0.28, h - ry * 0.42, w * 0.56, 13, 4); c.fill(); sign(c, b.name, cx, h - ry * 0.42 + 6.5, w * 0.52, 9, '#f2e8d8', 800); }
+  // green roof
+  const gx = 9, gy = 8, gw = w - 18, gh = h - 24, gR = R - 9;
+  c.fillStyle = '#2a170e'; rr(c, gx - 2, gy - 2, gw + 4, gh + 4, gR + 2); c.fill();
+  c.save(); rr(c, gx, gy, gw, gh, gR); c.clip();
+  c.fillStyle = lg(c, 0, gy, 0, gy + gh, [[0, '#7fa64a'], [1, '#5c8236']]); c.fillRect(gx, gy, gw, gh);
+  for (let x = gx; x < gx + gw; x += 12) { c.fillStyle = 'rgba(255,255,220,.06)'; c.fillRect(x, gy, 6, gh); }
+  c.fillStyle = 'rgba(190,200,120,.35)'; c.fillRect(w * 0.52, h * 0.36, w * 0.13, h * 0.2); // the lighter patch
+  c.restore();
+  // the name painted on the roof, plus the crest
+  c.save(); c.globalAlpha = 0.85;
+  c.strokeStyle = '#f4f1e6'; c.lineWidth = 1.5; ell(c, w * 0.5, gy + gh * 0.22, 7, 7); c.stroke();
+  if (b.name) sign(c, b.name, w * 0.5, gy + gh * 0.55, gw * 0.78, 22, '#f4f1e6', 900);
+  c.restore();
+  c.strokeStyle = 'rgba(255,200,150,.45)'; c.lineWidth = 1.2; rr(c, 1.5, 1.5, w - 3, h - 3, R); c.stroke();
 }
 
-/** The oculus: Barclays' cantilevered canopy with the open ring and LED band, drawn as an overhang you walk under. */
+/**
+ * The oculus: Barclays' cantilevered canopy over the plaza at Flatbush & Atlantic.
+ * Its ribbons sweep out of the arena's corner (top right of this texture) and wrap
+ * a big oval opening, with the LED ticker on the rim.
+ */
 export function makeOculus(scene: Phaser.Scene, key: string, w: number, h: number) {
   if (scene.textures.exists(key)) return;
   const cv = scene.textures.createCanvas(key, w, h)!; const c = cv.getContext();
-  const cx = w / 2, cy = h / 2, rx = w / 2 - 3, ry = h / 2 - 3;
-  c.fillStyle = 'rgba(14,8,22,.25)'; c.beginPath(); c.ellipse(cx + 10, cy + 12, rx, ry, 0, 0, Math.PI * 2); c.fill();
-  const g = c.createLinearGradient(0, 0, w, h); g.addColorStop(0, '#5a3424'); g.addColorStop(1, '#2a1810');
-  c.fillStyle = g; c.beginPath(); c.ellipse(cx, cy, rx, ry, 0, 0, Math.PI * 2); c.fill();
-  c.strokeStyle = 'rgba(214,140,92,.35)'; c.lineWidth = 1; for (let k = 1; k <= 4; k++) { c.beginPath(); c.ellipse(cx, cy, rx * (0.55 + k * 0.1), ry * (0.55 + k * 0.1), 0, 0, Math.PI * 2); c.stroke(); }
-  // the open oculus
-  c.globalCompositeOperation = 'destination-out'; c.beginPath(); c.ellipse(cx, cy, rx * 0.42, ry * 0.42, 0, 0, Math.PI * 2); c.fill(); c.globalCompositeOperation = 'source-over';
-  // LED ticker ring around the opening
-  c.strokeStyle = '#f2c46a'; c.lineWidth = 3; c.beginPath(); c.ellipse(cx, cy, rx * 0.45, ry * 0.45, 0, 0, Math.PI * 2); c.stroke();
-  c.fillStyle = 'rgba(255,220,150,.9)'; for (let i = 0; i < 28; i++) { const a = (i / 28) * Math.PI * 2; c.beginPath(); c.arc(cx + Math.cos(a) * rx * 0.88, cy + Math.sin(a) * ry * 0.88, 1.3, 0, Math.PI * 2); c.fill(); }
+  const cx = w * 0.44, cy = h * 0.5, rx = w * 0.4, ry = h * 0.42, rot = -0.22;
+  const oval = (x: number, y: number, a: number, b2: number) => { c.beginPath(); c.ellipse(x, y, a, b2, rot, 0, Math.PI * 2); };
+  c.fillStyle = 'rgba(14,8,22,.22)'; oval(cx + 10, cy + 12, rx, ry); c.fill();
+  // ribbon tail reaching back to the arena
+  c.lineCap = 'round';
+  for (let k = 0; k < 6; k++) {
+    c.strokeStyle = k % 2 ? '#3a2014' : '#7a4630'; c.lineWidth = 5 - k * 0.4;
+    c.beginPath(); c.moveTo(cx + rx * 0.55, cy - ry * 0.55 + k * 4); c.quadraticCurveTo(w * 0.9, h * 0.3 + k * 3, w - 2, h * 0.3 + k * 6); c.stroke();
+  }
+  const g = c.createLinearGradient(0, 0, w, h); g.addColorStop(0, '#6a3c26'); g.addColorStop(1, '#2e1a10');
+  c.fillStyle = g; oval(cx, cy, rx, ry); c.fill();
+  for (let k = 1; k <= 5; k++) { c.strokeStyle = k % 2 ? 'rgba(222,150,100,.4)' : 'rgba(20,8,4,.45)'; c.lineWidth = 1.2; oval(cx, cy, rx * (0.6 + k * 0.08), ry * (0.6 + k * 0.08)); c.stroke(); }
+  // the big oval opening, set toward the street side
+  const hx = cx - rx * 0.08, hy = cy + ry * 0.02, hrx = rx * 0.56, hry = ry * 0.5;
+  c.globalCompositeOperation = 'destination-out'; oval(hx, hy, hrx, hry); c.fill(); c.globalCompositeOperation = 'source-over';
+  c.strokeStyle = '#f2c46a'; c.lineWidth = 2.5; oval(hx, hy, hrx + 2, hry + 2); c.stroke();
+  c.fillStyle = 'rgba(255,220,150,.9)';
+  for (let i = 0; i < 30; i++) { const a = (i / 30) * Math.PI * 2, px = Math.cos(a) * rx * 0.9, py = Math.sin(a) * ry * 0.9; c.beginPath(); c.arc(cx + px * Math.cos(rot) - py * Math.sin(rot), cy + px * Math.sin(rot) + py * Math.cos(rot), 1.2, 0, Math.PI * 2); c.fill(); }
   cv.refresh();
+}
+
+/** The terracotta paving of the arena plaza, under the oculus. */
+export function makeArenaPlaza(scene: Phaser.Scene, key: string, w: number, h: number) {
+  if (scene.textures.exists(key)) return;
+  const cv = scene.textures.createCanvas(key, w, h)!; const c = cv.getContext();
+  c.fillStyle = '#a2523a'; c.beginPath(); c.ellipse(w / 2, h / 2, w / 2 - 1, h / 2 - 1, -0.22, 0, Math.PI * 2); c.fill();
+  c.save(); c.clip(); c.strokeStyle = 'rgba(60,20,10,.18)'; c.lineWidth = 1;
+  for (let x = -h; x < w + h; x += 10) { c.beginPath(); c.moveTo(x, 0); c.lineTo(x + h * 0.5, h); c.stroke(); }
+  c.restore(); cv.refresh();
 }

@@ -12,7 +12,7 @@ import { missions } from '../systems/missions';
 import { ui } from '../ui/ui';
 import { BLOCK_H, BLOCK_W, ROAD, T, TILE, WORLD_H, WORLD_W, districtAt, generateLayout, type BuildingDef, type WorldLayout } from '../world/layout';
 import { makeProps } from '../world/textures';
-import { buildingKey, makeBikeRider, makeBridgeTower, makeBuilding, makeOculus, makeCharacter, makePlayerMarker, makeStreetProps, makeTiles, makeVehicles, shadowKey, SHADOW_PAD } from '../world/golden';
+import { buildingKey, makeBikeRider, makeBridgeTower, makeBuilding, makeOculus, makeArenaPlaza, makeCharacter, makePlayerMarker, makeStreetProps, makeTiles, makeVehicles, shadowKey, SHADOW_PAD } from '../world/golden';
 
 interface Interactable {
   id: string; x: number; y: number; r: number;
@@ -158,13 +158,16 @@ export class WorldScene extends Phaser.Scene {
       img.setDepth(b.y + b.h);
       // Slightly inset collision so the player can hug facades
       (img.body as Phaser.Physics.Arcade.StaticBody).setSize(b.w - 4, b.h - 6).setOffset(2, 0);
-      if (b.type === 'arena') (img.body as Phaser.Physics.Arcade.StaticBody).setSize(b.w * 0.84, b.h * 0.78).setOffset(b.w * 0.08, b.h * 0.1);
+      if (b.type === 'arena') (img.body as Phaser.Physics.Arcade.StaticBody).setSize(b.w * 0.94, b.h * 0.86).setOffset(b.w * 0.03, b.h * 0.04);
     }
     // Barclays' oculus canopy reaches out over the plaza toward Flatbush; you walk under it
     const arena = this.layout.buildings.find((x) => x.type === 'arena');
     if (arena) {
-      makeOculus(this, 'oculus', 210, 120);
-      this.add.image(arena.x + 24, arena.y + arena.h + 6, 'oculus').setDepth(5e4).setAlpha(0.96);
+      // It sits in the triangle at Flatbush & Atlantic, its ribbons running into the arena's west end
+      makeOculus(this, 'oculus', 180, 104);
+      makeArenaPlaza(this, 'arena-plaza', 220, 130);
+      this.add.image(arena.x - 50, arena.y + 30, 'arena-plaza').setDepth(-8);
+      this.add.image(arena.x - 58, arena.y + 18, 'oculus').setDepth(5e4).setAlpha(0.96);
     }
     // Flatbush Avenue's diagonal: double yellow center line and crosswalk bars at each end
     const fa = this.layout.spots.flatbushA, fb = this.layout.spots.flatbushB;
