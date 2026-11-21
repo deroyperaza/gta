@@ -453,33 +453,67 @@ export const DIALOGUES: Record<string, Dialogue> = {
     },
   },
 
-  // ============================================================ NAIM · Books Unbanned
+  // ============================================================ NAIM · disability rights, 504 plans, asking the follow-up
   naim: {
-    entries: [{ cond: { notFlag: 'met_naim' }, node: 'intro' }, { node: 'after' }],
+    entries: [
+      { cond: { ...S('march', 1), notFlag: 'pvp_ally_naim' }, node: 'pvp' },
+      { cond: { notFlag: 'met_naim' }, node: 'intro' },
+      { node: 'after' },
+    ],
     nodes: {
+      pvp: {
+        speaker: 'naim', text: 'The disability ally club is in. And we already checked your route: curb cuts on every corner, or we march a different way. A march everybody can\'t get to isn\'t a march.',
+        choices: [{ text: 'Accessible route it is.', effects: { rel: { naim: 4 }, flags: { pvp_ally_naim: true }, inc: { pvp_crowd: 6 }, toast: 'NAIM IS IN · +6 MARCHERS' } }],
+      },
       intro: {
-        speaker: 'naim', text: 'I\'m on page 400 of a book with dragons, a war college and a LOT of feelings. Did you know some places try to ban books like this?',
+        speaker: 'naim', text: 'I have ADHD. Some people call it a disorder. I call it a superpower: I notice everything. Like the fact that some schools in this city still don\'t have elevators.',
         choices: [
-          { text: 'Ban books? Where?', next: 'ban', effects: { rel: { naim: 5 }, flags: { met_naim: true } } },
-          { text: 'Recommend me something.', next: 'rec', effects: { flags: { met_naim: true } } },
-          { text: 'I heard you bake.', next: 'bake', effects: { rel: { naim: 3 }, flags: { met_naim: true } } },
+          { text: 'No elevators?', next: 'elev', effects: { rel: { naim: 5 }, flags: { met_naim: true } } },
+          { text: 'ADHD is a superpower?', next: 'adhd', effects: { rel: { naim: 5 }, flags: { met_naim: true } } },
+          { text: 'What are you reading?', next: 'books', effects: { flags: { met_naim: true } } },
         ],
       },
-      rec: { speaker: 'naim', text: 'Start with the one with the dragons. Then the other one with the dragons. Then come back and we\'ll talk about the ending. I have notes.', next: 'ban' },
-      bake: { speaker: 'naim', text: 'Banana bread on Sundays. Goalkeeper on Saturdays. Piano when nobody\'s listening. Books always. Anyway, books.', next: 'ban' },
-      ban: { speaker: 'naim', text: 'School libraries all over the country. So Brooklyn Public Library made Books Unbanned: any teen 13 to 21 in the US can get a free eCard and read the books other places took away.', next: 'ban2' },
-      ban2: {
-        speaker: 'naim', text: 'And here in New York, teens can just get a regular library card. Free books. Free dragons. Nobody gets to decide what you\'re allowed to read.',
-        choices: [{ text: 'Getting my card today.', effects: { rel: { naim: 6 }, solidarity: 10, trust: { crownheights: 3 }, toast: 'POCKET CIVICS · BOOKS UNBANNED' } }],
+      adhd: { speaker: 'naim', text: 'My brain runs six tabs at once. Some days that\'s chaos. Most days it means I see what everybody else walks past. And school has to work for brains like mine too.', next: 'p504' },
+      p504: { speaker: 'naim', text: 'Section 504 of a federal civil rights law says public schools have to give students with disabilities accommodations. Extra time, movement breaks, a quieter room. It\'s not a favor. It\'s a right.', next: 'elev' },
+      elev: { speaker: 'naim', text: 'If a kid uses a wheelchair and the science lab is up three flights with no elevator, that kid doesn\'t get science. I\'m in my school\'s disability ally club. We count the stairs. Then we write the letters.', next: 'lander' },
+      lander: { speaker: 'naim', text: 'I once asked Brad Lander, back when he was City Comptroller, how we get elevators into schools. He gave me half an answer. So I asked again. Politely. Until I got the other half.', next: 'lander2' },
+      lander2: {
+        speaker: 'naim', text: 'Here\'s the move: ask your question, listen, then ask the follow-up they hoped you wouldn\'t. "Okay, but when?" works on everybody. Even people with titles.',
+        choices: [{ text: '"Okay, but when?"', effects: { rel: { naim: 6 }, solidarity: 10, trust: { crownheights: 3 }, flags: { naim_504: true }, toast: 'POCKET CIVICS · 504 RIGHTS + ASK THE FOLLOW-UP' } }],
       },
-      after: { speaker: 'naim', text: 'Free library card, free books, free dragons. That\'s the whole pitch. Also, if you need a goalkeeper, I\'m right here.' },
+      books: { speaker: 'naim', text: 'A book with dragons, a war college and a LOT of feelings. Some places try to ban books like this. So Brooklyn Public Library made Books Unbanned: any teen 13 to 21 in the US can get a free eCard.', next: 'books2' },
+      books2: {
+        speaker: 'naim', text: 'And here in New York, teens can just get a regular library card. Free books. Free dragons. Nobody gets to decide what you\'re allowed to read.',
+        choices: [{ text: 'Getting my card today.', effects: { rel: { naim: 4 }, solidarity: 5, flags: { naim_books: true }, toast: 'POCKET CIVICS · BOOKS UNBANNED' } }],
+      },
+      bring: {
+        speaker: 'naim', text: 'Start a club. Ours started with four kids and a sign-up sheet; now teachers come to us. Ask the kid who sits alone at lunch first. Disability rights are everybody\'s rights. Everybody gets older, or breaks a leg.',
+        choices: [{ text: 'Sign-up sheet. Got it.', effects: { flags: { naim_bring: true }, solidarity: 5, toast: 'BRING A FRIEND · START A CLUB' } }],
+      },
+      after: {
+        speaker: 'naim', text: 'Ask the question. Then ask "okay, but when?" That\'s the whole trick.',
+        choices: [
+          { text: 'Tell me about 504 and the elevators.', next: 'adhd', cond: { notFlag: 'naim_504' } },
+          { text: 'What are you reading?', next: 'books', cond: { notFlag: 'naim_books' } },
+          { text: 'How do I get other people involved?', next: 'bring', cond: { notFlag: 'naim_bring' } },
+          { text: 'Later, Naim.' },
+        ],
+      },
     },
   },
 
   // ============================================================ LUCO · who watches the city's money
   luco: {
-    entries: [{ cond: { notFlag: 'met_luco' }, node: 'intro' }, { node: 'after' }],
+    entries: [{ cond: { ...S('march', 1), notFlag: 'pvp_ally_luco' }, node: 'pvp' }, { cond: { notFlag: 'met_luco' }, node: 'intro' }, { node: 'after' }],
     nodes: {
+      pvp: {
+        speaker: 'luco', text: 'I\'ll text the tournament captains. Sixteen teams. Even if half show up, that\'s a crowd. Tell everyone to wear their jerseys. Optics matter.',
+        choices: [{ text: 'Jerseys on. Let\'s go.', effects: { rel: { luco: 4 }, flags: { pvp_ally_luco: true }, inc: { pvp_crowd: 12 }, toast: 'LUCO IS IN · +12 MARCHERS' } }],
+      },
+      bring: {
+        speaker: 'luco', text: 'Give everyone a job. Captains recruit players, players bring families, families bring snacks. Sixteen teams turns into four hundred people. Nobody says no to a job.',
+        choices: [{ text: 'Everybody gets a job.', effects: { flags: { luco_bring: true }, solidarity: 5, toast: 'BRING A FRIEND · GIVE EVERYONE A JOB' } }],
+      },
       intro: {
         speaker: 'luco', text: 'I\'m vibe-coding a soccer manager game. Buy players, build a stadium, go broke, the usual. Want to know who the biggest investor in New York City is?',
         choices: [
@@ -505,15 +539,23 @@ export const DIALOGUES: Record<string, Dialogue> = {
       },
       after: {
         speaker: 'luco', text: 'Follow the money. Then build a game about it. Then run a tournament and give the money away. That\'s my whole business plan.',
-        choices: [{ text: 'Tell me about the tournaments.', next: 'cup', cond: { notFlag: 'luco_cup' } }, { text: 'Later, Luco.' }],
+        choices: [{ text: 'Tell me about the tournaments.', next: 'cup', cond: { notFlag: 'luco_cup' } }, { text: 'How do I get other people involved?', next: 'bring', cond: { notFlag: 'luco_bring' } }, { text: 'Later, Luco.' }],
       },
     },
   },
 
   // ============================================================ VEGA · testify at City Council
   vega: {
-    entries: [{ cond: { notFlag: 'met_vega' }, node: 'intro' }, { node: 'after' }],
+    entries: [{ cond: { ...S('march', 1), notFlag: 'pvp_ally_vega' }, node: 'pvp' }, { cond: { notFlag: 'met_vega' }, node: 'intro' }, { node: 'after' }],
     nodes: {
+      pvp: {
+        speaker: 'vega', text: 'A march needs moves! I\'ll bring my whole dance class. And their grown-ups. And the strollers. That\'s like twenty people and nine strollers.',
+        choices: [{ text: 'Choreograph the march.', effects: { rel: { vega: 4 }, flags: { pvp_ally_vega: true }, inc: { pvp_crowd: 8 }, toast: 'VEGA IS IN · +8 MARCHERS' } }],
+      },
+      bring: {
+        speaker: 'vega', text: 'Ask your friends to dance with you. The grown-ups follow the kids. Then everybody\'s at the rally and nobody remembers being shy.',
+        choices: [{ text: 'Dance first, shy never.', effects: { flags: { vega_bring: true }, solidarity: 5, toast: 'BRING A FRIEND · MAKE IT FUN' } }],
+      },
       intro: {
         speaker: 'vega', text: 'Watch this! *spins* That\'s a pirouette. I didn\'t invent it, but I invented the arms.',
         choices: [
@@ -530,7 +572,10 @@ export const DIALOGUES: Record<string, Dialogue> = {
         speaker: 'vega', text: 'You can even send it in writing. I\'m telling them our block needs an outdoor dance floor. A big one. With lights.',
         choices: [{ text: 'Put me down as a co-signer.', effects: { rel: { vega: 6 }, solidarity: 10, trust: { bushwick: 3 }, toast: 'POCKET CIVICS · TESTIFY AT CITY COUNCIL' } }],
       },
-      after: { speaker: 'vega', text: 'If you can dance in front of people, you can talk in front of the City Council. Same nerves. Better outfit.' },
+      after: {
+        speaker: 'vega', text: 'If you can dance in front of people, you can talk in front of the City Council. Same nerves. Better outfit.',
+        choices: [{ text: 'How do I get other people involved?', next: 'bring', cond: { notFlag: 'vega_bring' } }, { text: 'Later, Vega.' }],
+      },
     },
   },
 

@@ -122,8 +122,8 @@ export const NPCS: NpcDef[] = [
   {
     id: 'naim', name: 'Naim', short: 'Naim', title: 'The Keeper', district: 'crownheights', spot: 'naim', color: '#7fe0ff',
     look: { skin: '#e2b08a', hair: '#2a1c14', style: 'curly', shirt: '#141414', pants: '#2b3a6b', shoes: '#f2f2f2', acc: 'glasses' },
-    bio: 'Goalkeeper on Saturdays, banana bread on Sundays, piano when nobody is listening, and a romantasy book always. Keeps goals out and banned books in.',
-    idle: ['Free library card. Free books. Free dragons.', 'I have opinions about chapter 31.'],
+    bio: 'Calls his ADHD a superpower. Active in student disability and disability-ally clubs, and will politely ask a city official the same question twice. Also: goalkeeper, baker, pianist, romantasy reader.',
+    idle: ['Okay, but when?', 'Count the stairs. Then write the letter.', 'I have opinions about chapter 31.'],
   },
   {
     id: 'luco', name: 'Luco', short: 'Luco', title: 'The Dealmaker', district: 'downtown', spot: 'luco', color: '#9dffb0',

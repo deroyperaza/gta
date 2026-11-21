@@ -28,7 +28,7 @@ export interface MissionDef {
 const f = (k: string) => !!state.flag(k);
 
 /** Mission 3: friends who can bring their people to the march. */
-export const MARCH_ALLIES = ['dee', 'nell', 'jenna', 'juni', 'jon'];
+export const MARCH_ALLIES = ['dee', 'nell', 'jenna', 'juni', 'jon', 'vega', 'naim', 'luco'];
 const alliesIn = () => MARCH_ALLIES.filter((a) => f(`pvp_ally_${a}`)).length;
 
 export const MISSIONS: MissionDef[] = [
@@ -97,7 +97,7 @@ export const MISSIONS: MissionDef[] = [
     ],
     optional: [
       { id: 'crowd', text: 'Bring 14 neighbors', done: () => state.num('pvp_marchers') >= 14, reward: { solidarity: 40, attention: 4 } },
-      { id: 'allies', text: 'Recruit all five allies', done: () => alliesIn() >= 5, reward: { solidarity: 50, power: 1 } },
+      { id: 'allies', text: 'Recruit five allies', done: () => alliesIn() >= 5, reward: { solidarity: 50, power: 1 } },
       { id: 'calm', text: 'Finish with zero tension', done: () => f('pvp_spoke') && state.num('pvp_tension') === 0, reward: { solidarity: 60, trust: { downtown: 5 } } },
     ],
     failIf: () => state.num('pvp_tension') >= 3,
