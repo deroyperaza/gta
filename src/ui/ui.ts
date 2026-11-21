@@ -25,6 +25,8 @@ class UI {
   private typing: { full: string; i: number; timer: number } | null = null;
   private choiceCount = 0;
   private toastQueue: string[] = [];
+  private lastObjText: string | null = null;
+  private peekTimer = 0;
   private toastBusy = false;
   private lastTick = 0;
   private touch = { x: 0, y: 0 };
@@ -36,6 +38,13 @@ class UI {
     bus.on('ui:toast', (t: string) => this.toast(t));
     bus.on('flyers:gained', (n: number) => this.showFlyer('big', n));
     bus.on('flyer:handed', () => this.showFlyer('mini'));
+    // Tap the mission card to fold it to one line (remembered); a new objective opens it for a few seconds
+    try { if (localStorage.getItem('gta-obj-min') === '1') $('#objective').classList.add('min'); } catch { /* storage blocked */ }
+    $('#objective').addEventListener('click', () => {
+      const el = $('#objective'); el.classList.remove('peek');
+      const min = el.classList.toggle('min');
+      try { localStorage.setItem('gta-obj-min', min ? '1' : '0'); } catch { /* storage blocked */ }
+    });
     $('#inventory').addEventListener('click', (e) => { if ((e.target as HTMLElement).closest('.inv-flyers')) this.showFlyer('big'); });
     bus.on('dialogue:show', (d: any) => this.showDialogue(d));
     bus.on('dialogue:end', () => this.hideDialogue());
@@ -241,7 +250,12 @@ class UI {
   private renderObjective() {
     const def = missions.active;
     $('#obj-title').textContent = def ? `MISSION ${def.number} · ${def.title}` : 'FREE ROAM';
-    $('#obj-text').textContent = missions.objectiveText();
+    const text = missions.objectiveText(), el = $('#objective');
+    if (text !== this.lastObjText && this.lastObjText !== null && el.classList.contains('min')) {
+      el.classList.add('peek'); clearTimeout(this.peekTimer); this.peekTimer = window.setTimeout(() => el.classList.remove('peek'), 5000);
+    }
+    this.lastObjText = text;
+    $('#obj-text').textContent = text;
     const m = def ? state.mission(def.id) : null;
     $('#obj-optional').innerHTML = def?.optional && m && m.stage > 0
       ? def.optional.map((o) => `<li class="${m.optionalDone[o.id] ? 'done' : ''}">${m.optionalDone[o.id] ? '★' : '☆'} ${o.text}</li>`).join('') : '';
