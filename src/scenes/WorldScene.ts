@@ -10,7 +10,7 @@ import { Opposition } from '../entities/opposition';
 import { dialogue } from '../systems/dialogue';
 import { missions } from '../systems/missions';
 import { ui } from '../ui/ui';
-import { BLOCK_H, BLOCK_W, GAP_CIRCLE, ROAD, T, TILE, WORLD_H, WORLD_W, districtAt, generateLayout, type BuildingDef, type WorldLayout } from '../world/layout';
+import { BLOCK_H, BLOCK_W, GAP_CIRCLE, gapAxes, ROAD, T, TILE, WORLD_H, WORLD_W, districtAt, generateLayout, type BuildingDef, type WorldLayout } from '../world/layout';
 import { makeProps } from '../world/textures';
 import { buildingKey, makeBikeRider, makeBridgeTower, makeBuilding, makeCharacter, makePlayerMarker, makeStreetProps, makeTiles, makeVehicles, shadowKey, shadowOffset, SHADOW_PAD } from '../world/golden';
 
@@ -167,8 +167,12 @@ export class WorldScene extends Phaser.Scene {
       if (this.textures.exists(`lm-${b.id}`)) {
         // A painted landmark: same footprint and collision, drawn as the sprite standing on the block's edge
         img.setVisible(false);
+        // The Library's entrance is a concave mouth facing the circle (northwest): keep that corner walkable
+        if (b.id === 'centrallib') (img.body as Phaser.Physics.Arcade.StaticBody).setSize(b.w * 0.66, b.h * 0.66).setOffset(b.w * 0.3, b.h * 0.3);
         const art = this.add.image(b.x + b.w / 2, b.y + b.h, `lm-${b.id}`).setOrigin(0.5, 1);
         art.setDisplaySize(b.w, (b.w * art.height) / art.width).setDepth(b.y + b.h);
+        // Collision follows the painted building, not the old footprint (a short sprite leaves no invisible wall above it)
+        if (b.id !== 'centrallib') { const ah = Math.min(b.h, art.displayHeight); (img.body as Phaser.Physics.Arcade.StaticBody).setSize(b.w - 4, ah - 6).setOffset(2, b.h - ah); }
         shd.setVisible(false);
         const { dx, dy } = shadowOffset(b);
         this.miniIgnore.push(this.add.image(art.x + dx * 0.5, art.y + dy * 0.5, `lm-${b.id}`).setOrigin(0.5, 1).setDisplaySize(art.displayWidth, art.displayHeight).setTintFill(0x0e0816).setAlpha(0.3).setDepth(-5));
@@ -238,19 +242,21 @@ export class WorldScene extends Phaser.Scene {
     // Grand Army Plaza: the traffic circle and its painted island (arch + Bailey Fountain)
     {
       const g = GAP_CIRCLE, cx = g.x * TILE, cy = g.y * TILE;
+      const oval = (gr: Phaser.GameObjects.Graphics, r: number, pad = 0) => { const { ax, ay } = gapAxes(r); gr.fillEllipse(cx, cy, 2 * ax * TILE + pad, 2 * ay * TILE + pad, 64); };
       const ring = this.add.graphics().setDepth(-9);
-      ring.fillStyle(0xa39c90, 1).fillCircle(cx, cy, (g.rOut + 1.2) * TILE);
-      ring.fillStyle(0x24272a, 1).fillCircle(cx, cy, g.rOut * TILE);
-      ring.fillStyle(0x8f8a80, 1).fillCircle(cx, cy, g.rIn * TILE + 6);
-      const lane = this.add.graphics().setDepth(-6), rm = ((g.rIn + g.rOut) / 2) * TILE;
+      ring.fillStyle(0xa39c90, 1); oval(ring, g.rOut + 1.2);
+      ring.fillStyle(0x24272a, 1); oval(ring, g.rOut);
+      ring.fillStyle(0x8f8a80, 1); oval(ring, g.rIn, 12);
+      const lane = this.add.graphics().setDepth(-6), mid = gapAxes((g.rIn + g.rOut) / 2);
       lane.lineStyle(3, 0xece6da, 0.7);
-      for (let a = 0; a < Math.PI * 2; a += 0.16) lane.beginPath().arc(cx, cy, rm, a, a + 0.08).strokePath();
+      for (let a = 0; a < Math.PI * 2; a += 0.12) lane.lineBetween(cx + Math.cos(a) * mid.ax * TILE, cy + Math.sin(a) * mid.ay * TILE, cx + Math.cos(a + 0.06) * mid.ax * TILE, cy + Math.sin(a + 0.06) * mid.ay * TILE);
       this.miniIgnore.push(ring, lane);
+      const isl = gapAxes(g.rIn);
       if (this.textures.exists('gap-island')) {
-        this.miniIgnore.push(this.add.image(cx, cy + g.rIn * TILE, 'gap-island').setOrigin(0.5, 1).setDepth(-7));
-        // the arch (north end) and the fountain basin are solid; the lawns and paths you can walk
-        for (const [ox, oy, w, h] of [[0, -g.rIn * TILE * 0.62, 120, 40], [0, 0, 70, 50]]) solids.add(this.add.zone(cx + ox, cy + oy, w, h));
-      } else ring.fillStyle(0x58b956, 1).fillCircle(cx, cy, g.rIn * TILE);
+        // Painted from the Google satellite view, north up: JFK bust at the tip, Bailey Fountain, the arch at the south end
+        this.miniIgnore.push(this.add.image(cx, cy, 'gap-island').setDisplaySize(2 * isl.ax * TILE, 2 * isl.ay * TILE).setDepth(-7));
+        for (const [ox, oy, w, h] of [[0, isl.ay * TILE * 0.66, 90, 50], [0, -isl.ay * TILE * 0.4, 56, 64]]) solids.add(this.add.zone(cx + ox, cy + oy, w, h));
+      } else { ring.fillStyle(0x58b956, 1); oval(ring, g.rIn); }
     }
     for (const l of this.layout.labels) {
       const t = this.add.text(l.x, l.y - 40, l.text.toUpperCase().split('').join(' '), { fontFamily: '"Helvetica Neue", Inter, Arial, sans-serif', fontSize: '22px', fontStyle: '300', color: '#f4ece0', shadow: { offsetX: 0, offsetY: 2, color: 'rgba(0,0,0,.6)', blur: 6, fill: true } }).setOrigin(0.5).setDepth(5).setAlpha(0.8).setRotation(l.angle ?? 0);

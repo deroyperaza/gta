@@ -42,8 +42,8 @@ export interface PropDef { kind: string; x: number; y: number; solid?: boolean; 
 export interface Spot { x: number; y: number }
 
 type BlockKind = 'row' | 'park' | 'pond' | 'plaza' | 'garden' | 'court' | 'lot' | 'beach' | 'waterfront' | 'riverfront' | 'flatbush';
-interface Landmark { id: string; type: BuildingType; w: number; name: string; spot?: string }
-interface BlockSpec { kind: BlockKind; name?: string; landmarks?: Landmark[]; noFountain?: boolean; }
+interface Landmark { id: string; type: BuildingType; w: number; name: string; spot?: string; h?: number; at?: [number, number] }
+interface BlockSpec { kind: BlockKind; name?: string; landmarks?: Landmark[]; noFountain?: boolean; landmarksSouth?: boolean }
 
 export function districtOfBlock(c: number, r: number): District {
   // Row 0 is the East River waterfront (Brooklyn Heights to Williamsburg).
@@ -75,8 +75,8 @@ const BLOCKS: Record<string, BlockSpec> = {
   '0,1': { kind: 'row', landmarks: [
     { id: 'courthouse', type: 'courthouse', w: 7, name: 'HALL OF MILD JUSTICE' },
     { id: 'police', type: 'police', w: 6, name: 'PRECINCT HQ' } ] },
-  '1,1': { kind: 'plaza', name: 'Borough Plaza', landmarks: [
-    { id: 'boroughhall', type: 'government', w: 9, name: 'BOROUGH HALL', spot: 'gary' } ] },
+  '1,1': { kind: 'plaza', name: 'Borough Plaza', landmarksSouth: true, landmarks: [ // real plaza + fountain are north of the hall
+    { id: 'boroughhall', type: 'government', w: 9, h: 7, name: 'BOROUGH HALL', spot: 'gary' } ] },
   '0,2': { kind: 'row', landmarks: [
     { id: 'synergy', type: 'tower', w: 5, name: 'SYNERGY TOWER', spot: 'luco' },
     { id: 'permits', type: 'government', w: 5, name: 'DEPT. OF PERMITS & DELAYS', spot: 'bridgette' },
@@ -89,8 +89,7 @@ const BLOCKS: Record<string, BlockSpec> = {
     { id: 'coop', type: 'coop', w: 6, name: 'THE RIGHTEOUS TURNIP CO-OP', spot: 'brendan' },
     { id: 'pour', type: 'coffee', w: 4, name: 'POUR DECISIONS' },
     { id: 'candles', type: 'boutique', w: 5, name: 'CANDLES FOR DOGS' } ] },
-  '2,3': { kind: 'plaza', noFountain: true, landmarks: [ // the Library's plaza; the circle itself is GAP_CIRCLE
-    { id: 'centrallib', type: 'library', w: 11, name: 'CENTRAL LIBRARY', spot: 'naim' } ] },
+  '2,3': { kind: 'row' }, // Plaza St brownstones, northwest of the circle
   '2,4': { kind: 'park', name: 'Prospect Park' },
   '2,5': { kind: 'pond', name: 'Prospect Park' },
   '1,5': { kind: 'garden', name: 'Fifth Ave Community Garden' },
@@ -116,7 +115,7 @@ const BLOCKS: Record<string, BlockSpec> = {
   '4,2': { kind: 'court', name: 'Kingston Courts' },
   '3,3': { kind: 'row', landmarks: [
     { id: 'commcenter', type: 'community', w: 8, name: 'GATES AVE COMMUNITY CENTER', spot: 'hattie' } ] },
-  '4,3': { kind: 'row' },
+  '4,3': { kind: 'row', landmarks: [{ id: 'roti', type: 'bakery', w: 5, name: 'ROTI & ROTI & ROTI' }] },
   // ---------- BUSHWICK ----------
   '5,1': { kind: 'row', landmarks: [{ id: 'studio9000', type: 'studio', w: 6, name: 'STUDIO 9000', spot: 'jon' }] },
   '5,2': { kind: 'row', landmarks: [
@@ -133,10 +132,12 @@ const BLOCKS: Record<string, BlockSpec> = {
     { id: 'plglegal', type: 'government', w: 6, name: 'FREE TENANT LAWYERS, 2ND FL' },
     { id: 'plgcoffee', type: 'coffee', w: 4, name: 'LIMESTONE COFFEE' } ] },
   // ---------- CROWN HEIGHTS ----------
-  '3,4': { kind: 'row', landmarks: [
-    { id: 'paradehq', type: 'community', w: 7, name: 'LABOR DAY PARADE HQ' },
-    { id: 'roti', type: 'bakery', w: 5, name: 'ROTI & ROTI & ROTI' } ] },
-  '4,4': { kind: 'row', landmarks: [{ id: 'chtenants', type: 'tenant', w: 7, name: 'CROWN HEIGHTS TENANT UNION' }] },
+  // Central Library sits in the wedge between Flatbush and Eastern Pkwy, its entrance facing the circle (northwest)
+  '3,4': { kind: 'plaza', noFountain: true, landmarks: [
+    { id: 'centrallib', type: 'library', w: 9, h: 10, at: [6, 2], name: 'CENTRAL LIBRARY', spot: 'naim' } ] },
+  '4,4': { kind: 'row', landmarks: [
+    { id: 'paradehq', type: 'community', w: 7, name: 'LABOR DAY PARADE HQ' }, // on Eastern Pkwy, where the parade runs
+    { id: 'chtenants', type: 'tenant', w: 7, name: 'CROWN HEIGHTS TENANT UNION' } ] },
   '5,4': { kind: 'row', landmarks: [
     { id: 'farmacy', type: 'coffee', w: 5, name: 'FRANKLIN AVE FARMACY' },
     { id: 'panyard', type: 'studio', w: 6, name: 'STEEL PAN YARD' } ] },
@@ -234,7 +235,12 @@ const AVENUES: { name: string; pts: { x: number; y: number }[]; hw: number }[] =
  * Grand Army Plaza: a traffic circle where Flatbush comes down past the park and
  * Eastern Parkway sets off east. The island (arch + Bailey Fountain) is a painted sprite.
  */
-export const GAP_CIRCLE = { x: I(3, 4).x, y: I(3, 4).y, rIn: 4.5, rOut: 7.5 };
+// It's an oval, longer north-south, like the real one. Distances use an ellipse-normalized radius:
+// mx/my are the ring's mid-line semi-axes, m their mean; rIn/rOut bound the roadway in that metric.
+const GAP_M = (4.893 + 7.406) / 2;
+export const GAP_CIRCLE = { x: I(3, 4).x, y: I(3, 4).y, mx: 4.893, my: 7.406, rIn: GAP_M - 1.5, rOut: GAP_M + 1.5 };
+/** Semi-axes (tiles) of the oval at normalized radius r */
+export const gapAxes = (r: number) => ({ ax: (GAP_CIRCLE.mx * r) / GAP_M, ay: (GAP_CIRCLE.my * r) / GAP_M });
 const SIDEWALK_W = 1.2;
 function segDist(x: number, y: number, a: { x: number; y: number }, b: { x: number; y: number }) {
   const dx = b.x - a.x, dy = b.y - a.y, t = Math.max(0, Math.min(1, ((x - a.x) * dx + (y - a.y) * dy) / (dx * dx + dy * dy)));
@@ -244,10 +250,10 @@ function segDist(x: number, y: number, a: { x: number; y: number }, b: { x: numb
 function aveDist(tx: number, ty: number) {
   let best = Infinity;
   for (const a of AVENUES) for (let i = 1; i < a.pts.length; i++) best = Math.min(best, segDist(tx + 0.5, ty + 0.5, a.pts[i - 1], a.pts[i]) - a.hw);
-  const g = GAP_CIRCLE, r = Math.hypot(tx + 0.5 - g.x, ty + 0.5 - g.y);
+  const g = GAP_CIRCLE, r = gapR(tx, ty);
   return Math.min(best, Math.abs(r - (g.rIn + g.rOut) / 2) - (g.rOut - g.rIn) / 2);
 }
-const gapR = (tx: number, ty: number) => Math.hypot(tx + 0.5 - GAP_CIRCLE.x, ty + 0.5 - GAP_CIRCLE.y);
+function gapR(tx: number, ty: number) { return Math.hypot((tx + 0.5 - GAP_CIRCLE.x) / GAP_CIRCLE.mx, (ty + 0.5 - GAP_CIRCLE.y) / GAP_CIRCLE.my) * GAP_M; }
 const onAve = (tx: number, ty: number) => aveDist(tx, ty) <= SIDEWALK_W + 0.4 || gapR(tx, ty) <= GAP_CIRCLE.rOut + SIDEWALK_W + 0.4;
 
 export function generateLayout(): WorldLayout {
@@ -324,7 +330,7 @@ export function generateLayout(): WorldLayout {
     if (rand() < 0.6) props.push({ kind: 'hydrant', x: px(bx) + 18, y: px(by + bh - 1) + 6 });
     if (rand() < 0.5) props.push({ kind: 'trash', x: px(bx + bw - 1) + 12, y: px(by + 1) + 20 });
 
-    if (spec.name) labels.push({ text: spec.name, x: cxp, y: cyp });
+    if (spec.name) labels.push({ text: spec.name, x: cxp, y: spec.landmarksSouth ? px(by + 4) : cyp }); // keep the name on open ground
 
     if (spec.kind === 'park' || spec.kind === 'pond') {
       for (let y = by + 1; y < by + bh - 1; y++) for (let x = bx + 1; x < bx + bw - 1; x++) set(x, y, T.GRASS);
@@ -367,18 +373,21 @@ export function generateLayout(): WorldLayout {
     if (spec.kind === 'plaza') {
       fill(T.PLAZA);
       for (let y = by + 1; y < by + bh - 1; y++) for (let x = bx + 1; x < bx + bw - 1; x++) set(x, y, T.PLAZA);
-      if (!spec.noFountain) props.push({ kind: 'fountain', x: cxp, y: cyp + 80, solid: true });
-      props.push({ kind: 'bench', x: cxp - 160, y: cyp + 120 });
-      props.push({ kind: 'bench', x: cxp + 160, y: cyp + 120 });
-      if (spec.name === 'Borough Plaza') spots.plazaSpawn = { x: cxp - 60, y: cyp + 190 };
+      const south = !!spec.landmarksSouth, fy = south ? cyp - 110 : cyp + 80; // the open plaza sits opposite the landmarks
+      if (!spec.noFountain) props.push({ kind: 'fountain', x: cxp, y: fy, solid: true });
+      props.push({ kind: 'bench', x: cxp - 160, y: fy + 40 });
+      props.push({ kind: 'bench', x: cxp + 160, y: fy + 40 });
+      if (spec.name === 'Borough Plaza') spots.plazaSpawn = south ? { x: cxp - 150, y: fy + 20 } : { x: cxp - 60, y: cyp + 190 }; // open plaza, beside the fountain
       // Landmarks side by side across the top of the plaza
       const lms = spec.landmarks ?? [], gap = TILE;
       let lx = cxp - (lms.reduce((t, l) => t + l.w * TILE, 0) + gap * (lms.length - 1)) / 2;
       for (const lm of lms) {
-        const w = lm.w * TILE, h = (lm.type === 'arch' ? 4 : 5) * TILE, x = lx, y = iy * TILE;
+        const w = lm.w * TILE, h = (lm.h ?? (lm.type === 'arch' ? 4 : 5)) * TILE;
+        const x = lm.at ? px(bx + lm.at[0]) : lx, y = lm.at ? px(by + lm.at[1]) : south ? (iy + ih) * TILE - h : iy * TILE;
         buildings.push({ id: lm.id, type: lm.type, name: lm.name, district: dist, x, y, w, h, variant: 0 });
         markBlocked(blocked, x, y, w, h);
-        if (lm.spot) spots[lm.spot] = { x: lms.length > 1 ? x + w / 2 : cxp + 120, y: y + h + 48 };
+        if (lm.spot) spots[lm.spot] = lm.at ? { x: x + w * 0.16, y: y + h * 0.2 } // in the mouth of the entrance
+          : { x: lms.length > 1 ? x + w / 2 : cxp + 120, y: south ? y - 44 : y + h + 48 };
         lx += w + gap;
       }
       continue;
@@ -476,7 +485,7 @@ export function generateLayout(): WorldLayout {
   for (let x = Math.ceil(I(3, 4).x) + 2; x < MAP_W - 2; x += 3) if (x % BLOCK_W >= ROAD + 1) props.push({ kind: 'tree', x: x * TILE + 16, y: (I(3, 4).y - 3) * TILE + 20, variant: x % 3 });
   for (let i = props.length - 1; i >= 0; i--) if (!clearOf(props[i])) props.splice(i, 1);
   spots.gap = { x: GAP_CIRCLE.x * TILE, y: GAP_CIRCLE.y * TILE };
-  labels.push({ text: 'Grand Army Plaza', x: GAP_CIRCLE.x * TILE, y: (GAP_CIRCLE.y + GAP_CIRCLE.rOut + 2.6) * TILE });
+  labels.push({ text: 'Grand Army Plaza', x: GAP_CIRCLE.x * TILE, y: (GAP_CIRCLE.y + gapAxes(GAP_CIRCLE.rOut).ay + 2.6) * TILE });
   labels.push({ text: 'Eastern Pkwy', x: (I(5, 4).x + 11) * TILE, y: I(5, 4).y * TILE + 40 });
 
   // The East River across the north edge, a promenade along the shore,
@@ -493,7 +502,7 @@ export function generateLayout(): WorldLayout {
   dock('dock-crownheights', 5, 4, 15); dock('dock-redhook', 0, 3, 15); dock('dock-coney', 7, 6, 15); dock('dock-flatbush', 4, 6, 3); dock('dock-sunsetpark', 1, 6, 15); dock('dock-plg', 4, 5, 15); dock('dock-waterfront', 2, 0, 15);
   // Vendors
   spots.churro = { x: 8 * TILE, y: (4 * BLOCK_H + ROAD + 6) * TILE + 20 };
-  spots.halal = { x: spots.plazaSpawn.x + 260, y: spots.plazaSpawn.y + 10 };
+  spots.halal = { x: spots.plazaSpawn.x - 90, y: spots.plazaSpawn.y + 70 }; // west side of the plaza, clear of Flatbush
   props.push({ kind: 'cart', x: (BLOCK_W * 2 - 2) * TILE, y: (BLOCK_H * 4 + 9) * TILE, variant: 1, solid: true });
   props.push({ kind: 'truck', x: (BLOCK_W * 4 + 10) * TILE, y: (BLOCK_H * 3 + ROAD + 14) * TILE + 24, solid: true });
 
