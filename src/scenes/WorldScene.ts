@@ -62,6 +62,7 @@ export class WorldScene extends Phaser.Scene {
     // Hand-painted likeness portraits (style-study/portraits.html) win over the generated busts.
     for (const id of ['deroy', 'jenna', 'nell', 'bridgette', 'adrian', 'danae', 'jon', 'emily', 'naim', 'luco', 'vega']) this.load.image(`npc-${id}-bust`, `portraits/${id}.jpg`);
     this.load.image('barclays-sprite', 'sprites/barclays.png');
+    this.load.image('bridge-tower-art', 'sprites/bridgetower.png');
     this.load.image('gap-island', 'sprites/gap.png'); // Grand Army Plaza's island, painted in ChatGPT, keyed
     for (const id of PAINTED_LANDMARKS) this.load.image(`lm-${id}`, `sprites/${id}.png`);
   }
@@ -218,14 +219,19 @@ export class WorldScene extends Phaser.Scene {
     // Brooklyn Bridge: granite tower over the deck (you walk under it) and the cables
     const bs = this.layout.spots.bridge;
     if (bs) {
-      makeBridgeTower(this, 'bridge-tower', 230, 150);
-      this.add.image(bs.x, bs.y + 20, 'bridge-tower').setOrigin(0.5, 1).setDepth(5e4);
+      // The painted granite tower (two open Gothic arches the walkway runs through); the drawn block is the fallback
+      const painted = this.textures.exists('bridge-tower-art');
+      if (!painted) makeBridgeTower(this, 'bridge-tower', 230, 150);
+      const tw = this.add.image(bs.x, bs.y + 20, painted ? 'bridge-tower-art' : 'bridge-tower').setOrigin(0.5, 1).setDepth(5e4);
+      if (painted) tw.setDisplaySize(210, (210 * tw.height) / tw.width);
+      // The tall painted tower stands near the Brooklyn shore so its top stays inside the world
+      const baseY = Math.max(bs.y + 20, tw.displayHeight + 10); tw.setY(baseY);
       const g = this.add.graphics().setDepth(5e4 - 1);
       g.lineStyle(2, 0xece2c8, 0.85);
-      const topY = bs.y + 20 - 150;
+      const topY = baseY - tw.displayHeight;
       for (const side of [-1, 1]) for (let i = 1; i <= 7; i++) {
-        const ax = bs.x + side * 38;
-        g.lineBetween(ax, topY + 4, bs.x + side * 50, bs.y + 20 + i * 34); // toward Brooklyn
+        const ax = bs.x + side * (painted ? 80 : 38);
+        g.lineBetween(ax, topY + 4, bs.x + side * 50, baseY + i * 20); // toward Brooklyn
         g.lineBetween(ax, topY + 4, bs.x + side * 50, topY - i * 22);       // toward Manhattan
       }
       g.lineStyle(3, 0xd9ccb0, 0.9); for (const side of [-1, 1]) g.lineBetween(bs.x + side * 50, topY - 160, bs.x + side * 50, bs.y + 260);
