@@ -174,6 +174,7 @@ export const SHADOW_PAD = PAD;
 function drawBuilding(c: Ctx, b: BuildingDef) {
   const { w, h, type } = b;
   if (type === 'arena') { drawArena(c, b); return; }
+  if (type === 'supertall') { drawBrooklynTower(c, b); return; }
   seed = (b.x * 31 + b.y * 17) % 2147483647 || 5;
   const wall = WALL[type][b.variant % 4];
   const fh = facadeH(b), rh = h - fh;
@@ -204,15 +205,6 @@ function drawBuilding(c: Ctx, b: BuildingDef) {
   };
 
   switch (type) {
-    case 'supertall': {
-      // The Brooklyn Tower: black glass with bronze faceted fins
-      c.fillStyle = lg(c, 0, rh, 0, h, [[0, '#2a2620'], [1, '#0e0e12']]); c.fillRect(0, rh, w, fh);
-      for (let x = 3; x < w; x += 7) { c.fillStyle = lg(c, x, 0, x + 3, 0, [[0, '#c9a04a'], [1, '#6a4a1e']]); c.fillRect(x, rh, 2.2, fh); }
-      c.strokeStyle = 'rgba(201,160,74,.45)'; c.lineWidth = 1; for (let y = rh + 8; y < h; y += 8) line(c, 0, y, w, y);
-      c.fillStyle = 'rgba(255,200,120,.18)'; c.beginPath(); c.moveTo(w * 0.2, h); c.lineTo(w * 0.5, rh); c.lineTo(w * 0.6, rh); c.lineTo(w * 0.3, h); c.fill();
-      if (b.name) { c.fillStyle = 'rgba(10,10,12,.8)'; c.fillRect(4, h - 18, w - 8, 12); sign(c, b.name, w / 2, h - 12, w - 10, 8, '#d8b060', 800); }
-      break;
-    }
     case 'clocktower': {
       // Williamsburgh Savings Bank: limestone shaft, the big clock, arched windows
       c.fillStyle = lg(c, 0, rh, 0, h, [[0, '#d8bf98'], [1, '#9a7e5a']]); c.fillRect(0, rh, w, fh);
@@ -678,6 +670,43 @@ function drawArena(c: Ctx, b: BuildingDef) {
   if (b.name) sign(c, b.name, w * 0.5, gy + gh * 0.55, gw * 0.78, 22, '#f4f1e6', 900);
   c.restore();
   c.strokeStyle = 'rgba(255,200,150,.45)'; c.lineWidth = 1.2; rr(c, 1.5, 1.5, w - 3, h - 3, R); c.stroke();
+}
+
+/**
+ * The Brooklyn Tower from above: a stretched black hexagon of glass with bronze fins,
+ * rising from a concrete podium beside the domed Dime Savings Bank.
+ */
+function drawBrooklynTower(c: Ctx, b: BuildingDef) {
+  const { w, h } = b, cx = w / 2;
+  // podium
+  c.fillStyle = '#b9b3a7'; rr(c, 1, h * 0.18, w - 2, h * 0.82 - 1, 6); c.fill();
+  c.strokeStyle = 'rgba(60,55,48,.35)'; c.lineWidth = 1; rr(c, 4, h * 0.18 + 3, w - 8, h * 0.82 - 7, 5); c.stroke();
+  // the shaft: roof hexagon lifted toward the sky, base hexagon on the podium
+  const hw = w * 0.34, hh = hw * 1.2, ry = hh + 4, by = ry + h * 0.27;
+  const hex = (y: number) => [[cx, y - hh], [cx + hw, y - hh / 2], [cx + hw, y + hh / 2], [cx, y + hh], [cx - hw, y + hh / 2], [cx - hw, y - hh / 2]];
+  const R = hex(ry), B = hex(by);
+  const face = (i: number, j: number, shade: string) => {
+    c.beginPath(); c.moveTo(R[i][0], R[i][1]); c.lineTo(R[j][0], R[j][1]); c.lineTo(B[j][0], B[j][1]); c.lineTo(B[i][0], B[i][1]); c.closePath();
+    c.fillStyle = shade; c.fill();
+    c.save(); c.clip(); c.strokeStyle = 'rgba(190,150,80,.55)'; c.lineWidth = 1.2;
+    for (let t = 0.08; t < 1; t += 0.11) { const x0 = R[i][0] + (R[j][0] - R[i][0]) * t, y0 = R[i][1] + (R[j][1] - R[i][1]) * t; line(c, x0, y0, x0, y0 + (by - ry)); }
+    c.strokeStyle = 'rgba(170,170,165,.55)'; c.lineWidth = 3; for (const k of [0.35, 0.7]) { c.beginPath(); c.moveTo(R[i][0], R[i][1] + (by - ry) * k); c.lineTo(R[j][0], R[j][1] + (by - ry) * k); c.stroke(); }
+    c.restore();
+  };
+  face(5, 4, '#0c0b0e'); face(4, 3, '#141317'); face(3, 2, '#0a090c'); face(2, 1, '#060508');
+  // roof: pale mechanical deck inside a dark parapet
+  c.beginPath(); R.forEach(([x, y], i) => (i ? c.lineTo(x, y) : c.moveTo(x, y))); c.closePath(); c.fillStyle = '#2a282c'; c.fill(); c.strokeStyle = '#c9a04a'; c.lineWidth = 1.5; c.stroke();
+  c.beginPath(); hex(ry).forEach(([x, y], i) => { const px = cx + (x - cx) * 0.72, py = ry + (y - ry) * 0.72; i ? c.lineTo(px, py) : c.moveTo(px, py); }); c.closePath(); c.fillStyle = '#3c3a3e'; c.fill();
+  c.fillStyle = '#5c5a5c'; c.fillRect(cx - hw * 0.3, ry - hh * 0.28, hw * 0.6, hh * 0.18); c.fillRect(cx - hw * 0.16, ry + hh * 0.06, hw * 0.32, hh * 0.18);
+  c.fillStyle = '#8a8680'; for (let k = 0; k < 4; k++) c.fillRect(cx - hw * 0.26 + k * hw * 0.15, ry - hh * 0.24, hw * 0.08, hh * 0.1);
+  // the Dime Savings Bank: limestone hexagon with its dome and dark oculus
+  const dx = w * 0.4, dy = h * 0.85, dr = Math.min(w * 0.26, h * 0.12);
+  c.beginPath(); for (let i = 0; i < 6; i++) { const a = (i / 6) * Math.PI * 2; i ? c.lineTo(dx + Math.cos(a) * dr * 1.25, dy + Math.sin(a) * dr * 1.25) : c.moveTo(dx + Math.cos(a) * dr * 1.25, dy + Math.sin(a) * dr * 1.25); } c.closePath();
+  c.fillStyle = '#8f8a80'; c.fill(); c.strokeStyle = 'rgba(40,36,30,.5)'; c.lineWidth = 1; c.stroke();
+  c.fillStyle = rg(c, dx - dr * 0.3, dy - dr * 0.3, 2, dr, [[0, '#f2e6c8'], [1, '#c8b48a']]); ell(c, dx, dy, dr, dr); c.fill();
+  c.strokeStyle = 'rgba(120,100,70,.4)'; for (let k = 1; k <= 4; k++) { ell(c, dx, dy, dr * k / 4.6, dr * k / 4.6); c.stroke(); }
+  c.fillStyle = '#1a1612'; ell(c, dx, dy, dr * 0.16, dr * 0.16); c.fill();
+  if (b.name) { c.fillStyle = 'rgba(10,10,12,.82)'; rr(c, w * 0.08, h - 16, w * 0.84, 12, 3); c.fill(); sign(c, b.name, cx, h - 10, w * 0.8, 8, '#d8b060', 800); }
 }
 
 /**
