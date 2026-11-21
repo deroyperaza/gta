@@ -417,7 +417,7 @@ function roofDetails(c: Ctx, b: BuildingDef, w: number, rh: number) {
     case 'warehouse': {
       for (let i = 0; i < Math.floor(w / 36); i++) { c.fillStyle = col('#7fa3b8', 0.85); c.fillRect(U(0.06) + i * 34, V(0.14), 20, rh * 0.5); c.strokeStyle = '#3a3d40'; c.lineWidth = 1; c.strokeRect(U(0.06) + i * 34, V(0.14), 20, rh * 0.5); }
       ac(c, U(0.7), V(0.74), 16);
-      if (b.name === 'FORMER PICKLE FACTORY') { c.save(); c.translate(U(0.5), V(0.82)); c.rotate(-0.05); c.font = '900 26px Impact, "Arial Black", sans-serif'; c.textAlign = 'center'; c.lineWidth = 4; c.strokeStyle = 'rgba(21,21,21,.75)'; c.strokeText('RENT STRIKE', 0, 0); c.fillStyle = 'rgba(255,79,163,.85)'; c.fillText('RENT STRIKE', 0, 0); c.restore(); }
+      if (b.name === 'FORMER PICKLE FACTORY') { c.save(); c.translate(U(0.5), V(0.82)); c.rotate(-0.05); c.font = '900 26px Impact, "Arial Black", sans-serif'; c.textAlign = 'center'; c.lineJoin = 'round'; c.lineWidth = 4; c.strokeStyle = 'rgba(21,21,21,.75)'; c.strokeText('RENT STRIKE', 0, 0); c.fillStyle = 'rgba(255,79,163,.85)'; c.fillText('RENT STRIKE', 0, 0); c.restore(); }
       break;
     }
     case 'community': case 'tenant': case 'coop': case 'nonprofit': {

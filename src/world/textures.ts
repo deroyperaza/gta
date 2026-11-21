@@ -45,7 +45,7 @@ function fitText(c: Ctx, text: string, x: number, y: number, maxW: number, size:
   let s = size;
   do { c.font = `bold ${s}px "Bangers", "Impact", sans-serif`; s--; } while (c.measureText(text).width > maxW && s > 7);
   c.textAlign = 'center'; c.textBaseline = 'middle';
-  if (stroke) { c.lineWidth = 3; c.strokeStyle = stroke; c.strokeText(text, x, y); }
+  if (stroke) { c.lineJoin = 'round'; c.lineWidth = 3; c.strokeStyle = stroke; c.strokeText(text, x, y); }
   c.fillStyle = color; c.fillText(text, x, y);
 }
 

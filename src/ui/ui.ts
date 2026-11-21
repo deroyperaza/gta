@@ -463,6 +463,7 @@ class UI {
     const cv = $<HTMLCanvasElement>('#map-canvas');
     const s = 6; cv.width = MAP_W * s; cv.height = MAP_H * s;
     const c = cv.getContext('2d')!;
+    c.lineJoin = 'round'; c.miterLimit = 2; // no spiky miters on outlined type
     const col: Record<number, string> = {
       [T.ASPHALT]: '#3d3354', [T.LANE_V]: '#3d3354', [T.LANE_H]: '#3d3354', [T.INTERSECTION]: '#3d3354', [T.CROSS_V]: '#4d4366', [T.CROSS_H]: '#4d4366',
       [T.SIDEWALK]: '#a991b2', [T.CURB]: '#a991b2', [T.GRASS]: '#58b956', [T.PLAZA]: '#e8cfa8', [T.GARDEN]: '#8b5a3c', [T.WATER]: '#3aa4f0', [T.YARD]: '#6f9d52', [T.COURT]: '#e8743b', [T.LOT]: '#a59db3', [T.SAND]: '#f0d79a',
