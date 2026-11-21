@@ -403,7 +403,7 @@ export function generateLayout(): WorldLayout {
         const x = lm.at ? px(bx + lm.at[0]) : lx, y = lm.at ? px(by + lm.at[1]) : south ? (iy + ih) * TILE - h : iy * TILE;
         buildings.push({ id: lm.id, type: lm.type, name: lm.name, district: dist, x, y, w, h, variant: 0 });
         markBlocked(blocked, x, y, w, h);
-        if (lm.spot) spots[lm.spot] = lm.at ? { x: x + w * 0.16, y: y + h * 0.2 } // in the mouth of the entrance
+        if (lm.spot) spots[lm.spot] = lm.at ? { x: x + w * 0.04, y: y + h * 0.06 } // on the steps at the entrance, the building's northwest tip
           : { x: lms.length > 1 ? x + w / 2 : cxp + 120, y: south ? y - 44 : y + h + 48 };
         lx += w + gap;
       }

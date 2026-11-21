@@ -167,8 +167,8 @@ export class WorldScene extends Phaser.Scene {
       if (this.textures.exists(`lm-${b.id}`)) {
         // A painted landmark: same footprint and collision, drawn as the sprite standing on the block's edge
         img.setVisible(false);
-        // The Library's entrance is a concave mouth facing the circle (northwest): keep that corner walkable
-        if (b.id === 'centrallib') (img.body as Phaser.Physics.Arcade.StaticBody).setSize(b.w * 0.66, b.h * 0.66).setOffset(b.w * 0.3, b.h * 0.3);
+        // The Library's curved entrance is its northwest tip, facing the plaza: keep the steps there walkable
+        if (b.id === 'centrallib') (img.body as Phaser.Physics.Arcade.StaticBody).setSize(b.w * 0.84, b.h * 0.84).setOffset(b.w * 0.14, b.h * 0.14);
         const art = this.add.image(b.x + b.w / 2, b.y + b.h, `lm-${b.id}`).setOrigin(0.5, 1);
         art.setDisplaySize(b.w, (b.w * art.height) / art.width).setDepth(b.y + b.h);
         // Collision follows the painted building, not the old footprint (a short sprite leaves no invisible wall above it)
