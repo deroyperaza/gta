@@ -237,10 +237,27 @@ const AVENUES: { name: string; pts: { x: number; y: number }[]; hw: number }[] =
  */
 // It's an oval, longer north-south, like the real one. Distances use an ellipse-normalized radius:
 // mx/my are the ring's mid-line semi-axes, m their mean; rIn/rOut bound the roadway in that metric.
-const GAP_M = (4.893 + 7.406) / 2;
-export const GAP_CIRCLE = { x: I(3, 4).x, y: I(3, 4).y, mx: 4.893, my: 7.406, rIn: GAP_M - 1.5, rOut: GAP_M + 1.5 };
+// The island (tree teardrop + the arch's round plaza) is an ellipse of semi-axes ax, ay;
+// the roadway is a band of constant width w around it.
+export const GAP_CIRCLE = { x: I(3, 4).x, y: I(3, 4).y, ax: 2.9, ay: 5.9, w: 3 };
+/** Tile distance outside the island's edge (negative inside). */
+export function gapDist(px: number, py: number) {
+  const { x, y, ax, ay } = GAP_CIRCLE, dx = px - x, dy = py - y, q = Math.hypot(dx / ax, dy / ay);
+  if (q < 1e-6) return -Math.min(ax, ay);
+  const g = Math.hypot(dx / (ax * ax), dy / (ay * ay)) / q; // |grad q|
+  return (q - 1) / g;
+}
+/** Points (tiles) of the outline offset from the island edge by d tiles. */
+export function gapOutline(d: number, n = 96) {
+  const { x, y, ax, ay } = GAP_CIRCLE, pts: { x: number; y: number }[] = [];
+  for (let i = 0; i < n; i++) {
+    const t = (i / n) * Math.PI * 2, ex = ax * Math.cos(t), ey = ay * Math.sin(t);
+    const nx = ex / (ax * ax), ny = ey / (ay * ay), l = Math.hypot(nx, ny);
+    pts.push({ x: x + ex + (nx / l) * d, y: y + ey + (ny / l) * d });
+  }
+  return pts;
+}
 /** Semi-axes (tiles) of the oval at normalized radius r */
-export const gapAxes = (r: number) => ({ ax: (GAP_CIRCLE.mx * r) / GAP_M, ay: (GAP_CIRCLE.my * r) / GAP_M });
 const SIDEWALK_W = 1.2;
 function segDist(x: number, y: number, a: { x: number; y: number }, b: { x: number; y: number }) {
   const dx = b.x - a.x, dy = b.y - a.y, t = Math.max(0, Math.min(1, ((x - a.x) * dx + (y - a.y) * dy) / (dx * dx + dy * dy)));
@@ -250,11 +267,11 @@ function segDist(x: number, y: number, a: { x: number; y: number }, b: { x: numb
 function aveDist(tx: number, ty: number) {
   let best = Infinity;
   for (const a of AVENUES) for (let i = 1; i < a.pts.length; i++) best = Math.min(best, segDist(tx + 0.5, ty + 0.5, a.pts[i - 1], a.pts[i]) - a.hw);
-  const g = GAP_CIRCLE, r = gapR(tx, ty);
-  return Math.min(best, Math.abs(r - (g.rIn + g.rOut) / 2) - (g.rOut - g.rIn) / 2);
+  const g = GAP_CIRCLE, r = gapR(tx, ty) - g.w / 2;
+  return Math.min(best, Math.abs(r) - g.w / 2);
 }
-function gapR(tx: number, ty: number) { return Math.hypot((tx + 0.5 - GAP_CIRCLE.x) / GAP_CIRCLE.mx, (ty + 0.5 - GAP_CIRCLE.y) / GAP_CIRCLE.my) * GAP_M; }
-const onAve = (tx: number, ty: number) => aveDist(tx, ty) <= SIDEWALK_W + 0.4 || gapR(tx, ty) <= GAP_CIRCLE.rOut + SIDEWALK_W + 0.4;
+function gapR(tx: number, ty: number) { return gapDist(tx + 0.5, ty + 0.5); }
+const onAve = (tx: number, ty: number) => aveDist(tx, ty) <= SIDEWALK_W + 0.4 || gapR(tx, ty) <= GAP_CIRCLE.w + SIDEWALK_W + 0.4;
 
 export function generateLayout(): WorldLayout {
   const rand = rng(1312);
@@ -302,7 +319,7 @@ export function generateLayout(): WorldLayout {
       spots.flatbushA = { x: px(bx - 1), y: px(by - 1) }; spots.flatbushB = { x: px(bx + bw + 1), y: px(by + bh + 1) };
       // Barclays in the northeast triangle, its plaza wrapping the corner
       const lm = spec.landmarks![0];
-      const w = 12 * TILE, h = 261, x = px(bx + bw) - w, y = px(by); // sized to the painted sprite (384x261)
+      const w = 12 * TILE, h = 274, x = px(bx + bw) - w, y = px(by); // sized to the painted sprite (384x274)
       buildings.push({ id: lm.id, type: lm.type, name: lm.name, district: dist, x, y, w, h, variant: 0 });
       markBlocked(blocked, x, y, w, h);
       if (lm.spot) spots[lm.spot] = { x: x + w * 0.13, y: y + h * 0.68 }; // on the plaza, just past the oculus
@@ -459,7 +476,7 @@ export function generateLayout(): WorldLayout {
   const ROADS = new Set<number>([T.ASPHALT, T.LANE_V, T.LANE_H, T.INTERSECTION, T.CROSS_V, T.CROSS_H]);
   for (let y = 0; y < MAP_H; y++) for (let x = 0; x < MAP_W; x++) {
     const d = aveDist(x, y);
-    if (gapR(x, y) < GAP_CIRCLE.rIn) { set(x, y, T.PLAZA); continue; } // the island
+    if (gapR(x, y) < 0) { set(x, y, T.PLAZA); continue; } // the island
     if (d <= 0) set(x, y, T.ASPHALT);
     else if (d <= SIDEWALK_W && !ROADS.has(tiles[y][x])) set(x, y, T.SIDEWALK);
     else if (d <= 4.5 && [T.YARD, T.LOT, T.CURB].includes(tiles[y][x]) && !blocked[y][x]) set(x, y, T.PLAZA);
@@ -470,7 +487,7 @@ export function generateLayout(): WorldLayout {
     for (let ty = Math.floor(b.y / TILE); ty < Math.ceil((b.y + b.h) / TILE) && !hit; ty++) for (let tx = Math.floor(b.x / TILE); tx < Math.ceil((b.x + b.w) / TILE); tx++) if (aveDist(tx, ty) <= 0) { hit = true; break; }
     if (hit) { if (b.name) console.warn('Avenue runs through', b.id); else buildings.splice(i, 1); }
   }
-  const clearOf = (p: PropDef) => { const tx = Math.floor(p.x / TILE), ty = Math.floor(p.y / TILE); return aveDist(tx, ty) > SIDEWALK_W && gapR(tx, ty) > GAP_CIRCLE.rOut + SIDEWALK_W; };
+  const clearOf = (p: PropDef) => { const tx = Math.floor(p.x / TILE), ty = Math.floor(p.y / TILE); return aveDist(tx, ty) > SIDEWALK_W && gapR(tx, ty) > GAP_CIRCLE.w + SIDEWALK_W; };
   for (let i = props.length - 1; i >= 0; i--) if (!clearOf(props[i])) props.splice(i, 1);
   for (let y = 0; y < MAP_H; y++) for (let x = 0; x < MAP_W; x++) blocked[y][x] = false;
   for (const b of buildings) markBlocked(blocked, b.x, b.y, b.w, b.h);
@@ -485,7 +502,7 @@ export function generateLayout(): WorldLayout {
   for (let x = Math.ceil(I(3, 4).x) + 2; x < MAP_W - 2; x += 3) if (x % BLOCK_W >= ROAD + 1) props.push({ kind: 'tree', x: x * TILE + 16, y: (I(3, 4).y - 3) * TILE + 20, variant: x % 3 });
   for (let i = props.length - 1; i >= 0; i--) if (!clearOf(props[i])) props.splice(i, 1);
   spots.gap = { x: GAP_CIRCLE.x * TILE, y: GAP_CIRCLE.y * TILE };
-  labels.push({ text: 'Grand Army Plaza', x: GAP_CIRCLE.x * TILE, y: (GAP_CIRCLE.y + gapAxes(GAP_CIRCLE.rOut).ay + 2.6) * TILE });
+  labels.push({ text: 'Grand Army Plaza', x: GAP_CIRCLE.x * TILE, y: (GAP_CIRCLE.y + GAP_CIRCLE.ay + GAP_CIRCLE.w + 2.6) * TILE });
   labels.push({ text: 'Eastern Pkwy', x: (I(5, 4).x + 11) * TILE, y: I(5, 4).y * TILE + 40 });
 
   // The East River across the north edge, a promenade along the shore,

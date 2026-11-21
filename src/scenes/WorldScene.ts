@@ -10,7 +10,7 @@ import { Opposition } from '../entities/opposition';
 import { dialogue } from '../systems/dialogue';
 import { missions } from '../systems/missions';
 import { ui } from '../ui/ui';
-import { BLOCK_H, BLOCK_W, GAP_CIRCLE, gapAxes, ROAD, T, TILE, WORLD_H, WORLD_W, districtAt, generateLayout, type BuildingDef, type WorldLayout } from '../world/layout';
+import { BLOCK_H, BLOCK_W, GAP_CIRCLE, gapOutline, ROAD, T, TILE, WORLD_H, WORLD_W, districtAt, generateLayout, type BuildingDef, type WorldLayout } from '../world/layout';
 import { makeProps } from '../world/textures';
 import { buildingKey, makeBikeRider, makeBridgeTower, makeBuilding, makeCharacter, makePlayerMarker, makeStreetProps, makeTiles, makeVehicles, shadowKey, shadowOffset, SHADOW_PAD } from '../world/golden';
 
@@ -242,21 +242,20 @@ export class WorldScene extends Phaser.Scene {
     // Grand Army Plaza: the traffic circle and its painted island (arch + Bailey Fountain)
     {
       const g = GAP_CIRCLE, cx = g.x * TILE, cy = g.y * TILE;
-      const oval = (gr: Phaser.GameObjects.Graphics, r: number, pad = 0) => { const { ax, ay } = gapAxes(r); gr.fillEllipse(cx, cy, 2 * ax * TILE + pad, 2 * ay * TILE + pad, 64); };
+      const band = (gr: Phaser.GameObjects.Graphics, d: number) => gr.fillPoints(gapOutline(d).map((p) => ({ x: p.x * TILE, y: p.y * TILE })), true);
       const ring = this.add.graphics().setDepth(-9);
-      ring.fillStyle(0xa39c90, 1); oval(ring, g.rOut + 1.2);
-      ring.fillStyle(0x24272a, 1); oval(ring, g.rOut);
-      ring.fillStyle(0x8f8a80, 1); oval(ring, g.rIn, 12);
-      const lane = this.add.graphics().setDepth(-6), mid = gapAxes((g.rIn + g.rOut) / 2);
+      ring.fillStyle(0xa39c90, 1); band(ring, g.w + 1.2);
+      ring.fillStyle(0x24272a, 1); band(ring, g.w);
+      ring.fillStyle(0x8f8a80, 1); band(ring, 0.25);
+      const lane = this.add.graphics().setDepth(-6), mid = gapOutline(g.w / 2, 120);
       lane.lineStyle(3, 0xece6da, 0.7);
-      for (let a = 0; a < Math.PI * 2; a += 0.12) lane.lineBetween(cx + Math.cos(a) * mid.ax * TILE, cy + Math.sin(a) * mid.ay * TILE, cx + Math.cos(a + 0.06) * mid.ax * TILE, cy + Math.sin(a + 0.06) * mid.ay * TILE);
+      for (let i = 0; i < mid.length; i += 2) { const a = mid[i], b = mid[(i + 1) % mid.length]; lane.lineBetween(a.x * TILE, a.y * TILE, b.x * TILE, b.y * TILE); }
       this.miniIgnore.push(ring, lane);
-      const isl = gapAxes(g.rIn);
       if (this.textures.exists('gap-island')) {
-        // Painted from the Google satellite view, north up: JFK bust at the tip, Bailey Fountain, the arch at the south end
-        this.miniIgnore.push(this.add.image(cx, cy, 'gap-island').setDisplaySize(2 * isl.ax * TILE, 2 * isl.ay * TILE).setDepth(-7));
-        for (const [ox, oy, w, h] of [[0, isl.ay * TILE * 0.66, 90, 50], [0, -isl.ay * TILE * 0.4, 56, 64]]) solids.add(this.add.zone(cx + ox, cy + oy, w, h));
-      } else { ring.fillStyle(0x58b956, 1); oval(ring, g.rIn); }
+        // Painted from Deroy's satellite, oblique and street photos, north up: JFK bust at the tip, Bailey Fountain, the arch on its own round plaza to the south
+        this.miniIgnore.push(this.add.image(cx, cy, 'gap-island').setDisplaySize(2 * g.ax * TILE, 2 * g.ay * TILE).setDepth(-7));
+        for (const [ox, oy, w, h] of [[0, g.ay * TILE * 0.62, 80, 46], [0, -g.ay * TILE * 0.4, 44, 56]]) solids.add(this.add.zone(cx + ox, cy + oy, w, h));
+      } else { ring.fillStyle(0x58b956, 1); band(ring, 0); }
     }
     for (const l of this.layout.labels) {
       const t = this.add.text(l.x, l.y - 40, l.text.toUpperCase().split('').join(' '), { fontFamily: '"Helvetica Neue", Inter, Arial, sans-serif', fontSize: '22px', fontStyle: '300', color: '#f4ece0', shadow: { offsetX: 0, offsetY: 2, color: 'rgba(0,0,0,.6)', blur: 6, fill: true } }).setOrigin(0.5).setDepth(5).setAlpha(0.8).setRotation(l.angle ?? 0);

@@ -1,5 +1,18 @@
 import Phaser from 'phaser';
-import { BLOCK_H, BLOCK_W, COLS, RIVER_ROWS, ROWS, TILE, WORLD_H, WORLD_W } from '../world/layout';
+import { BLOCK_H, BLOCK_W, COLS, GAP_CIRCLE, RIVER_ROWS, ROWS, TILE, WORLD_H, WORLD_W } from '../world/layout';
+
+/** Grand Army Plaza: lanes that meet the island swing around it, counterclockwise like a real NYC circle. */
+const GCX = GAP_CIRCLE.x * TILE, GCY = GAP_CIRCLE.y * TILE, GA = (GAP_CIRCLE.ax + GAP_CIRCLE.w / 2) * TILE, GB = (GAP_CIRCLE.ay + GAP_CIRCLE.w / 2) * TILE;
+function aroundGap(axis: 'x' | 'y', dir: 1 | -1, lane: number, along: number) {
+  const c = axis === 'x' ? GCY : GCX, a = axis === 'x' ? GA : GB, b = axis === 'x' ? GB : GA;
+  if (Math.abs(lane - c) > 80) return null;
+  const t = (along - (axis === 'x' ? GCX : GCY)) / a;
+  if (Math.abs(t) >= 1) return null;
+  const side = axis === 'x' ? dir : -dir; // eastbound passes south, westbound north; northbound east, southbound west
+  const r = Math.sqrt(1 - t * t), off = side * b * r, slope = Math.max(-6, Math.min(6, (-side * b * t) / (a * Math.max(r, 0.05))));
+  const mx = axis === 'x' ? dir : dir * slope, my = axis === 'x' ? dir * slope : dir;
+  return { lat: lane + off, rot: Math.atan2(my, mx) + Math.PI / 2 };
+}
 
 /** Avenues end at the waterfront; nothing drives in the river. */
 const SHORE_Y = (RIVER_ROWS + 2) * TILE;
@@ -69,6 +82,10 @@ export class Traffic {
       const max = v.axis === 'y' ? WORLD_H : WORLD_W, min = v.axis === 'y' ? SHORE_Y : 0;
       const wrapped = np > max + 80 ? min - 80 : np < min - 80 ? max + 80 : np;
       if (v.axis === 'y') s.y = wrapped; else s.x = wrapped;
+      const g = aroundGap(v.axis, v.dir, v.lane, wrapped);
+      if (v.axis === 'y') s.x = g ? g.lat : v.lane; else s.y = g ? g.lat : v.lane;
+      s.rotation = g ? g.rot : v.axis === 'y' ? (v.dir === 1 ? Math.PI : 0) : v.dir === 1 ? Math.PI / 2 : -Math.PI / 2;
+      v.shadow.setRotation(s.rotation);
       s.setDepth(s.y + 20);
       v.shadow.setPosition(s.x + 9, s.y + 3);
 
