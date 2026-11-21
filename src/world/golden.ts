@@ -165,6 +165,7 @@ export function makeBuildingShadow(scene: Phaser.Scene, b: BuildingDef) {
     c.filter = 'blur(4px)';
     c.fillStyle = `rgba(14,8,22,${SUN_SHADOW.alpha})`;
     const x0 = PAD, y0 = PAD, x1 = PAD + b.w, y1 = PAD + b.h;
+    if (b.type === 'arena') { for (let k = 0; k <= 6; k++) { ell(c, (x0 + x1) / 2 + (dx * k) / 6, (y0 + y1) / 2 + (dy * k) / 6, b.w / 2, b.h / 2); c.fill(); } return; }
     c.beginPath(); c.moveTo(x0, y0); c.lineTo(x1, y0); c.lineTo(x1 + dx, y0 + dy); c.lineTo(x1 + dx, y1 + dy); c.lineTo(x0 + dx, y1 + dy); c.lineTo(x0, y1); c.closePath(); c.fill();
   });
 }
@@ -172,6 +173,7 @@ export const SHADOW_PAD = PAD;
 
 function drawBuilding(c: Ctx, b: BuildingDef) {
   const { w, h, type } = b;
+  if (type === 'arena') { drawArena(c, b); return; }
   seed = (b.x * 31 + b.y * 17) % 2147483647 || 5;
   const wall = WALL[type][b.variant % 4];
   const fh = facadeH(b), rh = h - fh;
@@ -220,39 +222,6 @@ function drawBuilding(c: Ctx, b: BuildingDef) {
       for (let i = 0; i < 12; i++) { const a = (i / 12) * Math.PI * 2; c.fillStyle = '#2a2418'; ell(c, cx + Math.cos(a) * r * 0.85, cy + Math.sin(a) * r * 0.85, 0.9, 0.9); c.fill(); }
       for (const xx of [w * 0.22, w * 0.5, w * 0.78]) { c.fillStyle = '#2a2420'; c.beginPath(); c.moveTo(xx - 4, h - 8); c.lineTo(xx - 4, cy + r + 14); c.arc(xx, cy + r + 14, 4, Math.PI, 0); c.lineTo(xx + 4, h - 8); c.fill(); }
       if (b.name) { c.fillStyle = 'rgba(250,244,230,.9)'; c.fillRect(3, h - 16, w - 6, 10); sign(c, b.name, w / 2, h - 11, w - 8, 6, '#4a3a22', 800); }
-      break;
-    }
-    case 'arena': {
-      // Weathered-steel lattice bands sweeping around the oculus canopy
-      c.fillStyle = lg(c, 0, rh, 0, h, [[0, '#9a5a38'], [0.5, '#7a4630'], [1, '#4a2a1e']]); c.fillRect(0, rh, w, fh);
-      c.strokeStyle = 'rgba(30,14,8,.55)'; c.lineWidth = 2.2;
-      for (let k = 0; k < 9; k++) { const y = rh + 6 + k * (fh - 10) / 9; c.beginPath(); c.moveTo(0, y); c.bezierCurveTo(w * 0.3, y + 10, w * 0.7, y - 10, w, y + 4); c.stroke(); }
-      c.strokeStyle = 'rgba(255,170,110,.18)'; c.lineWidth = 1; for (let x = 6; x < w; x += 9) line(c, x, rh, x - 6, h);
-      c.fillStyle = '#16100c'; ell(c, w / 2, h - fh * 0.32, w * 0.24, fh * 0.26); c.fill();
-      c.strokeStyle = '#f2c46a'; c.lineWidth = 2; ell(c, w / 2, h - fh * 0.32, w * 0.24, fh * 0.26); c.stroke();
-      c.fillStyle = 'rgba(255,200,120,.55)'; for (let i = 0; i < 14; i++) { const a = (i / 14) * Math.PI * 2; ell(c, w / 2 + Math.cos(a) * w * 0.2, h - fh * 0.32 + Math.sin(a) * fh * 0.2, 1.6, 1.6); c.fill(); }
-      if (b.name) { c.fillStyle = 'rgba(14,10,8,.8)'; c.fillRect(w * 0.2, rh + 4, w * 0.6, 14); sign(c, b.name, w / 2, rh + 11, w * 0.58, 10, '#f2e8d8', 800); }
-      break;
-    }
-    case 'library': {
-      // Limestone with the gilded two-story entrance screen
-      c.fillStyle = lg(c, 0, rh, 0, h, [[0, '#e4dccb'], [1, '#b8ae9a']]); c.fillRect(0, rh, w, fh);
-      const ew = w * 0.32, ex = w / 2 - ew / 2;
-      c.fillStyle = '#2a2016'; c.fillRect(ex, rh + 8, ew, fh - 8);
-      c.strokeStyle = '#d8b04a'; c.lineWidth = 1.4; for (let x = ex + 4; x < ex + ew; x += 5) line(c, x, rh + 10, x, h - 2);
-      for (let y = rh + 14; y < h; y += 9) line(c, ex, y, ex + ew, y);
-      c.fillStyle = '#c9a43a'; c.fillRect(ex - 3, rh + 6, ew + 6, 3);
-      for (const xx of [w * 0.12, w * 0.78]) { c.fillStyle = 'rgba(40,34,26,.35)'; c.fillRect(xx, rh + 16, w * 0.1, fh - 26); }
-      if (b.name) sign(c, b.name, w / 2, rh + 4.5, w - 20, 8, '#8a6a1a', 800);
-      break;
-    }
-    case 'arch': {
-      // Triumphal arch: one big opening, columns, bronze on top
-      c.fillStyle = lg(c, 0, rh, 0, h, [[0, '#e0d6c2'], [1, '#a89c86']]); c.fillRect(0, rh, w, fh);
-      c.fillStyle = '#2a2420'; c.beginPath(); c.moveTo(w * 0.32, h); c.lineTo(w * 0.32, rh + fh * 0.45); c.arc(w / 2, rh + fh * 0.45, w * 0.18, Math.PI, 0); c.lineTo(w * 0.68, h); c.fill();
-      for (const xx of [w * 0.08, w * 0.2, w * 0.74, w * 0.86]) { c.fillStyle = 'rgba(255,255,255,.35)'; c.fillRect(xx, rh + 10, 4, fh - 12); c.fillStyle = 'rgba(0,0,0,.25)'; c.fillRect(xx + 4, rh + 10, 2, fh - 12); }
-      c.fillStyle = col('#cfc3ae', 1, 0.8); c.fillRect(0, rh, w, 8);
-      if (b.name) sign(c, b.name, w / 2, rh + 4, w - 12, 6, '#4a4238', 800);
       break;
     }
     case 'tower': {
@@ -675,5 +644,51 @@ export function makeBridgeTower(scene: Phaser.Scene, key: string, w: number, h: 
     c.quadraticCurveTo(cx - archW / 2, archTop, cx, archTop - archW * 0.35); c.quadraticCurveTo(cx + archW / 2, archTop, cx + archW / 2, archTop + archW * 0.4); c.lineTo(cx + archW / 2, h - 10); c.fill();
   }
   c.fillStyle = '#efe4cc'; c.fillRect(0, 0, w, 6); c.fillStyle = 'rgba(0,0,0,.2)'; c.fillRect(0, 6, w, 2);
+  cv.refresh();
+}
+
+/**
+ * Barclays-ish Center, seen from above at an angle: an oval wrapped in curving
+ * weathered-steel ribbons, a green roof, and the bright south face of the bowl.
+ */
+function drawArena(c: Ctx, b: BuildingDef) {
+  const { w, h } = b, cx = w / 2, cy = h / 2, rx = w / 2 - 1, ry = h / 2 - 1;
+  // body: rusted steel, darker toward the top
+  c.save(); c.beginPath(); c.ellipse(cx, cy, rx, ry, 0, 0, Math.PI * 2); c.clip();
+  c.fillStyle = lg(c, 0, 0, 0, h, [[0, '#4a2a1e'], [0.55, '#7a4630'], [1, '#a8643e']]); c.fillRect(0, 0, w, h);
+  // the ribbons: offset ellipses sweeping around the bowl
+  for (let k = 0; k < 9; k++) {
+    const t = k / 9;
+    c.strokeStyle = k % 2 ? 'rgba(30,14,8,.55)' : 'rgba(214,140,92,.35)'; c.lineWidth = k % 2 ? 2.2 : 1.4;
+    c.beginPath(); c.ellipse(cx + Math.sin(t * 6) * 6, cy + ry * 0.18 + t * 6, rx * (0.98 - t * 0.04), ry * (0.95 - t * 0.05), Math.sin(t * 3) * 0.05, 0.05 * Math.PI, 0.95 * Math.PI); c.stroke();
+  }
+  // lattice fins on the visible south face
+  c.strokeStyle = 'rgba(40,20,12,.35)'; c.lineWidth = 1;
+  for (let a = 0.08; a < 0.92; a += 0.035) { const ang = a * Math.PI, x = cx + Math.cos(ang) * rx, y = cy + Math.sin(ang) * ry; c.beginPath(); c.moveTo(x, y); c.lineTo(cx + Math.cos(ang) * rx * 0.74, cy + Math.sin(ang) * ry * 0.5); c.stroke(); }
+  c.restore();
+  // green roof, set back and up from the rim
+  const gx = cx, gy = cy - ry * 0.16, grx = rx * 0.72, gry = ry * 0.56;
+  c.fillStyle = '#2e1c14'; ell(c, gx, gy, grx + 4, gry + 4); c.fill();
+  c.fillStyle = rg(c, gx - grx * 0.2, gy - gry * 0.3, 4, grx, [[0, '#8fb65a'], [1, '#3d6128']]); ell(c, gx, gy, grx, gry); c.fill();
+  c.strokeStyle = 'rgba(30,50,20,.4)'; c.lineWidth = 1; for (let k = 1; k <= 5; k++) { c.beginPath(); c.ellipse(gx, gy, grx * (k / 5), gry * (k / 5), 0, 0, Math.PI * 2); c.stroke(); }
+  // rim highlight + name on the front band
+  c.strokeStyle = 'rgba(255,190,130,.5)'; c.lineWidth = 1.5; c.beginPath(); c.ellipse(cx, cy, rx - 1, ry - 1, 0, 0.1 * Math.PI, 0.9 * Math.PI); c.stroke();
+  if (b.name) { c.fillStyle = 'rgba(14,10,8,.82)'; rr(c, cx - w * 0.28, h - ry * 0.42, w * 0.56, 13, 4); c.fill(); sign(c, b.name, cx, h - ry * 0.42 + 6.5, w * 0.52, 9, '#f2e8d8', 800); }
+}
+
+/** The oculus: Barclays' cantilevered canopy with the open ring and LED band, drawn as an overhang you walk under. */
+export function makeOculus(scene: Phaser.Scene, key: string, w: number, h: number) {
+  if (scene.textures.exists(key)) return;
+  const cv = scene.textures.createCanvas(key, w, h)!; const c = cv.getContext();
+  const cx = w / 2, cy = h / 2, rx = w / 2 - 3, ry = h / 2 - 3;
+  c.fillStyle = 'rgba(14,8,22,.25)'; c.beginPath(); c.ellipse(cx + 10, cy + 12, rx, ry, 0, 0, Math.PI * 2); c.fill();
+  const g = c.createLinearGradient(0, 0, w, h); g.addColorStop(0, '#5a3424'); g.addColorStop(1, '#2a1810');
+  c.fillStyle = g; c.beginPath(); c.ellipse(cx, cy, rx, ry, 0, 0, Math.PI * 2); c.fill();
+  c.strokeStyle = 'rgba(214,140,92,.35)'; c.lineWidth = 1; for (let k = 1; k <= 4; k++) { c.beginPath(); c.ellipse(cx, cy, rx * (0.55 + k * 0.1), ry * (0.55 + k * 0.1), 0, 0, Math.PI * 2); c.stroke(); }
+  // the open oculus
+  c.globalCompositeOperation = 'destination-out'; c.beginPath(); c.ellipse(cx, cy, rx * 0.42, ry * 0.42, 0, 0, Math.PI * 2); c.fill(); c.globalCompositeOperation = 'source-over';
+  // LED ticker ring around the opening
+  c.strokeStyle = '#f2c46a'; c.lineWidth = 3; c.beginPath(); c.ellipse(cx, cy, rx * 0.45, ry * 0.45, 0, 0, Math.PI * 2); c.stroke();
+  c.fillStyle = 'rgba(255,220,150,.9)'; for (let i = 0; i < 28; i++) { const a = (i / 28) * Math.PI * 2; c.beginPath(); c.arc(cx + Math.cos(a) * rx * 0.88, cy + Math.sin(a) * ry * 0.88, 1.3, 0, Math.PI * 2); c.fill(); }
   cv.refresh();
 }
