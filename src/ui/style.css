@@ -374,3 +374,8 @@ body:has(#timer.show) #toasts { top: 112px; }
 @media (max-width: 600px) { #flyer-card.mini { bottom: calc(170px + env(safe-area-inset-bottom, 0px)); right: 12px; } }
 .fl-kicker { white-space: nowrap; font-size: 10px; letter-spacing: 1.2px; }
 .fl-foot, .fl-sub, .fl-when { text-wrap: balance; }
+/* Highlighted words in help text: dark ink on a yellow marker swipe, readable on cream */
+.hl { background: var(--yellow); color: var(--ink); padding: 0 5px; border-radius: 4px; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+.touch-only { display: none; }
+body.touch .touch-only { display: block; }
+.help-card p { text-wrap: pretty; } .help-card p.sub { text-wrap: balance; }
