@@ -208,6 +208,8 @@ class UI {
       el.classList.add('show');
       el.textContent = fmtClock(tl);
       el.classList.toggle('urgent', tl < 30);
+      // Phones: sit right under the mission box, however tall it is
+      if (innerWidth <= 600) { const ob = $('#objective').getBoundingClientRect(); el.style.top = `${Math.round(ob.bottom + 10)}px`; } else el.style.top = '';
     } else el.classList.remove('show');
     const d = (this.world as any)?.district as District | null;
     if (d) {
@@ -271,7 +273,11 @@ class UI {
     const el = $('#mission-intro');
     el.innerHTML = `<div class="mi-num">MISSION ${def.number}</div><div class="mi-title">${def.title}</div><div class="mi-tag">${def.tagline}</div>`;
     el.classList.remove('show'); void el.offsetWidth; el.classList.add('show');
+    // Clear the flag when the intro finishes so the mission box and neighborhood banner come back.
+    clearTimeout(this.introTimer);
+    this.introTimer = window.setTimeout(() => el.classList.remove('show'), 4600);
   }
+  private introTimer = 0;
 
   // ------------------------------------------------------------------ FULL SCREEN
   /** Android/iPad/desktop: a real full-screen button. iPhone Safari can't, so show the Home Screen tip instead. */
