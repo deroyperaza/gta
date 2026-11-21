@@ -128,8 +128,8 @@ export const NPCS: NpcDef[] = [
   {
     id: 'luco', name: 'Luco', short: 'Luco', title: 'The Dealmaker', district: 'downtown', spot: 'luco', color: '#9dffb0',
     look: { skin: '#e2b08a', hair: '#3a2414', style: 'curly', shirt: '#f2f2f2', pants: '#3a4a6b', shoes: '#111' },
-    bio: 'Fourteen. Vibe-codes games, lives for soccer and the business of soccer, and reads stock charts like box scores. Never gives advice. Always has a spreadsheet.',
-    idle: ['Follow the money.', 'Deadline Day is a whole state of mind.'],
+    bio: 'Fourteen. Organizes charity soccer tournaments, vibe-codes games, studies the business of soccer and reads stock charts like box scores. Never gives advice. Always has a spreadsheet.',
+    idle: ['Follow the money.', 'Book the field before you book the teams.', 'Next tournament: every team is a bagel.'],
   },
   {
     id: 'vega', name: 'Vega', short: 'Vega', title: 'The Choreographer', district: 'bushwick', spot: 'vega', color: '#ffa8e0',

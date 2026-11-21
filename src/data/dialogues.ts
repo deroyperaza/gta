@@ -486,6 +486,7 @@ export const DIALOGUES: Record<string, Dialogue> = {
           { text: 'Who?', next: 'comp', effects: { rel: { luco: 5 }, flags: { met_luco: true } } },
           { text: 'Show me the game first.', next: 'game', effects: { rel: { luco: 4 }, flags: { met_luco: true } } },
           { text: 'Stocks? At 14?', next: 'stocks', effects: { flags: { met_luco: true } } },
+          { text: 'I heard you run tournaments.', next: 'cup', effects: { rel: { luco: 5 }, flags: { met_luco: true } } },
         ],
       },
       game: { speaker: 'luco', text: 'It\'s called Deadline Day. You run a Brooklyn club, and every big transfer, the fans get a vote. Revolutionary, I know. Anyway, the investor.', next: 'comp' },
@@ -495,7 +496,17 @@ export const DIALOGUES: Record<string, Dialogue> = {
         speaker: 'luco', text: 'So the city is a shareholder. The funds vote at company meetings, and every vote is posted on NYC Open Data. I\'m putting the data in my game.',
         choices: [{ text: 'Follow the money.', effects: { rel: { luco: 6 }, solidarity: 10, trust: { downtown: 3 }, toast: 'POCKET CIVICS · WHO WATCHES THE CITY\'S MONEY' } }],
       },
-      after: { speaker: 'luco', text: 'Follow the money. Then build a game about it. That\'s my whole business plan.' },
+      cup: { speaker: 'luco', text: 'Charity tournaments. Sixteen teams, every one named after a bagel, trophies on a folding table, and every dollar goes to someone who needs it. Best business model in soccer.', next: 'cup2' },
+      cup2: {
+        speaker: 'luco', text: 'Pro tip: the field isn\'t yours just because you showed up first. Book it with an NYC Parks permit. A special event permit costs $25 to process. Cheaper than one ball.',
+        choices: [
+          { text: 'Sign me up as a ref.', next: 'comp', effects: { rel: { luco: 4 }, solidarity: 10, trust: { downtown: 2 }, flags: { luco_cup: true }, toast: 'POCKET CIVICS · BOOK THE FIELD' } },
+        ],
+      },
+      after: {
+        speaker: 'luco', text: 'Follow the money. Then build a game about it. Then run a tournament and give the money away. That\'s my whole business plan.',
+        choices: [{ text: 'Tell me about the tournaments.', next: 'cup', cond: { notFlag: 'luco_cup' } }, { text: 'Later, Luco.' }],
+      },
     },
   },
 
