@@ -72,6 +72,7 @@ class GameState {
     if (e.trust) for (const [k, v] of Object.entries(e.trust)) {
       this.addTrust(k as District, v!); toasts.push(`${sign(v!)} TRUST · ${k.toUpperCase()}`);
     }
+    if (e.items?.flyers && e.items.flyers > 0) setTimeout(() => bus.emit('flyers:gained', e.items!.flyers), 400);
     if (e.items) for (const [k, v] of Object.entries(e.items)) {
       this.addItem(k as ItemId, v!); toasts.push(`${sign(v!)} ${ITEMS[k as ItemId].name.toUpperCase()}`);
     }

@@ -228,7 +228,7 @@ body:has(#dialogue.open) #district { visibility: hidden; }
    (toasts, banners, timer) · prompt · joystick + buttons · tote bag. Nothing shares a zone. */
 html, body { overscroll-behavior: none; touch-action: none; }
 @media (max-width: 600px) {
-  #stats { left: calc(8px + env(safe-area-inset-left, 0px)); top: calc(8px + env(safe-area-inset-top, 0px)); width: calc(100vw - 134px); max-width: 260px; transform: none; padding: 7px 9px 9px; column-gap: 8px; border-width: 2.5px; border-radius: 12px; box-shadow: 3px 3px 0 var(--purple); }
+  #stats { left: calc(8px + env(safe-area-inset-left, 0px)); top: calc(8px + env(safe-area-inset-top, 0px)); width: calc(100vw - 166px); max-width: 260px; transform: none; padding: 7px 9px 9px; column-gap: 8px; border-width: 2.5px; border-radius: 12px; box-shadow: 3px 3px 0 var(--purple); }
   .logo-mini img { height: 58px; }
   .meter { margin-top: 3px; column-gap: 4px; grid-template-rows: auto 9px; }
   .meter label { font-size: 11px; letter-spacing: .5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -236,9 +236,9 @@ html, body { overscroll-behavior: none; touch-action: none; }
   .meter.sol .track { height: 10px; }
   .chip.pow { font-size: 14px; padding: 0 6px; border-width: 2px; }
   .row { gap: 6px; }
-  #hud-buttons { top: calc(118px + env(safe-area-inset-top, 0px)); right: 8px; gap: 4px; }
+  #hud-buttons { top: calc(150px + env(safe-area-inset-top, 0px)); right: 8px; gap: 4px; }
   #hud-buttons button { font-size: 12px; padding: 3px 6px; box-shadow: 2px 2px 0 var(--ink); }
-  #objective { left: 8px; right: 8px; top: calc(150px + env(safe-area-inset-top, 0px)); bottom: auto; max-width: none; padding: 6px 12px 7px; border-width: 2.5px; border-radius: 12px; box-shadow: 3px 3px 0 var(--pink); transform: none; }
+  #objective { left: 8px; right: 8px; top: calc(182px + env(safe-area-inset-top, 0px)); bottom: auto; max-width: none; padding: 6px 12px 7px; border-width: 2.5px; border-radius: 12px; box-shadow: 3px 3px 0 var(--pink); transform: none; }
   #obj-title { font-size: 12px; }
   #obj-text { font-size: 14px; line-height: 1.25; padding-right: 44px; }
   #obj-dist { font-size: 16px; top: 6px; right: 10px; }
@@ -304,7 +304,7 @@ body.touch #dlg-more::after { content: '▼ TAP TO CONTINUE'; font-size: 12px; }
   .meter label { font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .meter b { font-size: 15px; min-width: 18px; }
   .chip.pow { font-size: 13px; padding: 0 6px; }
-  #hud-buttons { top: 112px; right: calc(8px + env(safe-area-inset-right, 0px)); gap: 4px; }
+  #hud-buttons { top: 128px; right: calc(8px + env(safe-area-inset-right, 0px)); gap: 4px; }
   #hud-buttons button { font-size: 12px; padding: 2px 6px; }
   #objective { left: 50%; right: auto; top: 8px; bottom: auto; transform: translateX(-50%); width: calc(100vw - 420px - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px)); max-width: 440px; padding: 5px 10px 6px; border-width: 2.5px; border-radius: 12px; box-shadow: 3px 3px 0 var(--pink); }
   #obj-title { font-size: 11px; } #obj-text { font-size: 13px; padding-right: 40px; } #obj-dist { font-size: 15px; top: 5px; } #obj-optional { display: none; }
@@ -337,3 +337,40 @@ body.touch #dlg-more::after { content: '▼ TAP TO CONTINUE'; font-size: 12px; }
   body.touch #inventory { top: 108px; }
 }
 @media (max-width: 600px), (max-height: 500px) and (orientation: landscape) { .dlg-head { padding-right: 46px; } }
+
+/* Bigger maps on phones: larger mini-map you can tap; full map fills the screen and pans */
+#minimap-frame { pointer-events: auto; cursor: pointer; }
+@media (max-width: 600px) {
+  .map-panel { width: 100vw; max-height: 100dvh; height: 100dvh; border-radius: 0; border-width: 0; box-shadow: none; }
+  .map-wrap { flex: 1; padding: 8px; max-height: none; touch-action: pan-x pan-y; -webkit-overflow-scrolling: touch; }
+  #map-canvas { width: 230vw; max-width: none; max-height: none; height: auto; }
+}
+@media (max-height: 500px) and (orientation: landscape) {
+  .map-panel { width: 100vw; height: 100dvh; max-height: 100dvh; border-radius: 0; }
+  .map-wrap { flex: 1; touch-action: pan-x pan-y; }
+  #map-canvas { width: 150vw; max-width: none; max-height: none; height: auto; }
+}
+/* Toasts never slide under the mission timer */
+body:has(#timer.show) #toasts { top: 112px; }
+@media (max-width: 600px) { body:has(#timer.show) #toasts { top: auto; } }
+
+/* ---------------------------------------------------------------- FLYERS (what you're handing out) */
+#flyer-card { position: absolute; opacity: 0; pointer-events: none; transition: opacity .2s, transform .25s cubic-bezier(.3,1.4,.5,1); }
+#flyer-card.big { left: 50%; top: 50%; transform: translate(-50%, -46%) rotate(-3deg) scale(.9); z-index: 6; }
+#flyer-card.big.show { opacity: 1; transform: translate(-50%, -50%) rotate(-3deg) scale(1); pointer-events: auto; cursor: pointer; }
+#flyer-card.mini { right: 22px; bottom: 90px; transform: rotate(6deg) scale(.42) translateY(20px); transform-origin: bottom right; }
+#flyer-card.mini.show { opacity: 1; transform: rotate(6deg) scale(.42); }
+.fl-label { text-align: center; font: 900 14px var(--body); letter-spacing: 1px; color: var(--ink); background: var(--yellow); border: 2.5px solid var(--ink); border-radius: 10px; padding: 4px 12px; margin: 0 auto 10px; width: max-content; box-shadow: 3px 3px 0 var(--ink); }
+.flyer { position: relative; width: 250px; padding: 20px 18px 16px; background: #fff36b; color: #16101f; border: 3px solid #16101f; box-shadow: 8px 8px 0 rgba(22,16,31,.85); font-family: var(--body); }
+.flyer::before, .flyer::after { content: ''; position: absolute; top: -10px; width: 56px; height: 20px; background: rgba(255,255,255,.7); border: 1px solid rgba(0,0,0,.08); }
+.flyer::before { left: 14px; transform: rotate(-8deg); } .flyer::after { right: 14px; transform: rotate(7deg); }
+.fl-kicker { font: 900 11px var(--body); letter-spacing: 1.5px; border-bottom: 3px solid #16101f; padding-bottom: 6px; }
+.fl-head { font: 76px/0.86 var(--display); letter-spacing: 1px; margin: 10px 0 8px; color: #16101f; }
+.fl-sub { font: 900 15px/1.25 var(--body); color: #ff2f8e; text-wrap: balance; }
+.fl-when { margin-top: 12px; font: 800 14px/1.35 var(--body); background: #16101f; color: #fff36b; padding: 8px 10px; }
+.fl-when b { font-family: var(--display); font-weight: 400; letter-spacing: 1px; margin-right: 6px; color: #fff; }
+.fl-foot { margin-top: 10px; font: 800 11px var(--body); opacity: .8; }
+.inv-flyers { cursor: pointer; pointer-events: auto; }
+@media (max-width: 600px) { #flyer-card.mini { bottom: calc(170px + env(safe-area-inset-bottom, 0px)); right: 12px; } }
+.fl-kicker { white-space: nowrap; font-size: 10px; letter-spacing: 1.2px; }
+.fl-foot, .fl-sub, .fl-when { text-wrap: balance; }

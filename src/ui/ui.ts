@@ -34,6 +34,9 @@ class UI {
     bus.on('state:changed', () => this.renderHud());
     bus.on('mission:updated', () => this.renderObjective());
     bus.on('ui:toast', (t: string) => this.toast(t));
+    bus.on('flyers:gained', (n: number) => this.showFlyer('big', n));
+    bus.on('flyer:handed', () => this.showFlyer('mini'));
+    $('#inventory').addEventListener('click', (e) => { if ((e.target as HTMLElement).closest('.inv-flyers')) this.showFlyer('big'); });
     bus.on('dialogue:show', (d: any) => this.showDialogue(d));
     bus.on('dialogue:end', () => this.hideDialogue());
     bus.on('mission:passed', (p: any) => this.showPassed(p.def, p.lines, p.toast));
@@ -127,6 +130,7 @@ class UI {
     $('#passed').addEventListener('click', () => { if (performance.now() - this.passedAt > 600) this.closePanel(); });
     $('#hud-journal').onclick = () => this.openPanel('journal');
     $('#hud-map').onclick = () => this.openPanel('map');
+    $('#minimap-frame').onclick = () => this.openPanel('map'); // tap the mini-map for the big map
     $('#hud-pause').onclick = () => this.openPanel('pause');
     // Clicking (or tapping) an on-screen prompt does the same as its key
     $('#prompt').addEventListener('pointerdown', (e) => {
@@ -209,7 +213,7 @@ class UI {
     $<HTMLElement>('#att-fill').style.width = `${d.attention}%`;
     const inv = (Object.keys(ITEMS) as ItemId[]).filter((k) => d.inventory[k] > 0);
     $('#inventory').innerHTML = inv.length
-      ? inv.map((k) => `<div class="inv" title="${ITEMS[k].name}: ${ITEMS[k].desc}">${ITEMS[k].icon}<span>${d.inventory[k]}</span></div>`).join('')
+      ? inv.map((k) => `<div class="inv${k === 'flyers' ? ' inv-flyers' : ''}" title="${ITEMS[k].name}: ${ITEMS[k].desc}${k === 'flyers' ? ' (tap to see it)' : ''}">${ITEMS[k].icon}<span>${d.inventory[k]}</span></div>`).join('')
       : '<div class="inv-empty">Tote bag: empty (emotionally full)</div>';
     this.renderObjective();
   }
@@ -251,6 +255,33 @@ class UI {
     el.classList.remove('show'); void el.offsetWidth; el.classList.add('show');
   }
 
+  // ------------------------------------------------------------------ FLYERS
+  /** What the flyer in your tote bag actually says, depending on the mission. */
+  private flyerHTML() {
+    if (state.d.activeMission === 'march') return `
+      <div class="fl-kicker">BOROUGH BUDGET · LINE 47</div>
+      <div class="fl-head">NO<br>GAZEBO!</div>
+      <div class="fl-sub">Fund the fridge · Keep the tenant lawyers · Open the library Sundays</div>
+      <div class="fl-when"><b>RALLY</b> Borough Hall steps<br><b>FRIDAY</b> 5 PM</div>
+      <div class="fl-foot">Bring a neighbor. Sidewalks only. Big voices.</div>`;
+    return `
+      <div class="fl-kicker">COMMUNITY FRIDGE · GATES AVE</div>
+      <div class="fl-head">FREE<br>FOOD</div>
+      <div class="fl-sub">Take what you need.<br>Leave what you can.</div>
+      <div class="fl-when"><b>OPEN</b> 24/7 · no questions<br><b>BY</b> your neighbors</div>
+      <div class="fl-foot">Gates Ave &amp; the mural. Look for the lime.</div>`;
+  }
+  private flyerTimer = 0;
+  showFlyer(mode: 'big' | 'mini', got?: number) {
+    const el = $('#flyer-card');
+    el.className = mode;
+    el.innerHTML = (mode === 'big' ? `<div class="fl-label">${got ? `YOU GOT ${got} FLYERS` : 'YOUR FLYER'}</div>` : '') + `<div class="flyer">${this.flyerHTML()}</div>`;
+    void el.offsetWidth; el.classList.add('show');
+    clearTimeout(this.flyerTimer);
+    this.flyerTimer = window.setTimeout(() => el.classList.remove('show'), mode === 'big' ? 3800 : 1500);
+    if (mode === 'big') el.onclick = () => el.classList.remove('show');
+  }
+
   // ------------------------------------------------------------------ DIALOGUE
   private showDialogue(d: { owner: string; speaker: string; text: string; choices: { text: string; index: number; tag?: string }[] }) {
     this.dialogueOpen = true;
@@ -259,7 +290,7 @@ class UI {
     $('#dlg-name').textContent = name;
     $('#dlg-title').textContent = npc ? npc.title : '';
     $<HTMLElement>('#dlg-name').style.background = npc?.color ?? '#ff4fa3';
-    this.drawPortrait(npc ? `npc-${npc.id}` : d.speaker === 'Doña Rosa' ? 'vendor-rosa' : d.speaker === 'Hamid' ? 'vendor-hamid' : d.owner === 'cat' ? 'cat' : d.owner === 'fridge' ? 'fridge-full' : 'player');
+    this.drawPortrait(npc ? `npc-${npc.id}` : d.speaker === 'Doña Rosa' ? 'vendor-rosa' : d.speaker === 'Hamid' ? 'vendor-hamid' : d.owner === 'cat' ? 'cat' : d.owner === 'fridge' ? 'fridge-full' : d.owner === 'gop' ? 'gop0' : 'player');
     const rel = npc ? state.rel(npc.id) : null;
     $('#dlg-rel').innerHTML = rel != null ? `<span>RELATIONSHIP</span><div class="rt"><i style="width:${(rel + 100) / 2}%"></i></div>` : '';
     $('#dialogue').classList.add('open');
@@ -426,6 +457,12 @@ class UI {
     const px = (w.player.x / TILE) * s, py = (w.player.y / TILE) * s;
     c.beginPath(); c.arc(px, py, 10, 0, 7); c.fillStyle = '#fff'; c.fill(); c.lineWidth = 4; c.strokeStyle = '#ff4fa3'; c.stroke();
     c.lineWidth = 4; c.strokeStyle = '#16101f'; c.strokeText('YOU', px, py - 16); c.fillStyle = '#fff'; c.fillText('YOU', px, py - 16);
+    // Phones show the map zoomed in and pannable: start centered on the player.
+    requestAnimationFrame(() => {
+      const wrap = cv.parentElement!; if (cv.clientWidth <= wrap.clientWidth) return;
+      const k = cv.clientWidth / cv.width;
+      wrap.scrollLeft = px * k - wrap.clientWidth / 2; wrap.scrollTop = py * k - wrap.clientHeight / 2;
+    });
   }
 
   private renderPause() {

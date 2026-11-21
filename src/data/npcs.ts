@@ -119,6 +119,24 @@ export const NPCS: NpcDef[] = [
     bio: 'Creative director for showstopper cakes. Thinks every neighborhood deserves a centerpiece, and a permit to put it in the street.',
     idle: ['Sixty days. Twenty-five dollars. One street with no cars.', 'Every block party needs a showstopper.'],
   },
+  {
+    id: 'naim', name: 'Naim', short: 'Naim', title: 'The Keeper', district: 'crownheights', spot: 'naim', color: '#7fe0ff',
+    look: { skin: '#e2b08a', hair: '#2a1c14', style: 'curly', shirt: '#141414', pants: '#2b3a6b', shoes: '#f2f2f2', acc: 'glasses' },
+    bio: 'Goalkeeper on Saturdays, banana bread on Sundays, piano when nobody is listening, and a romantasy book always. Keeps goals out and banned books in.',
+    idle: ['Free library card. Free books. Free dragons.', 'I have opinions about chapter 31.'],
+  },
+  {
+    id: 'luco', name: 'Luco', short: 'Luco', title: 'The Dealmaker', district: 'downtown', spot: 'luco', color: '#9dffb0',
+    look: { skin: '#e2b08a', hair: '#3a2414', style: 'curly', shirt: '#f2f2f2', pants: '#3a4a6b', shoes: '#111' },
+    bio: 'Fourteen. Vibe-codes games, lives for soccer and the business of soccer, and reads stock charts like box scores. Never gives advice. Always has a spreadsheet.',
+    idle: ['Follow the money.', 'Deadline Day is a whole state of mind.'],
+  },
+  {
+    id: 'vega', name: 'Vega', short: 'Vega', title: 'The Choreographer', district: 'bushwick', spot: 'vega', color: '#ffa8e0',
+    look: { skin: '#f0c8a8', hair: '#8a5a34', style: 'long', shirt: '#141414', pants: '#141414', shoes: '#f2f2f2' },
+    bio: 'Nine years old. Dancer, painter, free spirit, and the best hairdos on the block. Will choreograph your protest whether you asked or not.',
+    idle: ['Feel the music, then do whatever your body says.', 'New hairdo tomorrow. Nobody knows what yet.'],
+  },
 ];
 
 export const NPC_BY_ID = Object.fromEntries(NPCS.map((n) => [n.id, n])) as Record<string, NpcDef>;

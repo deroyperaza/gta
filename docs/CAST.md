@@ -1,6 +1,6 @@
 # The cast
 
-TL;DR: eight characters based on real friends. Each one has a painted portrait, a movie-style title and one civic lesson that matches their real work. Every lesson was checked against an official source on Nov 20, 2026. The cast sheet is `style-study/ai-portraits/v2/cast-titles.jpg`.
+TL;DR: eleven characters based on real friends and family. Each one has a painted portrait, a movie-style title and one civic lesson that matches their real work. Every lesson was checked against an official source on Nov 20, 2026. The cast sheet is `style-study/ai-portraits/v2/cast-titles.jpg`.
 
 | Title | Character | Neighborhood | Real work (short) | Lesson | Toast |
 |---|---|---|---|---|---|
@@ -12,6 +12,21 @@ TL;DR: eight characters based on real friends. Each one has a painted portrait, 
 | The Curator | Danae | Park Slope | Museum exhibition director | Culture Pass (free museum passes with a library card) + IDNYC free museum memberships | CULTURE PASS + IDNYC |
 | The Editor | Jon | Bushwick | Film editor | BRIC: Brooklyn's public access TV, with classes, gear and community shows | PUBLIC ACCESS TV |
 | The Showstopper | Emily | Coney Island boardwalk | Creative director for showpiece cakes | Block party permits: apply online at least 60 days ahead, $25, neighbors sign on, community board reviews | BLOCK PARTY PERMITS |
+
+| The Keeper | Naim | Crown Heights | Goalkeeper, baker, pianist, romantasy reader | Books Unbanned: Brooklyn Public Library gives teens 13–21 anywhere in the US a free eCard; NY teens can get a regular card | BOOKS UNBANNED |
+| The Dealmaker | Luco | Downtown | Vibe-codes games; soccer and the business of soccer; stocks | The City Comptroller audits agencies and advises the city pension funds, which vote as shareholders; every vote is on NYC Open Data | WHO WATCHES THE CITY'S MONEY |
+| The Choreographer | Vega | Bushwick | Dancer, artist, free spirit | Any NYC resident can sign up to testify at a City Council hearing, in person or in writing | TESTIFY AT CITY COUNCIL |
+
+Deroy also teaches **DIY poster making** (big words; what, when, where; loud contrast; wheatpaste is flour and water). Post with permission in bodega windows, laundromats and community boards, never on lampposts: NYC Admin Code 10-119, with fines from $75.
+
+## The Free Parking Caucus (obstacles)
+Satirical obstructionists (red caps, clipboards) who spawn between you and your objective during missions. They chase at 170 (walk 150, sprint 245, bike 330). Getting caught costs about 2 seconds, flyers or a poster, and during the march a marcher. Three ways past:
+- **Outrun them** with Shift or a bike.
+- **Outnumber them** with 6+ marchers.
+- **Out-argue them** with E. Each debate is answered by a real fact from this table.
+
+## Mission 3: The People vs. the Power
+Gary needs a crowd to vote no on Line 47 (fridge grants, library Sundays and tenant lawyers cut to fund a gazebo). You recruit 3 of 5 allies (Dee, Nell, Jenna, Juni, Jon) and 8 neighbors, who follow you after taking a flyer. Bridgette briefs you on protest rights (NYCLU: sidewalks need no permit, street marches need an NYPD parade permit, amplified sound needs a precinct sound permit). Then two flashpoints (Tyler, Skye and an officer) and a speech. Tension at 3 means it boiled over: you retry with allies kept. The outcome depends on crowd size and spirit.
 
 Community boards (Brooklyn's 18 boards, up to 50 members each, appointed by the Borough President, with a public session at every meeting) moved to **Ms. Hattie**. They appear as a choice after her circle mission.
 

@@ -63,7 +63,7 @@ const BLOCKS: Record<string, BlockSpec> = {
   '1,0': { kind: 'plaza', name: 'Borough Plaza', landmarks: [
     { id: 'boroughhall', type: 'government', w: 9, name: 'BOROUGH HALL', spot: 'gary' } ] },
   '0,1': { kind: 'row', landmarks: [
-    { id: 'synergy', type: 'tower', w: 5, name: 'SYNERGY TOWER' },
+    { id: 'synergy', type: 'tower', w: 5, name: 'SYNERGY TOWER', spot: 'luco' },
     { id: 'permits', type: 'government', w: 5, name: 'DEPT. OF PERMITS & DELAYS', spot: 'bridgette' },
     { id: 'luxe', type: 'sales', w: 5, name: 'LUXE LOFTS', spot: 'tyler' } ] },
   '1,1': { kind: 'row', landmarks: [
@@ -102,7 +102,7 @@ const BLOCKS: Record<string, BlockSpec> = {
   '5,0': { kind: 'row', landmarks: [{ id: 'studio9000', type: 'studio', w: 6, name: 'STUDIO 9000', spot: 'jon' }] },
   '5,1': { kind: 'row', landmarks: [
     { id: 'sourdough', type: 'bakery', w: 6, name: 'SOURDOUGH COLLECTIVE', spot: 'juni' },
-    { id: 'gww', type: 'gallery', w: 5, name: 'GALLERY WITHOUT WALLS' } ] },
+    { id: 'gww', type: 'gallery', w: 5, name: 'GALLERY WITHOUT WALLS', spot: 'vega' } ] },
   '7,0': { kind: 'lot', landmarks: [{ id: 'wh1', type: 'warehouse', w: 8, name: 'FORMER PICKLE FACTORY' }] },
   '6,0': { kind: 'row', landmarks: [{ id: 'ugallery', type: 'gallery', w: 5, name: 'THE UNDERGROUND (2ND FLOOR)' }] },
   // ---------- PROSPECT LEFFERTS GARDENS ----------
@@ -116,7 +116,7 @@ const BLOCKS: Record<string, BlockSpec> = {
   // ---------- CROWN HEIGHTS ----------
   '3,3': { kind: 'row', landmarks: [
     { id: 'paradehq', type: 'community', w: 7, name: 'LABOR DAY PARADE HQ' },
-    { id: 'roti', type: 'bakery', w: 5, name: 'ROTI & ROTI & ROTI' } ] },
+    { id: 'roti', type: 'bakery', w: 5, name: 'ROTI & ROTI & ROTI', spot: 'naim' } ] },
   '4,3': { kind: 'row', landmarks: [{ id: 'chtenants', type: 'tenant', w: 7, name: 'CROWN HEIGHTS TENANT UNION' }] },
   '5,3': { kind: 'row', landmarks: [
     { id: 'farmacy', type: 'coffee', w: 5, name: 'FRANKLIN AVE FARMACY' },

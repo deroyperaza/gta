@@ -6,6 +6,7 @@ import { DIALOGUES } from '../data/dialogues';
 import { FLYER_LINES, NPCS, PED_LINES, PLAYER_LOOK, type NpcDef } from '../data/npcs';
 import { Pedestrians, type Ped } from '../entities/pedestrians';
 import { Traffic } from '../entities/traffic';
+import { Opposition } from '../entities/opposition';
 import { dialogue } from '../systems/dialogue';
 import { missions } from '../systems/missions';
 import { ui } from '../ui/ui';
@@ -26,6 +27,8 @@ export class WorldScene extends Phaser.Scene {
   keys!: Record<string, Phaser.Input.Keyboard.Key>;
   cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
   dragSteer = false;
+  opp!: Opposition;
+  stunUntil = 0;
   peds!: Pedestrians;
   traffic!: Traffic;
   minimap!: Phaser.Cameras.Scene2D.Camera;
@@ -90,6 +93,10 @@ export class WorldScene extends Phaser.Scene {
     this.buildNpcs(solids);
     this.setupMarch();
     this.peds = new Pedestrians(this, this.layout, 170);
+    this.opp = new Opposition(this, this.layout, 3);
+    this.events.on('gop:taunt', (sq: any, t: string) => this.bubble(sq.sprite, t));
+    bus.on('opposition:caught', () => this.heldUp());
+    bus.on('opposition:outnumbered', () => state.apply({ solidarity: 8 }, { quiet: true }));
     this.traffic = new Traffic(this, (x, y) => this.floatText(x, y - 30, Phaser.Utils.Array.GetRandom(['HONK!', 'BEEP!', 'MOVE!', 'YO!']), '#ffd23f'));
 
     // Waypoint arrow
@@ -257,12 +264,12 @@ export class WorldScene extends Phaser.Scene {
     this.layoutMinimap();
     this.mmPlayer = this.add.image(0, 0, 'mm-player').setDepth(2e6).setScale(1.2);
     this.cameras.main.ignore(this.mmPlayer);
-    this.minimap.ignore([this.player, this.arrow, ...this.miniIgnore, ...this.peds.sprites()]);
+    this.minimap.ignore([this.player, this.arrow, ...this.miniIgnore, ...this.peds.sprites(), ...this.opp.sprites()]);
   }
   private layoutMinimap() {
     if (!this.minimap) return;
     const phone = this.scale.width <= 600 || this.scale.height <= 500, m = phone ? 8 : 18;
-    const size = phone ? Math.min(104, Math.floor(this.scale.height * 0.28)) : Math.min(200, Math.floor(this.scale.width * 0.28));
+    const size = phone ? (this.scale.width <= 600 ? 136 : Math.min(120, Math.floor(this.scale.height * 0.3))) : Math.min(200, Math.floor(this.scale.width * 0.28));
     this.minimap.setViewport(this.scale.width - size - m, m, size, size);
     bus.emit('minimap:layout', { x: this.scale.width - size - m, y: m, size });
   }
@@ -412,6 +419,8 @@ export class WorldScene extends Phaser.Scene {
 
   private tryInteract() {
     if (this.mode !== 'play' || ui.blocking() || performance.now() - this.lastDialogueEnd < 250) return;
+    const sq = this.opp.nearest(this.player.x, this.player.y, 72);
+    if (sq) { dialogue.start('gop', this.opp.debate(sq)); return; }
     const it = this.nearestInteractable();
     if (it) { it.act(); return; }
     const ped = this.nearPed();
@@ -435,6 +444,7 @@ export class WorldScene extends Phaser.Scene {
       }
       state.apply({ items: { flyers: -1 }, attention: 1, mvar: { flyers: 1 }, inc: { flyers_given: 1 } }, { quiet: true });
       bus.emit('ui:toast', `FLYER HANDED · ${state.count('flyers')} LEFT`);
+      bus.emit('flyer:handed');
       this.bubble(ped.sprite, Phaser.Utils.Array.GetRandom(FLYER_LINES));
       this.hearts(ped.sprite.x, ped.sprite.y - 40, 3);
       return;
@@ -483,6 +493,19 @@ export class WorldScene extends Phaser.Scene {
     }
   }
   // ------------------------------------------------------------------ MISSION 3 · THE PEOPLE VS. THE POWER
+  /** Caught by the Free Parking Caucus: a hold-up, and they take something. */
+  private heldUp() {
+    this.stunUntil = performance.now() + 1800;
+    this.cameras.main.shake(200, 0.004);
+    const losses: string[] = [];
+    if (state.count('flyers') > 0) { const n = Math.min(2, state.count('flyers')); state.apply({ items: { flyers: -n } }, { quiet: true }); losses.push(`-${n} FLYERS`); }
+    else if (state.count('posters') > 0) { state.apply({ items: { posters: -1 } }, { quiet: true }); losses.push('-1 POSTER'); }
+    if (missions.active?.id === 'march' && this.peds.releaseOne()) { state.apply({ inc: { pvp_marchers: -1, pvp_crowd: -1 } }, { quiet: true }); losses.push('A MARCHER WENT HOME'); }
+    state.apply({ solidarity: -5 }, { quiet: true });
+    bus.emit('ui:toast', '"JUST ONE QUESTION." IT TOOK FORTY MINUTES.');
+    losses.forEach((l, i) => setTimeout(() => bus.emit('ui:toast', l), 300 + i * 260));
+  }
+
   private setupMarch() {
     const sp = this.layout.spots;
     const at = (id: string, from: string, dx: number, dy: number) => { const s = sp[from]; if (s) this.entityPos[id] = { x: s.x + dx, y: s.y + dy }; };
@@ -544,7 +567,8 @@ export class WorldScene extends Phaser.Scene {
       const len = Math.hypot(vx, vy);
       const sprint = this.keys.SHIFT.isDown;
       const speed = this.onBike ? (sprint ? BIKE_RUN : BIKE) : sprint ? RUN : WALK;
-      if (len > 0.1) {
+      if (performance.now() < this.stunUntil) { vx = 0; vy = 0; }
+      if (len > 0.1 && performance.now() >= this.stunUntil) {
         vx /= Math.max(1, len); vy /= Math.max(1, len);
         body.setVelocity(vx * speed, vy * speed);
         if (Math.abs(vx) > 0.1) this.facing = vx < 0 ? -1 : 1;
@@ -565,14 +589,22 @@ export class WorldScene extends Phaser.Scene {
     const view = new Phaser.Geom.Rectangle(cam.worldView.x - 64, cam.worldView.y - 64, cam.worldView.width + 128, cam.worldView.height + 160);
     this.peds.leader = { x: this.player.x, y: this.player.y };
     this.peds.update(dt, view);
+    {
+      const am = missions.active, st = am ? state.mission(am.id).stage : 0;
+      const tp = missions.targets().map((id) => this.entityPos[id]).find(Boolean) ?? null;
+      const fast = this.onBike || this.keys.SHIFT.isDown;
+      this.opp.update(dt, this.player, fast, !!am && st >= 1 && !blocking, tp, this.peds.followers().length);
+    }
     if (!blocking) this.marchTriggers();
     this.traffic.update(dt, this.player, (dx, dy) => { if (this.mode === 'play') { this.player.x += dx; this.player.y += dy; } });
 
     // Prompt
     if (!blocking) {
-      const it = this.nearestInteractable();
-      const ped = !it ? this.nearPed() : null;
+      const sq = this.opp.nearest(this.player.x, this.player.y, 72);
+      const it = sq ? null : this.nearestInteractable();
+      const ped = !it && !sq ? this.nearPed() : null;
       const parts: string[] = [];
+      if (sq) parts.push('<span class="pa" data-act="interact"><b>E</b> Debate the Caucus</span>');
       if (it) parts.push(`<span class="pa" data-act="interact"><b>E</b> ${it.label()}</span>`);
       else if (ped) parts.push('<span class="pa" data-act="interact"><b>E</b> Chat</span>');
       const fped = this.peds.nearest(this.player.x, this.player.y, 60, (p) => !p.gotFlyer);

@@ -103,6 +103,8 @@ export class Pedestrians {
 
   followers() { return this.peds.filter((p) => p.follow); }
   recruit(p: Ped) { p.follow = true; p.slot = this.followers().length - 1; }
+  /** One marcher gives up and heads home. */
+  releaseOne() { const p = this.followers().pop(); if (p) { p.follow = false; p.district = districtAt(p.sprite.x, p.sprite.y); this.pickDir(p); } return !!p; }
   /** Send marchers home; they wander off from wherever they are. */
   release() { for (const p of this.peds) if (p.follow) { p.follow = false; p.district = districtAt(p.sprite.x, p.sprite.y); this.pickDir(p); } }
 }

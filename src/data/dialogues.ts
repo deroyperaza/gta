@@ -295,6 +295,7 @@ export const DIALOGUES: Record<string, Dialogue> = {
           { text: 'So how do I tell ours?', next: 'story', effects: { rel: { deroy: 5 }, flags: { met_deroy: true } } },
           { text: 'And where does AI fit in?', next: 'ai', effects: { flags: { met_deroy: true } } },
           { text: 'Can I just make a logo?', next: 'logo', effects: { rel: { deroy: 2 }, flags: { met_deroy: true } } },
+          { text: 'Teach me DIY poster making.', next: 'p1', effects: { flags: { met_deroy: true } } },
         ],
       },
       story: { speaker: 'deroy', text: 'One real person. One clear stake. One thing we\'re asking for. Lead with what we share, not who we\'re mad at. That\'s narrative change: you\'re not winning an argument, you\'re changing what feels normal.', next: 'ai' },
@@ -304,7 +305,17 @@ export const DIALOGUES: Record<string, Dialogue> = {
         choices: [{ text: 'Telling that story tonight.', effects: { rel: { deroy: 6 }, solidarity: 10, attention: 3, trust: { bedstuy: 3 }, toast: 'POCKET CIVICS · AI HIRING AUDITS' } }],
       },
       logo: { speaker: 'deroy', text: 'A logo is the last thing. First you figure out who you are and what you want. Then the logo just says it out loud. Ask me how I know.' },
-      after: { speaker: 'deroy', text: 'One person. One stake. One ask. Tell it again until the neighborhood tells it for you.' },
+      after: {
+        speaker: 'deroy', text: 'One person. One stake. One ask. Tell it again until the neighborhood tells it for you.',
+        choices: [{ text: 'Teach me DIY poster making.', next: 'p1', cond: { notFlag: 'deroy_posters' } }, { text: 'Later, Deroy.' }],
+      },
+      p1: { speaker: 'deroy', text: 'DIY posters. Rule one: big words. If you can\'t read it from across the street, it\'s not a poster, it\'s a secret.', next: 'p2' },
+      p2: { speaker: 'deroy', text: 'Rule two: what, when, where, and nothing else. Rule three: one strong image and loud contrast. Black on yellow beats a beige mood board every time.', next: 'p3' },
+      p3: { speaker: 'deroy', text: 'No printer? A fat marker and a stencil will do. Wheatpaste is just flour and water cooked into glue. Tape works too. Make twenty. Hang ten. Give ten away.', next: 'p4' },
+      p4: {
+        speaker: 'deroy', text: 'Where they go matters. Bodega windows, laundromats and community boards, with permission. Not lampposts: in NYC that\'s against the law, and fines start at $75 a poster.',
+        choices: [{ text: 'Make some with me.', effects: { rel: { deroy: 6 }, items: { posters: 5 }, solidarity: 10, flags: { deroy_posters: true }, toast: 'POCKET CIVICS · DIY POSTERS, POSTED LEGALLY' } }],
+      },
     },
   },
 
@@ -439,6 +450,76 @@ export const DIALOGUES: Record<string, Dialogue> = {
       },
       fave: { speaker: 'danae', text: 'Whichever one a kid is standing in front of with their mouth open. That\'s the exhibit working.', next: 'pass' },
       after: { speaker: 'danae', text: 'Library card. City ID. Museums. In that order.' },
+    },
+  },
+
+  // ============================================================ NAIM · Books Unbanned
+  naim: {
+    entries: [{ cond: { notFlag: 'met_naim' }, node: 'intro' }, { node: 'after' }],
+    nodes: {
+      intro: {
+        speaker: 'naim', text: 'I\'m on page 400 of a book with dragons, a war college and a LOT of feelings. Did you know some places try to ban books like this?',
+        choices: [
+          { text: 'Ban books? Where?', next: 'ban', effects: { rel: { naim: 5 }, flags: { met_naim: true } } },
+          { text: 'Recommend me something.', next: 'rec', effects: { flags: { met_naim: true } } },
+          { text: 'I heard you bake.', next: 'bake', effects: { rel: { naim: 3 }, flags: { met_naim: true } } },
+        ],
+      },
+      rec: { speaker: 'naim', text: 'Start with the one with the dragons. Then the other one with the dragons. Then come back and we\'ll talk about the ending. I have notes.', next: 'ban' },
+      bake: { speaker: 'naim', text: 'Banana bread on Sundays. Goalkeeper on Saturdays. Piano when nobody\'s listening. Books always. Anyway, books.', next: 'ban' },
+      ban: { speaker: 'naim', text: 'School libraries all over the country. So Brooklyn Public Library made Books Unbanned: any teen 13 to 21 in the US can get a free eCard and read the books other places took away.', next: 'ban2' },
+      ban2: {
+        speaker: 'naim', text: 'And here in New York, teens can just get a regular library card. Free books. Free dragons. Nobody gets to decide what you\'re allowed to read.',
+        choices: [{ text: 'Getting my card today.', effects: { rel: { naim: 6 }, solidarity: 10, trust: { crownheights: 3 }, toast: 'POCKET CIVICS · BOOKS UNBANNED' } }],
+      },
+      after: { speaker: 'naim', text: 'Free library card, free books, free dragons. That\'s the whole pitch. Also, if you need a goalkeeper, I\'m right here.' },
+    },
+  },
+
+  // ============================================================ LUCO · who watches the city's money
+  luco: {
+    entries: [{ cond: { notFlag: 'met_luco' }, node: 'intro' }, { node: 'after' }],
+    nodes: {
+      intro: {
+        speaker: 'luco', text: 'I\'m vibe-coding a soccer manager game. Buy players, build a stadium, go broke, the usual. Want to know who the biggest investor in New York City is?',
+        choices: [
+          { text: 'Who?', next: 'comp', effects: { rel: { luco: 5 }, flags: { met_luco: true } } },
+          { text: 'Show me the game first.', next: 'game', effects: { rel: { luco: 4 }, flags: { met_luco: true } } },
+          { text: 'Stocks? At 14?', next: 'stocks', effects: { flags: { met_luco: true } } },
+        ],
+      },
+      game: { speaker: 'luco', text: 'It\'s called Deadline Day. You run a Brooklyn club, and every big transfer, the fans get a vote. Revolutionary, I know. Anyway, the investor.', next: 'comp' },
+      stocks: { speaker: 'luco', text: 'I don\'t give advice. I give spreadsheets. And the spreadsheet says the city owns more stock than all of us put together.', next: 'comp' },
+      comp: { speaker: 'luco', text: 'The City Comptroller. They audit city agencies, and they manage the pension funds for teachers, firefighters and city workers. Hundreds of billions of dollars, invested in stocks.', next: 'comp2' },
+      comp2: {
+        speaker: 'luco', text: 'So the city is a shareholder. The funds vote at company meetings, and every vote is posted on NYC Open Data. I\'m putting the data in my game.',
+        choices: [{ text: 'Follow the money.', effects: { rel: { luco: 6 }, solidarity: 10, trust: { downtown: 3 }, toast: 'POCKET CIVICS · WHO WATCHES THE CITY\'S MONEY' } }],
+      },
+      after: { speaker: 'luco', text: 'Follow the money. Then build a game about it. That\'s my whole business plan.' },
+    },
+  },
+
+  // ============================================================ VEGA · testify at City Council
+  vega: {
+    entries: [{ cond: { notFlag: 'met_vega' }, node: 'intro' }, { node: 'after' }],
+    nodes: {
+      intro: {
+        speaker: 'vega', text: 'Watch this! *spins* That\'s a pirouette. I didn\'t invent it, but I invented the arms.',
+        choices: [
+          { text: 'Teach me!', next: 'dance', effects: { rel: { vega: 5 }, flags: { met_vega: true } } },
+          { text: 'What are you making?', next: 'art', effects: { flags: { met_vega: true } } },
+          { text: 'Love the hair.', next: 'hair', effects: { rel: { vega: 4 }, flags: { met_vega: true } } },
+        ],
+      },
+      dance: { speaker: 'vega', text: 'First you feel the music. Then you do whatever your body says. That\'s how you express yourself. It\'s also how you speak up.', next: 'testify' },
+      art: { speaker: 'vega', text: 'A painting of the whole block dancing. Even Gary. ESPECIALLY Gary. He needs it.', next: 'testify' },
+      hair: { speaker: 'vega', text: 'Today it\'s a side braid with a twist. Tomorrow? Nobody knows. Not even me. That\'s the fun part.', next: 'testify' },
+      testify: { speaker: 'vega', text: 'Did you know anybody who lives in New York City can sign up to testify at a City Council hearing? You talk right to the people who make the rules.', next: 'testify2' },
+      testify2: {
+        speaker: 'vega', text: 'You can even send it in writing. I\'m telling them our block needs an outdoor dance floor. A big one. With lights.',
+        choices: [{ text: 'Put me down as a co-signer.', effects: { rel: { vega: 6 }, solidarity: 10, trust: { bushwick: 3 }, toast: 'POCKET CIVICS · TESTIFY AT CITY COUNCIL' } }],
+      },
+      after: { speaker: 'vega', text: 'If you can dance in front of people, you can talk in front of the City Council. Same nerves. Better outfit.' },
     },
   },
 
