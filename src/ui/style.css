@@ -391,3 +391,17 @@ body.touch .touch-only { display: block; }
 #touch-btns button.off { opacity: .38; }
 #touch-btns button:active { transform: scale(.92); }
 body:has(#dialogue.open) #touch-btns button.off { opacity: 1; }
+
+/* Mission intro gets the stage alone: the neighborhood banner waits, and on phones
+   the mission box and toasts step back behind a dim scrim until the title fades. */
+body:has(#mission-intro.show) #district { visibility: hidden; }
+#mission-intro::before { content: ''; position: absolute; inset: -60vh -50vw; z-index: -1; background: radial-gradient(ellipse at 50% 40%, rgba(22,16,31,.78), rgba(22,16,31,.35) 70%, transparent); pointer-events: none; }
+#mission-intro { z-index: 4; }
+@media (max-width: 600px), (max-height: 500px) and (orientation: landscape) {
+  body:has(#mission-intro.show) #objective { opacity: 0; transition: opacity .3s; }
+  #objective { transition: opacity .4s .2s; }
+  #mission-intro { top: 50%; transform-origin: center; }
+  #mission-intro.show { animation-name: introPhone; }
+}
+
+@keyframes introPhone { 0% { opacity: 0; transform: translateY(-50%) scale(1.3); } 10% { opacity: 1; transform: translateY(-50%) scale(1); } 80% { opacity: 1; transform: translateY(-50%); } 100% { opacity: 0; transform: translateY(calc(-50% - 20px)); } }

@@ -52,7 +52,13 @@ class UI {
     this.showTitle();
   }
 
-  attachWorld(scene: any) { this.world = scene; }
+  attachWorld(scene: any) {
+    this.world = scene;
+    // A New Game / Continue tapped before the world finished loading runs now.
+    if (this.pendingStart) { const ev = this.pendingStart; this.pendingStart = null; setTimeout(() => bus.emit(ev), 0); }
+  }
+  private pendingStart: string | null = null;
+  private begin(ev: 'game:new' | 'game:load') { this.startPlay(); if (this.world) bus.emit(ev); else this.pendingStart = ev; }
 
   blocking() { return this.panel !== null || this.dialogueOpen; }
 
@@ -112,8 +118,8 @@ class UI {
   }
 
   private bindButtons() {
-    $('#btn-new').onclick = () => { this.startPlay(); bus.emit('game:new'); };
-    $('#btn-continue').onclick = () => { this.startPlay(); bus.emit('game:load'); };
+    $('#btn-new').onclick = () => this.begin('game:new');
+    $('#btn-continue').onclick = () => this.begin('game:load');
     $('#btn-help').onclick = () => { $('#help').classList.add('open'); };
     $('#help-close').onclick = () => { $('#help').classList.remove('open'); };
     $('#pause').addEventListener('click', (e) => {
