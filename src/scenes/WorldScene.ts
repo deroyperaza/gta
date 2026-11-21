@@ -10,7 +10,7 @@ import { Opposition } from '../entities/opposition';
 import { dialogue } from '../systems/dialogue';
 import { missions } from '../systems/missions';
 import { ui } from '../ui/ui';
-import { BLOCK_H, BLOCK_W, GAP_CIRCLE, gapOutline, ROAD, T, TILE, WORLD_H, WORLD_W, districtAt, generateLayout, type BuildingDef, type WorldLayout } from '../world/layout';
+import { BLOCK_H, BLOCK_W, GAP_CIRCLE, gapOutline, ROAD, T, TILE, WORLD_H, WORLD_W, districtAt, generateLayout, neighborhoodAt, type BuildingDef, type WorldLayout } from '../world/layout';
 import { makeProps } from '../world/textures';
 import { buildingKey, makeBikeRider, makeBridgeTower, makeBuilding, makeCharacter, makePlayerMarker, makeStreetProps, makeTiles, makeVehicles, shadowKey, shadowOffset, SHADOW_PAD } from '../world/golden';
 
@@ -51,6 +51,7 @@ export class WorldScene extends Phaser.Scene {
   playerRing!: Phaser.GameObjects.Image;
   playerChevron!: Phaser.GameObjects.Image;
   district: District | null = null;
+  hood: string | null = null;
   lastDialogueEnd = 0;
   facing = 1;
   titlePan = 0;
@@ -153,7 +154,7 @@ export class WorldScene extends Phaser.Scene {
     const map = this.make.tilemap({ data: this.layout.tiles, tileWidth: TILE, tileHeight: TILE });
     const ts = map.addTilesetImage('tiles', 'tiles', TILE, TILE, 0, 0)!;
     this.groundLayer = map.createLayer(0, ts, 0, 0)!.setDepth(-10);
-    map.setCollision([T.WATER]);
+    map.setCollision([T.WATER, T.OFFMAP]);
   }
 
   /** A painted sprite's shadow, swept from its base out to the sun offset so it stays attached to the building (one shifted copy looks like it floats). */
@@ -758,8 +759,13 @@ export class WorldScene extends Phaser.Scene {
     } else { ui.setPrompt(''); ui.setTouchLabels(null, null); }
 
     // District detection
-    const d = districtAt(this.player.x, this.player.y);
-    if (d !== this.district && this.mode === 'play') { this.district = d; bus.emit('world:district', d, DISTRICTS[d]); }
+    // Neighborhood banner: the real neighborhood you just walked into (the district still drives trust)
+    const d = districtAt(this.player.x, this.player.y), hood = neighborhoodAt(this.player.x, this.player.y);
+    if (hood && hood !== this.hood && this.mode === 'play') {
+      this.hood = hood; this.district = d;
+      const info = DISTRICTS[d], own = hood.toLowerCase() === info.name.toLowerCase();
+      bus.emit('world:district', d, { ...info, name: hood, blurb: own ? info.blurb : '' });
+    }
 
     // Minimap player marker
     this.mmPlayer.setPosition(this.player.x, this.player.y);

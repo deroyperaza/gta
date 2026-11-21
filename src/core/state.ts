@@ -3,7 +3,7 @@ import type { Cond, District, Effect, FlagValue, ItemId, MissionProgress, SaveDa
 import { ITEMS } from '../data/items';
 
 const SAVE_KEY = 'gtaa-L-save-v1';
-const VERSION = 1;
+const VERSION = 2; // 2: the map became real Brooklyn (Nov 21 2026), so old positions don't mean anything
 
 function fresh(): SaveData {
   return {
@@ -137,6 +137,8 @@ class GameState {
     // Merge onto a fresh save so older saves gain new fields.
     const base = fresh();
     this.d = { ...base, ...data, trust: { ...base.trust, ...data.trust }, inventory: { ...base.inventory, ...data.inventory } };
+    // Saves from before the real-Brooklyn map: keep progress, start on the plaza
+    if ((data.version ?? 1) < VERSION) { this.d.player = { ...base.player }; this.d.version = VERSION; }
     bus.emit('state:loaded');
     this.changed();
     return true;

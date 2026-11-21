@@ -77,7 +77,7 @@ export const blockparty: MissionModule = {
         },
         targets: () => SETUP.filter(([s]) => !f(`at_${s}`)).map(([s]) => `spot:${s}`),
         done: () => SETUP.every(([s]) => f(`at_${s}`)),
-        timer: 180,
+        timer: 240, // from Jon in Bushwick down to Coney Island
       },
       { text: () => 'The street is full. Find Emily and cut the cake', targets: () => ['emily'], done: () => f('blockparty_done') },
     ],

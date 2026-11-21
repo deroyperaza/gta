@@ -50,7 +50,7 @@ function grit(c: Ctx, x: number, y: number, w: number, h: number, n: number, col
 // ------------------------------------------------------------------ GROUND
 export function makeTiles(scene: Phaser.Scene) {
   seed = 11;
-  canvas(scene, 'tiles', TILE * 16, TILE, (c) => {
+  canvas(scene, 'tiles', TILE * 17, TILE, (c) => {
     const at = (i: number, fn: (x: number) => void) => { c.save(); c.beginPath(); c.rect(i * TILE, 0, TILE, TILE); c.clip(); fn(i * TILE); c.restore(); };
     const asphalt = (x: number, base = '#34363a') => {
       c.fillStyle = base; c.fillRect(x, 0, TILE, TILE);
@@ -100,6 +100,12 @@ export function makeTiles(scene: Phaser.Scene) {
       grit(c, x, 0, TILE, TILE, 120, ['rgba(111,122,60,.6)', 'rgba(79,90,42,.5)', 'rgba(122,106,85,.6)', 'rgba(62,55,47,.6)', 'rgba(138,128,112,.5)'], 0.8, 2.6);
     });
     at(T.CURB, (x) => concrete(x, '#9e978b'));
+    // Another borough across the water: a dark block of rooftops you can't walk into
+    at(T.OFFMAP, (x) => {
+      c.fillStyle = '#2b2d36'; c.fillRect(x, 0, TILE, TILE);
+      for (let i = 0; i < 4; i++) { c.fillStyle = pick(['#3a3c48', '#33353f', '#41434f']); c.fillRect(x + R(0, 20), R(0, 20), R(8, 16), R(8, 16)); }
+      if (rnd() < 0.5) { c.fillStyle = 'rgba(255,214,140,.55)'; c.fillRect(x + R(2, 28), R(2, 28), 2, 2); }
+    });
     at(T.SAND, (x) => {
       c.fillStyle = '#d9b77e'; c.fillRect(x, 0, TILE, TILE);
       grit(c, x, 0, TILE, TILE, 70, ['rgba(255,236,196,.45)', 'rgba(150,110,60,.35)', 'rgba(200,160,100,.4)'], 0.5, 1.4);
@@ -145,8 +151,11 @@ const SIGNS: Partial<Record<BuildingType, [string, string]>> = {
   gallery: ['#f4efe6', '#1c1a18'], laundromat: ['#f4efe6', '#1d5fae'], bakery: ['#5a3a24', '#f4e6c8'], sales: ['#c9a43a', '#1c1a18'],
 };
 
-export function buildingKey(b: BuildingDef) { return `bld-${b.id}`; }
-export function shadowKey(b: BuildingDef) { return `shd-${b.id}`; }
+// Named landmarks get their own images. Unnamed filler buildings that look alike share one (same type, size and
+// variant), and every building of the same size shares a shadow: a map 3x bigger stays inside phone memory.
+const filler = (b: BuildingDef) => !b.name && b.type !== 'arena' && b.type !== 'supertall';
+export function buildingKey(b: BuildingDef) { return filler(b) ? `bld-f-${b.type}-${b.variant}-${b.w}x${b.h}` : `bld-${b.id}`; }
+export function shadowKey(b: BuildingDef) { return b.type === 'arena' ? `shd-${b.id}` : `shd-${b.w}x${b.h}`; }
 
 /** Building height in px that drives the cast shadow and how much south wall shows. */
 function heightOf(b: BuildingDef) { return b.h; }
@@ -175,10 +184,11 @@ function drawBuilding(c: Ctx, b: BuildingDef) {
   const { w, h, type } = b;
   if (type === 'arena') { drawArena(c, b); return; }
   if (type === 'supertall') { drawBrooklynTower(c, b); return; }
-  seed = (b.x * 31 + b.y * 17) % 2147483647 || 5;
+  // Filler: details seeded by look (type/size/variant) so shared images match; landmarks: by position as before
+  seed = filler(b) ? ([...buildingKey(b)].reduce((a, ch) => (a * 31 + ch.charCodeAt(0)) % 2147483647, 7) || 5) : (b.x * 31 + b.y * 17) % 2147483647 || 5;
   const wall = WALL[type][b.variant % 4];
   const fh = facadeH(b), rh = h - fh;
-  const roof = type === 'tower' || type === 'sales' ? '#3a3f45' : type === 'church' ? '#5a4a44' : type === 'government' || type === 'courthouse' ? '#9fa3a6' : ROOFS[(b.variant + Math.floor(b.x / 32)) % ROOFS.length];
+  const roof = type === 'tower' || type === 'sales' ? '#3a3f45' : type === 'church' ? '#5a4a44' : type === 'government' || type === 'courthouse' ? '#9fa3a6' : ROOFS[(b.variant + (filler(b) ? b.w / 32 : Math.floor(b.x / 32))) % ROOFS.length];
 
   // ---------- south wall, leaning toward the camera ----------
   c.fillStyle = lg(c, 0, rh, 0, h, [[0, col(wall, 1, 0.95)], [1, col(wall, 1, 0.62)]]); c.fillRect(0, rh, w, fh);

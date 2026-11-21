@@ -44,7 +44,7 @@ export const MISSIONS: MissionDef[] = [
         },
         targets: () => [['stb_coop', 'brendan'], ['stb_bodega', 'farouk'], ['stb_bakery', 'juni']].filter(([k]) => !f(k)).map(([, id]) => id),
         done: () => f('stb_coop') && f('stb_bodega') && f('stb_bakery'),
-        timer: 150,
+        timer: 240, // the real-Brooklyn map: Dee, Farouk, the co-op and the bakery are farther apart
       },
       { text: () => 'Restock the Community Fridge [E]', targets: () => ['fridge'], done: () => f('stb_restocked'), timed: true },
       { text: () => 'Tell Dee the fridge is full', targets: () => ['dee'], done: () => f('stb_thanked') },
