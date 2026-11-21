@@ -20,10 +20,16 @@ export interface MissionDef {
   next?: string;
   comingSoon?: boolean;
   onFail?: () => void;
+  /** Checked on every state change; true fails the mission */
+  failIf?: () => boolean;
   failText?: string;
 }
 
 const f = (k: string) => !!state.flag(k);
+
+/** Mission 3: friends who can bring their people to the march. */
+export const MARCH_ALLIES = ['dee', 'nell', 'jenna', 'juni', 'jon'];
+const alliesIn = () => MARCH_ALLIES.filter((a) => f(`pvp_ally_${a}`)).length;
 
 export const MISSIONS: MissionDef[] = [
   {
@@ -72,8 +78,38 @@ export const MISSIONS: MissionDef[] = [
     next: 'march',
   },
   {
-    id: 'march', number: 3, title: 'THE PEOPLE VS. THE POWER', district: 'downtown', giver: 'gary', comingSoon: true,
-    tagline: 'A demonstration is forming at Borough Hall. Recruit, marshal, and march — without letting it boil over.', stages: [], next: 'rent',
+    id: 'march', number: 3, title: 'THE PEOPLE VS. THE POWER', district: 'downtown', giver: 'gary',
+    tagline: 'A demonstration is forming at Borough Hall. Recruit, marshal, and march — without letting it boil over.',
+    stages: [
+      { text: () => 'Talk to Councilmember Gary at Borough Hall', targets: () => ['gary'], done: () => f('pvp_accepted') },
+      {
+        text: () => `Build the march: allies ${alliesIn()}/3 · neighbors ${Math.min(state.num('pvp_marchers'), 8)}/8 (hand out flyers [SPACE])`,
+        targets: () => (alliesIn() >= 3 ? [] : MARCH_ALLIES.filter((a) => !f(`pvp_ally_${a}`))),
+        done: () => alliesIn() >= 3 && state.num('pvp_marchers') >= 8,
+      },
+      { text: () => 'Get a know-your-rights briefing from Bridgette before you march', targets: () => ['bridgette'], done: () => f('pvp_briefed') },
+      {
+        text: () => `March your crowd ${f('pvp_cp1') ? 'past Metro Mall-ish' : 'past Luxe Lofts'} · tension ${state.num('pvp_tension')}/3`,
+        targets: () => [f('pvp_cp1') ? 'pvp_cp2' : 'pvp_cp1'],
+        done: () => f('pvp_cp1') && f('pvp_cp2'),
+      },
+      { text: () => `Take the steps of Borough Hall and speak · tension ${state.num('pvp_tension')}/3`, targets: () => ['pvp_steps'], done: () => f('pvp_spoke') },
+    ],
+    optional: [
+      { id: 'crowd', text: 'Bring 14 neighbors', done: () => state.num('pvp_marchers') >= 14, reward: { solidarity: 40, attention: 4 } },
+      { id: 'allies', text: 'Recruit all five allies', done: () => alliesIn() >= 5, reward: { solidarity: 50, power: 1 } },
+      { id: 'calm', text: 'Finish with zero tension', done: () => f('pvp_spoke') && state.num('pvp_tension') === 0, reward: { solidarity: 60, trust: { downtown: 5 } } },
+    ],
+    failIf: () => state.num('pvp_tension') >= 3,
+    failText: 'It boiled over. Someone threw a cold brew, someone else threw a punch, and the evening news called it "chaos." Gary voted for the gazebo "for public safety." Your allies are still with you. Regroup and march again.',
+    onFail: () => { for (const k of ['pvp_cp1', 'pvp_cp2', 'pvp_tension', 'pvp_spirit', 'pvp_spoke', 'pvp_result']) delete state.d.flags[k]; },
+    rewards: () => {
+      const r = state.flag('pvp_result');
+      if (r === 'good') return { solidarity: 400, power: 3, attention: 10, trust: { downtown: 20 }, toast: 'LINE 47 IS DEAD. THE FRIDGE LIVES.' };
+      if (r === 'ok') return { solidarity: 200, power: 1, trust: { downtown: 10 }, toast: 'GAZEBO DELAYED (FOR NOW)' };
+      return { solidarity: 80, trust: { downtown: 3 } };
+    },
+    next: 'rent',
   },
   {
     id: 'rent', number: 4, title: 'RENT IS TOO DAMN HIGH', district: 'bushwick', giver: 'juni', comingSoon: true,

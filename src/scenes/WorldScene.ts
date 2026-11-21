@@ -88,6 +88,7 @@ export class WorldScene extends Phaser.Scene {
     this.physics.add.collider(this.player, this.groundLayer);
 
     this.buildNpcs(solids);
+    this.setupMarch();
     this.peds = new Pedestrians(this, this.layout, 170);
     this.traffic = new Traffic(this, (x, y) => this.floatText(x, y - 30, Phaser.Utils.Array.GetRandom(['HONK!', 'BEEP!', 'MOVE!', 'YO!']), '#ffd23f'));
 
@@ -122,14 +123,14 @@ export class WorldScene extends Phaser.Scene {
     bus.on('game:title', () => { this.mode = 'title'; });
     bus.on('state:changed', () => this.refreshWorldState());
     bus.on('mission:failed', () => this.cameras.main.shake(300, 0.006));
-    bus.on('mission:passed', () => this.celebrate(this.player.x, this.player.y));
+    bus.on('mission:passed', (p: any) => { this.celebrate(this.player.x, this.player.y); if (p?.def?.id === 'march') this.peds.release(); });
     bus.on('ui:interact', () => this.tryInteract());
     bus.on('ui:action', () => this.tryAction());
     bus.on('ui:bike', () => { if (this.mode !== 'play') return; if (this.onBike) this.toggleBike(false); else bus.emit('ui:toast', 'FIND A BK SPOKES DOCK TO GRAB A BIKE'); });
 
     ui.attachWorld(this);
     bus.emit('world:ready');
-    if (import.meta.env.DEV) (window as any).__world = this;
+    if (import.meta.env.DEV) { (window as any).__world = this; (window as any).__state = state; (window as any).__missions = missions; }
   }
 
   // ------------------------------------------------------------------ BUILD
@@ -425,6 +426,13 @@ export class WorldScene extends Phaser.Scene {
     const ped = this.peds.nearest(this.player.x, this.player.y, 60, (p) => !p.gotFlyer);
     if (ped && state.count('flyers') > 0) {
       ped.gotFlyer = true; ped.pause = 2.5;
+      // Mission 3: a neighbor who takes a flyer joins the march.
+      const m3 = missions.active?.id === 'march' && !state.flag('pvp_spoke');
+      if (m3 && this.peds.followers().length < 18) {
+        this.peds.recruit(ped);
+        state.apply({ inc: { pvp_marchers: 1, pvp_crowd: 1 } }, { quiet: true });
+        setTimeout(() => bus.emit('ui:toast', `${state.num('pvp_marchers')} NEIGHBORS MARCHING`), 900);
+      }
       state.apply({ items: { flyers: -1 }, attention: 1, mvar: { flyers: 1 }, inc: { flyers_given: 1 } }, { quiet: true });
       bus.emit('ui:toast', `FLYER HANDED · ${state.count('flyers')} LEFT`);
       this.bubble(ped.sprite, Phaser.Utils.Array.GetRandom(FLYER_LINES));
@@ -474,6 +482,30 @@ export class WorldScene extends Phaser.Scene {
       this.tweens.add({ targets: h, x: x + Phaser.Math.Between(-60, 60), y: y - Phaser.Math.Between(30, 90), alpha: 0, scale: 1.4, duration: 900 + i * 40, ease: 'Cubic.out', onComplete: () => h.destroy() });
     }
   }
+  // ------------------------------------------------------------------ MISSION 3 · THE PEOPLE VS. THE POWER
+  private setupMarch() {
+    const sp = this.layout.spots;
+    const at = (id: string, from: string, dx: number, dy: number) => { const s = sp[from]; if (s) this.entityPos[id] = { x: s.x + dx, y: s.y + dy }; };
+    at('pvp_cp1', 'tyler', 0, 70);   // Luxe Lofts: Tyler's cold brew
+    at('pvp_cp2', 'skye', 0, 70);    // Metro Mall-ish: Skye + the sidewalk
+    at('pvp_steps', 'gary', 0, 60);  // Borough Hall steps: the speech
+  }
+
+  /** Walking the crowd into a checkpoint starts that scene. */
+  private marchTriggers() {
+    if (missions.active?.id !== 'march' || this.mode !== 'play' || dialogue.active) return;
+    if (performance.now() - this.lastDialogueEnd < 2500) return;
+    const stage = state.mission('march').stage;
+    let id: string | null = null, dlg: string | null = null, owner = 'gary';
+    if (stage === 3) {
+      if (!state.flag('pvp_cp1')) { id = 'pvp_cp1'; dlg = 'pvp_cp1'; owner = 'tyler'; }
+      else if (!state.flag('pvp_cp2')) { id = 'pvp_cp2'; dlg = 'pvp_cp2'; owner = 'skye'; }
+    } else if (stage === 4 && !state.flag('pvp_spoke')) { id = 'pvp_steps'; dlg = 'pvp_speech'; }
+    if (!id || !dlg) return;
+    const p = this.entityPos[id];
+    if (p && Math.hypot(p.x - this.player.x, p.y - this.player.y) < 80) dialogue.start(owner, DIALOGUES[dlg]);
+  }
+
   private celebrate(x: number, y: number) { this.hearts(x, y - 30, 20); this.cameras.main.flash(300, 255, 210, 63); }
 
   // ------------------------------------------------------------------ LOOP
@@ -531,7 +563,9 @@ export class WorldScene extends Phaser.Scene {
     // World sim
     const cam = this.cameras.main;
     const view = new Phaser.Geom.Rectangle(cam.worldView.x - 64, cam.worldView.y - 64, cam.worldView.width + 128, cam.worldView.height + 160);
+    this.peds.leader = { x: this.player.x, y: this.player.y };
     this.peds.update(dt, view);
+    if (!blocking) this.marchTriggers();
     this.traffic.update(dt, this.player, (dx, dy) => { if (this.mode === 'play') { this.player.x += dx; this.player.y += dy; } });
 
     // Prompt

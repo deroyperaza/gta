@@ -55,6 +55,7 @@ class MissionSystem {
           state.apply(o.reward);
         }
       }
+      if (def.failIf?.()) this.fail(def); // then fall through: stages already done (allies, briefing) skip ahead
       let guard = 0;
       while (m.status === 'active' && def.stages[m.stage]?.done() && guard++ < 10) {
         m.stage++;

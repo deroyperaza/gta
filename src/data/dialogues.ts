@@ -6,7 +6,7 @@ const DONE = (id: string) => ({ missionStatus: { id, is: 'complete' as const } }
 export const DIALOGUES: Record<string, Dialogue> = {
   // ============================================================ DEE
   dee: {
-    entries: [
+    entries: [{ cond: { ...S('march', 1), notFlag: 'pvp_ally_dee' }, node: 'pvp' }, 
       { cond: S('stock', 0), node: 'intro' },
       { cond: S('stock', 1), node: 'collecting' },
       { cond: S('stock', 2), node: 'deliver' },
@@ -15,6 +15,10 @@ export const DIALOGUES: Record<string, Dialogue> = {
       { node: 'after' },
     ],
     nodes: {
+      pvp: {
+        speaker: 'dee', text: 'They want to cut the fridge grants to build a GAZEBO? Say less. The fridge regulars will be there. Ms. Hattie is bringing folding chairs and a look.',
+        choices: [{ text: 'See you on the steps.', effects: { rel: { dee: 4 }, flags: { pvp_ally_dee: true }, inc: { pvp_crowd: 6 }, toast: 'DEE IS IN · +6 MARCHERS' } }],
+      },
       intro: { speaker: 'dee', text: 'You. Yeah, you with the jury-duty face. You look like somebody with two free hands.', next: 'intro2' },
       intro2: {
         speaker: 'dee', text: 'Fridge is down to one lime and a sticky note that says "stay strong." Three spots promised donations and nobody\'s picked up.',
@@ -90,12 +94,16 @@ export const DIALOGUES: Record<string, Dialogue> = {
 
   // ============================================================ JUNI
   juni: {
-    entries: [
+    entries: [{ cond: { ...S('march', 1), notFlag: 'pvp_ally_juni' }, node: 'pvp' }, 
       { cond: { ...S('stock', 1), notFlag: 'stb_bakery' }, node: 'pickup' },
       { cond: DONE('stock'), node: 'after' },
       { node: 'idle' },
     ],
     nodes: {
+      pvp: {
+        speaker: 'juni', text: 'A march needs signs. Signs need art. Art needs me. Take these. Wheatpaste them along the route so the block knows where we\'re going.',
+        choices: [{ text: 'Signs make it real.', effects: { rel: { juni: 4 }, items: { posters: 4 }, flags: { pvp_ally_juni: true }, inc: { pvp_crowd: 5 }, toast: 'JUNI IS IN · +5 MARCHERS' } }],
+      },
       pickup: {
         speaker: 'juni', text: 'Bread for the fridge? Sure. But real talk: fridges don\'t stop evictions. We should be organizing the landlords out of existence.',
         choices: [
@@ -209,8 +217,32 @@ export const DIALOGUES: Record<string, Dialogue> = {
 
   // ============================================================ DOWNTOWN CAST (teases later missions)
   gary: {
-    entries: [{ cond: { ...DONE('stock'), notFlag: 'gary_photo' }, node: 'photo' }, { node: 'idle' }],
+    entries: [
+      { cond: S('march', 0), node: 'pvp0' },
+      { cond: { missionStatus: { id: 'march', is: 'available' } }, node: 'pvpstart' },
+      { cond: S('march', [1, 2, 3, 4]), node: 'pvpwait' },
+      { cond: { missionStatus: { id: 'march', is: 'complete' } }, node: 'pvpafter' },
+      { cond: { ...DONE('stock'), notFlag: 'gary_photo' }, node: 'photo' },
+      { node: 'idle' },
+    ],
     nodes: {
+      pvpstart: { speaker: 'gary', text: 'Oh good, you\'re here. I need a favor. A big, loud, public favor.', choices: [{ text: 'What kind of favor?', next: 'pvp0', effects: { startMission: 'march' } }] },
+      pvp0: { speaker: 'gary', text: 'Friday the Council votes on the borough budget. Line 47 cuts the community fridge grants, library Sundays and the tenant lawyer program. To pay for the Downtown Vibrancy Gazebo.', next: 'pvp1' },
+      pvp1: {
+        speaker: 'gary', text: 'Between us? I\'m a no. But I can\'t BE a no unless it looks like the people made me. I need a crowd on those steps. A big one. Make me do it.',
+        choices: [
+          { text: 'So you want us to protest you.', next: 'pvp2' },
+          { text: 'What does a gazebo do for anyone?', next: 'pvp3' },
+        ],
+      },
+      pvp2: { speaker: 'gary', text: 'Loudly. Peacefully. On camera. It\'s called accountability. It\'s also called coverage.', next: 'pvp4' },
+      pvp3: { speaker: 'gary', text: 'Shade. For investors. Tyler drew it on a napkin. The napkin is now a line item.', next: 'pvp4' },
+      pvp4: {
+        speaker: 'gary', text: 'My intern printed flyers. Find allies who can bring their people, hand flyers to neighbors, then march them here. And keep it calm. Calm polls well.',
+        choices: [{ text: 'We\'ll be on the steps. (Take 12 flyers.)', effects: { items: { flyers: 12 }, flags: { pvp_accepted: true } } }],
+      },
+      pvpwait: { speaker: 'gary', text: 'I\'ll be inside. Watching. Supportively. From the window. Bring more people than the gazebo has fans.' },
+      pvpafter: { speaker: 'gary', text: 'Have you seen my approval numbers since the rally? Neither have I. My staff won\'t show me. I assume that\'s good.' },
       idle: { speaker: 'gary', text: 'There\'s a big demonstration forming outside Borough Hall soon. I\'ll be very supportive. From inside. With the windows closed.' },
       photo: {
         speaker: 'gary', text: 'I heard about the community fridge! Inspiring. Can I get a photo with it? For the newsletter. And the other newsletter.',
@@ -278,8 +310,12 @@ export const DIALOGUES: Record<string, Dialogue> = {
 
   // ============================================================ JENNA · participatory budgeting + facilitation
   jenna: {
-    entries: [{ cond: { notFlag: 'met_jenna' }, node: 'intro' }, { node: 'after' }],
+    entries: [{ cond: { ...S('march', 1), notFlag: 'pvp_ally_jenna' }, node: 'pvp' }, { cond: { notFlag: 'met_jenna' }, node: 'intro' }, { node: 'after' }],
     nodes: {
+      pvp: {
+        speaker: 'jenna', text: 'I\'ll run a phone tree tonight. Not a mass text. A real call from someone they know. That\'s the difference between "interested" and "there."',
+        choices: [{ text: 'Call everybody.', effects: { rel: { jenna: 4 }, flags: { pvp_ally_jenna: true }, inc: { pvp_crowd: 10 }, toast: 'JENNA IS IN · +10 MARCHERS' } }],
+      },
       intro: {
         speaker: 'jenna', text: 'People don\'t come back to meetings. They come back to people. The secret is the one-on-one before the meeting, not the meeting itself.',
         choices: [
@@ -301,8 +337,12 @@ export const DIALOGUES: Record<string, Dialogue> = {
 
   // ============================================================ NELL · tenants' rights
   nell: {
-    entries: [{ cond: { notFlag: 'met_nell' }, node: 'intro' }, { node: 'after' }],
+    entries: [{ cond: { ...S('march', 1), notFlag: 'pvp_ally_nell' }, node: 'pvp' }, { cond: { notFlag: 'met_nell' }, node: 'intro' }, { node: 'after' }],
     nodes: {
+      pvp: {
+        speaker: 'nell', text: 'They\'re cutting the tenant lawyer program? Our association has forty members and thirty-nine opinions. Every one of them agrees on this. We\'ll bring the Right to Counsel banner.',
+        choices: [{ text: 'Bring the whole building.', effects: { rel: { nell: 4 }, flags: { pvp_ally_nell: true }, inc: { pvp_crowd: 8 }, trust: { plg: 3 }, toast: 'NELL IS IN · +8 MARCHERS' } }],
+      },
       intro: {
         speaker: 'nell', text: 'Landlord dragging you to Housing Court? Don\'t show up alone. In this city, a lot of tenants have a right to a free lawyer.',
         choices: [
@@ -324,8 +364,20 @@ export const DIALOGUES: Record<string, Dialogue> = {
 
   // ============================================================ BRIDGETTE · voting rights after prison + Clean Slate
   bridgette: {
-    entries: [{ cond: { notFlag: 'met_bridgette' }, node: 'intro' }, { node: 'after' }],
+    entries: [{ cond: S('march', 2), node: 'pvp' }, { cond: { notFlag: 'met_bridgette' }, node: 'intro' }, { node: 'after' }],
     nodes: {
+      pvp: { speaker: 'bridgette', text: 'Before anybody marches: know your rights. Rallies and marches on the sidewalk don\'t need a permit, as long as you leave room for people to pass and don\'t block doorways.', next: 'pvp2' },
+      pvp2: {
+        speaker: 'bridgette', text: 'Marching in the street needs an NYPD parade permit. A megaphone needs a sound permit from the local precinct. We have neither. So: sidewalks, no megaphone, big voices.',
+        choices: [
+          { text: 'What if the police tell us to move?', next: 'pvp3' },
+          { text: 'Sidewalks. Big voices. Let\'s go.', effects: { rel: { bridgette: 5 }, solidarity: 10, flags: { pvp_briefed: true }, toast: 'POCKET CIVICS · YOUR RIGHT TO PROTEST' } },
+        ],
+      },
+      pvp3: {
+        speaker: 'bridgette', text: 'Stay calm. Don\'t argue on the curb. Ask "Am I free to go?" Don\'t resist, and remember badge numbers. I\'ll be the legal observer with the clipboard. Obviously.',
+        choices: [{ text: 'Calm, curious, on the sidewalk.', effects: { rel: { bridgette: 6 }, solidarity: 10, flags: { pvp_briefed: true }, toast: 'POCKET CIVICS · YOUR RIGHT TO PROTEST' } }],
+      },
       intro: {
         speaker: 'bridgette', text: 'I spent ten years as a public defender. Know who never gets asked to register? People who\'ve done time. Most of them don\'t know they can vote.',
         choices: [
@@ -415,8 +467,12 @@ export const DIALOGUES: Record<string, Dialogue> = {
 
   // ============================================================ JON · public access media
   jon: {
-    entries: [{ cond: { notFlag: 'met_jon' }, node: 'intro' }, { node: 'after' }],
+    entries: [{ cond: { ...S('march', 1), notFlag: 'pvp_ally_jon' }, node: 'pvp' }, { cond: { notFlag: 'met_jon' }, node: 'intro' }, { node: 'after' }],
     nodes: {
+      pvp: {
+        speaker: 'jon', text: 'I\'ll shoot it for BRIC. If it isn\'t on tape, Gary\'s office will call it "a few concerned residents." Tape doesn\'t lie. Editors do, but not me.',
+        choices: [{ text: 'Roll camera.', effects: { rel: { jon: 4 }, flags: { pvp_ally_jon: true }, inc: { pvp_crowd: 2 }, attention: 6, toast: 'JON IS IN · CAMERA ROLLING' } }],
+      },
       intro: {
         speaker: 'jon', text: 'Every movement needs an editor. Your speech is nine minutes. The good part is ninety seconds. I found it.',
         choices: [
@@ -433,6 +489,74 @@ export const DIALOGUES: Record<string, Dialogue> = {
       },
       taller: { speaker: 'jon', text: 'I can make you look right. Taller is a lighting problem.' },
       after: { speaker: 'jon', text: 'Every block deserves a show. Some deserve a series.' },
+    },
+  },
+
+  // ============================================================ MISSION 3 · THE PEOPLE VS. THE POWER
+  pvp_cp1: {
+    entries: [{ node: 'a' }],
+    nodes: {
+      a: { speaker: 'tyler', text: 'Welcome, marchers! Free cold brew for everybody! Our lobby celebrates protest. We literally have a mural of a march. Very on-brand for you guys.', next: 'b' },
+      b: {
+        speaker: 'you', text: '*Somebody in your crowd weighs a full cold brew in one hand and looks at Tyler\'s very clean glass door.*',
+        choices: [
+          { text: 'Start a chant: "Fund the fridge, not the gazebo!"', next: 'chant', effects: { inc: { pvp_spirit: 1 }, solidarity: 10 } },
+          { text: 'Let the crowd egg on Tyler. He did ask for it.', next: 'egg', effects: { inc: { pvp_tension: 1 }, attention: 4 } },
+          { text: '"Thanks, Tyler. This is still a protest about you." Keep walking.', next: 'thanks', effects: { rel: { tyler: 2 } } },
+        ],
+      },
+      chant: { speaker: 'tyler', text: 'Love the call-and-response! Can we get it in a jingle? No? Okay. Enjoy the cold brew. It\'s single-origin, like my values.', choices: [{ text: '(March on.)', effects: { flags: { pvp_cp1: true }, toast: 'CHANT CATCHES ON' } }] },
+      egg: { speaker: 'tyler', text: 'Whoa, whoa, hey! Security? Is this... is this a vibe or a riot? Somebody tell me which so I can post about it.', choices: [{ text: '(Pull everyone back and march on.)', effects: { flags: { pvp_cp1: true }, toast: 'TENSION RISING' } }] },
+      thanks: { speaker: 'tyler', text: 'Totally! Protest is just feedback with better signage. I\'m taking notes. On a napkin. Don\'t worry about it.', choices: [{ text: '(March on.)', effects: { flags: { pvp_cp1: true } } }] },
+    },
+  },
+  pvp_cp2: {
+    entries: [{ node: 'a' }],
+    nodes: {
+      a: { speaker: 'skye', text: 'OMG besties, this march is GIVING. 4,000 people watching live! Can somebody climb the statue for content? Just for, like, eight seconds?', next: 'b' },
+      b: {
+        speaker: 'Officer Delgado', text: 'Folks, you\'re blocking the whole sidewalk. People need to get through. Let\'s keep it moving.',
+        choices: [
+          { text: '"Everybody, tighten up on the left! Leave half the sidewalk open!"', next: 'open', cond: { flag: 'pvp_briefed' }, effects: { inc: { pvp_spirit: 1 }, solidarity: 15 } },
+          { text: '"It\'s a free country, officer!"', next: 'free', effects: { inc: { pvp_tension: 1 } } },
+          { text: 'Let Skye\'s guy climb the statue.', next: 'statue', effects: { inc: { pvp_tension: 2 }, attention: 10 } },
+        ],
+      },
+      open: { speaker: 'Officer Delgado', text: '...That\'s actually perfect. Thank you. Carry on.', choices: [{ text: '(March on to Borough Hall.)', effects: { flags: { pvp_cp2: true }, toast: 'KEPT THE SIDEWALK OPEN' } }] },
+      free: { speaker: 'Officer Delgado', text: 'It is. It\'s also a sidewalk. Half of it, please.', choices: [{ text: '(Grumble. Make room. March on.)', effects: { flags: { pvp_cp2: true }, toast: 'TENSION RISING' } }] },
+      statue: { speaker: 'skye', text: 'CHAT IS SCREAMING. Also the police are screaming. Also the statue is screaming? No, that\'s the guy. He\'s fine. Mostly.', choices: [{ text: '(Get him down. Get everyone moving.)', effects: { flags: { pvp_cp2: true }, toast: 'TENSION RISING FAST' } }] },
+    },
+  },
+  pvp_speech: {
+    entries: [{ node: 'a' }],
+    nodes: {
+      a: {
+        speaker: 'you', text: '*The plaza fills. Nell\'s banner goes up. Jon\'s camera light blinks on. Somebody hands you the spot on the top step. No megaphone. Just your voice.*',
+        choices: [
+          { text: 'Tell one story: Ms. Alvarez, 40 years on Gates Ave, fed by the fridge every winter.', next: 'ask', effects: { inc: { pvp_spirit: 2 } } },
+          { text: 'Read the budget out loud, line by line.', next: 'lines' },
+          { text: 'Lead six straight minutes of "NO GAZEBO!"', next: 'ask', effects: { inc: { pvp_spirit: 1 } } },
+        ],
+      },
+      lines: { speaker: 'you', text: '*By line 31, a man in the back is asleep standing up. Impressive, honestly. You skip to the part that matters.*', next: 'ask' },
+      ask: {
+        speaker: 'you', text: '*One person. One stake. Now the ask.*',
+        choices: [
+          { text: '"Councilmember Pressman: vote NO on Line 47. Friday. On the record."', next: 'gary', effects: { inc: { pvp_spirit: 2 } } },
+          { text: '"We demand... justice, generally. In a broad sense."', next: 'gary' },
+        ],
+      },
+      gary: {
+        speaker: 'gary', text: '*The doors open. Gary steps out, squinting at the size of the crowd, with his photographer one step behind him.*',
+        choices: [
+          { text: '(Hand Gary the moment.)', next: 'good', cond: { flagMin: { pvp_spirit: 4, pvp_crowd: 30 } } },
+          { text: '(Hand Gary the moment.)', next: 'ok', cond: { any: [{ flagMax: { pvp_spirit: 3 }, flagMin: { pvp_spirit: 2 } }, { flagMin: { pvp_spirit: 4 }, flagMax: { pvp_crowd: 29 } }] } },
+          { text: '(Hand Gary the moment.)', next: 'weak', cond: { flagMax: { pvp_spirit: 1 } } },
+        ],
+      },
+      good: { speaker: 'gary', text: 'After hearing from... wow, that is a lot of you... I am voting NO on Line 47. On the record. Fund the fridge! Somebody get my photographer. Not that close.', choices: [{ text: '(The plaza erupts.)', effects: { flags: { pvp_result: 'good', pvp_spoke: true } } }] },
+      ok: { speaker: 'gary', text: 'I hear you. I really do. So I\'m proposing we... study the gazebo. For one year. With a task force. You can be on it!', choices: [{ text: '(Not a win. Not a loss. A task force.)', effects: { flags: { pvp_result: 'ok', pvp_spoke: true } } }] },
+      weak: { speaker: 'gary', text: 'Thank you all so much for coming to my... event. Please take a proclamation on your way out. They\'re laminated.', choices: [{ text: '(Take a proclamation. Plan the next one.)', effects: { flags: { pvp_result: 'weak', pvp_spoke: true } } }] },
     },
   },
 };

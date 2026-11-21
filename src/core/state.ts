@@ -112,6 +112,7 @@ class GameState {
     if (c.mvarMin) for (const [k, v] of Object.entries(c.mvarMin)) if ((vars[k] ?? 0) < v) return false;
     if (c.mvarMax) for (const [k, v] of Object.entries(c.mvarMax)) if ((vars[k] ?? 0) > v) return false;
     if (c.flagMin) for (const [k, v] of Object.entries(c.flagMin)) if (this.num(k) < v) return false;
+    if (c.flagMax) for (const [k, v] of Object.entries(c.flagMax)) if (this.num(k) > v) return false;
     if (c.any && !c.any.some((x) => this.test(x))) return false;
     return true;
   }

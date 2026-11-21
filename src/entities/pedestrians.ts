@@ -7,6 +7,8 @@ import type { District } from '../core/types';
 export interface Ped {
   sprite: Phaser.GameObjects.Sprite; vx: number; vy: number; speed: number; timer: number;
   district: District; gotFlyer: boolean; pause: number;
+  /** Marching with the player (Mission 3). slot = place in the crowd. */
+  follow?: boolean; slot?: number;
 }
 
 const SKINS = ['#f6d2b8', '#f0c8a8', '#d9a679', '#c58a5c', '#a8714a', '#8a5a3c', '#6b3e26', '#4a2a1a'];
@@ -18,6 +20,8 @@ const ACCS: (Look['acc'] | undefined)[] = [undefined, undefined, 'tote', 'phone'
 /** Ambient crowd that wanders the sidewalks. */
 export class Pedestrians {
   peds: Ped[] = [];
+  /** Who marchers follow; set every frame by the scene. */
+  leader: { x: number; y: number } | null = null;
 
   constructor(private scene: Phaser.Scene, private layout: WorldLayout, count = 80) {
     const R = Phaser.Math.RND;
@@ -58,6 +62,7 @@ export class Pedestrians {
       const s = p.sprite;
       const visible = Phaser.Geom.Rectangle.Contains(cull, s.x, s.y);
       s.setVisible(visible);
+      if (p.follow && this.leader) { this.march(p, dt, visible); continue; }
       if (p.pause > 0) { p.pause -= dt; if (s.anims.isPlaying) s.anims.pause(); continue; }
       p.timer -= dt;
       if (p.timer <= 0) { if (Math.random() < 0.25) { p.pause = Phaser.Math.FloatBetween(1, 3); p.timer = 1; continue; } this.pickDir(p); }
@@ -80,4 +85,24 @@ export class Pedestrians {
   }
 
   sprites() { return this.peds.map((p) => p.sprite); }
+
+  /** Marchers trail the leader in loose rings, filling in behind. */
+  private march(p: Ped, dt: number, visible: boolean) {
+    const s = p.sprite, L = this.leader!, slot = p.slot ?? 0;
+    const ring = Math.floor(slot / 6), a = (slot % 6) * (Math.PI / 3) + ring * 0.5;
+    const tx = L.x + Math.cos(a) * (46 + ring * 26), ty = L.y + Math.sin(a) * (46 + ring * 26);
+    const dx = tx - s.x, dy = ty - s.y, d = Math.hypot(dx, dy);
+    if (d > 6) {
+      const sp = Math.min(d * 3, 260) * dt;
+      s.x += (dx / d) * sp; s.y += (dy / d) * sp;
+      s.setRotation(Math.atan2(dy, dx) + Math.PI / 2);
+      if (visible && !s.anims.isPlaying) s.anims.resume();
+    } else if (s.anims.isPlaying) s.anims.pause();
+    s.setDepth(s.y);
+  }
+
+  followers() { return this.peds.filter((p) => p.follow); }
+  recruit(p: Ped) { p.follow = true; p.slot = this.followers().length - 1; }
+  /** Send marchers home; they wander off from wherever they are. */
+  release() { for (const p of this.peds) if (p.follow) { p.follow = false; p.district = districtAt(p.sprite.x, p.sprite.y); this.pickDir(p); } }
 }

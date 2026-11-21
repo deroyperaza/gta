@@ -52,6 +52,7 @@ export interface Cond {
   mvarMin?: Record<string, number>;
   mvarMax?: Record<string, number>;
   flagMin?: Record<string, number>;
+  flagMax?: Record<string, number>;
   any?: Cond[];
 }
 
