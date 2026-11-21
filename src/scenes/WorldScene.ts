@@ -155,6 +155,16 @@ export class WorldScene extends Phaser.Scene {
     map.setCollision([T.WATER]);
   }
 
+  /** A painted sprite's shadow, swept from its base out to the sun offset so it stays attached to the building (one shifted copy looks like it floats). */
+  private groundedShadow(key: string, x: number, y: number, w: number, h: number, dx: number, dy: number) {
+    const rt = this.add.renderTexture(x, y, w + dx + 4, h + dy + 4).setOrigin(0).setDepth(-5).setAlpha(0.3);
+    const stamp = this.make.image({ key, add: false }).setOrigin(0).setDisplaySize(w, h).setTintFill(0x0e0816);
+    const n = Math.max(2, Math.ceil(Math.hypot(dx, dy) / 3));
+    for (let k = 0; k <= n; k++) rt.draw(stamp, (dx * k) / n, (dy * k) / n);
+    stamp.destroy();
+    this.miniIgnore.push(rt);
+  }
+
   private buildBuildings(solids: Phaser.Physics.Arcade.StaticGroup) {
     for (const b of this.layout.buildings) {
       makeBuilding(this, b);
@@ -175,7 +185,7 @@ export class WorldScene extends Phaser.Scene {
         if (b.id !== 'centrallib') { const ah = Math.min(b.h, art.displayHeight); (img.body as Phaser.Physics.Arcade.StaticBody).setSize(b.w - 4, ah - 6).setOffset(2, b.h - ah); }
         shd.setVisible(false);
         const { dx, dy } = shadowOffset(b);
-        this.miniIgnore.push(this.add.image(art.x + dx * 0.5, art.y + dy * 0.5, `lm-${b.id}`).setOrigin(0.5, 1).setDisplaySize(art.displayWidth, art.displayHeight).setTintFill(0x0e0816).setAlpha(0.3).setDepth(-5));
+        this.groundedShadow(`lm-${b.id}`, art.x - art.displayWidth / 2, art.y - art.displayHeight, art.displayWidth, art.displayHeight, dx * 0.5, dy * 0.5);
       }
       if (b.type === 'arena' && this.textures.exists('barclays-sprite')) {
         // The painted arena: the green bowl is solid, the oculus canopy (west end) you walk under
@@ -183,7 +193,7 @@ export class WorldScene extends Phaser.Scene {
         (img.body as Phaser.Physics.Arcade.StaticBody).setSize(b.w * 0.7, b.h * 0.8).setOffset(b.w * 0.29, b.h * 0.08);
         shd.setVisible(false);
         const { dx, dy } = shadowOffset(b);
-        this.miniIgnore.push(this.add.image(b.x + dx * 0.5, b.y + dy * 0.5, 'barclays-sprite').setOrigin(0).setTintFill(0x0e0816).setAlpha(0.3).setDepth(-5));
+        this.groundedShadow('barclays-sprite', b.x, b.y, b.w, b.h, dx * 0.5, dy * 0.5);
       }
     }
     // Flatbush Avenue's diagonal: double yellow center line and crosswalk bars at each end
