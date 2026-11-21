@@ -22,7 +22,7 @@ interface Interactable {
 const WALK = 150, RUN = 245, BIKE = 330, BIKE_RUN = 410;
 
 /** Landmarks painted in ChatGPT (magenta keyed out) at public/sprites/<building id>.png */
-const PAINTED_LANDMARKS = ['savingsbank', 'centrallib', 'boroughhall', 'kingsish'];
+const PAINTED_LANDMARKS = ['savingsbank', 'centrallib', 'boroughhall', 'kingsish', 'bkmuseum', 'parachute'];
 
 export class WorldScene extends Phaser.Scene {
   layout!: WorldLayout;
@@ -245,11 +245,22 @@ export class WorldScene extends Phaser.Scene {
       const band = (gr: Phaser.GameObjects.Graphics, d: number) => gr.fillPoints(gapOutline(d).map((p) => ({ x: p.x * TILE, y: p.y * TILE })), true);
       const ring = this.add.graphics().setDepth(-9);
       ring.fillStyle(0xa39c90, 1); band(ring, g.w + 1.2);
+      // The four streets (Flatbush/Vanderbilt north-south, Eastern Pkwy/Union St east-west) run straight into the ring:
+      // asphalt cuts through the sidewalk band, with a crosswalk where each one meets the circle
+      const reachY = (g.ay + g.w + 2.4) * TILE, reachX = (g.ax + g.w + 2.4) * TILE, sw = ROAD * TILE;
+      ring.fillStyle(0x24272a, 1);
+      ring.fillRect(cx - sw / 2, cy - reachY, sw, reachY * 2);
+      ring.fillRect(cx - reachX, cy - sw / 2, reachX * 2, sw);
       ring.fillStyle(0x24272a, 1); band(ring, g.w);
       ring.fillStyle(0x8f8a80, 1); band(ring, 0.25);
       const lane = this.add.graphics().setDepth(-6), mid = gapOutline(g.w / 2, 120);
       lane.lineStyle(3, 0xece6da, 0.7);
       for (let i = 0; i < mid.length; i += 2) { const a = mid[i], b = mid[(i + 1) % mid.length]; lane.lineBetween(a.x * TILE, a.y * TILE, b.x * TILE, b.y * TILE); }
+      lane.lineStyle(5, 0xece6da, 0.85);
+      for (const sgn of [-1, 1]) {
+        const ey = cy + sgn * (g.ay + g.w + 0.7) * TILE, ex = cx + sgn * (g.ax + g.w + 0.7) * TILE;
+        for (let k = -1; k <= 1; k++) { lane.lineBetween(cx + k * 26 - 8, ey, cx + k * 26 + 8, ey); lane.lineBetween(ex, cy + k * 26 - 8, ex, cy + k * 26 + 8); }
+      }
       this.miniIgnore.push(ring, lane);
       if (this.textures.exists('gap-island')) {
         // Painted from Deroy's satellite, oblique and street photos, north up: JFK bust at the tip, Bailey Fountain, the arch on its own round plaza to the south

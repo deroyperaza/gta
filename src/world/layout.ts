@@ -135,14 +135,16 @@ const BLOCKS: Record<string, BlockSpec> = {
   // Central Library sits in the wedge between Flatbush and Eastern Pkwy, its entrance facing the circle (northwest)
   '3,4': { kind: 'plaza', noFountain: true, landmarks: [
     { id: 'centrallib', type: 'library', w: 9, h: 10, at: [6, 2], name: 'CENTRAL LIBRARY', spot: 'naim' } ] },
-  '4,4': { kind: 'row', landmarks: [
-    { id: 'paradehq', type: 'community', w: 7, name: 'LABOR DAY PARADE HQ' }, // on Eastern Pkwy, where the parade runs
-    { id: 'chtenants', type: 'tenant', w: 7, name: 'CROWN HEIGHTS TENANT UNION' } ] },
+  // Brooklyn Museum: south side of Eastern Pkwy, just east of the Library, its front facing north onto the boulevard
+  '4,4': { kind: 'plaza', noFountain: true, landmarks: [{ id: 'bkmuseum', type: 'library', w: 15, h: 10, name: 'BROOKLYN MUSEUM' }] },
   '5,4': { kind: 'row', landmarks: [
     { id: 'farmacy', type: 'coffee', w: 5, name: 'FRANKLIN AVE FARMACY' },
-    { id: 'panyard', type: 'studio', w: 6, name: 'STEEL PAN YARD' } ] },
+    { id: 'panyard', type: 'studio', w: 6, name: 'STEEL PAN YARD' },
+    { id: 'paradehq', type: 'community', w: 4, name: 'LABOR DAY PARADE HQ' } ] }, // on Eastern Pkwy, where the parade runs
   '6,4': { kind: 'park', name: 'Brower-ish Park' },
-  '7,4': { kind: 'row', landmarks: [{ id: 'chchurch', type: 'church', w: 5, name: 'GREATER HOPE & HOUSING CHURCH' }] },
+  '7,4': { kind: 'row', landmarks: [
+    { id: 'chchurch', type: 'church', w: 5, name: 'GREATER HOPE & HOUSING CHURCH' },
+    { id: 'chtenants', type: 'tenant', w: 7, name: 'CROWN HEIGHTS TENANT UNION' } ] },
   '8,4': { kind: 'court', name: 'Eastern Parkway Courts' },
   // ---------- RED HOOK ----------
   '0,5': { kind: 'lot', landmarks: [
@@ -158,7 +160,8 @@ const BLOCKS: Record<string, BlockSpec> = {
     { id: 'hotdog', type: 'bakery', w: 5, name: 'HOT DOG HALL OF FAME' } ] },
   '7,6': { kind: 'row', landmarks: [{ id: 'mermaid', type: 'gallery', w: 6, name: 'MERMAID PARADE WORKSHOP' }] },
   '8,6': { kind: 'row', landmarks: [{ id: 'coneyhouses', type: 'apartment', w: 7, name: 'SURFSIDE TOWERS' }] },
-  '6,7': { kind: 'beach', name: 'Coney Island Beach' },
+  // The Parachute Jump stands at the west end of the boardwalk
+  '6,7': { kind: 'beach', name: 'Coney Island Beach', landmarks: [{ id: 'parachute', type: 'arch', w: 7, h: 2, at: [3, 1], name: 'PARACHUTE JUMP' }] },
   '7,7': { kind: 'beach', name: 'The Boardwalk' },
   '8,7': { kind: 'beach', name: 'Polar Bear Plunge Point' },
   // ---------- FLATBUSH ----------
@@ -377,6 +380,11 @@ export function generateLayout(): WorldLayout {
       for (let x = bx + 3; x < bx + bw - 2; x += 5) { props.push({ kind: 'bench', x: px(x), y: px(by + 2) + 10 }); props.push({ kind: 'lamp', x: px(x + 2) + 16, y: px(by + 1) + 26 }); }
       if (rand() < 0.7) props.push({ kind: 'trash', x: px(bx + 2) + 12, y: px(by + 3) + 14 });
       if (spec.name === 'The Boardwalk') spots.boardwalk = { x: cxp, y: px(by + 5) + 8 };
+      for (const lm of spec.landmarks ?? []) if (lm.at) {
+        const x = px(bx + lm.at[0]), y = px(by + lm.at[1]), w = lm.w * TILE, h = (lm.h ?? 2) * TILE;
+        buildings.push({ id: lm.id, type: lm.type, name: lm.name, district: dist, x, y, w, h, variant: 0 });
+        markBlocked(blocked, x, y, w, h);
+      }
       continue;
     }
     if (spec.kind === 'waterfront') {
@@ -502,7 +510,7 @@ export function generateLayout(): WorldLayout {
   for (let x = Math.ceil(I(3, 4).x) + 2; x < MAP_W - 2; x += 3) if (x % BLOCK_W >= ROAD + 1) props.push({ kind: 'tree', x: x * TILE + 16, y: (I(3, 4).y - 3) * TILE + 20, variant: x % 3 });
   for (let i = props.length - 1; i >= 0; i--) if (!clearOf(props[i])) props.splice(i, 1);
   spots.gap = { x: GAP_CIRCLE.x * TILE, y: GAP_CIRCLE.y * TILE };
-  labels.push({ text: 'Grand Army Plaza', x: GAP_CIRCLE.x * TILE, y: (GAP_CIRCLE.y + GAP_CIRCLE.ay + GAP_CIRCLE.w + 2.6) * TILE });
+  labels.push({ text: 'Grand Army Plaza', x: (GAP_CIRCLE.x - 6.5) * TILE, y: (GAP_CIRCLE.y + GAP_CIRCLE.ay + GAP_CIRCLE.w + 2.6) * TILE }); // on the corner, off the street
   labels.push({ text: 'Eastern Pkwy', x: (I(5, 4).x + 11) * TILE, y: I(5, 4).y * TILE + 40 });
 
   // The East River across the north edge, a promenade along the shore,
