@@ -611,7 +611,12 @@ export class WorldScene extends Phaser.Scene {
       if (fped && state.count('flyers') > 0) parts.push('<span class="pa" data-act="action"><b>SPACE</b> Hand flyer</span>');
       else if (this.nearWall() && state.count('posters') > 0) parts.push('<span class="pa" data-act="action"><b>SPACE</b> Put up poster</span>');
       ui.setPrompt(parts.join('&nbsp;&nbsp;·&nbsp;&nbsp;'));
-    } else ui.setPrompt('');
+      // Touch buttons say what they'll do right now, and dim when there's nothing to do.
+      const verb = (l: string) => { const w = l.split(' ')[0].toUpperCase(); return w === 'GRAB' ? 'BIKE' : w === 'TALK' ? 'TALK' : w; };
+      const eL = sq ? 'DEBATE' : it ? verb(it.label() ?? '') : ped ? 'CHAT' : null;
+      const sL = fped && state.count('flyers') > 0 ? 'FLYER' : this.nearWall() && state.count('posters') > 0 ? 'POSTER' : this.onBike ? 'HOP OFF' : null;
+      ui.setTouchLabels(eL, sL);
+    } else { ui.setPrompt(''); ui.setTouchLabels(null, null); }
 
     // District detection
     const d = districtAt(this.player.x, this.player.y);

@@ -384,3 +384,10 @@ body.touch .touch-only { display: block; }
 #install-tip { margin: 14px auto 0; max-width: 320px; font: 800 13px/1.45 var(--body); color: #fff; text-wrap: balance; background: rgba(22,16,31,.75); border: 2px solid rgba(255,255,255,.25); border-radius: 12px; padding: 8px 12px; }
 /* Launched from the home screen: keep HUD clear of the notch and home bar in landscape */
 @media (display-mode: fullscreen), (display-mode: standalone) { #stats { left: calc(10px + env(safe-area-inset-left, 0px)); } }
+/* Touch buttons: key + what it does now; dimmed when nothing's in reach (dialogue still advances) */
+#touch-btns button { display: grid; place-items: center; align-content: center; gap: 1px; line-height: 1; color: var(--ink); transition: opacity .15s, transform .1s; }
+#touch-btns button .tk { font: 24px/1 var(--display); }
+#touch-btns button small { font: 900 9px/1 var(--body); letter-spacing: .5px; }
+#touch-btns button.off { opacity: .38; }
+#touch-btns button:active { transform: scale(.92); }
+body:has(#dialogue.open) #touch-btns button.off { opacity: 1; }

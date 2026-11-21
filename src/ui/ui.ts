@@ -170,6 +170,17 @@ class UI {
   }
 
   // ------------------------------------------------------------------ HUD
+  private touchLabels = '';
+  /** Label the touch buttons with the action they'll take; dim them when there's nothing in reach. */
+  setTouchLabels(e: string | null, sp: string | null) {
+    const key = `${e}|${sp}`; if (key === this.touchLabels) return; this.touchLabels = key;
+    const set = (id: string, k: string, label: string | null) => {
+      const b = $(id); b.classList.toggle('off', !label);
+      b.innerHTML = `<span class="tk">${k}</span><small>${label ?? (k === 'E' ? 'TALK' : 'FLYER')}</small>`;
+    };
+    set('#touch-e', 'E', e); set('#touch-sp', '⎵', sp);
+  }
+
   setPrompt(html: string) {
     const el = $('#prompt');
     if (el.dataset.html !== html) { el.dataset.html = html; el.innerHTML = html; el.classList.toggle('show', !!html); }
