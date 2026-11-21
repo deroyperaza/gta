@@ -22,7 +22,7 @@ interface Interactable {
 const WALK = 150, RUN = 245, BIKE = 330, BIKE_RUN = 410;
 
 /** Landmarks painted in ChatGPT (magenta keyed out) at public/sprites/<building id>.png */
-const PAINTED_LANDMARKS = ['savingsbank', 'centrallib', 'boroughhall', 'kingsish', 'bkmuseum', 'parachute'];
+const PAINTED_LANDMARKS = ['savingsbank', 'centrallib', 'boroughhall', 'kingsish', 'bkmuseum', 'parachute', 'bam'];
 
 export class WorldScene extends Phaser.Scene {
   layout!: WorldLayout;

@@ -100,7 +100,8 @@ const BLOCKS: Record<string, BlockSpec> = {
   // ---------- BED-STUY ----------
   '2,1': { kind: 'row', landmarks: [
     { id: 'church', type: 'church', w: 5, name: 'FIRST CHURCH OF THE BLOCK PARTY', spot: 'deroy' },
-    { id: 'savingsbank', type: 'clocktower', w: 5, name: 'WILLIAMSBURGH SAVINGS BANK' } ] },
+    { id: 'savingsbank', type: 'clocktower', w: 5, name: 'WILLIAMSBURGH SAVINGS BANK' },
+    { id: 'bam', type: 'gallery', w: 8, h: 8, name: 'BAM' } ] },
   // Flatbush Ave cuts this block corner to corner: Barclays sits on the northeast triangle
   '2,2': { kind: 'flatbush', name: 'Atlantic & Flatbush', landmarks: [
     { id: 'barclays', type: 'arena', w: 9, name: 'BARCLAYS-ISH CENTER', spot: 'skye' } ] },
@@ -457,6 +458,7 @@ export function generateLayout(): WorldLayout {
       }
       const [h0, h1] = HEIGHT[type];
       let hT = h0 + Math.floor(rand() * (h1 - h0 + 1));
+      if (lm?.h) hT = lm.h; // a landmark's set height (the random draw above still happens, so the rest of the map doesn't shift)
       // Buildings yield to a diagonal avenue: get shorter, or move along the block
       const clear = (ht: number) => { for (let ty = iy + ih - ht; ty < iy + ih; ty++) for (let tx = cursor; tx < cursor + w; tx++) if (onAve(tx, ty)) return false; return true; };
       while (hT >= 3 && !clear(hT)) hT--;
