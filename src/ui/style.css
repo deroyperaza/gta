@@ -379,3 +379,8 @@ body:has(#timer.show) #toasts { top: 112px; }
 .touch-only { display: none; }
 body.touch .touch-only { display: block; }
 .help-card p { text-wrap: pretty; } .help-card p.sub { text-wrap: balance; }
+/* Full-screen button + iPhone install tip */
+#hud-full { font: 16px/1 var(--body); }
+#install-tip { margin: 14px auto 0; max-width: 320px; font: 800 13px/1.45 var(--body); color: #fff; text-wrap: balance; background: rgba(22,16,31,.75); border: 2px solid rgba(255,255,255,.25); border-radius: 12px; padding: 8px 12px; }
+/* Launched from the home screen: keep HUD clear of the notch and home bar in landscape */
+@media (display-mode: fullscreen), (display-mode: standalone) { #stats { left: calc(10px + env(safe-area-inset-left, 0px)); } }

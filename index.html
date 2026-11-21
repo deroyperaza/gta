@@ -5,6 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>Gather and Take Action</title>
   <link rel="icon" type="image/png" href="favicon.png" />
+  <!-- Installable: from the home screen it opens full screen, no browser bars -->
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="icon-180.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Gather" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="theme-color" content="#1b1230" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Nunito:wght@600;800;900&display=swap" rel="stylesheet" />
 </head>
@@ -26,7 +34,7 @@
     </div>
 
     <div id="minimap-frame"><div class="mm-n">N</div></div>
-    <div id="hud-buttons"><button id="hud-map" title="Map (M)">MAP <kbd>M</kbd></button><button id="hud-journal" title="Journal (J)">JOURNAL <kbd>J</kbd></button><button id="hud-pause" title="Pause (Esc)">❚❚</button></div>
+    <div id="hud-buttons"><button id="hud-map" title="Map (M)">MAP <kbd>M</kbd></button><button id="hud-journal" title="Journal (J)">JOURNAL <kbd>J</kbd></button><button id="hud-full" title="Full screen" hidden>⛶</button><button id="hud-pause" title="Pause (Esc)">❚❚</button></div>
 
     <div id="objective">
       <div id="obj-title">MISSION</div>
@@ -70,6 +78,7 @@
         <button id="btn-continue">CONTINUE<small>No save yet</small></button>
         <button id="btn-help">HOW TO PLAY<small>Controls &amp; tips</small></button>
       </div>
+      <div id="install-tip" hidden>Play full screen: tap <b class="hl">Share</b>, then <b class="hl">Add to Home Screen</b>, and open it from there.</div>
       <div class="disclaimer">A satirical work of fiction. Any resemblance to your co-op board is purely coincidental.</div>
     </div>
   </div>

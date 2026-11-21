@@ -132,6 +132,7 @@ class UI {
     $('#hud-map').onclick = () => this.openPanel('map');
     $('#minimap-frame').onclick = () => this.openPanel('map'); // tap the mini-map for the big map
     $('#hud-pause').onclick = () => this.openPanel('pause');
+    this.setupFullscreen();
     // Clicking (or tapping) an on-screen prompt does the same as its key
     $('#prompt').addEventListener('pointerdown', (e) => {
       const a = (e.target as HTMLElement).closest<HTMLElement>('.pa');
@@ -253,6 +254,24 @@ class UI {
     const el = $('#mission-intro');
     el.innerHTML = `<div class="mi-num">MISSION ${def.number}</div><div class="mi-title">${def.title}</div><div class="mi-tag">${def.tagline}</div>`;
     el.classList.remove('show'); void el.offsetWidth; el.classList.add('show');
+  }
+
+  // ------------------------------------------------------------------ FULL SCREEN
+  /** Android/iPad/desktop: a real full-screen button. iPhone Safari can't, so show the Home Screen tip instead. */
+  private setupFullscreen() {
+    const standalone = matchMedia('(display-mode: fullscreen), (display-mode: standalone)').matches || (navigator as any).standalone === true;
+    const el = document.documentElement as any;
+    const canFull = !!(document.fullscreenEnabled || (document as any).webkitFullscreenEnabled) && !!(el.requestFullscreen || el.webkitRequestFullscreen);
+    const btn = $<HTMLButtonElement>('#hud-full');
+    if (canFull && !standalone) {
+      btn.hidden = false;
+      btn.onclick = () => {
+        if (document.fullscreenElement || (document as any).webkitFullscreenElement) (document.exitFullscreen ?? (document as any).webkitExitFullscreen).call(document);
+        else (el.requestFullscreen ?? el.webkitRequestFullscreen).call(el).catch?.(() => {});
+      };
+    }
+    const iOS = /iPhone|iPod/.test(navigator.userAgent);
+    $('#install-tip').hidden = !(iOS && !standalone);
   }
 
   // ------------------------------------------------------------------ FLYERS
