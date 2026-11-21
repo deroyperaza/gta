@@ -1,0 +1,16 @@
+import type { MissionModule } from './types';
+import { rent } from './rent';
+import { board } from './board';
+import { reentry } from './reentry';
+import { pbudget } from './pbudget';
+import { access } from './access';
+import { streets } from './streets';
+import { robot } from './robot';
+import { culture } from './culture';
+import { heat } from './heat';
+import { blockparty } from './blockparty';
+
+/** Missions 4+ — one file each, in play order. */
+export const MODULES: MissionModule[] = [rent, board, reentry, pbudget, access, streets, robot, culture, heat, blockparty];
+
+export const MODULE_NPCS = MODULES.flatMap((m) => m.npcs ?? []);

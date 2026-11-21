@@ -697,3 +697,24 @@ export const DIALOGUES: Record<string, Dialogue> = {
     },
   },
 };
+
+// Missions that live in their own files: their entries go first, so a mission stage wins over idle chatter
+import { MODULES } from './mission-modules';
+// A question where one answer scores points is a quiz: shuffle its answers so the right one isn't always first
+// (an answer scores if it bumps a score counter or turns on a flag its sibling answers don't)
+type Ch = { effects?: { inc?: Record<string, number>; mvar?: Record<string, number>; flags?: Record<string, unknown> } };
+const credit = (c: Ch) => [
+  ...Object.keys(c.effects?.inc ?? {}).filter((k) => /_(score|iq|listen)$/.test(k)),
+  ...(c.effects?.mvar?.score ? ['mvar.score'] : []),
+  ...Object.entries(c.effects?.flags ?? {}).filter(([, v]) => v === true).map(([k]) => k),
+].join('|');
+for (const mod of MODULES) for (const d of Object.values(mod.dialogue)) for (const n of Object.values(d.nodes)) {
+  const cs = n.choices ?? [];
+  if (cs.length > 1 && new Set(cs.map(credit)).size > 1 && cs.some((c) => credit(c))) n.shuffle = true;
+}
+for (const mod of MODULES) for (const [npc, d] of Object.entries(mod.dialogue)) {
+  const base = DIALOGUES[npc];
+  if (!base) { DIALOGUES[npc] = { entries: [...d.entries], nodes: { ...d.nodes } }; continue; }
+  base.entries.unshift(...d.entries);
+  for (const [k, n] of Object.entries(d.nodes)) { if (base.nodes[k]) console.warn('dialogue node clash', npc, k); base.nodes[k] = n; }
+}

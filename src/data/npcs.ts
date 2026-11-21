@@ -4,6 +4,8 @@ import type { Look } from '../world/textures';
 export interface NpcDef {
   id: string; name: string; short: string; title: string; district: District; spot: string;
   look: Look; bio: string; color: string;
+  /** Stand this far from the named spot (to share a landmark with someone else) */
+  offset?: { dx: number; dy: number };
   /** Lines when nothing mission-relevant is happening */
   idle?: string[];
 }
@@ -138,6 +140,9 @@ export const NPCS: NpcDef[] = [
     idle: ['Feel the music, then do whatever your body says.', 'New hairdo tomorrow. Nobody knows what yet.'],
   },
 ];
+
+import { MODULE_NPCS } from './mission-modules';
+NPCS.push(...MODULE_NPCS);
 
 export const NPC_BY_ID = Object.fromEntries(NPCS.map((n) => [n.id, n])) as Record<string, NpcDef>;
 

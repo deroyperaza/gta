@@ -3,7 +3,7 @@ import { state } from '../core/state';
 import type { Cond, Effect } from '../core/types';
 
 export interface DChoice { text: string; next?: string; effects?: Effect; cond?: Cond; tag?: string }
-export interface DNode { speaker?: string; text: string; choices?: DChoice[]; next?: string; effects?: Effect }
+export interface DNode { speaker?: string; text: string; choices?: DChoice[]; next?: string; effects?: Effect; /** Quiz question: show the answers in random order */ shuffle?: boolean }
 export interface Dialogue { entries: { cond?: Cond; node: string }[]; nodes: Record<string, DNode> }
 
 /**
@@ -37,6 +37,7 @@ class DialogueRunner {
     this.node = n;
     state.apply(n.effects);
     const choices = (n.choices ?? []).map((c, i) => ({ c, i })).filter(({ c }) => state.test(c.cond));
+    if (n.shuffle) for (let k = choices.length - 1; k > 0; k--) { const j = Math.floor(Math.random() * (k + 1)); [choices[k], choices[j]] = [choices[j], choices[k]]; }
     bus.emit('dialogue:show', { owner: this.ownerId, speaker: n.speaker ?? this.ownerId, text: n.text, choices: choices.map(({ c, i }) => ({ text: c.text, index: i, tag: c.tag })) });
   }
 

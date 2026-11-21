@@ -532,6 +532,17 @@ export function generateLayout(): WorldLayout {
   props.push({ kind: 'truck', x: (BLOCK_W * 4 + 10) * TILE, y: (BLOCK_H * 3 + ROAD + 14) * TILE + 24, solid: true });
 
   spots.playerStart = spots.plazaSpawn;
+  // Every named building gets a front-door spot `lm_<id>` (missions can send you there): the nearest open,
+  // walkable tile below the middle of its south side
+  const open = (tx: number, ty: number) => ty >= 0 && tx >= 0 && ty < tiles.length && tx < tiles[0].length && WALKABLE.has(tiles[ty][tx]) && !blocked[ty][tx];
+  for (const b of buildings) {
+    if (!b.name || b.id.startsWith('shed-')) continue;
+    const cx = Math.floor((b.x + b.w / 2) / TILE), by0 = Math.floor((b.y + b.h) / TILE);
+    found: for (let r = 0; r < 8; r++) for (let dx = 0; dx <= r; dx++) for (const sx of dx ? [dx, -dx] : [0]) {
+      const tx = cx + sx, ty = by0 + r;
+      if (open(tx, ty)) { spots[`lm_${b.id}`] = { x: tx * TILE + TILE / 2, y: ty * TILE + TILE / 2 }; break found; }
+    }
+  }
   const avenues = AVENUES.map((a) => ({ name: a.name, hw: a.hw * TILE, pts: a.pts.map((p) => ({ x: p.x * TILE, y: p.y * TILE })) }));
   return { tiles, blocked, buildings, props, spots, labels, avenues };
 }

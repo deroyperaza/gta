@@ -2,6 +2,7 @@ import { bus } from '../core/bus';
 import { state } from '../core/state';
 import { MISSION_BY_ID, type MissionDef } from '../data/missions';
 import { DISTRICTS } from '../core/types';
+import { NPC_BY_ID } from '../data/npcs';
 
 /**
  * Data-driven mission runner. Missions are sequences of stages whose
@@ -107,15 +108,21 @@ class MissionSystem {
   objectiveText(): string {
     const def = this.active;
     if (!def) {
-      const next = Object.values(MISSION_BY_ID).find((d) => state.mission(d.id).status === 'available');
-      return next ? `NEXT: ${next.title} — coming in the next build` : 'Explore Brooklyn. Talk to people.';
+      const next = this.nextAvailable();
+      if (!next) return 'Explore Brooklyn. Talk to people.';
+      if (next.comingSoon) return `NEXT: ${next.title} — coming in the next build`;
+      const giver = NPC_BY_ID[next.giver]?.short ?? next.giver;
+      return `NEXT: Mission ${next.number} · ${next.title}. Talk to ${giver}`;
     }
     return def.stages[state.mission(def.id).stage]?.text() ?? '';
   }
 
+  /** A mission that's unlocked but not started (an old save, or after a fail-and-quit) */
+  private nextAvailable() { return Object.values(MISSION_BY_ID).find((d) => state.mission(d.id).status === 'available') ?? null; }
+
   targets(): string[] {
     const def = this.active;
-    if (!def) return [];
+    if (!def) { const next = this.nextAvailable(); return next && !next.comingSoon ? [next.giver] : []; }
     return def.stages[state.mission(def.id).stage]?.targets() ?? [];
   }
 }

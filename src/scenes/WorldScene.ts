@@ -143,7 +143,7 @@ export class WorldScene extends Phaser.Scene {
 
     ui.attachWorld(this);
     bus.emit('world:ready');
-    if (import.meta.env.DEV) { (window as any).__world = this; (window as any).__state = state; (window as any).__missions = missions; }
+    if (import.meta.env.DEV) { (window as any).__world = this; (window as any).__state = state; (window as any).__missions = missions; (window as any).__dialogue = dialogue; (window as any).__DIALOGUES = DIALOGUES; (window as any).__bus = bus; }
   }
 
   // ------------------------------------------------------------------ BUILD
@@ -306,6 +306,7 @@ export class WorldScene extends Phaser.Scene {
     const fs = this.layout.spots.fridge;
     this.fridge = this.add.image(fs.x, fs.y, 'fridge-empty').setOrigin(0.5, 0.95).setDepth(fs.y);
     this.entityPos.fridge = fs;
+    for (const [k, p] of Object.entries(this.layout.spots)) this.entityPos[`spot:${k}`] = p;
     this.interactables.push({
       id: 'fridge', x: fs.x, y: fs.y, r: 70,
       label: () => (missions.active?.id === 'stock' && state.mission('stock').stage === 2 ? 'Restock the fridge' : 'Check the fridge'),
@@ -345,8 +346,9 @@ export class WorldScene extends Phaser.Scene {
 
   private buildNpcs(solids: Phaser.Physics.Arcade.StaticGroup) {
     for (const n of NPCS) {
-      const s = this.layout.spots[n.spot];
-      if (!s) { console.warn('no spot for', n.id); continue; }
+      const base = this.layout.spots[n.spot];
+      if (!base) { console.warn('no spot for', n.id); continue; }
+      const s = n.offset ? { x: base.x + n.offset.dx, y: base.y + n.offset.dy } : base;
       const key = `npc-${n.id}`;
       this.anims.create({ key: `${key}-idle`, frames: this.anims.generateFrameNumbers(key, { frames: [0] }), frameRate: 1, repeat: -1 });
       const spr = this.add.sprite(s.x, s.y, key, 0).setOrigin(0.5, 0.5).setDepth(s.y).setRotation(Math.PI);
@@ -648,6 +650,18 @@ export class WorldScene extends Phaser.Scene {
     if (p && Math.hypot(p.x - this.player.x, p.y - this.player.y) < 80) dialogue.start(owner, DIALOGUES[dlg]);
   }
 
+  /** Mission stages can target a place (`spot:<name>`): getting there sets the flag `at_<name>`. */
+  private spotArrivals() {
+    for (const id of missions.targets()) {
+      if (!id.startsWith('spot:')) continue;
+      const name = id.slice(5), p = this.layout.spots[name];
+      if (p && !state.flag(`at_${name}`) && Math.hypot(p.x - this.player.x, p.y - this.player.y) < 90) {
+        state.apply({ flags: { [`at_${name}`]: true } });
+        this.celebrate(this.player.x, this.player.y);
+      }
+    }
+  }
+
   private celebrate(x: number, y: number) { this.hearts(x, y - 30, 20); this.cameras.main.flash(300, 255, 210, 63); }
 
   // ------------------------------------------------------------------ LOOP
@@ -714,7 +728,7 @@ export class WorldScene extends Phaser.Scene {
       const fast = this.onBike || this.keys.SHIFT.isDown;
       this.opp.update(dt, this.player, fast, !!am && st >= 1 && !blocking, tp, this.peds.followers().length);
     }
-    if (!blocking) this.marchTriggers();
+    if (!blocking) { this.marchTriggers(); this.spotArrivals(); }
     this.traffic.update(dt, this.player, (dx, dy) => { if (this.mode === 'play') { this.player.x += dx; this.player.y += dy; } });
 
     // Prompt

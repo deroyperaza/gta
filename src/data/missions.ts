@@ -121,4 +121,11 @@ export const MISSIONS: MissionDef[] = [
   },
 ];
 
+import { MODULES } from './mission-modules';
+for (const mod of MODULES) {
+  const i = MISSIONS.findIndex((m) => m.id === mod.mission.id);
+  if (i >= 0) MISSIONS[i] = mod.mission; else MISSIONS.push(mod.mission);
+}
+MISSIONS.sort((a, b) => a.number - b.number);
+
 export const MISSION_BY_ID = Object.fromEntries(MISSIONS.map((m) => [m.id, m])) as Record<string, MissionDef>;
