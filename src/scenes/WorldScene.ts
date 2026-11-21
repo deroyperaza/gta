@@ -10,7 +10,7 @@ import { Opposition } from '../entities/opposition';
 import { dialogue } from '../systems/dialogue';
 import { missions } from '../systems/missions';
 import { ui } from '../ui/ui';
-import { BLOCK_H, BLOCK_W, ROAD, T, TILE, WORLD_H, WORLD_W, districtAt, generateLayout, type BuildingDef, type WorldLayout } from '../world/layout';
+import { BLOCK_H, BLOCK_W, GAP_CIRCLE, ROAD, T, TILE, WORLD_H, WORLD_W, districtAt, generateLayout, type BuildingDef, type WorldLayout } from '../world/layout';
 import { makeProps } from '../world/textures';
 import { buildingKey, makeBikeRider, makeBridgeTower, makeBuilding, makeCharacter, makePlayerMarker, makeStreetProps, makeTiles, makeVehicles, shadowKey, shadowOffset, SHADOW_PAD } from '../world/golden';
 
@@ -20,6 +20,9 @@ interface Interactable {
 }
 
 const WALK = 150, RUN = 245, BIKE = 330, BIKE_RUN = 410;
+
+/** Landmarks painted in ChatGPT (magenta keyed out) at public/sprites/<building id>.png */
+const PAINTED_LANDMARKS = ['savingsbank', 'centrallib', 'boroughhall', 'kingsish'];
 
 export class WorldScene extends Phaser.Scene {
   layout!: WorldLayout;
@@ -58,7 +61,9 @@ export class WorldScene extends Phaser.Scene {
   preload() {
     // Hand-painted likeness portraits (style-study/portraits.html) win over the generated busts.
     for (const id of ['deroy', 'jenna', 'nell', 'bridgette', 'adrian', 'danae', 'jon', 'emily', 'naim', 'luco', 'vega']) this.load.image(`npc-${id}-bust`, `portraits/${id}.jpg`);
-    this.load.image('barclays-sprite', 'sprites/barclays.png'); // painted in ChatGPT from the aerial, magenta keyed out
+    this.load.image('barclays-sprite', 'sprites/barclays.png');
+    this.load.image('gap-island', 'sprites/gap.png'); // Grand Army Plaza's island, painted in ChatGPT, keyed
+    for (const id of PAINTED_LANDMARKS) this.load.image(`lm-${id}`, `sprites/${id}.png`);
   }
 
   create() {
@@ -159,6 +164,15 @@ export class WorldScene extends Phaser.Scene {
       img.setDepth(b.y + b.h);
       // Slightly inset collision so the player can hug facades
       (img.body as Phaser.Physics.Arcade.StaticBody).setSize(b.w - 4, b.h - 6).setOffset(2, 0);
+      if (this.textures.exists(`lm-${b.id}`)) {
+        // A painted landmark: same footprint and collision, drawn as the sprite standing on the block's edge
+        img.setVisible(false);
+        const art = this.add.image(b.x + b.w / 2, b.y + b.h, `lm-${b.id}`).setOrigin(0.5, 1);
+        art.setDisplaySize(b.w, (b.w * art.height) / art.width).setDepth(b.y + b.h);
+        shd.setVisible(false);
+        const { dx, dy } = shadowOffset(b);
+        this.miniIgnore.push(this.add.image(art.x + dx * 0.5, art.y + dy * 0.5, `lm-${b.id}`).setOrigin(0.5, 1).setDisplaySize(art.displayWidth, art.displayHeight).setTintFill(0x0e0816).setAlpha(0.3).setDepth(-5));
+      }
       if (b.type === 'arena' && this.textures.exists('barclays-sprite')) {
         // The painted arena: the green bowl is solid, the oculus canopy (west end) you walk under
         img.setTexture('barclays-sprite');
@@ -220,6 +234,23 @@ export class WorldScene extends Phaser.Scene {
         for (let t = 70; t < L - 70; t += 34) for (const o of [-2.5, 2.5]) ln.lineBetween(a.x + ux * t + nx * o, a.y + uy * t + ny * o, a.x + ux * (t + 20) + nx * o, a.y + uy * (t + 20) + ny * o);
       }
       this.miniIgnore.push(sm, ln);
+    }
+    // Grand Army Plaza: the traffic circle and its painted island (arch + Bailey Fountain)
+    {
+      const g = GAP_CIRCLE, cx = g.x * TILE, cy = g.y * TILE;
+      const ring = this.add.graphics().setDepth(-9);
+      ring.fillStyle(0xa39c90, 1).fillCircle(cx, cy, (g.rOut + 1.2) * TILE);
+      ring.fillStyle(0x24272a, 1).fillCircle(cx, cy, g.rOut * TILE);
+      ring.fillStyle(0x8f8a80, 1).fillCircle(cx, cy, g.rIn * TILE + 6);
+      const lane = this.add.graphics().setDepth(-6), rm = ((g.rIn + g.rOut) / 2) * TILE;
+      lane.lineStyle(3, 0xece6da, 0.7);
+      for (let a = 0; a < Math.PI * 2; a += 0.16) lane.beginPath().arc(cx, cy, rm, a, a + 0.08).strokePath();
+      this.miniIgnore.push(ring, lane);
+      if (this.textures.exists('gap-island')) {
+        this.miniIgnore.push(this.add.image(cx, cy + g.rIn * TILE, 'gap-island').setOrigin(0.5, 1).setDepth(-7));
+        // the arch (north end) and the fountain basin are solid; the lawns and paths you can walk
+        for (const [ox, oy, w, h] of [[0, -g.rIn * TILE * 0.62, 120, 40], [0, 0, 70, 50]]) solids.add(this.add.zone(cx + ox, cy + oy, w, h));
+      } else ring.fillStyle(0x58b956, 1).fillCircle(cx, cy, g.rIn * TILE);
     }
     for (const l of this.layout.labels) {
       const t = this.add.text(l.x, l.y - 40, l.text.toUpperCase().split('').join(' '), { fontFamily: '"Helvetica Neue", Inter, Arial, sans-serif', fontSize: '22px', fontStyle: '300', color: '#f4ece0', shadow: { offsetX: 0, offsetY: 2, color: 'rgba(0,0,0,.6)', blur: 6, fill: true } }).setOrigin(0.5).setDepth(5).setAlpha(0.8).setRotation(l.angle ?? 0);

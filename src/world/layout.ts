@@ -89,8 +89,7 @@ const BLOCKS: Record<string, BlockSpec> = {
     { id: 'coop', type: 'coop', w: 6, name: 'THE RIGHTEOUS TURNIP CO-OP', spot: 'brendan' },
     { id: 'pour', type: 'coffee', w: 4, name: 'POUR DECISIONS' },
     { id: 'candles', type: 'boutique', w: 5, name: 'CANDLES FOR DOGS' } ] },
-  '2,3': { kind: 'plaza', name: 'Grand Army Plaza', landmarks: [
-    { id: 'gaparch', type: 'arch', w: 6, name: 'SOLDIERS & SAILORS ARCH' },
+  '2,3': { kind: 'plaza', noFountain: true, landmarks: [ // the Library's plaza; the circle itself is GAP_CIRCLE
     { id: 'centrallib', type: 'library', w: 11, name: 'CENTRAL LIBRARY', spot: 'naim' } ] },
   '2,4': { kind: 'park', name: 'Prospect Park' },
   '2,5': { kind: 'pond', name: 'Prospect Park' },
@@ -231,6 +230,11 @@ const AVENUES: { name: string; pts: { x: number; y: number }[]; hw: number }[] =
   { name: 'Flatbush Ave', pts: [I(3, 7), I(4, 8)], hw: 1.7 },
   { name: 'Fulton St', pts: [I(3, 2), I(5, 3), I(8, 4)], hw: 1.5 },
 ];
+/**
+ * Grand Army Plaza: a traffic circle where Flatbush comes down past the park and
+ * Eastern Parkway sets off east. The island (arch + Bailey Fountain) is a painted sprite.
+ */
+export const GAP_CIRCLE = { x: I(3, 4).x, y: I(3, 4).y, rIn: 4.5, rOut: 7.5 };
 const SIDEWALK_W = 1.2;
 function segDist(x: number, y: number, a: { x: number; y: number }, b: { x: number; y: number }) {
   const dx = b.x - a.x, dy = b.y - a.y, t = Math.max(0, Math.min(1, ((x - a.x) * dx + (y - a.y) * dy) / (dx * dx + dy * dy)));
@@ -240,9 +244,11 @@ function segDist(x: number, y: number, a: { x: number; y: number }, b: { x: numb
 function aveDist(tx: number, ty: number) {
   let best = Infinity;
   for (const a of AVENUES) for (let i = 1; i < a.pts.length; i++) best = Math.min(best, segDist(tx + 0.5, ty + 0.5, a.pts[i - 1], a.pts[i]) - a.hw);
-  return best;
+  const g = GAP_CIRCLE, r = Math.hypot(tx + 0.5 - g.x, ty + 0.5 - g.y);
+  return Math.min(best, Math.abs(r - (g.rIn + g.rOut) / 2) - (g.rOut - g.rIn) / 2);
 }
-const onAve = (tx: number, ty: number) => aveDist(tx, ty) <= SIDEWALK_W + 0.4;
+const gapR = (tx: number, ty: number) => Math.hypot(tx + 0.5 - GAP_CIRCLE.x, ty + 0.5 - GAP_CIRCLE.y);
+const onAve = (tx: number, ty: number) => aveDist(tx, ty) <= SIDEWALK_W + 0.4 || gapR(tx, ty) <= GAP_CIRCLE.rOut + SIDEWALK_W + 0.4;
 
 export function generateLayout(): WorldLayout {
   const rand = rng(1312);
@@ -444,6 +450,7 @@ export function generateLayout(): WorldLayout {
   const ROADS = new Set<number>([T.ASPHALT, T.LANE_V, T.LANE_H, T.INTERSECTION, T.CROSS_V, T.CROSS_H]);
   for (let y = 0; y < MAP_H; y++) for (let x = 0; x < MAP_W; x++) {
     const d = aveDist(x, y);
+    if (gapR(x, y) < GAP_CIRCLE.rIn) { set(x, y, T.PLAZA); continue; } // the island
     if (d <= 0) set(x, y, T.ASPHALT);
     else if (d <= SIDEWALK_W && !ROADS.has(tiles[y][x])) set(x, y, T.SIDEWALK);
     else if (d <= 4.5 && [T.YARD, T.LOT, T.CURB].includes(tiles[y][x]) && !blocked[y][x]) set(x, y, T.PLAZA);
@@ -454,7 +461,8 @@ export function generateLayout(): WorldLayout {
     for (let ty = Math.floor(b.y / TILE); ty < Math.ceil((b.y + b.h) / TILE) && !hit; ty++) for (let tx = Math.floor(b.x / TILE); tx < Math.ceil((b.x + b.w) / TILE); tx++) if (aveDist(tx, ty) <= 0) { hit = true; break; }
     if (hit) { if (b.name) console.warn('Avenue runs through', b.id); else buildings.splice(i, 1); }
   }
-  for (let i = props.length - 1; i >= 0; i--) if (aveDist(Math.floor(props[i].x / TILE), Math.floor(props[i].y / TILE)) <= SIDEWALK_W) props.splice(i, 1);
+  const clearOf = (p: PropDef) => { const tx = Math.floor(p.x / TILE), ty = Math.floor(p.y / TILE); return aveDist(tx, ty) > SIDEWALK_W && gapR(tx, ty) > GAP_CIRCLE.rOut + SIDEWALK_W; };
+  for (let i = props.length - 1; i >= 0; i--) if (!clearOf(props[i])) props.splice(i, 1);
   for (let y = 0; y < MAP_H; y++) for (let x = 0; x < MAP_W; x++) blocked[y][x] = false;
   for (const b of buildings) markBlocked(blocked, b.x, b.y, b.w, b.h);
   // Street names along the avenues
@@ -466,6 +474,9 @@ export function generateLayout(): WorldLayout {
   labels.push({ text: 'Flatbush Ave', x: I(3, 5).x * TILE, y: I(3, 5).y * TILE + 40, angle: Math.PI / 2 });
   // Eastern Parkway: a tree-lined boulevard running east from Grand Army Plaza
   for (let x = Math.ceil(I(3, 4).x) + 2; x < MAP_W - 2; x += 3) if (x % BLOCK_W >= ROAD + 1) props.push({ kind: 'tree', x: x * TILE + 16, y: (I(3, 4).y - 3) * TILE + 20, variant: x % 3 });
+  for (let i = props.length - 1; i >= 0; i--) if (!clearOf(props[i])) props.splice(i, 1);
+  spots.gap = { x: GAP_CIRCLE.x * TILE, y: GAP_CIRCLE.y * TILE };
+  labels.push({ text: 'Grand Army Plaza', x: GAP_CIRCLE.x * TILE, y: (GAP_CIRCLE.y + GAP_CIRCLE.rOut + 2.6) * TILE });
   labels.push({ text: 'Eastern Pkwy', x: (I(5, 4).x + 11) * TILE, y: I(5, 4).y * TILE + 40 });
 
   // The East River across the north edge, a promenade along the shore,
