@@ -46,7 +46,7 @@ export const access: MissionModule = {
     ],
     optional: [
       { id: 'twice', text: 'Ask the follow-up twice', done: () => f('access_twice'), reward: { solidarity: 40, power: 1 } },
-      { id: 'club', text: 'Hand out 5 ally-club flyers', done: () => mv('flyers') >= 5, reward: { solidarity: 30, trust: { crownheights: 4 } } },
+      { id: 'club', text: 'Hand out 5 awareness-club flyers', done: () => mv('flyers') >= 5, reward: { solidarity: 30, trust: { crownheights: 4 } } },
       { id: 'nophoto', text: 'Skip the photo op', done: () => f('access_nophoto'), reward: { solidarity: 20, attention: 3 } },
     ],
     rewards: (): Effect => {
@@ -75,7 +75,7 @@ export const access: MissionModule = {
         access_0: { speaker: 'naim', text: 'My friend Teo uses a wheelchair. Our science lab is on the fourth floor. Our elevator is a rumor. So Teo does science on a worksheet in the hallway.', next: 'access_1' },
         access_1: { speaker: 'naim', text: 'Councilmember Gary is doing a "Listening Tour" at Borough Hall. Before we go, we get receipts. How do other public buildings in the neighborhood get people in the door?', next: 'access_2' },
         access_2: {
-          speaker: 'naim', text: 'Check the Brooklyn Museum and the library. Count steps. Find the ramp, the elevator, the door that opens by itself. And hand out these ally-club flyers on the way?',
+          speaker: 'naim', text: 'Check the Brooklyn Museum and the library. Count steps. Find the ramp, the elevator, the door that opens by itself. And hand out these awareness-club flyers on the way?',
           choices: [
             { text: 'Count the stairs. Then write the letter.', effects: { rel: { naim: 4 }, items: { flyers: 6 }, flags: { access_accepted: true, access_score: 0, ...RESET_SPOTS } } },
             { text: 'Why not just email Gary?', next: 'access_3' },

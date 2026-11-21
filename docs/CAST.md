@@ -13,14 +13,14 @@ TL;DR: eleven characters based on real friends and family. Each one has a painte
 | The Editor | Jon | Bushwick | Film editor | BRIC: Brooklyn's public access TV, with classes, gear and community shows | PUBLIC ACCESS TV |
 | The Showstopper | Emily | Coney Island boardwalk | Creative director for showpiece cakes | Block party permits: apply online at least 60 days ahead, $25, neighbors sign on, community board reviews | BLOCK PARTY PERMITS |
 
-| The Keeper | Naim | Crown Heights | Calls his ADHD a superpower; student disability and disability-ally clubs; pressed then-Comptroller Brad Lander on school elevators | Section 504 requires public schools to give students with disabilities accommodations + ask the follow-up ("Okay, but when?"); Books Unbanned as a side lesson | 504 RIGHTS + ASK THE FOLLOW-UP |
-| The Dealmaker | Luco | Downtown | Organizes charity soccer tournaments; vibe-codes games; the business of soccer; stocks | Book city fields with an NYC Parks permit ($25 to process a special event permit) + the City Comptroller audits agencies and advises the city pension funds, which vote as shareholders; every vote is on NYC Open Data | WHO WATCHES THE CITY'S MONEY |
+| The Keeper | Naim | Crown Heights | Calls his ADHD a superpower; student disability and disability awareness clubs; pressed then-Comptroller Brad Lander on school elevators | Section 504 requires public schools to give students with disabilities accommodations + ask the follow-up ("Okay, but when?"); Books Unbanned as a side lesson | 504 RIGHTS + ASK THE FOLLOW-UP |
+| The Dealmaker | Luco | Downtown | Organizes charity soccer tournaments in real life; the business of soccer; stocks | Book city fields with an NYC Parks permit ($25 to process a special event permit) + the City Comptroller audits agencies and advises the city pension funds, which vote as shareholders; every vote is on NYC Open Data | WHO WATCHES THE CITY'S MONEY |
 | The Choreographer | Vega | Bushwick | Dancer, artist, free spirit | Any NYC resident can sign up to testify at a City Council hearing, in person or in writing | TESTIFY AT CITY COUNCIL |
 
 Deroy also teaches **DIY poster making** (big words; what, when, where; loud contrast; wheatpaste is flour and water). Post with permission in bodega windows, laundromats and community boards, never on lampposts: NYC Admin Code 10-119, with fines from $75.
 
 ## The Under-18 Crew
-Vega, Naim and Luco are also Mission 3 allies, each bringing a different crowd: Vega's dance class and families (+8), Naim's disability-ally club with an accessible route (+6), Luco's tournament teams (+12). Each kid also teaches how to bring others in: make it fun (Vega), start a club and ask the kid alone at lunch first (Naim), give everyone a job (Luco).
+Vega, Naim and Luco are also Mission 3 allies, each bringing a different crowd: Vega's dance class and families (+8), Naim's disability awareness club with an accessible route (+6), Luco's tournament teams (+12). Each kid also teaches how to bring others in: make it fun (Vega), start a club and ask the kid alone at lunch first (Naim), give everyone a job (Luco).
 
 ## The Free Parking Caucus (obstacles)
 Satirical obstructionists (red caps, clipboards) who spawn between you and your objective during missions. They chase at 170 (walk 150, sprint 245, bike 330). Getting caught costs about 2 seconds, flyers or a poster, and during the march a marcher. Three ways past:

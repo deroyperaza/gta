@@ -124,13 +124,13 @@ export const NPCS: NpcDef[] = [
   {
     id: 'naim', name: 'Naim', short: 'Naim', title: 'The Keeper', district: 'parkslope', spot: 'naim', color: '#7fe0ff',
     look: { skin: '#e2b08a', hair: '#2a1c14', style: 'curly', shirt: '#141414', pants: '#2b3a6b', shoes: '#f2f2f2', acc: 'glasses' },
-    bio: 'Calls his ADHD a superpower. Active in student disability and disability-ally clubs, and will politely ask a city official the same question twice. Also: goalkeeper, baker, pianist, romantasy reader.',
+    bio: 'Calls his ADHD a superpower. Active in student disability and disability awareness clubs, and will politely ask a city official the same question twice. Also: goalkeeper, baker, pianist, romantasy reader.',
     idle: ['Okay, but when?', 'Count the stairs. Then write the letter.', 'I have opinions about chapter 31.'],
   },
   {
     id: 'luco', name: 'Luco', short: 'Luco', title: 'The Dealmaker', district: 'downtown', spot: 'luco', color: '#9dffb0',
     look: { skin: '#e2b08a', hair: '#3a2414', style: 'curly', shirt: '#f2f2f2', pants: '#3a4a6b', shoes: '#111' },
-    bio: 'Fourteen. Organizes charity soccer tournaments, vibe-codes games, studies the business of soccer and reads stock charts like box scores. Never gives advice. Always has a spreadsheet.',
+    bio: 'Fourteen. Organizes real charity soccer tournaments (books the fields, recruits the teams, gives the money away), studies the business of soccer and reads stock charts like box scores. Never gives advice. Always has a spreadsheet.',
     idle: ['Follow the money.', 'Book the field before you book the teams.', 'Next tournament: every team is a bagel.'],
   },
   {

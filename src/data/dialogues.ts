@@ -462,7 +462,7 @@ export const DIALOGUES: Record<string, Dialogue> = {
     ],
     nodes: {
       pvp: {
-        speaker: 'naim', text: 'The disability ally club is in. And we already checked your route: curb cuts on every corner, or we march a different way. A march everybody can\'t get to isn\'t a march.',
+        speaker: 'naim', text: 'The disability awareness club is in. And we already checked your route: curb cuts on every corner, or we march a different way. A march everybody can\'t get to isn\'t a march.',
         choices: [{ text: 'Accessible route it is.', effects: { rel: { naim: 4 }, flags: { pvp_ally_naim: true }, inc: { pvp_crowd: 6 }, toast: 'NAIM IS IN · +6 MARCHERS' } }],
       },
       intro: {
@@ -475,7 +475,7 @@ export const DIALOGUES: Record<string, Dialogue> = {
       },
       adhd: { speaker: 'naim', text: 'My brain runs six tabs at once. Some days that\'s chaos. Most days it means I see what everybody else walks past. And school has to work for brains like mine too.', next: 'p504' },
       p504: { speaker: 'naim', text: 'Section 504 of a federal civil rights law says public schools have to give students with disabilities accommodations. Extra time, movement breaks, a quieter room. It\'s not a favor. It\'s a right.', next: 'elev' },
-      elev: { speaker: 'naim', text: 'If a kid uses a wheelchair and the science lab is up three flights with no elevator, that kid doesn\'t get science. I\'m in my school\'s disability ally club. We count the stairs. Then we write the letters.', next: 'lander' },
+      elev: { speaker: 'naim', text: 'If a kid uses a wheelchair and the science lab is up three flights with no elevator, that kid doesn\'t get science. I\'m in my school\'s disability awareness club. We count the stairs. Then we write the letters.', next: 'lander' },
       lander: { speaker: 'naim', text: 'I once asked Brad Lander, back when he was City Comptroller, how we get elevators into schools. He gave me half an answer. So I asked again. Politely. Until I got the other half.', next: 'lander2' },
       lander2: {
         speaker: 'naim', text: 'Here\'s the move: ask your question, listen, then ask the follow-up they hoped you wouldn\'t. "Okay, but when?" works on everybody. Even people with titles.',
@@ -515,19 +515,17 @@ export const DIALOGUES: Record<string, Dialogue> = {
         choices: [{ text: 'Everybody gets a job.', effects: { flags: { luco_bring: true }, solidarity: 5, toast: 'BRING A FRIEND · GIVE EVERYONE A JOB' } }],
       },
       intro: {
-        speaker: 'luco', text: 'I\'m vibe-coding a soccer manager game. Buy players, build a stadium, go broke, the usual. Want to know who the biggest investor in New York City is?',
+        speaker: 'luco', text: 'I run charity soccer tournaments. Real fields, real refs, sixteen teams, and every dollar goes out the door. Want to know who the biggest investor in New York City is?',
         choices: [
           { text: 'Who?', next: 'comp', effects: { rel: { luco: 5 }, flags: { met_luco: true } } },
-          { text: 'Show me the game first.', next: 'game', effects: { rel: { luco: 4 }, flags: { met_luco: true } } },
           { text: 'Stocks? At 14?', next: 'stocks', effects: { flags: { met_luco: true } } },
-          { text: 'I heard you run tournaments.', next: 'cup', effects: { rel: { luco: 5 }, flags: { met_luco: true } } },
+          { text: 'Tell me about the tournaments.', next: 'cup', effects: { rel: { luco: 5 }, flags: { met_luco: true } } },
         ],
       },
-      game: { speaker: 'luco', text: 'It\'s called Deadline Day. You run a Brooklyn club, and every big transfer, the fans get a vote. Revolutionary, I know. Anyway, the investor.', next: 'comp' },
       stocks: { speaker: 'luco', text: 'I don\'t give advice. I give spreadsheets. And the spreadsheet says the city owns more stock than all of us put together.', next: 'comp' },
       comp: { speaker: 'luco', text: 'The City Comptroller. They audit city agencies, and they manage the pension funds for teachers, firefighters and city workers. Hundreds of billions of dollars, invested in stocks.', next: 'comp2' },
       comp2: {
-        speaker: 'luco', text: 'So the city is a shareholder. The funds vote at company meetings, and every vote is posted on NYC Open Data. I\'m putting the data in my game.',
+        speaker: 'luco', text: 'So the city is a shareholder. The funds vote at company meetings, and every vote is posted on NYC Open Data. I read it like box scores.',
         choices: [{ text: 'Follow the money.', effects: { rel: { luco: 6 }, solidarity: 10, trust: { downtown: 3 }, toast: 'POCKET CIVICS · WHO WATCHES THE CITY\'S MONEY' } }],
       },
       cup: { speaker: 'luco', text: 'Charity tournaments. Sixteen teams, every one named after a bagel, trophies on a folding table, and every dollar goes to someone who needs it. Best business model in soccer.', next: 'cup2' },
@@ -538,7 +536,7 @@ export const DIALOGUES: Record<string, Dialogue> = {
         ],
       },
       after: {
-        speaker: 'luco', text: 'Follow the money. Then build a game about it. Then run a tournament and give the money away. That\'s my whole business plan.',
+        speaker: 'luco', text: 'Follow the money. Book the field. Run the tournament and give the money away. That\'s my whole business plan.',
         choices: [{ text: 'Tell me about the tournaments.', next: 'cup', cond: { notFlag: 'luco_cup' } }, { text: 'How do I get other people involved?', next: 'bring', cond: { notFlag: 'luco_bring' } }, { text: 'Later, Luco.' }],
       },
     },

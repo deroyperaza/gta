@@ -162,7 +162,7 @@ export const robot: MissionModule = {
           choices: [{ text: '(Screenshot the "Coming Soon!" page.)', effects: { flags: { robot_trail: true }, toast: 'RECEIPTS: NO AUDIT POSTED' } }],
         },
         robot_l3: {
-          speaker: 'luco', text: 'I\'m fourteen and I vibe-code soccer games. No. Also you don\'t need to: the law says they have to POST it. A missing page is the evidence. Also: their investor is Tyler.',
+          speaker: 'luco', text: 'I\'m fourteen and I run soccer tournaments. No. Also you don\'t need to: the law says they have to POST it. A missing page is the evidence. Also: their investor is Tyler.',
           choices: [{ text: '(Screenshot the "Coming Soon!" page.)', effects: { flags: { robot_trail: true }, toast: 'RECEIPTS: NO AUDIT POSTED' } }],
         },
       },
