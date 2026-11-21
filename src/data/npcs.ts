@@ -120,7 +120,7 @@ export const NPCS: NpcDef[] = [
     idle: ['Sixty days. Twenty-five dollars. One street with no cars.', 'Every block party needs a showstopper.'],
   },
   {
-    id: 'naim', name: 'Naim', short: 'Naim', title: 'The Keeper', district: 'crownheights', spot: 'naim', color: '#7fe0ff',
+    id: 'naim', name: 'Naim', short: 'Naim', title: 'The Keeper', district: 'parkslope', spot: 'naim', color: '#7fe0ff',
     look: { skin: '#e2b08a', hair: '#2a1c14', style: 'curly', shirt: '#141414', pants: '#2b3a6b', shoes: '#f2f2f2', acc: 'glasses' },
     bio: 'Calls his ADHD a superpower. Active in student disability and disability-ally clubs, and will politely ask a city official the same question twice. Also: goalkeeper, baker, pianist, romantasy reader.',
     idle: ['Okay, but when?', 'Count the stairs. Then write the letter.', 'I have opinions about chapter 31.'],
@@ -147,6 +147,7 @@ export const PED_LINES: Record<District, string[]> = {
   redhook: ['Sandy put four feet of water in my basement. Still waiting on that resiliency plan.', 'The pupusa ladies at the ballfields are a civic institution.', 'One bus. That\'s our whole transit system. One bus.', 'They want to put luxury condos on the flood plain. Bold.', 'The view of the Statue is free. The rent is not.'],
   coneyisland: ['Boardwalk\'s been here a hundred years. The developers just got here.', 'Polar Bear Plunge on New Year\'s. Builds character.', 'Mermaid Parade is democracy in sequins.', 'The Wonder Wheel is older than my grandma and in better shape.', 'Last stop on four trains and first stop for every storm.'],
   flatbush: ['Dollar van\'s faster than the B train and that\'s a fact.', 'Patty with cheese, coco bread on the side. Don\'t argue.', 'Our block party permit took six weeks. The party took six hours.', 'They renamed the neighborhood on the listing. We didn\'t move.', 'Church on Sunday, tenant meeting on Tuesday.'],
+  waterfront: ['Walked the bridge at sunrise. Worth every tourist.', 'The Promenade is free. The view is priceless. The condos are neither.', 'They keep calling it "activated waterfront." It was always active. We were here.', 'Best skyline in the city, and you can\'t even see Brooklyn in it.'],
   plg: ['Our building has a tenants association, a group chat and a lawyer on speed dial.', 'Limestones on one side, the park on the other. Rent on all sides.', 'Doubles from the window on Flatbush. Best breakfast in the borough.', 'They call it PLG on the listing so they can charge more. We call it home.', 'Landlord tried an eviction. We showed up forty deep to Housing Court.'],
   sunsetpark: ['Best skyline view in Brooklyn and nobody\'s posting it.', 'Eighth Ave dim sum, Fifth Ave tacos. Lunch is a tour.', 'The waterfront used to be jobs. Now it\'s "innovation."', 'Our community board meeting had translation in four languages.', 'I run the corner and the PTA. Same skills.'],
   parkslope: ['Is this stroller-accessible? Asking for my stroller.', 'I\'m in a book club about book clubs.', 'We moved here for the schools. And the oat milk.', 'Sorry, I\'m late for my sound bath.', 'My dog has a therapist. It\'s going great.'],

@@ -89,7 +89,7 @@ export const MISSIONS: MissionDef[] = [
       },
       { text: () => 'Get a know-your-rights briefing from Bridgette before you march', targets: () => ['bridgette'], done: () => f('pvp_briefed') },
       {
-        text: () => `March your crowd ${f('pvp_cp1') ? 'past Metro Mall-ish' : 'past Luxe Lofts'} · tension ${state.num('pvp_tension')}/3`,
+        text: () => `March your crowd ${f('pvp_cp1') ? 'past the arena' : 'past Luxe Lofts'} · tension ${state.num('pvp_tension')}/3`,
         targets: () => [f('pvp_cp1') ? 'pvp_cp2' : 'pvp_cp1'],
         done: () => f('pvp_cp1') && f('pvp_cp2'),
       },

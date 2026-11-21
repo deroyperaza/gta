@@ -131,6 +131,9 @@ const BASE: Record<BuildingType, string[]> = {
   shed: ['#c08a4f', '#c08a4f', '#c08a4f', '#c08a4f'],
   bakery: ['#ffe0a3', '#ffe0a3', '#ffe0a3', '#ffe0a3'],
   sales: ['#1c1a2b', '#1c1a2b', '#1c1a2b', '#1c1a2b'],
+  arena: ['#7a4630', '#7a4630', '#7a4630', '#7a4630'],
+  library: ['#d9d1c0', '#d9d1c0', '#d9d1c0', '#d9d1c0'],
+  arch: ['#cfc3ae', '#cfc3ae', '#cfc3ae', '#cfc3ae'],
 };
 
 export function buildingKey(b: BuildingDef) { return `bld-${b.id}`; }

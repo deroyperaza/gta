@@ -12,7 +12,7 @@ import { missions } from '../systems/missions';
 import { ui } from '../ui/ui';
 import { T, TILE, WORLD_H, WORLD_W, districtAt, generateLayout, type BuildingDef, type WorldLayout } from '../world/layout';
 import { makeProps } from '../world/textures';
-import { buildingKey, makeBikeRider, makeBuilding, makeCharacter, makePlayerMarker, makeStreetProps, makeTiles, makeVehicles, shadowKey, SHADOW_PAD } from '../world/golden';
+import { buildingKey, makeBikeRider, makeBridgeTower, makeBuilding, makeCharacter, makePlayerMarker, makeStreetProps, makeTiles, makeVehicles, shadowKey, SHADOW_PAD } from '../world/golden';
 
 interface Interactable {
   id: string; x: number; y: number; r: number;
@@ -158,6 +158,21 @@ export class WorldScene extends Phaser.Scene {
       img.setDepth(b.y + b.h);
       // Slightly inset collision so the player can hug facades
       (img.body as Phaser.Physics.Arcade.StaticBody).setSize(b.w - 4, b.h - 6).setOffset(2, 0);
+    }
+    // Brooklyn Bridge: granite tower over the deck (you walk under it) and the cables
+    const bs = this.layout.spots.bridge;
+    if (bs) {
+      makeBridgeTower(this, 'bridge-tower', 230, 150);
+      this.add.image(bs.x, bs.y + 20, 'bridge-tower').setOrigin(0.5, 1).setDepth(5e4);
+      const g = this.add.graphics().setDepth(5e4 - 1);
+      g.lineStyle(2, 0xece2c8, 0.85);
+      const topY = bs.y + 20 - 150;
+      for (const side of [-1, 1]) for (let i = 1; i <= 7; i++) {
+        const ax = bs.x + side * 38;
+        g.lineBetween(ax, topY + 4, bs.x + side * 50, bs.y + 20 + i * 34); // toward Brooklyn
+        g.lineBetween(ax, topY + 4, bs.x + side * 50, topY - i * 22);       // toward Manhattan
+      }
+      g.lineStyle(3, 0xd9ccb0, 0.9); for (const side of [-1, 1]) g.lineBetween(bs.x + side * 50, topY - 160, bs.x + side * 50, bs.y + 260);
     }
     for (const l of this.layout.labels) {
       const t = this.add.text(l.x, l.y - 40, l.text.toUpperCase().split('').join(' '), { fontFamily: '"Helvetica Neue", Inter, Arial, sans-serif', fontSize: '22px', fontStyle: '300', color: '#f4ece0', shadow: { offsetX: 0, offsetY: 2, color: 'rgba(0,0,0,.6)', blur: 6, fill: true } }).setOrigin(0.5).setDepth(5).setAlpha(0.8);

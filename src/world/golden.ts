@@ -131,6 +131,9 @@ const WALL: Record<BuildingType, string[]> = {
   shed: ['#7a5a3a', '#7a5a3a', '#7a5a3a', '#7a5a3a'],
   bakery: ['#9a6a4a', '#9a6a4a', '#9a6a4a', '#9a6a4a'],
   sales: ['#2a2c30', '#2a2c30', '#2a2c30', '#2a2c30'],
+  arena: ['#7a4630', '#7a4630', '#7a4630', '#7a4630'],
+  library: ['#d9d1c0', '#d9d1c0', '#d9d1c0', '#d9d1c0'],
+  arch: ['#cfc3ae', '#cfc3ae', '#cfc3ae', '#cfc3ae'],
 };
 const ROOFS = ['#b7babd', '#a9adb1', '#4a4542', '#c2c4c4', '#57504b', '#8a8378'];
 const SHOPS = new Set<BuildingType>(['coffee', 'boutique', 'nonprofit', 'coop', 'bodega', 'tenant', 'community', 'studio', 'gallery', 'laundromat', 'bakery', 'sales']);
@@ -197,6 +200,39 @@ function drawBuilding(c: Ctx, b: BuildingDef) {
   };
 
   switch (type) {
+    case 'arena': {
+      // Weathered-steel lattice bands sweeping around the oculus canopy
+      c.fillStyle = lg(c, 0, rh, 0, h, [[0, '#9a5a38'], [0.5, '#7a4630'], [1, '#4a2a1e']]); c.fillRect(0, rh, w, fh);
+      c.strokeStyle = 'rgba(30,14,8,.55)'; c.lineWidth = 2.2;
+      for (let k = 0; k < 9; k++) { const y = rh + 6 + k * (fh - 10) / 9; c.beginPath(); c.moveTo(0, y); c.bezierCurveTo(w * 0.3, y + 10, w * 0.7, y - 10, w, y + 4); c.stroke(); }
+      c.strokeStyle = 'rgba(255,170,110,.18)'; c.lineWidth = 1; for (let x = 6; x < w; x += 9) line(c, x, rh, x - 6, h);
+      c.fillStyle = '#16100c'; ell(c, w / 2, h - fh * 0.32, w * 0.24, fh * 0.26); c.fill();
+      c.strokeStyle = '#f2c46a'; c.lineWidth = 2; ell(c, w / 2, h - fh * 0.32, w * 0.24, fh * 0.26); c.stroke();
+      c.fillStyle = 'rgba(255,200,120,.55)'; for (let i = 0; i < 14; i++) { const a = (i / 14) * Math.PI * 2; ell(c, w / 2 + Math.cos(a) * w * 0.2, h - fh * 0.32 + Math.sin(a) * fh * 0.2, 1.6, 1.6); c.fill(); }
+      if (b.name) { c.fillStyle = 'rgba(14,10,8,.8)'; c.fillRect(w * 0.2, rh + 4, w * 0.6, 14); sign(c, b.name, w / 2, rh + 11, w * 0.58, 10, '#f2e8d8', 800); }
+      break;
+    }
+    case 'library': {
+      // Limestone with the gilded two-story entrance screen
+      c.fillStyle = lg(c, 0, rh, 0, h, [[0, '#e4dccb'], [1, '#b8ae9a']]); c.fillRect(0, rh, w, fh);
+      const ew = w * 0.32, ex = w / 2 - ew / 2;
+      c.fillStyle = '#2a2016'; c.fillRect(ex, rh + 8, ew, fh - 8);
+      c.strokeStyle = '#d8b04a'; c.lineWidth = 1.4; for (let x = ex + 4; x < ex + ew; x += 5) line(c, x, rh + 10, x, h - 2);
+      for (let y = rh + 14; y < h; y += 9) line(c, ex, y, ex + ew, y);
+      c.fillStyle = '#c9a43a'; c.fillRect(ex - 3, rh + 6, ew + 6, 3);
+      for (const xx of [w * 0.12, w * 0.78]) { c.fillStyle = 'rgba(40,34,26,.35)'; c.fillRect(xx, rh + 16, w * 0.1, fh - 26); }
+      if (b.name) sign(c, b.name, w / 2, rh + 4.5, w - 20, 8, '#8a6a1a', 800);
+      break;
+    }
+    case 'arch': {
+      // Triumphal arch: one big opening, columns, bronze on top
+      c.fillStyle = lg(c, 0, rh, 0, h, [[0, '#e0d6c2'], [1, '#a89c86']]); c.fillRect(0, rh, w, fh);
+      c.fillStyle = '#2a2420'; c.beginPath(); c.moveTo(w * 0.32, h); c.lineTo(w * 0.32, rh + fh * 0.45); c.arc(w / 2, rh + fh * 0.45, w * 0.18, Math.PI, 0); c.lineTo(w * 0.68, h); c.fill();
+      for (const xx of [w * 0.08, w * 0.2, w * 0.74, w * 0.86]) { c.fillStyle = 'rgba(255,255,255,.35)'; c.fillRect(xx, rh + 10, 4, fh - 12); c.fillStyle = 'rgba(0,0,0,.25)'; c.fillRect(xx + 4, rh + 10, 2, fh - 12); }
+      c.fillStyle = col('#cfc3ae', 1, 0.8); c.fillRect(0, rh, w, 8);
+      if (b.name) sign(c, b.name, w / 2, rh + 4, w - 12, 6, '#4a4238', 800);
+      break;
+    }
     case 'tower': {
       c.fillStyle = lg(c, 0, rh, 0, h, [[0, '#f2b07a'], [0.45, '#c7795a'], [1, '#3a4a5c']]); c.fillRect(0, rh, w, fh);
       c.strokeStyle = 'rgba(30,35,45,.5)'; c.lineWidth = 0.8;
@@ -346,6 +382,26 @@ function roofDetails(c: Ctx, b: BuildingDef, w: number, rh: number) {
       break;
     }
     case 'tower': boxOnRoof(c, U(0.25), V(0.22), w * 0.5, rh * 0.4, '#7d8288', 16); ac(c, U(0.1), V(0.72), 16); ac(c, U(0.62), V(0.72), 16); break;
+    case 'arena': {
+      // The big oval with its green roof
+      c.fillStyle = '#3a2a22'; c.fillRect(0, 0, w, rh);
+      c.fillStyle = '#5a3a2a'; ell(c, U(0.5), V(0.52), w * 0.46, rh * 0.44); c.fill();
+      c.fillStyle = rg(c, U(0.45), V(0.45), 4, w * 0.4, [[0, '#7ea54e'], [1, '#3d6128']]); ell(c, U(0.5), V(0.52), w * 0.38, rh * 0.34); c.fill();
+      c.strokeStyle = 'rgba(30,50,20,.4)'; c.lineWidth = 1; for (let k = -4; k <= 4; k++) { c.beginPath(); c.ellipse(U(0.5), V(0.52), w * 0.38, rh * 0.34 * Math.abs(k) / 4, 0, 0, Math.PI * 2); c.stroke(); }
+      break;
+    }
+    case 'library': {
+      c.fillStyle = '#c9c2b2'; c.fillRect(0, 0, w, rh);
+      c.fillStyle = 'rgba(120,160,190,.55)'; c.fillRect(U(0.2), V(0.25), w * 0.6, rh * 0.35);
+      c.strokeStyle = 'rgba(60,70,80,.45)'; c.lineWidth = 0.8; for (let x = U(0.2); x < U(0.8); x += 8) line(c, x, V(0.25), x, V(0.6));
+      ac(c, U(0.08), V(0.72), 13); break;
+    }
+    case 'arch': {
+      c.fillStyle = '#bdb19a'; c.fillRect(0, 0, w, rh);
+      c.fillStyle = '#4a5a44'; rr(c, U(0.3), V(0.2), w * 0.4, rh * 0.55, 4); c.fill();
+      c.fillStyle = '#6b7a5a'; for (let i = 0; i < 4; i++) { ell(c, U(0.36) + i * w * 0.09, V(0.45), 3, 5); c.fill(); }
+      break;
+    }
     case 'government': case 'courthouse': {
       c.fillStyle = 'rgba(0,0,0,.1)'; c.fillRect(U(0.1), V(0.15), w * 0.8, rh * 0.7);
       c.fillStyle = rg(c, U(0.45), V(0.45), 2, Math.min(w, rh) * 0.3, [[0, '#9fc8b4'], [1, '#4a7a66']]); ell(c, U(0.5), V(0.5), Math.min(w, rh) * 0.24, Math.min(w, rh) * 0.24); c.fill();
@@ -565,4 +621,21 @@ export function makeStreetProps(scene: Phaser.Scene) {
     c.fillStyle = '#2f5a3a'; c.fillRect(2, 4, 52, 26); c.fillStyle = '#3d6e48'; c.fillRect(4, 6, 23, 22); c.fillRect(29, 6, 23, 22);
     c.fillStyle = 'rgba(255,255,255,.12)'; c.fillRect(4, 6, 48, 2);
   });
+}
+
+/** Brooklyn Bridge tower: granite, two pointed gothic arches the deck runs through. Drawn as a decoration you walk under. */
+export function makeBridgeTower(scene: Phaser.Scene, key: string, w: number, h: number) {
+  if (scene.textures.exists(key)) return;
+  const cv = scene.textures.createCanvas(key, w, h)!; const c = cv.getContext();
+  c.fillStyle = 'rgba(14,8,22,.25)'; c.fillRect(10, h - 14, w - 4, 14);
+  const g = c.createLinearGradient(0, 0, 0, h); g.addColorStop(0, '#d8ccb4'); g.addColorStop(1, '#8e826c');
+  c.fillStyle = g; c.fillRect(0, 0, w, h - 10);
+  c.fillStyle = 'rgba(0,0,0,.18)'; for (let y = 8; y < h - 10; y += 8) c.fillRect(0, y, w, 1);
+  const archW = w * 0.24, archTop = h * 0.32;
+  for (const cx of [w * 0.3, w * 0.7]) {
+    c.fillStyle = '#1e2430'; c.beginPath(); c.moveTo(cx - archW / 2, h - 10); c.lineTo(cx - archW / 2, archTop + archW * 0.4);
+    c.quadraticCurveTo(cx - archW / 2, archTop, cx, archTop - archW * 0.35); c.quadraticCurveTo(cx + archW / 2, archTop, cx + archW / 2, archTop + archW * 0.4); c.lineTo(cx + archW / 2, h - 10); c.fill();
+  }
+  c.fillStyle = '#efe4cc'; c.fillRect(0, 0, w, 6); c.fillStyle = 'rgba(0,0,0,.2)'; c.fillRect(0, 6, w, 2);
+  cv.refresh();
 }

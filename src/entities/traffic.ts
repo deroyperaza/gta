@@ -1,5 +1,8 @@
 import Phaser from 'phaser';
-import { BLOCK_H, BLOCK_W, COLS, ROWS, TILE, WORLD_H, WORLD_W } from '../world/layout';
+import { BLOCK_H, BLOCK_W, COLS, RIVER_ROWS, ROWS, TILE, WORLD_H, WORLD_W } from '../world/layout';
+
+/** Avenues end at the waterfront; nothing drives in the river. */
+const SHORE_Y = (RIVER_ROWS + 2) * TILE;
 
 interface Vehicle {
   sprite: Phaser.GameObjects.Image; shadow: Phaser.GameObjects.Image;
@@ -21,11 +24,11 @@ export class Traffic {
       const x0 = k * BLOCK_W * TILE;
       for (const [dir, off] of [[1, 24], [-1, 72]] as const) {
         const n = 2 + r.between(0, 1);
-        for (let i = 0; i < n; i++) this.spawn('y', dir, x0 + off, r.between(0, WORLD_H), i === 0 && r.frac() < 0.35);
+        for (let i = 0; i < n; i++) this.spawn('y', dir, x0 + off, r.between(SHORE_Y + 40, WORLD_H), i === 0 && r.frac() < 0.35);
       }
     }
     // Horizontal streets
-    for (let k = 0; k <= ROWS; k++) {
+    for (let k = 1; k <= ROWS; k++) { // k = 0 would be in the river
       const y0 = k * BLOCK_H * TILE;
       for (const [dir, off] of [[-1, 24], [1, 72]] as const) {
         const n = 2 + r.between(0, 1);
@@ -63,8 +66,8 @@ export class Traffic {
       const target = blocked ? 0 : v.speed;
       v.cur += (target - v.cur) * Math.min(1, dt * (blocked ? 8 : 2));
       const np = pos + v.cur * v.dir * dt;
-      const max = v.axis === 'y' ? WORLD_H : WORLD_W;
-      const wrapped = np > max + 80 ? -80 : np < -80 ? max + 80 : np;
+      const max = v.axis === 'y' ? WORLD_H : WORLD_W, min = v.axis === 'y' ? SHORE_Y : 0;
+      const wrapped = np > max + 80 ? min - 80 : np < min - 80 ? max + 80 : np;
       if (v.axis === 'y') s.y = wrapped; else s.x = wrapped;
       s.setDepth(s.y + 20);
       v.shadow.setPosition(s.x + 9, s.y + 3);
