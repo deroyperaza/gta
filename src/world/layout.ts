@@ -212,8 +212,37 @@ export interface WorldLayout {
   buildings: BuildingDef[];
   props: PropDef[];
   spots: Record<string, Spot>;
-  labels: { text: string; x: number; y: number }[];
+  labels: { text: string; x: number; y: number; angle?: number }[];
+  avenues: Avenue[];
 }
+
+/** A diagonal avenue cutting across the grid (pixel coords; hw = half-width of the roadway). */
+export interface Avenue { name: string; pts: Spot[]; hw: number }
+
+// Intersection centers, in tiles
+const I = (c: number, r: number) => ({ x: c * BLOCK_W + 1.5, y: r * BLOCK_H + 1.5 });
+/**
+ * Brooklyn's angles. Flatbush runs from the bridge to Barclays (then the hand-built
+ * Atlantic & Flatbush block), down the east side of Prospect Park, and angles off
+ * again into Flatbush. Fulton cuts east-southeast through Bed-Stuy.
+ */
+const AVENUES: { name: string; pts: { x: number; y: number }[]; hw: number }[] = [
+  { name: 'Flatbush Ave', pts: [{ x: 38, y: 11 }, I(2, 2)], hw: 1.7 },
+  { name: 'Flatbush Ave', pts: [I(3, 7), I(4, 8)], hw: 1.7 },
+  { name: 'Fulton St', pts: [I(3, 2), I(5, 3), I(8, 4)], hw: 1.5 },
+];
+const SIDEWALK_W = 1.2;
+function segDist(x: number, y: number, a: { x: number; y: number }, b: { x: number; y: number }) {
+  const dx = b.x - a.x, dy = b.y - a.y, t = Math.max(0, Math.min(1, ((x - a.x) * dx + (y - a.y) * dy) / (dx * dx + dy * dy)));
+  return Math.hypot(x - a.x - t * dx, y - a.y - t * dy);
+}
+/** Tile distance from the nearest avenue's asphalt edge (<= 0 means on the roadway). */
+function aveDist(tx: number, ty: number) {
+  let best = Infinity;
+  for (const a of AVENUES) for (let i = 1; i < a.pts.length; i++) best = Math.min(best, segDist(tx + 0.5, ty + 0.5, a.pts[i - 1], a.pts[i]) - a.hw);
+  return best;
+}
+const onAve = (tx: number, ty: number) => aveDist(tx, ty) <= SIDEWALK_W + 0.4;
 
 export function generateLayout(): WorldLayout {
   const rand = rng(1312);
@@ -234,7 +263,7 @@ export function generateLayout(): WorldLayout {
   const buildings: BuildingDef[] = [];
   const props: PropDef[] = [];
   const spots: Record<string, Spot> = {};
-  const labels: { text: string; x: number; y: number }[] = [];
+  const labels: { text: string; x: number; y: number; angle?: number }[] = [];
 
   for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) {
     const dist = districtOfBlock(c, r);
@@ -261,10 +290,10 @@ export function generateLayout(): WorldLayout {
       spots.flatbushA = { x: px(bx - 1), y: px(by - 1) }; spots.flatbushB = { x: px(bx + bw + 1), y: px(by + bh + 1) };
       // Barclays in the northeast triangle, its plaza wrapping the corner
       const lm = spec.landmarks![0];
-      const w = lm.w * TILE, h = 5 * TILE, x = px(bx + bw - 1) - w, y = px(by + 1);
+      const w = 12 * TILE, h = 261, x = px(bx + bw) - w, y = px(by); // sized to the painted sprite (384x261)
       buildings.push({ id: lm.id, type: lm.type, name: lm.name, district: dist, x, y, w, h, variant: 0 });
       markBlocked(blocked, x, y, w, h);
-      if (lm.spot) spots[lm.spot] = { x: x + w / 2 - 40, y: y + h + 44 };
+      if (lm.spot) spots[lm.spot] = { x: x + w * 0.13, y: y + h * 0.68 }; // on the plaza, just past the oculus
       props.push({ kind: 'bench', x: px(bx + 3), y: px(by + bh - 3) });
       props.push({ kind: 'lamp', x: px(bx + 2) + 16, y: px(by + bh - 6) });
       props.push({ kind: 'bench', x: px(bx + bw - 4), y: px(by + 10) });
@@ -387,7 +416,12 @@ export function generateLayout(): WorldLayout {
         if (w < 3) break;
       }
       const [h0, h1] = HEIGHT[type];
-      const h = (h0 + Math.floor(rand() * (h1 - h0 + 1))) * TILE;
+      let hT = h0 + Math.floor(rand() * (h1 - h0 + 1));
+      // Buildings yield to a diagonal avenue: get shorter, or move along the block
+      const clear = (ht: number) => { for (let ty = iy + ih - ht; ty < iy + ih; ty++) for (let tx = cursor; tx < cursor + w; tx++) if (onAve(tx, ty)) return false; return true; };
+      while (hT >= 3 && !clear(hT)) hT--;
+      if (hT < 3) { if (lm) queue.unshift(lm); cursor++; continue; }
+      const h = hT * TILE;
       const x = cursor * TILE, y = bottom - h;
       const id = lm?.id ?? `b-${c}-${r}-${idx}`;
       buildings.push({ id, type, name: lm?.name, district: dist, x, y, w: w * TILE, h, variant: Math.floor(rand() * 4) });
@@ -398,12 +432,41 @@ export function generateLayout(): WorldLayout {
       if (lm?.id === 'commcenter') { spots.marcus = { x: x + 60, y: bottom + 34 }; spots.priya = { x: x + w * TILE - 60, y: bottom + 34 }; }
       cursor += w; idx++;
     }
+    if (queue.length) console.warn('Avenue left no room for', queue.map((q) => q.id));
     // Backyard trees & stuff in the strip above the buildings
     for (let x = ix + 1; x < end - 1; x += 3 + Math.floor(rand() * 3)) {
       const kind = spec.kind === 'lot' ? (rand() < 0.5 ? 'crate' : 'dumpster') : 'tree';
       props.push({ kind, x: px(x) + 16, y: px(iy) + 22, solid: true, variant: Math.floor(rand() * 3) });
     }
   }
+
+  // Pave the avenues: roadway, sidewalks, and the leftover yard corners become triangle plazas
+  const ROADS = new Set<number>([T.ASPHALT, T.LANE_V, T.LANE_H, T.INTERSECTION, T.CROSS_V, T.CROSS_H]);
+  for (let y = 0; y < MAP_H; y++) for (let x = 0; x < MAP_W; x++) {
+    const d = aveDist(x, y);
+    if (d <= 0) set(x, y, T.ASPHALT);
+    else if (d <= SIDEWALK_W && !ROADS.has(tiles[y][x])) set(x, y, T.SIDEWALK);
+    else if (d <= 4.5 && [T.YARD, T.LOT, T.CURB].includes(tiles[y][x]) && !blocked[y][x]) set(x, y, T.PLAZA);
+  }
+  for (let i = buildings.length - 1; i >= 0; i--) {
+    const b = buildings[i];
+    let hit = false;
+    for (let ty = Math.floor(b.y / TILE); ty < Math.ceil((b.y + b.h) / TILE) && !hit; ty++) for (let tx = Math.floor(b.x / TILE); tx < Math.ceil((b.x + b.w) / TILE); tx++) if (aveDist(tx, ty) <= 0) { hit = true; break; }
+    if (hit) { if (b.name) console.warn('Avenue runs through', b.id); else buildings.splice(i, 1); }
+  }
+  for (let i = props.length - 1; i >= 0; i--) if (aveDist(Math.floor(props[i].x / TILE), Math.floor(props[i].y / TILE)) <= SIDEWALK_W) props.splice(i, 1);
+  for (let y = 0; y < MAP_H; y++) for (let x = 0; x < MAP_W; x++) blocked[y][x] = false;
+  for (const b of buildings) markBlocked(blocked, b.x, b.y, b.w, b.h);
+  // Street names along the avenues
+  for (const a of AVENUES) for (let i = 1; i < a.pts.length; i++) {
+    const p = a.pts[i - 1], q = a.pts[i];
+    let ang = Math.atan2(q.y - p.y, q.x - p.x); if (ang > Math.PI / 2) ang -= Math.PI; if (ang < -Math.PI / 2) ang += Math.PI;
+    labels.push({ text: a.name, x: ((p.x + q.x) / 2) * TILE, y: ((p.y + q.y) / 2) * TILE + 40, angle: ang });
+  }
+  labels.push({ text: 'Flatbush Ave', x: I(3, 5).x * TILE, y: I(3, 5).y * TILE + 40, angle: Math.PI / 2 });
+  // Eastern Parkway: a tree-lined boulevard running east from Grand Army Plaza
+  for (let x = Math.ceil(I(3, 4).x) + 2; x < MAP_W - 2; x += 3) if (x % BLOCK_W >= ROAD + 1) props.push({ kind: 'tree', x: x * TILE + 16, y: (I(3, 4).y - 3) * TILE + 20, variant: x % 3 });
+  labels.push({ text: 'Eastern Pkwy', x: (I(5, 4).x + 11) * TILE, y: I(5, 4).y * TILE + 40 });
 
   // The East River across the north edge, a promenade along the shore,
   // and the Brooklyn Bridge deck running out over the water.
@@ -424,7 +487,8 @@ export function generateLayout(): WorldLayout {
   props.push({ kind: 'truck', x: (BLOCK_W * 4 + 10) * TILE, y: (BLOCK_H * 3 + ROAD + 14) * TILE + 24, solid: true });
 
   spots.playerStart = spots.plazaSpawn;
-  return { tiles, blocked, buildings, props, spots, labels };
+  const avenues = AVENUES.map((a) => ({ name: a.name, hw: a.hw * TILE, pts: a.pts.map((p) => ({ x: p.x * TILE, y: p.y * TILE })) }));
+  return { tiles, blocked, buildings, props, spots, labels, avenues };
 }
 
 function markBlocked(b: boolean[][], x: number, y: number, w: number, h: number) {

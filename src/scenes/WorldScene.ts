@@ -12,7 +12,7 @@ import { missions } from '../systems/missions';
 import { ui } from '../ui/ui';
 import { BLOCK_H, BLOCK_W, ROAD, T, TILE, WORLD_H, WORLD_W, districtAt, generateLayout, type BuildingDef, type WorldLayout } from '../world/layout';
 import { makeProps } from '../world/textures';
-import { buildingKey, makeBikeRider, makeBridgeTower, makeBuilding, makeOculus, makeArenaPlaza, makeCharacter, makePlayerMarker, makeStreetProps, makeTiles, makeVehicles, shadowKey, SHADOW_PAD } from '../world/golden';
+import { buildingKey, makeBikeRider, makeBridgeTower, makeBuilding, makeCharacter, makePlayerMarker, makeStreetProps, makeTiles, makeVehicles, shadowKey, shadowOffset, SHADOW_PAD } from '../world/golden';
 
 interface Interactable {
   id: string; x: number; y: number; r: number;
@@ -58,6 +58,7 @@ export class WorldScene extends Phaser.Scene {
   preload() {
     // Hand-painted likeness portraits (style-study/portraits.html) win over the generated busts.
     for (const id of ['deroy', 'jenna', 'nell', 'bridgette', 'adrian', 'danae', 'jon', 'emily', 'naim', 'luco', 'vega']) this.load.image(`npc-${id}-bust`, `portraits/${id}.jpg`);
+    this.load.image('barclays-sprite', 'sprites/barclays.png'); // painted in ChatGPT from the aerial, magenta keyed out
   }
 
   create() {
@@ -158,16 +159,14 @@ export class WorldScene extends Phaser.Scene {
       img.setDepth(b.y + b.h);
       // Slightly inset collision so the player can hug facades
       (img.body as Phaser.Physics.Arcade.StaticBody).setSize(b.w - 4, b.h - 6).setOffset(2, 0);
-      if (b.type === 'arena') (img.body as Phaser.Physics.Arcade.StaticBody).setSize(b.w * 0.94, b.h * 0.86).setOffset(b.w * 0.03, b.h * 0.04);
-    }
-    // Barclays' oculus canopy reaches out over the plaza toward Flatbush; you walk under it
-    const arena = this.layout.buildings.find((x) => x.type === 'arena');
-    if (arena) {
-      // It sits in the triangle at Flatbush & Atlantic, its ribbons running into the arena's west end
-      makeOculus(this, 'oculus', 180, 104);
-      makeArenaPlaza(this, 'arena-plaza', 220, 130);
-      this.add.image(arena.x - 50, arena.y + 30, 'arena-plaza').setDepth(-8);
-      this.add.image(arena.x - 58, arena.y + 18, 'oculus').setDepth(5e4).setAlpha(0.96);
+      if (b.type === 'arena' && this.textures.exists('barclays-sprite')) {
+        // The painted arena: the green bowl is solid, the oculus canopy (west end) you walk under
+        img.setTexture('barclays-sprite');
+        (img.body as Phaser.Physics.Arcade.StaticBody).setSize(b.w * 0.7, b.h * 0.8).setOffset(b.w * 0.29, b.h * 0.08);
+        shd.setVisible(false);
+        const { dx, dy } = shadowOffset(b);
+        this.miniIgnore.push(this.add.image(b.x + dx * 0.5, b.y + dy * 0.5, 'barclays-sprite').setOrigin(0).setTintFill(0x0e0816).setAlpha(0.3).setDepth(-5));
+      }
     }
     // Flatbush Avenue's diagonal: double yellow center line and crosswalk bars at each end
     const fa = this.layout.spots.flatbushA, fb = this.layout.spots.flatbushB;
@@ -203,8 +202,27 @@ export class WorldScene extends Phaser.Scene {
       }
       g.lineStyle(3, 0xd9ccb0, 0.9); for (const side of [-1, 1]) g.lineBetween(bs.x + side * 50, topY - 160, bs.x + side * 50, bs.y + 260);
     }
+    // Diagonal avenues: smooth sidewalk and roadway over the stair-stepped tiles, plus a double yellow line
+    for (const av of this.layout.avenues) {
+      const sm = this.add.graphics().setDepth(-9), ln = this.add.graphics().setDepth(-6);
+      const quad = (a: { x: number; y: number }, b: { x: number; y: number }, hw: number, trimA: number, trimB = trimA) => {
+        const dx = b.x - a.x, dy = b.y - a.y, L = Math.hypot(dx, dy), ux = dx / L, uy = dy / L, nx = -uy * hw, ny = ux * hw;
+        const ax = a.x + ux * trimA, ay = a.y + uy * trimA, bx = b.x - ux * trimB, by = b.y - uy * trimB;
+        sm.fillPoints([{ x: ax + nx, y: ay + ny }, { x: bx + nx, y: by + ny }, { x: bx - nx, y: by - ny }, { x: ax - nx, y: ay - ny }], true);
+      };
+      const segs = av.pts.slice(1).map((q, i) => [av.pts[i], q] as const);
+      // sidewalks stop short of the cross streets at every intersection the avenue meets
+      sm.fillStyle(0xa39c90, 1); segs.forEach(([a, b]) => quad(a, b, av.hw + 1.2 * TILE, 2.2 * TILE));
+      sm.fillStyle(0x24272a, 1); segs.forEach(([a, b]) => quad(a, b, av.hw, 0)); av.pts.slice(1, -1).forEach((p) => sm.fillCircle(p.x, p.y, av.hw));
+      ln.lineStyle(2.5, 0xf2c23a, 0.9);
+      for (const [a, b] of segs) {
+        const dx = b.x - a.x, dy = b.y - a.y, L = Math.hypot(dx, dy), ux = dx / L, uy = dy / L, nx = -uy, ny = ux;
+        for (let t = 70; t < L - 70; t += 34) for (const o of [-2.5, 2.5]) ln.lineBetween(a.x + ux * t + nx * o, a.y + uy * t + ny * o, a.x + ux * (t + 20) + nx * o, a.y + uy * (t + 20) + ny * o);
+      }
+      this.miniIgnore.push(sm, ln);
+    }
     for (const l of this.layout.labels) {
-      const t = this.add.text(l.x, l.y - 40, l.text.toUpperCase().split('').join(' '), { fontFamily: '"Helvetica Neue", Inter, Arial, sans-serif', fontSize: '22px', fontStyle: '300', color: '#f4ece0', shadow: { offsetX: 0, offsetY: 2, color: 'rgba(0,0,0,.6)', blur: 6, fill: true } }).setOrigin(0.5).setDepth(5).setAlpha(0.8);
+      const t = this.add.text(l.x, l.y - 40, l.text.toUpperCase().split('').join(' '), { fontFamily: '"Helvetica Neue", Inter, Arial, sans-serif', fontSize: '22px', fontStyle: '300', color: '#f4ece0', shadow: { offsetX: 0, offsetY: 2, color: 'rgba(0,0,0,.6)', blur: 6, fill: true } }).setOrigin(0.5).setDepth(5).setAlpha(0.8).setRotation(l.angle ?? 0);
       this.miniIgnore.push(t);
     }
   }
