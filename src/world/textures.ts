@@ -134,6 +134,8 @@ const BASE: Record<BuildingType, string[]> = {
   arena: ['#7a4630', '#7a4630', '#7a4630', '#7a4630'],
   library: ['#d9d1c0', '#d9d1c0', '#d9d1c0', '#d9d1c0'],
   arch: ['#cfc3ae', '#cfc3ae', '#cfc3ae', '#cfc3ae'],
+  supertall: ['#1a1a1e', '#1a1a1e', '#1a1a1e', '#1a1a1e'],
+  clocktower: ['#c9a982', '#c9a982', '#c9a982', '#c9a982'],
 };
 
 export function buildingKey(b: BuildingDef) { return `bld-${b.id}`; }

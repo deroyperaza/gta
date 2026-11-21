@@ -134,6 +134,8 @@ const WALL: Record<BuildingType, string[]> = {
   arena: ['#7a4630', '#7a4630', '#7a4630', '#7a4630'],
   library: ['#d9d1c0', '#d9d1c0', '#d9d1c0', '#d9d1c0'],
   arch: ['#cfc3ae', '#cfc3ae', '#cfc3ae', '#cfc3ae'],
+  supertall: ['#1a1a1e', '#1a1a1e', '#1a1a1e', '#1a1a1e'],
+  clocktower: ['#c9a982', '#c9a982', '#c9a982', '#c9a982'],
 };
 const ROOFS = ['#b7babd', '#a9adb1', '#4a4542', '#c2c4c4', '#57504b', '#8a8378'];
 const SHOPS = new Set<BuildingType>(['coffee', 'boutique', 'nonprofit', 'coop', 'bodega', 'tenant', 'community', 'studio', 'gallery', 'laundromat', 'bakery', 'sales']);
@@ -200,6 +202,26 @@ function drawBuilding(c: Ctx, b: BuildingDef) {
   };
 
   switch (type) {
+    case 'supertall': {
+      // The Brooklyn Tower: black glass with bronze faceted fins
+      c.fillStyle = lg(c, 0, rh, 0, h, [[0, '#2a2620'], [1, '#0e0e12']]); c.fillRect(0, rh, w, fh);
+      for (let x = 3; x < w; x += 7) { c.fillStyle = lg(c, x, 0, x + 3, 0, [[0, '#c9a04a'], [1, '#6a4a1e']]); c.fillRect(x, rh, 2.2, fh); }
+      c.strokeStyle = 'rgba(201,160,74,.45)'; c.lineWidth = 1; for (let y = rh + 8; y < h; y += 8) line(c, 0, y, w, y);
+      c.fillStyle = 'rgba(255,200,120,.18)'; c.beginPath(); c.moveTo(w * 0.2, h); c.lineTo(w * 0.5, rh); c.lineTo(w * 0.6, rh); c.lineTo(w * 0.3, h); c.fill();
+      if (b.name) { c.fillStyle = 'rgba(10,10,12,.8)'; c.fillRect(4, h - 18, w - 8, 12); sign(c, b.name, w / 2, h - 12, w - 10, 8, '#d8b060', 800); }
+      break;
+    }
+    case 'clocktower': {
+      // Williamsburgh Savings Bank: limestone shaft, the big clock, arched windows
+      c.fillStyle = lg(c, 0, rh, 0, h, [[0, '#d8bf98'], [1, '#9a7e5a']]); c.fillRect(0, rh, w, fh);
+      const cx = w / 2, cy = rh + fh * 0.3, r = Math.min(w * 0.32, fh * 0.2);
+      c.fillStyle = '#f4ead2'; ell(c, cx, cy, r, r); c.fill(); c.strokeStyle = '#6a5a3a'; c.lineWidth = 2; ell(c, cx, cy, r, r); c.stroke();
+      c.strokeStyle = '#2a2418'; c.lineWidth = 1.6; line(c, cx, cy, cx, cy - r * 0.7); line(c, cx, cy, cx + r * 0.5, cy + r * 0.2);
+      for (let i = 0; i < 12; i++) { const a = (i / 12) * Math.PI * 2; c.fillStyle = '#2a2418'; ell(c, cx + Math.cos(a) * r * 0.85, cy + Math.sin(a) * r * 0.85, 0.9, 0.9); c.fill(); }
+      for (const xx of [w * 0.22, w * 0.5, w * 0.78]) { c.fillStyle = '#2a2420'; c.beginPath(); c.moveTo(xx - 4, h - 8); c.lineTo(xx - 4, cy + r + 14); c.arc(xx, cy + r + 14, 4, Math.PI, 0); c.lineTo(xx + 4, h - 8); c.fill(); }
+      if (b.name) { c.fillStyle = 'rgba(250,244,230,.9)'; c.fillRect(3, h - 16, w - 6, 10); sign(c, b.name, w / 2, h - 11, w - 8, 6, '#4a3a22', 800); }
+      break;
+    }
     case 'arena': {
       // Weathered-steel lattice bands sweeping around the oculus canopy
       c.fillStyle = lg(c, 0, rh, 0, h, [[0, '#9a5a38'], [0.5, '#7a4630'], [1, '#4a2a1e']]); c.fillRect(0, rh, w, fh);
@@ -382,6 +404,22 @@ function roofDetails(c: Ctx, b: BuildingDef, w: number, rh: number) {
       break;
     }
     case 'tower': boxOnRoof(c, U(0.25), V(0.22), w * 0.5, rh * 0.4, '#7d8288', 16); ac(c, U(0.1), V(0.72), 16); ac(c, U(0.62), V(0.72), 16); break;
+    case 'supertall': {
+      // Hexagonal crown seen from above
+      c.fillStyle = '#121216'; c.fillRect(0, 0, w, rh);
+      const hx = U(0.5), hy = V(0.5), hr = Math.min(w, rh) * 0.42;
+      c.beginPath(); for (let i = 0; i < 6; i++) { const a = Math.PI / 6 + (i / 6) * Math.PI * 2; i ? c.lineTo(hx + Math.cos(a) * hr, hy + Math.sin(a) * hr) : c.moveTo(hx + Math.cos(a) * hr, hy + Math.sin(a) * hr); } c.closePath();
+      c.fillStyle = '#26221c'; c.fill(); c.strokeStyle = '#c9a04a'; c.lineWidth = 2; c.stroke();
+      c.strokeStyle = 'rgba(201,160,74,.5)'; c.lineWidth = 1; for (let i = 0; i < 6; i++) { const a = Math.PI / 6 + (i / 6) * Math.PI * 2; line(c, hx, hy, hx + Math.cos(a) * hr, hy + Math.sin(a) * hr); }
+      break;
+    }
+    case 'clocktower': {
+      // Copper-green dome with a gilded lantern
+      c.fillStyle = '#b89a74'; c.fillRect(0, 0, w, rh);
+      c.fillStyle = rg(c, U(0.42), V(0.42), 2, Math.min(w, rh) * 0.4, [[0, '#9fd0b4'], [1, '#3f7a5e']]); ell(c, U(0.5), V(0.5), Math.min(w, rh) * 0.36, Math.min(w, rh) * 0.36); c.fill();
+      c.fillStyle = '#e2b84a'; ell(c, U(0.5), V(0.5), 4, 4); c.fill();
+      break;
+    }
     case 'arena': {
       // The big oval with its green roof
       c.fillStyle = '#3a2a22'; c.fillRect(0, 0, w, rh);

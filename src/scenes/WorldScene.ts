@@ -10,7 +10,7 @@ import { Opposition } from '../entities/opposition';
 import { dialogue } from '../systems/dialogue';
 import { missions } from '../systems/missions';
 import { ui } from '../ui/ui';
-import { T, TILE, WORLD_H, WORLD_W, districtAt, generateLayout, type BuildingDef, type WorldLayout } from '../world/layout';
+import { BLOCK_H, BLOCK_W, ROAD, T, TILE, WORLD_H, WORLD_W, districtAt, generateLayout, type BuildingDef, type WorldLayout } from '../world/layout';
 import { makeProps } from '../world/textures';
 import { buildingKey, makeBikeRider, makeBridgeTower, makeBuilding, makeCharacter, makePlayerMarker, makeStreetProps, makeTiles, makeVehicles, shadowKey, SHADOW_PAD } from '../world/golden';
 
@@ -158,6 +158,25 @@ export class WorldScene extends Phaser.Scene {
       img.setDepth(b.y + b.h);
       // Slightly inset collision so the player can hug facades
       (img.body as Phaser.Physics.Arcade.StaticBody).setSize(b.w - 4, b.h - 6).setOffset(2, 0);
+    }
+    // Flatbush Avenue's diagonal: double yellow center line and crosswalk bars at each end
+    const fa = this.layout.spots.flatbushA, fb = this.layout.spots.flatbushB;
+    if (fa && fb) {
+      // Smooth roadway over the stair-stepped tiles: sidewalk band, then asphalt
+      const o = this.layout.spots.flatbushO, bwp = (BLOCK_W - ROAD) * TILE, bhp = (BLOCK_H - ROAD) * TILE;
+      if (o) {
+        const sm = this.add.graphics().setDepth(-9), atY = (y: number) => o.x + ((y - o.y) * bwp) / bhp;
+        const y0 = o.y - 1.6 * TILE, y1 = o.y + bhp + 1.6 * TILE;
+        const band = (hw: number, color: number, ya: number, yb: number) => { sm.fillStyle(color, 1); sm.fillPoints([{ x: atY(ya) - hw, y: ya }, { x: atY(ya) + hw, y: ya }, { x: atY(yb) + hw, y: yb }, { x: atY(yb) - hw, y: yb }], true); };
+        band(2.9 * TILE, 0xa39c90, o.y, o.y + bhp); band(1.75 * TILE, 0x24272a, y0, y1);
+        this.miniIgnore.push(sm);
+      }
+      const g = this.add.graphics().setDepth(-6), dx = fb.x - fa.x, dy = fb.y - fa.y, L = Math.hypot(dx, dy), ux = dx / L, uy = dy / L, nx = -uy, ny = ux;
+      g.lineStyle(2.5, 0xf2c23a, 0.9);
+      for (let t = 60; t < L - 60; t += 34) for (const o of [-2.5, 2.5]) g.lineBetween(fa.x + ux * t + nx * o, fa.y + uy * t + ny * o, fa.x + ux * (t + 20) + nx * o, fa.y + uy * (t + 20) + ny * o);
+      g.lineStyle(5, 0xece6da, 0.85);
+      for (const [t0, sgn] of [[70, 1], [L - 70, -1]] as const) for (let k = -2; k <= 2; k++) { const cx = fa.x + ux * t0 + nx * k * 15, cy = fa.y + uy * t0 + ny * k * 15; g.lineBetween(cx, cy, cx + ux * 16 * sgn, cy + uy * 16 * sgn); }
+      this.miniIgnore.push(g);
     }
     // Brooklyn Bridge: granite tower over the deck (you walk under it) and the cables
     const bs = this.layout.spots.bridge;

@@ -31,7 +31,7 @@ export type BuildingType =
   | 'brownstone' | 'coffee' | 'boutique' | 'nonprofit' | 'coop' | 'bodega' | 'mural' | 'tenant'
   | 'community' | 'studio' | 'warehouse' | 'gallery' | 'government' | 'courthouse' | 'police'
   | 'tower' | 'apartment' | 'laundromat' | 'church' | 'shed' | 'bakery' | 'sales'
-  | 'arena' | 'library' | 'arch';
+  | 'arena' | 'library' | 'arch' | 'supertall' | 'clocktower';
 
 export interface BuildingDef {
   id: string; type: BuildingType; name?: string; district: District;
@@ -41,7 +41,7 @@ export interface BuildingDef {
 export interface PropDef { kind: string; x: number; y: number; solid?: boolean; variant?: number }
 export interface Spot { x: number; y: number }
 
-type BlockKind = 'row' | 'park' | 'pond' | 'plaza' | 'garden' | 'court' | 'lot' | 'beach' | 'waterfront' | 'riverfront';
+type BlockKind = 'row' | 'park' | 'pond' | 'plaza' | 'garden' | 'court' | 'lot' | 'beach' | 'waterfront' | 'riverfront' | 'flatbush';
 interface Landmark { id: string; type: BuildingType; w: number; name: string; spot?: string }
 interface BlockSpec { kind: BlockKind; name?: string; landmarks?: Landmark[]; noFountain?: boolean; }
 
@@ -81,8 +81,9 @@ const BLOCKS: Record<string, BlockSpec> = {
     { id: 'synergy', type: 'tower', w: 5, name: 'SYNERGY TOWER', spot: 'luco' },
     { id: 'permits', type: 'government', w: 5, name: 'DEPT. OF PERMITS & DELAYS', spot: 'bridgette' },
     { id: 'luxe', type: 'sales', w: 5, name: 'LUXE LOFTS', spot: 'tyler' } ] },
-  '1,2': { kind: 'plaza', name: 'Atlantic & Flatbush', noFountain: true, landmarks: [
-    { id: 'barclays', type: 'arena', w: 15, name: 'BARCLAYS-ISH CENTER', spot: 'skye' } ] },
+  '1,2': { kind: 'row', landmarks: [
+    { id: 'bktower', type: 'supertall', w: 6, name: 'THE BROOKLYN TOWER' },
+    { id: 'atlterm', type: 'boutique', w: 8, name: 'ATLANTIC TERMINAL-ISH MALL' } ] },
   // ---------- PARK SLOPE ----------
   '1,3': { kind: 'row', landmarks: [
     { id: 'coop', type: 'coop', w: 6, name: 'THE RIGHTEOUS TURNIP CO-OP', spot: 'brendan' },
@@ -91,19 +92,23 @@ const BLOCKS: Record<string, BlockSpec> = {
   '2,3': { kind: 'plaza', name: 'Grand Army Plaza', landmarks: [
     { id: 'gaparch', type: 'arch', w: 6, name: 'SOLDIERS & SAILORS ARCH' },
     { id: 'centrallib', type: 'library', w: 11, name: 'CENTRAL LIBRARY', spot: 'naim' } ] },
-  '2,4': { kind: 'park', name: 'Perspective Park' },
-  '2,5': { kind: 'pond', name: 'Perspective Park' },
+  '2,4': { kind: 'park', name: 'Prospect Park' },
+  '2,5': { kind: 'pond', name: 'Prospect Park' },
   '1,5': { kind: 'garden', name: 'Fifth Ave Community Garden' },
   '1,4': { kind: 'row', landmarks: [
     { id: 'yoga', type: 'boutique', w: 5, name: 'HOT YOGA FOR CAPITALISTS', spot: 'danae' },
     { id: 'laundry1', type: 'laundromat', w: 4, name: 'SUDS OF SOLIDARITY' },
     { id: 'oat', type: 'coffee', w: 4, name: '14 OAT MILKS' } ] },
   // ---------- BED-STUY ----------
-  '2,1': { kind: 'row', landmarks: [{ id: 'church', type: 'church', w: 5, name: 'FIRST CHURCH OF THE BLOCK PARTY', spot: 'deroy' }] },
-  '2,2': { kind: 'row', landmarks: [
+  '2,1': { kind: 'row', landmarks: [
+    { id: 'church', type: 'church', w: 5, name: 'FIRST CHURCH OF THE BLOCK PARTY', spot: 'deroy' },
+    { id: 'savingsbank', type: 'clocktower', w: 5, name: 'WILLIAMSBURGH SAVINGS BANK' } ] },
+  // Flatbush Ave cuts this block corner to corner: Barclays sits on the northeast triangle
+  '2,2': { kind: 'flatbush', name: 'Atlantic & Flatbush', landmarks: [
+    { id: 'barclays', type: 'arena', w: 9, name: 'BARCLAYS-ISH CENTER', spot: 'skye' } ] },
+  '3,1': { kind: 'row', landmarks: [
     { id: 'tenanthall', type: 'tenant', w: 6, name: 'TENANTS UNITED HALL', spot: 'jenna' },
     { id: 'laundry2', type: 'laundromat', w: 4, name: 'SPIN CITY WASH' } ] },
-  '3,1': { kind: 'row' },
   '3,2': { kind: 'row', landmarks: [
     { id: 'mural', type: 'mural', w: 6, name: 'COMMUNITY FRIDGE MURAL', spot: 'dee' },
     { id: 'stuyapt', type: 'apartment', w: 5, name: '' } ] },
@@ -194,7 +199,7 @@ const HEIGHT: Record<BuildingType, [number, number]> = {
   mural: [7, 7], tenant: [7, 7], community: [7, 7], studio: [7, 8], warehouse: [7, 8], gallery: [6, 7],
   government: [9, 9], courthouse: [10, 10], police: [8, 8], tower: [11, 11], apartment: [8, 9],
   laundromat: [5, 5], church: [9, 9], shed: [3, 3], bakery: [6, 6], sales: [7, 7],
-  arena: [6, 6], library: [7, 7], arch: [4, 4],
+  arena: [6, 6], library: [7, 7], arch: [4, 4], supertall: [12, 12], clocktower: [12, 12],
 };
 
 function rng(seed: number) {
@@ -244,6 +249,28 @@ export function generateLayout(): WorldLayout {
     const fill = (t: T) => { for (let y = iy; y < iy + ih; y++) for (let x = ix; x < ix + iw; x++) set(x, y, t); };
     const px = (tx: number) => tx * TILE, cxp = (ix + iw / 2) * TILE, cyp = (iy + ih / 2) * TILE;
 
+    if (spec.kind === 'flatbush') {
+      // Flatbush Avenue runs corner to corner (NW to SE). u = across, v = down, both 0..1.
+      const band = 1.7;
+      for (let y = by; y < by + bh; y++) for (let x = bx; x < bx + bw; x++) {
+        const d = ((x - bx) / bw - (y - by) / bh) * bw; // signed tile distance from the diagonal
+        set(x, y, Math.abs(d) <= band ? T.ASPHALT : Math.abs(d) <= band + 1.2 ? T.SIDEWALK : T.PLAZA);
+      }
+      for (const end of [[bx - 2, by - 2], [bx + bw + 1, by + bh + 1]]) for (let k = 0; k < 3; k++) set(end[0] + k, end[1] + k, T.INTERSECTION);
+      spots.flatbushO = { x: px(bx), y: px(by) }; // block origin, for the smooth overlay
+      spots.flatbushA = { x: px(bx - 1), y: px(by - 1) }; spots.flatbushB = { x: px(bx + bw + 1), y: px(by + bh + 1) };
+      // Barclays in the northeast triangle, its plaza wrapping the corner
+      const lm = spec.landmarks![0];
+      const w = lm.w * TILE, h = 5 * TILE, x = px(bx + bw - 1) - w, y = px(by + 1);
+      buildings.push({ id: lm.id, type: lm.type, name: lm.name, district: dist, x, y, w, h, variant: 0 });
+      markBlocked(blocked, x, y, w, h);
+      if (lm.spot) spots[lm.spot] = { x: x + w / 2 - 40, y: y + h + 44 };
+      props.push({ kind: 'bench', x: px(bx + 3), y: px(by + bh - 3) });
+      props.push({ kind: 'lamp', x: px(bx + 2) + 16, y: px(by + bh - 6) });
+      props.push({ kind: 'bench', x: px(bx + bw - 4), y: px(by + 10) });
+      if (spec.name) labels.push({ text: spec.name, x: px(bx + 5), y: px(by + bh - 4) });
+      continue;
+    }
     if (spec.kind === 'riverfront') {
       // Park behind the promenade; the river itself is painted after the loop.
       for (let y = by + 1; y < by + bh - 1; y++) for (let x = bx + 1; x < bx + bw - 1; x++) set(x, y, T.GRASS);
