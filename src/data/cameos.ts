@@ -2,9 +2,8 @@
  * Living Brooklyn icons, as brief cameos near the places they're tied to. Deroy's rule (Nov 21 2026): facts only.
  * They speak ONLY their own verified, non-lyric words (one quote each, sourced); everything else is narration of public
  * facts. No opinions or endorsements are put in their mouths, and portraits are simple game drawings, not likenesses.
- * Sources: the cameo research of Nov 21 2026 (quotes and facts with URLs). Held for now: Jay-Z, Talib Kweli (active
- * legal matters), Michael Jordan (enforces his name rights), Lil' Kim and Bernie Sanders (Deroy to decide), Mel Brooks
- * (re-confirm first).
+ * Sources: docs/FACTS-cameos.md. Deroy chose (Nov 22 2026) to include Jay-Z (facts and his own memoir words only) and
+ * Bernie Sanders (school history only, no politics). Not included: Talib Kweli, Michael Jordan, Lil' Kim.
  */
 import type { Dialogue } from '../systems/dialogue';
 import type { NpcDef } from './npcs';
@@ -57,6 +56,24 @@ export const CAMEOS: Cameo[] = [
     look: { skin: '#f0d0b8', hair: '#c9a25a', style: 'long', shirt: '#4a2a5a', pants: '#2a1a2a', shoes: '#111', dress: true },
     bio: 'Singer and director. Graduated from Erasmus Hall High School in Flatbush in 1959, at 16, as an honors student.',
     dialogue: cameo('streisand', '*Outside Erasmus Hall High School on Flatbush Avenue, a woman in an elegant coat looks up at the old building for a long moment. Barbra Streisand graduated from here in 1959, at sixteen.*', null, null, '*As a little girl in Brooklyn she sang in her building\'s echoing hallway. Erasmus Hall\'s first wooden schoolhouse, from 1786, still stands in its courtyard.*'),
+  },
+  {
+    id: 'jayz', name: 'Jay-Z', short: 'Jay-Z', title: 'Artist, Marcy Houses', district: 'bedstuy', spot: 'cm_jayz', at: [40.6950, -73.9495], color: '#e8c34a',
+    look: { skin: '#5a3624', hair: '#1a1010', style: 'cap', hatColor: '#1a1a20', shirt: '#1a1a20', pants: '#2b3a6b', shoes: '#f2f2f2' },
+    bio: 'Grew up in the Marcy Houses in Bed-Stuy. In 2003 he and his mother, Gloria, started the Shawn Carter Scholarship Foundation, which holds a yearly toy giveaway at Marcy.',
+    dialogue: cameo('jayz', '*On Marcy Avenue near Myrtle, a man in a dark cap looks up at the Marcy Houses for a while before moving on. Jay-Z grew up here.*', 'I was nine years old, the summer of 1978, and Marcy was my world.', 'Jay-Z, Decoded, 2010', '*In 2003 he and his mother, Gloria, started the Shawn Carter Scholarship Foundation. It holds a toy giveaway at Marcy every year.*'),
+  },
+  {
+    id: 'bernie', name: 'Bernie Sanders', short: 'Bernie Sanders', title: 'James Madison High, Class of 1959', district: 'flatbush', spot: 'cm_bernie', at: [40.6097, -73.9475], color: '#8fb8ff',
+    look: { skin: '#f0d8c0', hair: '#f2f2f2', style: 'short', shirt: '#3a4a6a', pants: '#2a2a30', shoes: '#111', acc: 'glasses' },
+    bio: 'Grew up in a three-and-a-half-room rent-controlled apartment on East 26th Street. Went to PS 197 and James Madison High School (class of 1959), then a year at Brooklyn College.',
+    dialogue: cameo('bernie', '*Outside James Madison High School, a white-haired man in a rumpled coat looks at the front steps like he\'s counting them. Bernie Sanders graduated from here in 1959.*', 'I spent the first 18 years of my life in apartment 2C.', 'Bernie Sanders, outside 1525 East 26th Street, Midwood, April 2016', '*He played basketball at PS 197, whose team won a borough championship, and captained the track and cross-country teams at James Madison.*'),
+  },
+  {
+    id: 'melbrooks', name: 'Mel Brooks', short: 'Mel Brooks', title: 'Comedian, Williamsburg', district: 'waterfront', spot: 'cm_melbrooks', at: [40.7090, -73.9570], color: '#ffb86b',
+    look: { skin: '#f0d8c0', hair: '#e8e4f0', style: 'cap', hatColor: '#3a3a5a', shirt: '#4a4a6a', pants: '#2a2a30', shoes: '#111', acc: 'glasses' },
+    bio: 'Comedian, writer and director who grew up in Williamsburg. Created the "2000 Year Old Man" with Carl Reiner. Turned 100 in June 2026.',
+    dialogue: cameo('melbrooks', '*A very old man in a ball cap tells a joke to a bodega cat in Williamsburg. The cat does not laugh. The man laughs anyway. Mel Brooks grew up in this neighborhood, and he turned 100 this year.*', 'I was born to make people laugh.', 'Mel Brooks, Mel Brooks: The 99 Year Old Man!, HBO, 2026', '*With Carl Reiner he created the "2000 Year Old Man." He\'s been making Brooklyn laugh for about a century.*'),
   },
 ];
 

@@ -252,6 +252,20 @@ export const GHOSTS: Ghost[] = [
       rbg_3: { speaker: 'rbg', text: 'Shouting wins a moment. Persuading wins a generation. Lead others to join you.', choices: [{ text: '(Bow slightly.)', effects: { solidarity: 4, flags: { met_rbg: true } } }] },
     }, 'rbg_0', 'Go do your homework. Then go change something.'),
   },
+  {
+    id: 'yauch', name: 'The Ghost of Adam "MCA" Yauch', short: 'Adam Yauch', title: 'Beastie Boys, 1964–2012', district: 'downtown', spot: 'gh_yauch', at: [40.6907, -73.9990], color: '#8fe3d0', ghost: true, street: true,
+    look: { skin: '#f0d8c0', hair: '#8a8a8a', style: 'short', shirt: '#2b3a6b', pants: '#2a2a30', shoes: '#f2f2f2' },
+    bio: 'Grew up on State Street in Brooklyn Heights and learned to ride a bike in this playground, renamed Adam Yauch Park in 2013. Co-founded the Milarepa Fund in 1994, which organized the Tibetan Freedom Concerts, starting in 1996.',
+    idle: ['I learned to ride a bike right here.', 'State Street. Brooklyn Heights. Home.', 'Music can raise money and raise voices.'],
+    dialogue: talk('yauch', {
+      yauch_0: { speaker: 'yauch', text: '*A calm ghost in a blue jacket sits on the swings in the little park under the highway ramp.* I learned to ride a bike in this playground. In 2013 they named it after me. In 2016 somebody spray-painted swastikas on it.', choices: [{ text: 'What happened then?', next: 'yauch_1' }] },
+      yauch_1: { speaker: 'yauch', text: 'Two days later, hundreds of neighbors showed up. My friend Adam Horovitz, a state senator, council members, the borough president. They filled the park and said: not here. Hate showed up with a spray can. Brooklyn showed up with everybody.', choices: [
+        { text: 'So when hate shows up, the answer is a bigger crowd of neighbors, together and fast.', tag: 'BEST', next: 'yauch_2' },
+        { text: 'So the city should just paint over it quietly.', next: 'yauch_3' }] },
+      yauch_2: { speaker: 'yauch', text: 'Yeah. Clean the paint, sure. But show up. I helped organize concerts for Tibet because music can raise money and raise voices. Use whatever you\'ve got.', choices: [{ text: '(Push the swing once.)', effects: { solidarity: 7, flags: { met_yauch: true } } }] },
+      yauch_3: { speaker: 'yauch', text: 'Paint it over, yes. But quiet tells people nobody cares. Hundreds of neighbors in a playground tells them everybody does.', choices: [{ text: '(Push the swing once.)', effects: { solidarity: 4, flags: { met_yauch: true } } }] },
+    }, 'yauch_0', '*He\'s on the swing again, going a little higher each time.*'),
+  },
 ];
 
 export const GHOST_AT: Record<string, [number, number]> = Object.fromEntries(GHOSTS.filter((g) => !g.street).map((g) => [g.spot, g.at]));
