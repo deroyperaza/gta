@@ -75,6 +75,18 @@ export const CAMEOS: Cameo[] = [
     bio: 'Comedian, writer and director who grew up in Williamsburg. Created the "2000 Year Old Man" with Carl Reiner. Turned 100 in June 2026.',
     dialogue: cameo('melbrooks', '*A very old man in a ball cap tells a joke to a bodega cat in Williamsburg. The cat does not laugh. The man laughs anyway. Mel Brooks grew up in this neighborhood, and he turned 100 this year.*', 'I was born to make people laugh.', 'Mel Brooks, Mel Brooks: The 99 Year Old Man!, HBO, 2026', '*With Carl Reiner he created the "2000 Year Old Man." He\'s been making Brooklyn laugh for about a century.*'),
   },
+  {
+    id: 'mamdani', name: 'Mayor Zohran Mamdani', short: 'Mayor Mamdani', title: 'Mayor of New York City', district: 'downtown', spot: 'cm_mamdani', at: [40.6901, -73.9819], color: '#4f8cff',
+    look: { skin: '#b07a52', hair: '#1a1010', style: 'short', shirt: '#1f2a44', pants: '#1f2a44', shoes: '#111' },
+    bio: 'Took office as Mayor of New York City on January 1, 2026. In November 2026 the city finished 1.9 miles of protected, center-running bus lanes on Flatbush Avenue, with six concrete boarding islands.',
+    dialogue: cameo('mamdani', '*By one of the new concrete bus islands on Flatbush Avenue, a man in a dark suit watches a B41 pull in. Zohran Mamdani became mayor of New York City on January 1, 2026.*', 'Flatbush Avenue is the foundation for the future of bus service in New York City.', 'Mayor Zohran Mamdani, NYC Mayor\'s Office, November 17, 2026', '*This month the city finished 1.9 miles of protected center-running bus lanes here, with six boarding islands. Buses on this stretch used to average about 4 mph, and about 120,000 riders use the corridor every day. The plan is full bus rapid transit on Flatbush by 2030.*'),
+  },
+  {
+    id: 'reynoso', name: 'Antonio Reynoso', short: 'BP Reynoso', title: 'Brooklyn Borough President', district: 'downtown', spot: 'cm_reynoso', at: [40.6925, -73.9897], color: '#ffb23f',
+    look: { skin: '#a8714a', hair: '#1a1010', style: 'short', shirt: '#2b3a6b', pants: '#2a2a30', shoes: '#111' },
+    bio: 'Brooklyn Borough President, the first Latino one. Born and raised in Los Sures, the Southside of Williamsburg, to parents who emigrated from the Dominican Republic. Served two terms on the City Council before that.',
+    dialogue: cameo('reynoso', '*On the plaza outside Borough Hall, a man in a blazer looks out over the crowd. Antonio Reynoso is Brooklyn\'s Borough President, the first Latino one. He grew up in Los Sures, Williamsburg\'s Southside, the son of parents from the Dominican Republic.*', 'All roads lead to Brooklyn, and even when others try to turn us against each other, Brooklyn chooses belonging.', 'Antonio Reynoso, State of the Borough, April 2026', '*The Borough President appoints the members of Brooklyn\'s 18 community boards and weighs in on rezonings right after they do. Worth knowing who that is.*'),
+  },
 ];
 
 export const CAMEO_AT: Record<string, [number, number]> = Object.fromEntries(CAMEOS.map((c) => [c.spot, c.at]));

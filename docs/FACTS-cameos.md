@@ -88,3 +88,16 @@ Seven of the twelve are fine for a cameo. Hold Jay-Z and Talib Kweli, and skip M
 The cleanest seven are Carmelo, Rosie, Spike, Yasiin Bey, Mel Brooks, Chris Rock and Barbra Streisand.
 
 🗣️ Lyra: Seven clean cameos, Jay-Z and Kweli on hold, skip Jordan entirely.
+## Added Nov 22 2026 (Deroy asked for the Mayor and the Borough President)
+
+**Zohran Mamdani: OK (facts only, no politics)**
+- **Tie:** Flatbush Avenue's new center bus lanes, Flatbush Ave at DeKalb, by the B41 stop (about 40.6901, -73.9819).
+- **Facts:** Took office Jan 1 2026. On Nov 17 2026 the city finished 1.9 miles of protected center-running bus lanes on Flatbush with six concrete boarding islands; buses there averaged about 4 mph; 120,000 daily riders; B41, B67, B45, B103; BRT planned by 2030.
+- **Quote:** "Flatbush Avenue is the foundation for the future of bus service in New York City." (NYC Mayor's Office release, Nov 17 2026)
+- https://nyc.gov/mayors-office/news/2026/11/mayor-mamdani-delivers-faster-buses-on-flatbush-avenue--laying-g · https://www.nyc.gov/mayors-office/news/2026/01/mayor-zohran-mamdani-inaugural-address
+
+**Antonio Reynoso: OK (facts only)**
+- **Tie:** Brooklyn Borough Hall (about 40.6925, -73.9897).
+- **Facts:** First Latino Brooklyn Borough President; born and raised in Los Sures (Williamsburg's Southside) to parents from the Dominican Republic; two terms on the City Council (District 34).
+- **Quote:** "All roads lead to Brooklyn, and even when others try to turn us against each other, Brooklyn chooses belonging." (2026 State of the Borough, April 2026)
+- https://www.brooklynbp.nyc.gov/brooklyn-borough-president-antonio-reynoso-celebrates-brooklyn-at-2026-state-of-the-borough-address/ · https://www.brooklynbp.nyc.gov/brooklyn-borough-president-antonio-reynoso-celebrates-inauguration-in-public-ceremony/

@@ -85,7 +85,7 @@ export class WorldScene extends Phaser.Scene {
     for (const id of ['deroy', 'jenna', 'nell', 'bridgette', 'adrian', 'danae', 'jon', 'emily', 'naim', 'luco', 'vega']) this.load.image(`npc-${id}-bust`, `portraits/${id}.jpg`);
     // Ghosts (in period dress) and famous Brooklynites: painted in ChatGPT, Nov 22 2026
     for (const id of ['capone', 'tweed', 'greeley', 'bernstein', 'basquiat', 'tiffany', 'jackie', 'whitman', 'mckinney', 'ebbets', 'chadwick', 'beecher', 'clinton', 'morse', 'chisholm', 'lenahorne', 'biggie', 'rbg', 'yauch',
-      'spikelee', 'carmelo', 'rosieperez', 'yasiinbey', 'chrisrock', 'streisand', 'jayz', 'bernie', 'melbrooks']) this.load.image(`npc-${id}-bust`, `portraits/${id}.jpg`);
+      'spikelee', 'carmelo', 'rosieperez', 'yasiinbey', 'chrisrock', 'streisand', 'jayz', 'bernie', 'melbrooks', 'mamdani', 'reynoso']) this.load.image(`npc-${id}-bust`, `portraits/${id}.jpg`);
     this.load.image('lmk-liu', 'sprites/liu.png'); // LIU Brooklyn: the Paramount corner and the field, painted in ChatGPT
     this.load.image('barclays-sprite', 'sprites/barclays.png');
     this.load.image('bridge-tower-art', 'sprites/bridgetower.png');
