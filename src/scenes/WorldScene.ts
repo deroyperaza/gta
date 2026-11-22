@@ -9,6 +9,7 @@ import { Traffic } from '../entities/traffic';
 import { DEBATES, Opposition, type OppConfig } from '../entities/opposition';
 import { LINE_COLORS, SERVICES, Transit, bullet } from '../entities/transit';
 import { drawParks } from '../world/parks';
+import { PAINTED } from '../data/landmarks';
 import { dialogue } from '../systems/dialogue';
 import { missions } from '../systems/missions';
 import { ui } from '../ui/ui';
@@ -77,6 +78,7 @@ export class WorldScene extends Phaser.Scene {
     this.load.image('barclays-sprite', 'sprites/barclays.png');
     this.load.image('bridge-tower-art', 'sprites/bridgetower.png');
     this.load.image('dragon-art', 'sprites/dragon.png'); // Naim's dragon, painted in ChatGPT
+    for (const p of PAINTED) if (p.ready) this.load.image(`lmk-${p.id}`, `sprites/${p.file}.png`); // landmarks placed by coordinates
     this.load.image('gap-island', 'sprites/gap.png'); // Grand Army Plaza's island, painted in ChatGPT, keyed
     for (const id of ['bandshell', 'gwgate', 'carousel', 'conservatory', 'bkcollege']) this.load.image(`park-${id}`, `sprites/${id}.png`); // painted in ChatGPT, keyed
     for (const id of PAINTED_LANDMARKS) this.load.image(`lm-${id}`, `sprites/${id}.png`);

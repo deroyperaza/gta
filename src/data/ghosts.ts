@@ -14,7 +14,7 @@
 import type { Dialogue } from '../systems/dialogue';
 import type { NpcDef } from './npcs';
 
-interface Ghost extends NpcDef { at: [number, number]; dialogue: Dialogue; ghost: true }
+interface Ghost extends NpcDef { at: [number, number]; dialogue: Dialogue; ghost: true; /** haunts a place in Brooklyn, not Green-Wood */ street?: true }
 
 const met = (id: string) => ({ flags: { [`met_${id}`]: true } });
 const talk = (id: string, first: Dialogue['nodes'], start: string, again: string): Dialogue => ({
@@ -89,6 +89,38 @@ export const GHOSTS: Ghost[] = [
       tiffany_1: { speaker: 'tiffany', text: 'Then defend it. Beauty everyone can reach isn\'t decoration. It\'s a promise a city makes to its people. *He hands you a piece of light. It disappears in your hand.*', choices: [{ text: '(Thank him.)', effects: { solidarity: 5, ...met('tiffany') } }] },
     }, 'tiffany_0', 'The light is good this evening. It always is, here.'),
   },
+  // ---------------------------------------------------------------- ghosts who haunt their own Brooklyn places
+  // Facts: docs/FACTS-landmarks-jackie-whitman.md (Jackie Robinson, Walt Whitman)
+  {
+    id: 'jackie', name: 'The Ghost of Jackie Robinson', short: 'Jackie Robinson', title: 'Brooklyn Dodgers, 1919–1972', district: 'crownheights', spot: 'gh_jackie', at: [40.665, -73.95806], color: '#4f8cff', ghost: true, street: true,
+    look: { skin: '#5a3624', hair: '#1a1010', style: 'cap', hatColor: '#1f4fb8', shirt: '#f2f2f2', pants: '#f2f2f2', shoes: '#111' },
+    bio: 'Broke Major League Baseball\'s color barrier with the Brooklyn Dodgers on April 15, 1947, right here at Ebbets Field. Rookie of the Year. Won the 1955 World Series. Then served on the NAACP\'s board and co-founded a Black-owned bank in Harlem.',
+    idle: ['This was Ebbets Field. Bedford Avenue, Sullivan Place.', 'April 15, 1947. I remember every sound.', 'The game was the start. The work came after.'],
+    dialogue: talk('jackie', {
+      jackie_0: { speaker: 'jackie', text: '*A ghost in a Dodgers uniform stands where home plate used to be. Today it\'s an apartment courtyard.* April 15, 1947. Right here. First base, Brooklyn Dodgers. Plenty of people didn\'t want me on that field.', choices: [{ text: 'How did you keep going?', next: 'jackie_1' }] },
+      jackie_1: { speaker: 'jackie', text: 'Brooklyn showed up. And I knew it wasn\'t only about me. After baseball I served on the NAACP\'s board and helped start a Black-owned bank in Harlem, so our neighborhoods could get loans. The game opened a door. Organizing kept it open.', choices: [
+        { text: 'So winning one fight is the start, and the real work is building something that lasts.', tag: 'BEST', next: 'jackie_2' },
+        { text: 'So the big moment is what really matters.', next: 'jackie_3' }] },
+      jackie_2: { speaker: 'jackie', text: 'That\'s it. I wrote it once: "A life is not important except in the impact it has on other lives." Go make an impact on this block.', choices: [{ text: '(Tip your cap.)', effects: { solidarity: 8, flags: { met_jackie: true } } }] },
+      jackie_3: { speaker: 'jackie', text: 'The moment gets the headlines. The years after are what change things: the boards, the bank, the meetings nobody films. I wrote: "A life is not important except in the impact it has on other lives."', choices: [{ text: '(Tip your cap.)', effects: { solidarity: 4, flags: { met_jackie: true } } }] },
+    }, 'jackie_0', '*He tosses an invisible ball from hand to hand.* Brooklyn\'s still got the best fans in the world. Use them.'),
+  },
+  {
+    id: 'whitman', name: 'The Ghost of Walt Whitman', short: 'Walt Whitman', title: 'Poet, Brooklyn Daily Eagle Editor, 1819–1892', district: 'downtown', spot: 'gh_whitman', at: [40.6918, -73.9756], color: '#d8c8a0', ghost: true, street: true,
+    look: { skin: '#f0e0d0', hair: '#f2f2f2', style: 'curly', shirt: '#7a6a50', pants: '#4a4030', shoes: '#3a2a1a' },
+    bio: 'Edited the Brooklyn Daily Eagle in 1846 and 1847, and used it to demand a public park on this hill. The city created Washington Park, renamed Fort Greene Park in 1897. Buried in Camden, New Jersey; haunts Fort Greene anyway.',
+    idle: ['A park for everybody. Not a lawn for a few.', 'I wrote a poem about this hill in 1846.', 'Brooklyn! Brooklyn! Have I mentioned Brooklyn?'],
+    dialogue: talk('whitman', {
+      whitman_0: { speaker: 'whitman', text: '*A bearded ghost in a slouch hat strolls the hill, reading a newspaper from 1846.* I edited the Eagle, you know. I used it to shout, week after week, that working people deserved a park on this hill. Fresh air shouldn\'t belong only to the rich.', choices: [{ text: 'Did it work?', next: 'whitman_1' }] },
+      whitman_1: { speaker: 'whitman', text: 'The city made Washington Park. Today you call it Fort Greene Park. One editor didn\'t do it alone, mind you. Neighbors wanted it, and kept wanting it out loud.', choices: [
+        { text: 'So public space gets won when people keep asking for it, loudly and together.', tag: 'BEST', next: 'whitman_2' },
+        { text: 'So a famous writer can get anything built.', next: 'whitman_3' }] },
+      whitman_2: { speaker: 'whitman', text: 'Yes! Write it down, print it, say it at the meeting, then say it again. A park is a promise a city keeps when people won\'t let it forget.', choices: [{ text: '(Walk the hill with him.)', effects: { solidarity: 7, flags: { met_whitman: true } } }] },
+      whitman_3: { speaker: 'whitman', text: 'Ha! I wasn\'t famous yet. I was a newspaperman with opinions. It\'s the neighbors who wanted it, out loud, who made it happen. Fame is just being loud for a long time.', choices: [{ text: '(Walk the hill with him.)', effects: { solidarity: 4, flags: { met_whitman: true } } }] },
+    }, 'whitman_0', 'I contain multitudes. So does this park. Look at all of you.'),
+  },
 ];
 
-export const GHOST_AT: Record<string, [number, number]> = Object.fromEntries(GHOSTS.map((g) => [g.spot, g.at]));
+export const GHOST_AT: Record<string, [number, number]> = Object.fromEntries(GHOSTS.filter((g) => !g.street).map((g) => [g.spot, g.at]));
+/** Ghosts who haunt their own corner of Brooklyn (placed like neighbors, on the nearest sidewalk) */
+export const STREET_GHOST_AT: Record<string, [number, number]> = Object.fromEntries(GHOSTS.filter((g) => g.street).map((g) => [g.spot, g.at]));

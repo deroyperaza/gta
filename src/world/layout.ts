@@ -1,7 +1,8 @@
 import type { District } from '../core/types';
 import { NEIGHBOR_AT } from '../data/neighbors';
-import { GHOST_AT } from '../data/ghosts';
+import { GHOST_AT, STREET_GHOST_AT } from '../data/ghosts';
 import { VILLAIN_AT } from '../data/villains';
+import { PAINTED_AT } from '../data/landmarks';
 import { CELLS, GRID, KINDS, LAT_EDGES, LNG_EDGES, NEIGHBORHOODS, PARKNAMES } from './brooklynGrid';
 
 /**
@@ -648,6 +649,21 @@ export function generateLayout(): WorldLayout {
     }
     if (built) { labels.push({ text: name, x: px(xs - 6), y: px(y0 + 2) + 16 }); spots[`pier${i + 1}`] = { x: px(xs - 6), y: px(y0 + 2) + 16 }; }
   });
+  // Painted landmarks placed by real coordinates (src/data/landmarks.ts): open ground near the spot, clear of buildings
+  for (const [key, [la, ln]] of Object.entries(PAINTED_AT)) {
+    const g = geo(la, ln), cx = Math.floor(g.x), cy = Math.floor(g.y);
+    const OPEN = new Set<number>([T.GRASS, T.PLAZA, T.YARD, T.LOT, T.SAND, T.SIDEWALK, T.CURB, T.COURT]);
+    let best: Spot | null = null, bd = Infinity;
+    for (let dy = -20; dy <= 20; dy++) for (let dx = -20; dx <= 20; dx++) {
+      const x = cx + dx, y = cy + dy, k = tiles[y]?.[x];
+      if (k === undefined || !OPEN.has(k) || blocked[y][x]) continue;
+      let crowd = 0;
+      for (let oy = -3; oy <= 3; oy++) for (let ox = -3; ox <= 3; ox++) if (blocked[y + oy]?.[x + ox]) crowd++;
+      const d = Math.hypot(dx, dy) + crowd * 2 + (spotTaken(x, y) ? 50 : 0);
+      if (d < bd) { bd = d; best = { x: px(x) + 16, y: px(y) + 16 }; }
+    }
+    if (best) spots[key] = best;
+  }
   // Green-Wood's ghosts (src/data/ghosts.ts) drift on the cemetery's grass and paths, never out on the sidewalk
   for (const [key, [la, ln]] of Object.entries(GHOST_AT)) {
     const g = geo(la, ln), cx = Math.floor(g.x), cy = Math.floor(g.y);
@@ -660,7 +676,7 @@ export function generateLayout(): WorldLayout {
     if (best) spots[key] = best;
   }
   // Neighbors (src/data/neighbors.ts) stand on the nearest open sidewalk to where they really live
-  for (const [key, [la, ln]] of Object.entries({ ...NEIGHBOR_AT, ...VILLAIN_AT })) { // villains have lairs on real corners too
+  for (const [key, [la, ln]] of Object.entries({ ...NEIGHBOR_AT, ...VILLAIN_AT, ...STREET_GHOST_AT })) { // villains have lairs on real corners too
     const g = geo(la, ln), cx = Math.floor(g.x), cy = Math.floor(g.y);
     let best: Spot | null = null, bd = Infinity;
     for (let dy = -12; dy <= 12; dy++) for (let dx = -12; dx <= 12; dx++) {

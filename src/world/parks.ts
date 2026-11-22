@@ -3,6 +3,7 @@ import { bus } from '../core/bus';
 import { state } from '../core/state';
 import { BLOCK_H, BLOCK_W, ROAD, T, TILE, type WorldLayout } from './layout';
 import { makeCharacter } from './golden';
+import { PAINTED } from '../data/landmarks';
 
 /**
  * Brooklyn's big green places, drawn in code:
@@ -147,6 +148,15 @@ export function drawParks(scene: Phaser.Scene, L: WorldLayout, ignore: Phaser.Ga
       else bus.emit('ui:toast', 'BROOKLYN BOTANIC GARDEN: 52 ACRES. PAY WHAT YOU WISH, TUESDAY–FRIDAY, NOVEMBER TO FEBRUARY.');
     } });
   }
+  // ------------------------------------------------------------------ LANDMARKS PLACED BY COORDINATES (painted in ChatGPT)
+  for (const lm of PAINTED) {
+    const sp = L.spots[`lmk_${lm.id}`]; if (!lm.ready || !sp || !scene.textures.exists(`lmk-${lm.id}`)) continue;
+    const img = scene.add.image(sp.x, sp.y + 20, `lmk-${lm.id}`).setOrigin(0.5, 0.85).setScale(lm.scale ?? 1).setDepth(sp.y + 20);
+    ignore.push(img);
+    label(sp.x, sp.y - img.displayHeight * 0.85 - 6, lm.name);
+    out.push({ id: `lmk_${lm.id}`, x: sp.x, y: sp.y + 30, r: 110, label: () => `Look at ${lm.name.toLowerCase().replace(/\b\w/g, (m) => m.toUpperCase())}`, act: () => bus.emit('ui:toast', lm.fact) });
+  }
+
   // ------------------------------------------------------------------ BROOKLYN COLLEGE: the East Quad, La Guardia Hall's clock tower
   const bc = L.spots.bkcollege;
   if (bc) {
