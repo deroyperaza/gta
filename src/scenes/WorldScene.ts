@@ -745,7 +745,8 @@ export class WorldScene extends Phaser.Scene {
       const tw = b.x - a.x, th = b.y - a.y, r = Math.min(tw, th) / 2;
       g.fillStyle(0xb5492f, 1).fillRoundedRect(a.x, a.y, tw, th, r);
       g.lineStyle(1.5, 0xf2e6dc, 0.8); for (let k = 1; k <= 4; k++) g.strokeRoundedRect(a.x + k * 5, a.y + k * 5, tw - k * 10, th - k * 10, Math.max(4, r - k * 5));
-      const ins = 30; a = { x: a.x + ins, y: a.y + ins + 26 }; b = { x: b.x - ins, y: b.y - ins - 26 };
+      const ins = 30, ex = tw > th ? 26 : 0, ey = tw > th ? 0 : 26; // extra room at the rounded ends
+      a = { x: a.x + ins + ex, y: a.y + ins + ey }; b = { x: b.x - ins - ex, y: b.y - ins - ey };
     }
     const w = b.x - a.x, h = b.y - a.y, vert = h > w; // goals at the short ends
     for (let i = 0; i < 12; i++) { // turf, mowed in stripes across the pitch

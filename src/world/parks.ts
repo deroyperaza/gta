@@ -150,7 +150,7 @@ export function drawParks(scene: Phaser.Scene, L: WorldLayout, ignore: Phaser.Ga
   // ------------------------------------------------------------------ BROOKLYN COLLEGE: the East Quad, La Guardia Hall's clock tower
   const bc = L.spots.bkcollege;
   if (bc) {
-    const q = scene.add.image(bc.x, bc.y + 120, 'park-bkcollege').setOrigin(0.5, 1).setScale(0.9).setDepth(bc.y + 120); // painted in ChatGPT
+    const q = scene.add.image(bc.x, bc.y + 120, 'park-bkcollege').setOrigin(0.5, 1).setScale(0.75).setDepth(bc.y + 120); // painted in ChatGPT
     ignore.push(q);
     out.push({ id: 'bkcollege', x: bc.x, y: bc.y + 130, r: 120, label: () => 'Walk the quad', act: () => bus.emit('ui:toast', 'BROOKLYN COLLEGE: CUNY. THE 2 AND 5 STOP RIGHT OUTSIDE.') });
   }
