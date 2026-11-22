@@ -600,8 +600,16 @@ class UI {
     const fp = w.entityPos.fridge;
     if (fp) { const x = (fp.x / TILE) * s, y = (fp.y / TILE) * s; c.fillStyle = targets.has('fridge') ? '#ffd23f' : '#fff'; c.fillRect(x - 6, y - 8, 12, 16); c.strokeRect(x - 6, y - 8, 12, 16); }
     const px = (w.player.x / TILE) * s, py = (w.player.y / TILE) * s;
-    c.beginPath(); c.arc(px, py, 10, 0, 7); c.fillStyle = '#fff'; c.fill(); c.lineWidth = 4; c.strokeStyle = '#ff4fa3'; c.stroke();
-    c.lineWidth = 4; c.strokeStyle = '#16101f'; c.strokeText('YOU', px, py - 16); c.fillStyle = '#fff'; c.fillText('YOU', px, py - 16);
+    // You are here: big enough to spot at a glance (the canvas shows about 4x smaller)
+    c.beginPath(); c.arc(px, py, 70, 0, 7); c.fillStyle = 'rgba(255,79,163,0.22)'; c.fill(); c.lineWidth = 6; c.strokeStyle = '#ff4fa3'; c.stroke();
+    c.beginPath(); c.arc(px, py, 40, 0, 7); c.fillStyle = 'rgba(255,79,163,0.35)'; c.fill();
+    c.beginPath(); c.arc(px, py, 20, 0, 7); c.fillStyle = '#ff4fa3'; c.fill(); c.lineWidth = 7; c.strokeStyle = '#fff'; c.stroke();
+    c.font = '900 56px Nunito, Arial'; c.textAlign = 'center';
+    const lbl = 'YOU ARE HERE', tw = c.measureText(lbl).width, ly = py - 92;
+    c.fillStyle = '#ff4fa3'; c.strokeStyle = '#16101f'; c.lineWidth = 6;
+    c.beginPath(); c.roundRect(px - tw / 2 - 20, ly - 58, tw + 40, 74, 16); c.fill(); c.stroke();
+    c.beginPath(); c.moveTo(px - 16, ly + 16); c.lineTo(px + 16, ly + 16); c.lineTo(px, ly + 36); c.closePath(); c.fill(); c.stroke();
+    c.fillStyle = '#fff'; c.fillText(lbl, px, ly);
     // Phones show the map zoomed in and pannable: start centered on the player.
     requestAnimationFrame(() => {
       const wrap = cv.parentElement!; if (cv.clientWidth <= wrap.clientWidth) return;
