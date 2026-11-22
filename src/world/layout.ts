@@ -50,7 +50,7 @@ export interface Spot { x: number; y: number }
 
 type BlockKind = 'row' | 'park' | 'pond' | 'plaza' | 'garden' | 'court' | 'lot' | 'beach' | 'waterfront' | 'riverfront' | 'flatbush';
 interface Landmark { id: string; type: BuildingType; w: number; name: string; spot?: string; h?: number; at?: [number, number] }
-interface BlockSpec { kind: BlockKind; name?: string; landmarks?: Landmark[]; noFountain?: boolean; landmarksSouth?: boolean }
+interface BlockSpec { kind: BlockKind; name?: string; landmarks?: Landmark[]; noFountain?: boolean; landmarksSouth?: boolean; amusements?: boolean }
 
 /** A Brooklyn block (not water, Manhattan or Queens). */
 export function isLand(c: number, r: number) { return r >= 0 && c >= 0 && r < ROWS && c < COLS && CELLS[r][c] >= 0; }
@@ -189,9 +189,9 @@ const BLOCKS: Record<string, BlockSpec> = {
   '8,19': { kind: 'row', landmarks: [{ id: 'mermaid', type: 'gallery', w: 6, name: 'MERMAID PARADE WORKSHOP' }] },
   '9,19': { kind: 'row', landmarks: [{ id: 'coneyhouses', type: 'apartment', w: 7, name: 'SURFSIDE TOWERS' }] },
   // The Parachute Jump stands at the west end of the boardwalk
-  '6,20': { kind: 'beach', name: 'Coney Island Beach', landmarks: [{ id: 'parachute', type: 'arch', w: 7, h: 2, at: [3, 1], name: 'PARACHUTE JUMP' }] },
-  '7,20': { kind: 'beach', name: 'The Boardwalk' },
-  '8,20': { kind: 'beach', name: 'Polar Bear Plunge Point' },
+  '6,20': { kind: 'beach', amusements: true, name: 'Coney Island Beach', landmarks: [{ id: 'parachute', type: 'arch', w: 7, h: 2, at: [3, 1], name: 'PARACHUTE JUMP' }] },
+  '7,20': { kind: 'beach', amusements: true, name: 'The Boardwalk' },
+  '8,20': { kind: 'beach', amusements: true, name: 'Polar Bear Plunge Point' },
   // ---------- FLATBUSH ----------
   '10,13': { kind: 'row', landmarks: [{ id: 'kingsish', type: 'community', w: 8, name: 'THE KINGS-ISH THEATRE' }] },
   '10,14': { kind: 'row', landmarks: [
@@ -210,6 +210,25 @@ const BLOCKS: Record<string, BlockSpec> = {
   '3,12': { kind: 'lot', landmarks: [{ id: 'induscity', type: 'warehouse', w: 9, name: 'INDUSTRY-ISH CITY' }] },
   '4,14': { kind: 'row', landmarks: [{ id: 'spcb', type: 'government', w: 6, name: 'COMMUNITY BOARD 7-ISH' }] },
 };
+
+/** The south-shore beach blocks (authored or default). */
+function isBeach(c: number, r: number) {
+  if (!isLand(c, r)) return false;
+  const b = BLOCKS[`${c},${r}`];
+  if (b) return b.kind === 'beach';
+  const k = KINDS[r][c];
+  return k !== 'p' && k !== 'c' && districtOfBlock(c, r) === 'coneyisland' && r >= 18 && cellOf(c, r + 1) === -1;
+}
+/**
+ * A beach block from north to south, by row inside the block (0 = the curb on the street side). Coney's amusement
+ * blocks: Surf Ave (the street above), the rides, then the boardwalk, the sand and the Atlantic. Elsewhere: boardwalk, sand, sea.
+ * null = keep what's there (the curb, or a cross street running down to the boardwalk).
+ */
+function beachTile(amus: boolean, ly: number): T | null {
+  if (amus) return ly <= 0 ? null : ly <= 6 ? T.LOT : ly <= 9 ? T.PLAZA : ly <= 12 ? T.SAND : T.WATER;
+  return ly <= 0 ? null : ly <= 3 ? T.PLAZA : ly <= 9 ? T.SAND : T.WATER;
+}
+const isAmus = (c: number, r: number) => !!BLOCKS[`${c},${r}`]?.amusements;
 
 /** A block nobody authored: parks and cemeteries from the city data, beaches on the south shore, else streets of its neighborhood. */
 function defaultSpec(c: number, r: number, roll: number): BlockSpec {
@@ -338,6 +357,13 @@ export function generateLayout(): WorldLayout {
     const kc = Math.floor(x / BLOCK_W), kr = Math.floor(y / BLOCK_H);
     const touch: [number, number][] = onV && onH ? [[kc - 1, kr - 1], [kc, kr - 1], [kc - 1, kr], [kc, kr]] : onV ? [[kc - 1, kr], [kc, kr]] : [[kc, kr - 1], [kc, kr]];
     if (!touch.some(([a, b]) => isLand(a, b))) { set(x, y, touch.some(([a, b]) => cellOf(a, b) === -1) ? T.WATER : T.OFFMAP); continue; }
+    // No street out past the beach: the road along a beach's ocean edge is the Atlantic
+    if (onH && touch.some(([a, b]) => b === kr - 1 && isBeach(a, b)) && touch.every(([a, b]) => b === kr - 1 || !isLand(a, b))) { set(x, y, T.WATER); continue; }
+    // Between two beach blocks a street only runs down to the boardwalk; past that it's boardwalk, sand and sea
+    if (onV && !onH && isBeach(kc - 1, kr) && isBeach(kc, kr)) {
+      const t = beachTile(isAmus(kc - 1, kr) && isAmus(kc, kr), hy - ROAD);
+      if (t !== null) { set(x, y, t); continue; }
+    }
     if (onV && onH) set(x, y, T.INTERSECTION);
     else if (onV) set(x, y, hy === ROAD || hy === BLOCK_H - 1 ? T.CROSS_V : vx === 1 ? (y % 2 ? T.LANE_V : T.ASPHALT) : T.ASPHALT);
     else if (onH) set(x, y, vx === ROAD || vx === BLOCK_W - 1 ? T.CROSS_H : hy === 1 ? (x % 2 ? T.LANE_H : T.ASPHALT) : T.ASPHALT);
@@ -433,11 +459,12 @@ export function generateLayout(): WorldLayout {
       continue;
     }
     if (spec.kind === 'beach') {
-      // Boardwalk across the top, sand, then the Atlantic
-      for (let y = by + 1; y < by + bh - 1; y++) for (let x = bx + 1; x < bx + bw - 1; x++) set(x, y, y < by + 4 ? T.PLAZA : y < by + 10 ? T.SAND : T.WATER);
-      for (let x = bx + 3; x < bx + bw - 2; x += 5) { props.push({ kind: 'bench', x: px(x), y: px(by + 2) + 10 }); props.push({ kind: 'lamp', x: px(x + 2) + 16, y: px(by + 1) + 26 }); }
-      if (rand() < 0.7) props.push({ kind: 'trash', x: px(bx + 2) + 12, y: px(by + 3) + 14 });
-      if (spec.name === 'The Boardwalk') spots.boardwalk = { x: cxp, y: px(by + 5) + 8 };
+      // Coney's amusement blocks: rides along Surf Ave, then the boardwalk, sand and the Atlantic. Elsewhere: boardwalk, sand, sea.
+      const amus = !!spec.amusements, bw0 = amus ? 7 : 1; // the boardwalk's first row
+      for (let y = by + 1; y < by + bh; y++) for (let x = bx; x < bx + bw; x++) { const t = beachTile(amus, y - by); if (t !== null) set(x, y, t); }
+      for (let x = bx + 3; x < bx + bw - 2; x += 5) { props.push({ kind: 'bench', x: px(x), y: px(by + bw0 + 1) + 10 }); props.push({ kind: 'lamp', x: px(x + 2) + 16, y: px(by + bw0) + 26 }); }
+      if (rand() < 0.7) props.push({ kind: 'trash', x: px(bx + 2) + 12, y: px(by + bw0 + 2) + 14 });
+      if (spec.name === 'The Boardwalk') spots.boardwalk = { x: cxp, y: px(by + bw0 + 4) + 8 };
       for (const lm of spec.landmarks ?? []) if (lm.at) {
         const x = px(bx + lm.at[0]), y = px(by + lm.at[1]), w = lm.w * TILE, h = (lm.h ?? 2) * TILE;
         buildings.push({ id: lm.id, type: lm.type, name: lm.name, district: dist, x, y, w, h, variant: 0 });
@@ -670,6 +697,8 @@ export function generateLayout(): WorldLayout {
     for (let dy = -28; dy <= 28; dy++) for (let dx = -28; dx <= 28; dx++) {
       const x = cx + dx, y = cy + dy, k = tiles[y]?.[x];
       if (k === undefined || !OPEN.has(k) || blocked[y][x]) continue;
+      // On Coney's amusement blocks the rides stand north of the boardwalk: on the ride strip, feet near its south edge
+      { const bc = Math.floor(x / BLOCK_W), br = Math.floor(y / BLOCK_H); if (isAmus(bc, br) && (k !== T.LOT || y - (br * BLOCK_H + ROAD) < 5)) continue; }
       let crowd = 0;
       for (let oy = -3; oy <= 3; oy++) for (let ox = -3; ox <= 3; ox++) if (blocked[y + oy]?.[x + ox]) crowd++;
       if (placedLm.some((p) => Math.hypot(p.x - x, p.y - y) < 9)) continue;

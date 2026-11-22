@@ -3,7 +3,8 @@ import { bus } from '../core/bus';
 import { state } from '../core/state';
 import { DISTRICTS, type District } from '../core/types';
 import { DIALOGUES } from '../data/dialogues';
-import { FLYER_LINES, NPCS, PED_LINES, PLAYER_LOOK, type NpcDef } from '../data/npcs';
+import { NPCS, PLAYER_LOOK, type NpcDef } from '../data/npcs';
+import { flyerLine, streetLine } from '../data/chatter';
 import { Pedestrians, type Ped } from '../entities/pedestrians';
 import { Traffic } from '../entities/traffic';
 import { DEBATES, Opposition, type OppConfig } from '../entities/opposition';
@@ -648,7 +649,7 @@ export class WorldScene extends Phaser.Scene {
     const ped = this.nearPed();
     if (ped) {
       ped.pause = 2.5; ped.sprite.setFlipX(this.player.x < ped.sprite.x);
-      this.bubble(ped.sprite, Phaser.Utils.Array.GetRandom(PED_LINES[ped.district]));
+      this.bubble(ped.sprite, streetLine(ped.district));
     }
   }
 
@@ -667,7 +668,7 @@ export class WorldScene extends Phaser.Scene {
       state.apply({ items: { flyers: -1 }, attention: 1, mvar: { flyers: 1 }, inc: { flyers_given: 1 } }, { quiet: true });
       bus.emit('ui:toast', `FLYER HANDED · ${state.count('flyers')} LEFT`);
       bus.emit('flyer:handed');
-      this.bubble(ped.sprite, Phaser.Utils.Array.GetRandom(FLYER_LINES));
+      this.bubble(ped.sprite, flyerLine());
       this.hearts(ped.sprite.x, ped.sprite.y - 40, 3);
       return;
     }

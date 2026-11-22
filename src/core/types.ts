@@ -81,6 +81,8 @@ export interface SaveData {
   activeMission: string | null;
   player: { x: number; y: number; onBike: boolean };
   posters: { x: number; y: number; v: number }[];
+  /** Street chatter already heard, by pool (src/data/chatter.ts), so lines don't repeat */
+  heard?: Record<string, number[]>;
   playTime: number;
   savedAt?: number;
 }
