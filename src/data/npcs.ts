@@ -147,6 +147,8 @@ import { NEIGHBORS } from './neighbors';
 NPCS.push(...NEIGHBORS);
 import { GHOSTS } from './ghosts';
 NPCS.push(...GHOSTS);
+import { VILLAINS } from './villains';
+NPCS.push(...VILLAINS);
 
 export const NPC_BY_ID = Object.fromEntries(NPCS.map((n) => [n.id, n])) as Record<string, NpcDef>;
 

@@ -541,7 +541,7 @@ class UI {
         <h3>BROOKLYN ORG NETWORK</h3><p class="sub">Real Brooklyn nonprofits funded by Brooklyn Org, the borough's community foundation. Finish a mission to meet the groups doing that work for real.</p>${network}
         <h3>POCKET CIVICS</h3><p class="sub">Everything you've learned, in your pocket. Later conversations will test it.</p>${lessons}</div>
       <div class="jcol"><h3>THE MOVEMENT</h3>
-        <div class="stats"><div><b>${d.solidarity}</b><span>Solidarity</span></div><div><b>${d.power}</b><span>Organizing Power</span></div><div><b>${d.attention}</b><span>Public Attention</span></div><div><b>${state.num('flyers_given')}</b><span>Flyers Handed</span></div><div><b>${state.num('posters_up')}</b><span>Posters Up</span></div><div><b>${fmtTime(d.playTime)}</b><span>Time Organizing</span></div></div>
+        <div class="stats"><div><b>${d.solidarity}</b><span>Solidarity</span></div><div><b>${d.power}</b><span>Organizing Power</span></div><div><b>${d.attention}</b><span>Public Attention</span></div><div><b>${state.num('flyers_given')}</b><span>Flyers Handed</span></div><div><b>${state.num('posters_up')}</b><span>Posters Up</span></div><div><b>${state.num('villains_beaten')} / 6</b><span>Villains Beaten</span></div><div><b>${fmtTime(d.playTime)}</b><span>Time Organizing</span></div></div>
         <h3>COMMUNITY TRUST</h3>${trust}
         <h3>PEOPLE</h3><div class="people">${people}</div>
       </div>`;

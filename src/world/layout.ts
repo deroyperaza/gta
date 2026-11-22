@@ -1,6 +1,7 @@
 import type { District } from '../core/types';
 import { NEIGHBOR_AT } from '../data/neighbors';
 import { GHOST_AT } from '../data/ghosts';
+import { VILLAIN_AT } from '../data/villains';
 import { CELLS, GRID, KINDS, LAT_EDGES, LNG_EDGES, NEIGHBORHOODS, PARKNAMES } from './brooklynGrid';
 
 /**
@@ -659,7 +660,7 @@ export function generateLayout(): WorldLayout {
     if (best) spots[key] = best;
   }
   // Neighbors (src/data/neighbors.ts) stand on the nearest open sidewalk to where they really live
-  for (const [key, [la, ln]] of Object.entries(NEIGHBOR_AT)) {
+  for (const [key, [la, ln]] of Object.entries({ ...NEIGHBOR_AT, ...VILLAIN_AT })) { // villains have lairs on real corners too
     const g = geo(la, ln), cx = Math.floor(g.x), cy = Math.floor(g.y);
     let best: Spot | null = null, bd = Infinity;
     for (let dy = -12; dy <= 12; dy++) for (let dx = -12; dx <= 12; dx++) {
