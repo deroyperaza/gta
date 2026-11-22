@@ -5,6 +5,7 @@ import { DISTRICTS, type District, type ItemId } from '../core/types';
 import { ITEMS } from '../data/items';
 import { LESSONS } from '../data/lessons';
 import { GRANTEES } from '../data/grantees';
+import { NONPROFITS, ISSUES } from '../data/nonprofits';
 import { MISSIONS, type MissionDef } from '../data/missions';
 import { NPCS, NPC_BY_ID } from '../data/npcs';
 import { dialogue } from '../systems/dialogue';
@@ -529,21 +530,23 @@ class UI {
       return `<div class="jm ${cls}"><div class="jm-h"><span>${def.side ? 'MEDIATION ·' : '#' + def.number} ${def.title}</span><em>${status}</em></div>${body}</div>`;
     }).join('');
     const trust = (Object.keys(DISTRICTS) as District[]).map((k) => `<div class="bar"><label style="color:${DISTRICTS[k].color}">${DISTRICTS[k].name}</label><div class="track"><i style="width:${(d.trust[k] + 100) / 2}%;background:${DISTRICTS[k].color}"></i></div><b>${d.trust[k]}</b></div>`).join('');
-    const people = NPCS.map((n) => {
+    const people = NPCS.filter((n) => !(n as any).npOrg).map((n) => { // staffers live in the network section
       const met = n.id in d.relationships;
       const r = state.rel(n.id);
       return `<div class="person ${met ? '' : 'unmet'}"><div class="p-h"><b style="color:${n.color}">${met ? n.name : '???'}</b><em>${met ? n.title : DISTRICTS[n.district].name}</em></div>
         ${met ? `<p>${n.bio}</p><div class="track small"><i style="width:${(r + 100) / 2}%;background:${n.color}"></i></div>` : '<p>Haven\'t met yet.</p>'}</div>`;
     }).join('');
-    const known = GRANTEES.filter((g) => g.missions.some((m) => state.mission(m).status === 'complete'));
-    const network = (known.length ? known.map((g) => `<div class="lesson"><b>${g.name}</b><em>${g.funded}</em><p>${g.what}</p></div>`).join('') : '<p>Finish a mission to see who does this work in real life.</p>')
-      + `<p class="sub">${known.length} of ${GRANTEES.length} groups met.</p>`;
+    // Every Brooklyn Org grantee has a staffer on the map; answer "what do we do?" and the group joins your network
+    const known = NONPROFITS.filter((n) => state.flag(`net_${n.id}`));
+    const badges = ISSUES.map((i) => { const all = NONPROFITS.filter((n) => n.issues.includes(i)).length, got = known.filter((n) => n.issues.includes(i)).length; return `<span class="np-badge${got ? ' on' : ''}">${i} <b>${got}/${all}</b></span>`; }).join('');
+    const network = `<p class="sub"><b>${known.length} of ${NONPROFITS.length}</b> groups in your network.</p><div class="np-badges">${badges}</div>`
+      + (known.length ? known.map((g) => `<div class="lesson"><b>${g.org}</b><em>${g.issues.join(' · ')}</em><p>${g.what}</p></div>`).join('') : '<p>Look for people with clipboards and teal name tags. Each one works at a real Brooklyn nonprofit.</p>');
     const earned = Object.entries(LESSONS).filter(([k]) => state.flag(`lesson_${k}`));
     const lessons = (earned.length ? earned.map(([k, l]) => `<div class="lesson"><b>${k}</b><em>from ${l.who}</em><p>${l.text}</p></div>`).join('') : '<p>Nothing yet. Talk to people. They know things.</p>')
       + `<p class="sub">${earned.length} of ${Object.keys(LESSONS).length} learned.</p>`;
     $('#journal .panel-body').innerHTML = `
       <div class="jcol"><h3>MISSIONS</h3>${mrows}
-        <h3>BROOKLYN ORG NETWORK</h3><p class="sub">Real Brooklyn nonprofits funded by Brooklyn Org, the borough's community foundation. Finish a mission to meet the groups doing that work for real.</p>${network}
+        <h3>BROOKLYN ORG NETWORK</h3><p class="sub">All 261 Brooklyn nonprofits funded by Brooklyn Org, the borough's community foundation. Each has someone on the map. Learn what they do and they join your network.</p>${network}
         <h3>POCKET CIVICS</h3><p class="sub">Everything you've learned, in your pocket. Later conversations will test it.</p>${lessons}</div>
       <div class="jcol"><h3>THE MOVEMENT</h3>
         <div class="stats"><div><b>${d.solidarity}</b><span>Solidarity</span></div><div><b>${d.power}</b><span>Organizing Power</span></div><div><b>${d.attention}</b><span>Public Attention</span></div><div><b>${state.num('flyers_given')}</b><span>Flyers Handed</span></div><div><b>${state.num('posters_up')}</b><span>Posters Up</span></div><div><b>${state.num('villains_beaten')} / 6</b><span>Villains Beaten</span></div><div><b>${fmtTime(d.playTime)}</b><span>Time Organizing</span></div></div>

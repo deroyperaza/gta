@@ -153,6 +153,8 @@ import { CAMEOS } from './cameos';
 NPCS.push(...CAMEOS);
 import { BLOCK_FOLK } from './blockfolk';
 NPCS.push(...BLOCK_FOLK);
+import { NONPROFITS } from './nonprofits';
+NPCS.push(...NONPROFITS); // a staffer for every Brooklyn Org grantee
 
 export const NPC_BY_ID = Object.fromEntries(NPCS.map((n) => [n.id, n])) as Record<string, NpcDef>;
 

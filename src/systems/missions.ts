@@ -4,6 +4,7 @@ import { MISSION_BY_ID, type MissionDef } from '../data/missions';
 import { DISTRICTS } from '../core/types';
 import { NPC_BY_ID } from '../data/npcs';
 import { granteesFor } from '../data/grantees';
+import { NONPROFITS, MISSION_ISSUES } from '../data/nonprofits';
 
 /**
  * Data-driven mission runner. Missions are sequences of stages whose
@@ -100,6 +101,15 @@ class MissionSystem {
     }
     const real = granteesFor(def.id);
     if (real.length) lines.push(`IN REAL LIFE · BROOKLYN ORG GRANTEES DOING THIS WORK: ${real.map((g) => g.name.toUpperCase()).join(' · ')}`);
+    { // Your network pays off: every group you know that works on this mission's issues adds Solidarity (up to 10 groups)
+      const issues = new Set(MISSION_ISSUES[def.id] ?? []);
+      if (issues.size) {
+        const known = NONPROFITS.filter((n) => state.flag(`net_${n.id}`) && n.issues.some((i) => issues.has(i)));
+        const bonus = Math.min(known.length, 10) * 15;
+        if (bonus) { state.apply({ solidarity: bonus }, { quiet: true }); lines.push(`YOUR NETWORK · YOU KNOW ${known.length} GROUP${known.length > 1 ? 'S' : ''} WORKING ON ${[...issues].slice(0, 2).join(' & ').toUpperCase()} · +${bonus} SOLIDARITY`); }
+        else lines.push(`YOUR NETWORK · MEET GROUPS WORKING ON ${[...issues].slice(0, 2).join(' & ').toUpperCase()} (TEAL NAME TAGS) FOR A BONUS NEXT TIME`);
+      }
+    }
     bus.emit('mission:passed', { def, lines, toast: reward.toast });
     if (def.side) { // back to the main mission, right where you left it
       const r = state.flag('resume_mission'); delete state.d.flags.resume_mission;

@@ -4,6 +4,7 @@ import { state } from '../core/state';
 import { DISTRICTS, type District } from '../core/types';
 import { DIALOGUES } from '../data/dialogues';
 import { NPCS, PLAYER_LOOK, type NpcDef } from '../data/npcs';
+import { NONPROFITS } from '../data/nonprofits';
 import { flyerLine, pickLine, STREET_LINES, streetLine } from '../data/chatter';
 import { LESSONS } from '../data/lessons';
 import { makeBust } from '../world/portraits';
@@ -101,7 +102,7 @@ export class WorldScene extends Phaser.Scene {
     makeTiles(this); makeVehicles(this); makeStreetProps(this); makeProps(this);
     makeCharacter(this, 'player', PLAYER_LOOK);
     makeBikeRider(this, 'player-bike', PLAYER_LOOK);
-    for (const n of NPCS) makeCharacter(this, `npc-${n.id}`, n.look, !(n as any).blockFolk);
+    for (const n of NPCS) makeCharacter(this, `npc-${n.id}`, n.look, !(n as any).blockFolk && !(n as any).npOrg); // neighbors' and staffers' portraits wait for the first chat
     makeCharacter(this, 'vendor-rosa', { skin: '#c58a5c', hair: '#3a2a1a', style: 'bun', shirt: '#ff8a3d', pants: '#3a2a5a', acc: 'apron', dress: true });
     makeCharacter(this, 'vendor-hamid', { skin: '#a8714a', hair: '#1a1010', style: 'cap', hatColor: '#ff4b4b', shirt: '#fff', pants: '#2b3a6b', acc: 'apron' });
 
@@ -137,6 +138,12 @@ export class WorldScene extends Phaser.Scene {
     bus.on('ui:ride', () => this.rideApp());
     bus.on('event:dragon:quiz', () => this.time.delayedCall(250, () => this.dragonQuiz()));
     bus.on('event:dragon:ride', () => this.startDragon());
+    bus.on('event:network', () => { // a Brooklyn Org grantee joins your network
+      const n = Number(state.flag('network')) || 0, total = NONPROFITS.length;
+      bus.emit('ui:toast', `BROOKLYN ORG NETWORK ${n} / ${total}`);
+      const M: Record<number, number> = { 5: 25, 10: 50, 25: 100, 50: 200, 100: 400, 150: 500, 200: 600, [total]: 1000 };
+      if (M[n]) setTimeout(() => { state.apply({ solidarity: M[n], power: 1 }, { quiet: true }); bus.emit('ui:toast', n === total ? `YOU KNOW ALL ${total}. YOU ARE THE NETWORK. +${M[n]} SOLIDARITY` : `${n} GROUPS IN YOUR NETWORK! +${M[n]} SOLIDARITY`); this.hearts(this.player.x, this.player.y, 10); }, 700);
+    });
     bus.on('event:dragon:miss', () => state.setFlag('dragon_next_at', Date.now() + 20_000));
     bus.on('transit:board', (k: string) => state.apply({ flags: { [`rode_${k}`]: true } }, { quiet: true }));
     this.holdRing = this.add.graphics().setDepth(1e6);
@@ -584,6 +591,7 @@ export class WorldScene extends Phaser.Scene {
 
   // ------------------------------------------------------------------ INTERACTIONS
   private talk(n: NpcDef) {
+    if (!this.textures.exists(`npc-${n.id}-bust`)) makeBust(this, `npc-${n.id}`, n.look); // drawn on first chat
     const spr = this.npcSprites[n.id];
     spr.setFlipX(this.player.x < spr.x);
     const d = DIALOGUES[n.id];

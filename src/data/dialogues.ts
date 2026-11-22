@@ -733,3 +733,5 @@ for (const nb of [...NEIGHBORS, ...GHOSTS, ...CAMEOS]) {
   base.entries.push(...nb.dialogue.entries); // mission/mediation entries (already there) come first
   for (const [k, n] of Object.entries(nb.dialogue.nodes)) base.nodes[k] ??= n;
 }
+import { NONPROFITS } from './nonprofits';
+for (const np of NONPROFITS) DIALOGUES[np.id] ??= np.dialogue; // "what do we do?" with every Brooklyn Org grantee

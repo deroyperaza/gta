@@ -1,0 +1,4530 @@
+[
+{
+"name": "651 ARTS",
+"desc": "Presents contemporary performing arts of the African Diaspora while supporting artists of African descent through performances, residencies, commissions, and cultural exchange programs.",
+"issues": [
+"Arts & Culture",
+"Civic Engagement"
+],
+"locs": [
+"Central Brooklyn",
+"North Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.68675,
+-73.97827
+],
+"src": "https://brooklynbridgeparents.com/new-arts-and-cultural-center-opens-in-downtown-brooklyn/"
+},
+{
+"name": "Access Justice Brooklyn",
+"desc": "Provides high-quality pro-bono housing, family and end-of-life legal services, community legal workshops, and pro-bono training for attorneys and legal interns.",
+"issues": [
+"Health & Well-Being",
+"Older Adults"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "exact",
+"at": [
+40.69784,
+-73.98694
+],
+"src": "990/IRS address"
+},
+{
+"name": "afrolatin@ forum",
+"desc": "Cultivates awareness for Blackness within Latinidad by advancing research, public education, policy advocacy, and community dialogue that elevate the experiences and leadership of Afro-descendant Latinx communities.",
+"issues": [
+"Arts & Culture",
+"Civic Engagement"
+],
+"locs": [
+"Central Brooklyn",
+"East Brooklyn",
+"West Brooklyn"
+],
+"mode": "hood",
+"hood": "Sunset Park",
+"src": "https://www.guidestar.org/profile/26-1087153"
+},
+{
+"name": "After Hours Project",
+"desc": "Addresses the spread of HIV/AIDS in low-income neighborhoods in east Brooklyn through health services, rapid testing, education and counseling, and harm reduction counseling.",
+"issues": [
+"Health & Well-Being",
+"Housing"
+],
+"locs": [
+"Central Brooklyn",
+"North Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.69199,
+-73.92656
+],
+"src": "990/IRS address"
+},
+{
+"name": "Age Friendly Central Brooklyn",
+"desc": "Supports healthy aging and addresses isolation among older adults in Central Brooklyn, including a large community of Black elders, with cultural and social outings, scam-prevention and health education workshops, advocating for safe public transit options, and physical fitness activities like dance and yoga.",
+"issues": [
+"Arts & Culture",
+"Civic Engagement",
+"Health & Well-Being",
+"Older Adults"
+],
+"locs": [
+"Central Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.67867,
+-73.95061
+],
+"src": "990/IRS address"
+},
+{
+"name": "The Alex House Project",
+"desc": "Supports low-income families and new parents to transition to parenthood through education workshops, a two-year in-house job training program, and basic parenting resources.",
+"issues": [
+"Families",
+"Youth"
+],
+"locs": [
+"Central Brooklyn",
+"East Brooklyn",
+"South Brooklyn",
+"West Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.67427,
+-74.00666
+],
+"src": "990/IRS address"
+},
+{
+"name": "Alfreda’s Picture Show",
+"desc": "Operates a micro-cinema in Brooklyn that uplifts filmmakers of color through screenings and fellowships that center historically underrepresented stories.",
+"issues": [
+"Arts & Culture"
+],
+"locs": [
+"Central Brooklyn",
+"East Brooklyn",
+"North Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.65126,
+-73.9156
+],
+"src": "990/IRS address"
+},
+{
+"name": "The Ali Forney Center",
+"desc": "Provides holistic resources and support for LGBTQ+ youth experiencing homelessness, including a 24-hour drop in center, job readiness support, education, health services, and an emergency housing program.",
+"issues": [
+"Health & Well-Being",
+"Housing",
+"Youth"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "region",
+"src": "serves Brooklyn-wide"
+},
+{
+"name": "America on Tech",
+"desc": "Prepares young people of color in underserved communities to be technology leaders through technology courses, mentorship programs, and networking opportunities in order to decrease the economic and racial wealth gap.",
+"issues": [
+"Jobs & Economic Opportunity",
+"Youth"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "exact",
+"at": [
+40.7108,
+-73.96782
+],
+"src": "990/IRS address"
+},
+{
+"name": "Arab American Association of New York",
+"desc": "Supports Arab immigrants with community involvement through adult literacy programs, immigration legal assistance, health and wellbeing support services, and youth programming.",
+"issues": [
+"Civic Engagement",
+"Families",
+"Immigrants",
+"Youth"
+],
+"locs": [
+"West Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.63243,
+-74.02136
+],
+"src": "990/IRS address"
+},
+{
+"name": "Arab-American Family Support Center",
+"desc": "Provides cultural, linguistic, and trauma-informed social services to immigrant and refugee families through adult education, youth enrichment, legal support, mental health counseling, and support enrolling in benefits and navigating critical services.",
+"issues": [
+"Civic Engagement",
+"Families",
+"Health & Well-Being",
+"Housing",
+"Immigrants",
+"Youth"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "exact",
+"at": [
+40.68892,
+-73.99282
+],
+"src": "990/IRS address"
+},
+{
+"name": "Arthur Ashe Institute for Urban Health",
+"desc": "Advances health equity in Brooklyn through community education, research, and workforce training, including a barbershop and salon initiative that connects residents to trusted health information while building pathways into healthcare careers.",
+"issues": [
+"Health & Well-Being",
+"Jobs & Economic Opportunity"
+],
+"locs": [
+"Central Brooklyn",
+"East Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.65567,
+-73.94495
+],
+"src": "990/IRS address"
+},
+{
+"name": "Arts & Democracy",
+"desc": "Brings artists, organizers, and policymakers together through workshops, learning exchanges, convenings, and partnerships that use arts and culture as tools for civic engagement and social justice.",
+"issues": [
+"Arts & Culture",
+"Civic Engagement"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "exact",
+"at": [
+40.6733,
+-73.97617
+],
+"src": "990/IRS address"
+},
+{
+"name": "Asian American Federation",
+"desc": "Improves the well-being of the pan-Asian American community – especially older adults, small business owners, and immigrants – through research, policy advocacy, public awareness, and capacity-building for nonprofits.",
+"issues": [
+"Civic Engagement",
+"Civil Rights",
+"Immigrants",
+"Older Adults"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "exact",
+"at": [
+40.70472,
+-74.0067
+],
+"src": "990/IRS address"
+},
+{
+"name": "Asiyah Women’s Center",
+"desc": "Provides emergency shelter, advocacy, and mental health and housing support for survivors of domestic violence from Arab, Middle Eastern, Muslim, and South Asian communities in Brooklyn. The center delivers culturally sensitive survivor-led care using a model built on community trust, partnerships with local mosques and organizers, and pathways that help families move from crisis to safety, healing, and leadership.",
+"issues": [
+"Civil Rights",
+"Families",
+"Health & Well-Being",
+"Housing",
+"Immigrants",
+"Justice Reform"
+],
+"locs": [
+"South Brooklyn",
+"West Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.61776,
+-74.01991
+],
+"src": "990/IRS address"
+},
+{
+"name": "Autistic Adults NYC",
+"desc": "Creates connection and belonging for Autistic adults through free, Autistic-led social gatherings, workshops, and support groups across Brooklyn, from plant identification walks in Prospect Park to the annual Autistic Pride Day.",
+"issues": [
+"Health & Well-Being"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "exact",
+"at": [
+40.72875,
+-73.95916
+],
+"src": "990/IRS address"
+},
+{
+"name": "The B.R.O. Experience Foundation",
+"desc": "Offers trauma-informed mentorship and healing programs that help Black and Latino young men in Bed-Stuy, Brownsville, and Bushwick build emotional resilience and leadership skills. Through summer camps, rites of passage groups, fatherhood workshops, and facilitated spaces for reflection and connection, The B.R.O. Experience Foundation supports young people in building coping skills, stronger relationships, and a sense of purpose.",
+"issues": [
+"Arts & Culture",
+"Civil Rights",
+"Families",
+"Health & Well-Being",
+"Youth"
+],
+"locs": [
+"Central Brooklyn",
+"East Brooklyn",
+"North Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.69989,
+-73.94135
+],
+"src": "https://www.thebroexperience.org/contact"
+},
+{
+"name": "BADA Community Development Corporation",
+"desc": "Empowers BIPOC transgender individuals through a 17-week Future Entrepreneurs Empowerment Program offering business training, legal aid, mentorship, and wellness resources at Brooklyn Community Pride Center.",
+"issues": [
+"Civil Rights",
+"Health & Well-Being",
+"Jobs & Economic Opportunity"
+],
+"locs": [
+"Central Brooklyn"
+],
+"mode": "region",
+"src": "serves Central Brooklyn"
+},
+{
+"name": "Bed-Stuy Restoration",
+"desc": "Expands economic opportunity in Central Brooklyn through workforce development, financial empowerment, and community-based programming, connecting residents to careers in growing industries including energy.",
+"issues": [
+"Environmental Justice",
+"Housing",
+"Jobs & Economic Opportunity"
+],
+"locs": [
+"Central Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.68014,
+-73.94598
+],
+"src": "https://restorationplaza.org/contact-us/"
+},
+{
+"name": "The Billie Holiday Theatre",
+"desc": "Creates space for Black cultural preservation with artists, young people, and audiences in Bed-Stuy through theater, education, and public programs that connect performance with civic dialogue and community life.",
+"issues": [
+"Arts & Culture",
+"Civil Rights",
+"Families"
+],
+"locs": [
+"North Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.68014,
+-73.94598
+],
+"src": "990/IRS address"
+},
+{
+"name": "Black Diaspora Liberty Initiative",
+"desc": "Provides transitional housing, legal and mental health referrals, leadership training, and political education for Black LGBTQ+ immigrants while organizing advocacy campaigns for immigrant and LGBTQ+ rights.",
+"issues": [
+"Civil Rights",
+"Immigrants"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "hood",
+"hood": "Crown Heights",
+"src": "https://brooklyn.org/brooklyn-org-events/"
+},
+{
+"name": "The Black Institute",
+"desc": "Develops action-focused research and policy advocacy that centers the experience of BIPOC communities to help shape public discourse around public education, the environment, immigration, and economics.",
+"issues": [
+"Civic Engagement",
+"Civil Rights",
+"Environmental Justice",
+"Immigrants",
+"Jobs & Economic Opportunity",
+"Justice Reform"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "exact",
+"at": [
+40.70647,
+-74.01284
+],
+"src": "990/IRS address"
+},
+{
+"name": "Black Trans Femmes in the Arts",
+"desc": "Supports Black trans femme artists in Brooklyn through community-led programming, event production, and mutual aid that meet both creative and material needs. By offering residencies, emergency grants, free studio space, and public platforms for performance and storytelling—from ballroom events to a hit YouTube series—BTFA invests directly in artists and the sustainability of their creative lives.",
+"issues": [
+"Arts & Culture",
+"Civil Rights",
+"Health & Well-Being",
+"Jobs & Economic Opportunity"
+],
+"locs": [
+"Central Brooklyn",
+"North Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.69785,
+-73.96948
+],
+"src": "990/IRS address"
+},
+{
+"name": "Black Veterans for Social Justice",
+"desc": "Supports veterans with housing assistance, financial coaching, food access, and help navigating complex government benefits, ensuring Black veterans and veteran families of all backgrounds across Brooklyn receive comprehensive and dignified care.",
+"issues": [
+"Health & Well-Being",
+"Housing",
+"Jobs & Economic Opportunity"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "exact",
+"at": [
+40.69469,
+-73.94257
+],
+"src": "990/IRS address"
+},
+{
+"name": "BloomAgainBklyn",
+"desc": "Combats social isolation and loneliness by giving older adults recycled flower arrangements and fosters community dialogue through weekly floral wellness workshops for children and businesses.",
+"issues": [
+"Arts & Culture",
+"Older Adults"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "exact",
+"at": [
+40.68474,
+-73.99904
+],
+"src": "990/IRS address"
+},
+{
+"name": "The Brave House",
+"desc": "Supports young immigrant women and girls transitioning to life in the US through peer mentorship, legal advocacy, mental health support, job programs, and parenting assistance to bolster their independence.",
+"issues": [
+"Immigrants",
+"Youth"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "exact",
+"at": [
+40.7083,
+-74.01445
+],
+"src": "990/IRS address"
+},
+{
+"name": "Breaking Ground",
+"desc": "Strengthens communities by developing and sustaining supportive and affordable housing and provides formerly unhoused New Yorkers with supportive and transitional housing.",
+"issues": [
+"Housing",
+"Older Adults"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "exact",
+"at": [
+40.69992,
+-73.98771
+],
+"src": "https://www.breakingground.org/our-housing/90-sands"
+},
+{
+"name": "BRIC Arts Media",
+"desc": "Anchors Brooklyn’s arts and media community through exhibitions, performances, community storytelling initiatives, media education, community television, civic programs, and Celebrate Brooklyn!, one of the city’s longest-running free outdoor performing arts festivals.",
+"issues": [
+"Arts & Culture",
+"Jobs & Economic Opportunity"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "exact",
+"at": [
+40.68828,
+-73.97918
+],
+"src": "990/IRS address"
+},
+{
+"name": "Bridge Street Development Corporation",
+"desc": "Supports Central Brooklyn homeowners and renters with housing stability services, providing hands-on guidance to access energy efficiency programs, navigate rebates, and make informed home retrofit decisions.",
+"issues": [
+"Health & Well-Being",
+"Older Adults"
+],
+"locs": [
+"Central Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.6832,
+-73.95022
+],
+"src": "990/IRS address"
+},
+{
+"name": "Brooklyn Arts and Culture Kollective (BACK)",
+"desc": "Works collaboratively as a coalition of Brooklyn arts and cultural leaders to strengthen the borough’s creative ecosystem through shared advocacy, fundraising, strategic planning, and collective support for Black-led cultural institutions.",
+"issues": [
+"Arts & Culture"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "region",
+"src": "https://brooklyn.org/article/brooklyn-orgs-brooklyn-backs-brooklyn-campaign-bolsters-cultural-institutions-with-matching-grants-and-investment-in-their-leadership/"
+},
+{
+"name": "Brooklyn Arts Council",
+"desc": "Invests in Brooklyn’s artists and small arts organizations through grants, arts education, professional development, and cultural programs that help creative communities across the borough grow.",
+"issues": [
+"Arts & Culture"
+],
+"locs": [
+"North Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.68675,
+-73.97827
+],
+"src": "990/IRS address"
+},
+{
+"name": "Brooklyn Arts Exchange (BAX)",
+"desc": "Supports dance, theater, and multidisciplinary artists through youth arts education, artist residencies, space grants, performances, affordable rehearsal space in Park Slope and Fort Greene, and collaborative programs rooted in artistic experimentation and social justice.",
+"issues": [
+"Arts & Culture"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "exact",
+"at": [
+40.6698,
+-73.98569
+],
+"src": "https://www.bax.org/space/bax-spaces/"
+},
+{
+"name": "Brooklyn Ballet",
+"desc": "Expands access to ballet by creating opportunities for Brooklynites of all backgrounds to study, perform, and engage with dance through contemporary repertory, professional performances, and dance education programs that bring ballet into Brooklyn schools, studios, and community spaces.",
+"issues": [
+"Arts & Culture",
+"Youth"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "exact",
+"at": [
+40.68939,
+-73.98726
+],
+"src": "990/IRS address"
+},
+{
+"name": "Brooklyn Book Bodega",
+"desc": "Provides access to and ownership of books, builds community, and creates a passion for learning in Brooklyn, aiming to increase the number of 100+ book homes for kids 0-18 in NYC. Bringing neighbors together through free events and literacy-based community programming, they partner with volunteers who bring books to places where they live, work, and play. Brooklyn Book Bodega collaborates with local educators, city officials, and community-based organizations to ensure that literacy is layered into social and family services.",
+"issues": [
+"Arts & Culture",
+"Families",
+"Youth"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "exact",
+"at": [
+40.69785,
+-73.96948
+],
+"src": "990/IRS address"
+},
+{
+"name": "Brooklyn Caribbean Literary Festival",
+"desc": "Showcases Caribbean writers and storytelling traditions through public literary events, workshops, literary prizes, and a podcast archive to amplify Caribbean voices across Brooklyn and the diaspora.",
+"issues": [
+"Arts & Culture"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "hood",
+"at": [
+40.66025,
+-73.94938
+],
+"src": "home or PO address: neighborhood only"
+},
+{
+"name": "Brooklyn Children’s Museum",
+"desc": "Serves hundreds of thousands of children and caregivers annually through hands-on exhibits and programs that bring together artmaking, play, science exploration, music, cultural collections, and immersive exhibitions at the world’s first children’s museum, founded in Brooklyn in 1899.",
+"issues": [
+"Arts & Culture",
+"Youth"
+],
+"locs": [
+"Brooklyn-wide",
+"Central Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.67485,
+-73.94439
+],
+"src": "990/IRS address"
+},
+{
+"name": "Brooklyn College Community Partnership",
+"desc": "Connects Brooklyn College with the broader community through a youth development program that co-creates a safe space for personal development and community empowerment through college access, STEAM, and health and wellness programs.",
+"issues": [
+"Youth"
+],
+"locs": [
+"Central Brooklyn",
+"East Brooklyn",
+"North Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.69199,
+-73.96176
+],
+"src": "990/IRS address"
+},
+{
+"name": "Brooklyn Community Housing & Services",
+"desc": "Provides transitional and permanent housing and holistic services to domestic violence survivors, unhoused older adults, veterans, justice-involved individuals, and low-income adults.",
+"issues": [
+"Health & Well-Being",
+"Housing"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "exact",
+"at": [
+40.69459,
+-73.97311
+],
+"src": "990/IRS address"
+},
+{
+"name": "Brooklyn Community Kitchen",
+"desc": "Prepares and serves free weekly meals for food-insecure and unhoused Brooklyn residents, using donated produce and creating a welcoming community gathering space while reducing food waste.",
+"issues": [
+"Health & Well-Being"
+],
+"locs": [
+"North Brooklyn"
+],
+"mode": "hood",
+"at": [
+40.64098,
+-73.99733
+],
+"src": "home or PO address: neighborhood only"
+},
+{
+"name": "Brooklyn Community Pride Center",
+"desc": "Advances lesbian, gay, bisexual, trans and queer liberation by celebrating, commemorating, and convening LGBTQ+ Brooklyn through socially conscious and culturally responsive programs, partnerships, and advocacy.",
+"issues": [
+"Health & Well-Being",
+"Older Adults"
+],
+"locs": [
+"Central Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.66883,
+-73.95566
+],
+"src": "990/IRS address"
+},
+{
+"name": "Brooklyn Debate League",
+"desc": "Expands access to speech and debate for NYC public school students by building school-based teams, offering training, tournaments, and summer programs, and preparing young people from underrepresented communities to compete and shape conversations on public issues.",
+"issues": [
+"Arts & Culture",
+"Civic Engagement",
+"Civil Rights",
+"Youth"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "exact",
+"at": [
+40.67227,
+-73.96087
+],
+"src": "990/IRS address"
+},
+{
+"name": "Brooklyn Defender Services",
+"desc": "Represents Brooklyn residents in criminal and family court while providing wraparound immigration and civil legal services, pairing public defense representation with advocacy work to protect families and address the ripple effects of involvement in the criminal legal system.",
+"issues": [
+"Civil Rights",
+"Families",
+"Immigrants",
+"Justice Reform"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "exact",
+"at": [
+40.69008,
+-73.98674
+],
+"src": "990/IRS address"
+},
+{
+"name": "Brooklyn Emerge",
+"desc": "Elevates the prospects of low-income immigrants, youth, and minority religious groups through equitable access to education, resources, and advocacy, including meal share organizing, digital literacy programming, and more.",
+"issues": [
+"Health & Well-Being"
+],
+"locs": [
+"Central Brooklyn",
+"East Brooklyn",
+"South Brooklyn",
+"West Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.63378,
+-73.96716
+],
+"src": "990/IRS address"
+},
+{
+"name": "Brooklyn FAM: Festival of Arts and Music",
+"desc": "Brings Brooklyn neighbors together across cultures through intergenerational arts festivals, open mics, and art-making workshops, including its flagship festival in Sunset Park, where communities share their own stories to build understanding and challenge racism.",
+"issues": [
+"Arts & Culture",
+"Families",
+"Immigrants"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "exact",
+"at": [
+40.66131,
+-73.9558
+],
+"src": "990/IRS address"
+},
+{
+"name": "Brooklyn Level Up",
+"desc": "Builds housing stability and community power through resident-led organizing, energy access clinics, and hands-on support that helps neighbors navigate retrofit programs, reduce energy costs, and map local infrastructure needs.",
+"issues": [
+"Housing",
+"Older Adults",
+"Youth"
+],
+"locs": [
+"East Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.6364,
+-73.94503
+],
+"src": "990/IRS address"
+},
+{
+"name": "Brooklyn Movement Center",
+"desc": "Invests in Brooklyn’s Black communities by creating quality job opportunities, expanding health and housing access, improving the quality of schools and education, and putting an end to policing and incarceration through public policy and holding leaders accountable.",
+"issues": [
+"Civic Engagement",
+"Civil Rights",
+"Housing",
+"Justice Reform"
+],
+"locs": [
+"Central Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.68133,
+-73.93166
+],
+"src": "990/IRS address"
+},
+{
+"name": "Brooklyn Rescue Mission Urban Harvest Center",
+"desc": "Combines a grocery-style pantry, benefits outreach, and community farming initiatives to strengthen neighborhood food access, empower residents to steward land and resources, and transform the local food system in Bedford-Stuyvesant.",
+"issues": [
+"Health & Well-Being"
+],
+"locs": [
+"North Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.68152,
+-73.92677
+],
+"src": "990/IRS address"
+},
+{
+"name": "Brooklyn Youth Company",
+"desc": "Offers free theater training for young artists ages 10–18 through its Summer Arts Intensive, where youth create original plays drawn from Brooklyn history, take cultural field trips, and perform free shows for their communities.",
+"issues": [
+"Arts & Culture",
+"Families",
+"Youth"
+],
+"locs": [
+"East Brooklyn"
+],
+"mode": "hood",
+"at": [
+40.67727,
+-73.98249
+],
+"src": "home or PO address: neighborhood only"
+},
+{
+"name": "Brownsville Community Culinary Center (BCCC)",
+"desc": "Increases access to healthy food, nutritional education, and career and personal development opportunities, and provides free, culinary vocational training to Brownsville residents through its culinary training program. The Center’s multi-week culinary workshops provide neighborhood youth with the opportunity to learn culinary skills alongside industry professionals. And it provides a safe, comfortable space where neighbors can access fresh, healthy, affordable, culturally relevant foods.",
+"issues": [
+"Health & Well-Being",
+"Jobs & Economic Opportunity",
+"Youth"
+],
+"locs": [
+"East Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.66888,
+-73.90773
+],
+"src": "https://www.thebccc.org/press-and-media"
+},
+{
+"name": "Building Beats",
+"desc": "Provides DJ and Digital Music Production programs that teach entrepreneurial, leadership, and life skills to underserved youth so that they can become self-sufficient creative producers.",
+"issues": [
+"Arts & Culture",
+"Youth"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "exact",
+"at": [
+40.72465,
+-73.95671
+],
+"src": "990/IRS address"
+},
+{
+"name": "Bushwick Housing Independence Project",
+"desc": "Provides grassroots housing advocacy to defend low-income residents from displacement and promote equitable development in Bushwick, a rapidly gentrifying community.",
+"issues": [
+"Housing"
+],
+"locs": [
+"North Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.70028,
+-73.92661
+],
+"src": "990/IRS address"
+},
+{
+"name": "CABS Health Network",
+"desc": "Provides personal care, home health, and housekeeping services through a care management approach to older adults and residents with disabilities in Bedford-Stuyvesant.",
+"issues": [
+"Health & Well-Being",
+"Housing",
+"Older Adults"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "exact",
+"at": [
+40.69994,
+-73.9482
+],
+"src": "https://www.linkedin.com/company/cabshomecare"
+},
+{
+"name": "The Campaign Against Hunger",
+"desc": "Expands food access through a city-wide pantry network, home grocery delivery, and community farms that double as job training sites, supporting low-income families and communities disproportionately impacted by food insecurity.",
+"issues": [
+"Environmental Justice",
+"Health & Well-Being",
+"Jobs & Economic Opportunity",
+"Older Adults",
+"Youth"
+],
+"locs": [
+"Central Brooklyn",
+"North Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.6786,
+-73.91781
+],
+"src": "990/IRS address"
+},
+{
+"name": "Caribbean Women’s Health Association",
+"desc": "Supports new mothers and their infants in an effort to reduce infant mortality and improve maternal and infant health outcomes through community-based activities for populations disproportionately affected by poor birth, infant and health outcomes.",
+"issues": [
+"Families",
+"Health & Well-Being",
+"Immigrants",
+"Jobs & Economic Opportunity"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "exact",
+"at": [
+40.65101,
+-73.94459
+],
+"src": "990/IRS address"
+},
+{
+"name": "CaringKind",
+"desc": "Delivers and promotes comprehensive care and support services for individuals and families affected by Alzheimer’s disease and related dementias, and advances research to eliminate Alzheimer’s disease.",
+"issues": [
+"Health & Well-Being",
+"Older Adults"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "region",
+"src": "serves Brooklyn-wide"
+},
+{
+"name": "Carroll Gardens Association",
+"desc": "Builds domestic worker and nanny coalitions in Park Slope and Carroll Gardens to advocate for fair wages and labor rights, providing trainings and certifications and strengthening worker protections with community-led solutions and affordable housing.",
+"issues": [
+"Civic Engagement",
+"Housing",
+"Immigrants",
+"Jobs & Economic Opportunity"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "exact",
+"at": [
+40.68522,
+-74.00253
+],
+"src": "990/IRS address"
+},
+{
+"name": "CASA-NYC",
+"desc": "Ensures that young people involved in the NYC child welfare system have their needs met and rights protected through personalized case management with social workers, attorneys, and volunteer advocates.",
+"issues": [
+"Youth"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "exact",
+"at": [
+40.70639,
+-74.0094
+],
+"src": "990/IRS address"
+},
+{
+"name": "Center for Community Alternatives",
+"desc": "Supports justice-involved individuals with reentering their communities through workforce programs, advocacy, and public policy development in pursuit of civil and human rights.",
+"issues": [
+"Justice Reform",
+"Youth"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "exact",
+"at": [
+40.69732,
+-73.98655
+],
+"src": "990/IRS address"
+},
+{
+"name": "Center for Family Life in Sunset Park",
+"desc": "Serves as a trusted Sunset Park hub for culturally responsive services by pairing counseling and cultural programming with employment support, benefits access, emergency food services, and school-based youth and family programming for immigrant communities.",
+"issues": [
+"Families",
+"Immigrants",
+"Youth"
+],
+"locs": [
+"West Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.65209,
+-74.00515
+],
+"src": "990/IRS address"
+},
+{
+"name": "Center for Law and Social Justice",
+"desc": "Provides legal advocacy, conducts community education campaigns, facilitates research, and builds organizing capacity on behalf of Black New Yorkers and other marginalized groups.",
+"issues": [
+"Civic Engagement",
+"Civil Rights"
+],
+"locs": [
+"Central Brooklyn",
+"East Brooklyn"
+],
+"mode": "region",
+"src": "serves Central Brooklyn, East Brooklyn"
+},
+{
+"name": "Center for NuLeadership on Human Justice and Healing",
+"desc": "Combats mass incarceration by developing land and home ownership opportunities, community-led education, participatory research design, policy development, community organizing and training, and more.",
+"issues": [
+"Justice Reform"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "exact",
+"at": [
+40.69989,
+-73.94135
+],
+"src": "990/IRS address"
+},
+{
+"name": "Center for Urban Pedagogy",
+"desc": "Collaborates with people impacted by public policies and systems of power to create accessible visual materials like flyers and graphic road maps that help communities access services, claim their rights, and fight for change.",
+"issues": [
+"Arts & Culture",
+"Civic Engagement",
+"Youth"
+],
+"locs": [
+"North Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.67486,
+-73.9877
+],
+"src": "990/IRS address"
+},
+{
+"name": "Central Asian Foundation",
+"desc": "Equips Central Asian immigrants with legal support, education and workforce training, youth programs, and social services that ease their transition to life in the United States.",
+"issues": [
+"Immigrants",
+"Jobs & Economic Opportunity"
+],
+"locs": [
+"South Brooklyn",
+"West Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.63222,
+-73.9739
+],
+"src": "990/IRS address"
+},
+{
+"name": "Children’s Defense Fund-New York",
+"desc": "Champions policies and programs that lift children out of poverty, protect them from abuse and neglect, and ensure their access to healthcare and quality education.",
+"issues": [
+"Youth"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "region",
+"src": "serves Brooklyn-wide"
+},
+{
+"name": "Churches United For Fair Housing",
+"desc": "Works towards housing justice and community empowerment through political organizing, youth engagement, and social services, especially for low-income immigrant communities of color.",
+"issues": [
+"Civic Engagement",
+"Housing",
+"Immigrants",
+"Jobs & Economic Opportunity",
+"Youth"
+],
+"locs": [
+"Brooklyn-wide",
+"North Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.69989,
+-73.94135
+],
+"src": "990/IRS address"
+},
+{
+"name": "The Circle Keepers",
+"desc": "Prepares young people to run restorative justice circles that address school conflicts before they escalate, teaching peer facilitation, mediation, and accountability; and builds youth voice to advocate for citywide education policies.",
+"issues": [
+"Arts & Culture",
+"Civic Engagement",
+"Civil Rights",
+"Youth"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "exact",
+"at": [
+40.72047,
+-74.00106
+],
+"src": "990/IRS address"
+},
+{
+"name": "Community Counseling and Mediation",
+"desc": "Provides a wide range of social support, counseling, health, mental health, education, and supportive housing services to historically-underserved children, youth, and families.",
+"issues": [
+"Health & Well-Being"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "exact",
+"at": [
+40.68987,
+-73.98417
+],
+"src": "990/IRS address"
+},
+{
+"name": "Community Help in Park Slope (CHiPS)",
+"desc": "Fosters a welcoming space for people experiencing food insecurity by serving hot meals at its location on 4th Avenue, and running pantry and breakfast programs. All CHiPS food services maintain a policy of feeding “anyone who comes to our door,” without asking for any form of identification or “proof of need.” They also created and operate the long-standing Frances Residence, which provides fully furnished studio apartments to single, expectant, and new mothers and their young children.",
+"issues": [
+"Health & Well-Being",
+"Housing"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "exact",
+"at": [
+40.67819,
+-73.9826
+],
+"src": "https://www.findhelp.org/community-help-in-park-slope,-inc.-(chips)--brooklyn-ny--the-chips-soup-kitchen/6052896554614784?postal=11201"
+},
+{
+"name": "Como un lugar",
+"desc": "Organizes poetry festivals, multilingual poetry workshops, and open-access publishing projects that connect Latin American poets and immigrant artists across Brooklyn and the Global South.",
+"issues": [
+"Arts & Culture",
+"Immigrants"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "hood",
+"hood": "Park Slope",
+"src": "https://www.clmp.org/readers/publisher/como-un-lugar/"
+},
+{
+"name": "Coney Island Anti Violence Collaborative",
+"desc": "Strives to reduce violence and trauma in Coney Island, from gun-related violence to domestic violence and impacts of COVID-19 through healing programming and community partnerships.",
+"issues": [
+"Youth"
+],
+"locs": [
+"South Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.57655,
+-73.98492
+],
+"src": "990/IRS address"
+},
+{
+"name": "Coney Island Lighthouse Mission",
+"desc": "Provides a vital safety net in Coney Island by delivering reliable food pantry services for thousands of families each month, while also offering benefits navigation and afterschool support for children in a community with limited nearby services.",
+"issues": [
+"Families",
+"Health & Well-Being",
+"Immigrants",
+"Older Adults",
+"Youth"
+],
+"locs": [
+"South Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.5762,
+-73.98815
+],
+"src": "https://www.findhelp.org/the-coney-island-lighthouse-mission--brooklyn-ny--food-pantry-program/5699219971112960?postal=11201"
+},
+{
+"name": "Cool Culture",
+"desc": "Provides thousands of low-income families passes for unlimited free access to dozens of cultural institutions citywide—museums, history and science centers, zoos, and more—and hosts neighborhood “Culture Clubs,” where families can experience and create art, connecting with educators and artists.",
+"issues": [
+"Arts & Culture",
+"Civic Engagement",
+"Families",
+"Youth"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "exact",
+"at": [
+40.68544,
+-73.97441
+],
+"src": "990/IRS address"
+},
+{
+"name": "Council of Peoples Organization",
+"desc": "Supports South Brooklyn’s immigrant, South Asian, and Muslim families with case management that connects neighbors to benefits, emergency food, and mental health services, alongside immigration legal support and ESL and citizenship classes.",
+"issues": [
+"Civic Engagement",
+"Families",
+"Health & Well-Being",
+"Immigrants",
+"Older Adults"
+],
+"locs": [
+"Brooklyn-wide",
+"South Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.63123,
+-73.96642
+],
+"src": "990/IRS address"
+},
+{
+"name": "Crown Heights CARE Collective",
+"desc": "Strengthens and expands block associations across Crown Heights through organizing support, public summits, and an online directory to foster safer, more connected neighborhoods.",
+"issues": [
+"Civil Rights",
+"Health & Well-Being"
+],
+"locs": [
+"Central Brooklyn"
+],
+"mode": "hood",
+"hood": "Crown Heights",
+"src": "https://x.com/chcarecollectiv"
+},
+{
+"name": "Crown Heights North Association",
+"desc": "Organizes Crown Heights North residents around historic preservation, housing advocacy, and neighborhood beautification, while offering yoga and social activities for older adults and multicultural holiday events for children and families.",
+"issues": [
+"Civic Engagement",
+"Housing",
+"Older Adults"
+],
+"locs": [
+"Central Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.67223,
+-73.94581
+],
+"src": "990/IRS address"
+},
+{
+"name": "Cultural Heritage and Identity through Food and Nutrition",
+"desc": "Introduces young Brooklyn students to culturally relevant nutrition education through sensory-based lessons and bilingual take-home handouts that celebrate family food traditions and spark conversations about health and heritage at home.",
+"issues": [
+"Arts & Culture",
+"Health & Well-Being",
+"Youth"
+],
+"locs": [
+"South Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.60116,
+-73.98217
+],
+"src": "990/IRS address"
+},
+{
+"name": "Cypress Hills Local Development Corporation",
+"desc": "Serves as an essential neighborhood anchor in Cypress Hills and East New York, connecting families to childcare, youth programming, food access, and health supports through community centers and place-based services that reduce gaps in the local safety net.",
+"issues": [
+"Families",
+"Health & Well-Being",
+"Older Adults",
+"Youth"
+],
+"locs": [
+"East Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.68591,
+-73.88119
+],
+"src": "990/IRS address"
+},
+{
+"name": "Day One New York",
+"desc": "Partners with youth to end dating abuse and domestic violence through preventive education, supportive services, legal advocacy and leadership development, and counseling.",
+"issues": [
+"Families",
+"Health & Well-Being",
+"Youth"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "region",
+"src": "serves Brooklyn-wide"
+},
+{
+"name": "Destiny Helpers Outreach",
+"desc": "Engages youth in Ocean Hill, Brownsville, and East New York through mentorship, arts programming, and leadership initiatives like Mr. & Ms. Teen Destiny Changer NYC, alongside back-to-school resource fairs and food distributions in neighborhood parks.",
+"issues": [
+"Arts & Culture",
+"Health & Well-Being",
+"Youth"
+],
+"locs": [
+"East Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.63937,
+-73.90491
+],
+"src": "990/IRS address"
+},
+{
+"name": "Documented",
+"desc": "Publishes community-led journalism for and about immigrants across New York City to advocate for immigrant rights through policy change, demands for accountability, and research.",
+"issues": [
+"Civic Engagement",
+"Families",
+"Immigrants",
+"Jobs & Economic Opportunity",
+"Justice Reform"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "exact",
+"at": [
+40.67789,
+-73.95725
+],
+"src": "990/IRS address"
+},
+{
+"name": "The Door",
+"desc": "Encourages young people to reach their potential by providing comprehensive youth development services, including youth leadership, arts and recreation, mental and physical health, and housing services.",
+"issues": [
+"Health & Well-Being",
+"Housing",
+"Justice Reform",
+"Youth"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "region",
+"src": "https://www.door.org/locations/"
+},
+{
+"name": "The Doula Program",
+"desc": "Strives to minimize isolation and loneliness for people who are dying and facing the end of their lives alone by matching them with doulas who provide weekly end-of-life care.",
+"issues": [
+"Families",
+"Health & Well-Being",
+"Older Adults"
+],
+"locs": [
+"North Brooklyn",
+"West Brooklyn"
+],
+"mode": "region",
+"src": "https://www.guidestar.org/profile/46-1117388"
+},
+{
+"name": "Drive Change",
+"desc": "Provides formerly incarcerated young people with four-month paid learning and skills-building fellowships that equip them with the tools to succeed in the food service industry and become leaders in their community.",
+"issues": [
+"Jobs & Economic Opportunity",
+"Youth"
+],
+"locs": [
+"Central Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.69994,
+-73.9482
+],
+"src": "990/IRS address"
+},
+{
+"name": "East New York Community Land Trust",
+"desc": "Secures community ownership of housing and land to fight displacement in East New York, with resident-led organizing and advocacy that aims to foster long-term neighborhood stability.",
+"issues": [
+"Environmental Justice",
+"Health & Well-Being",
+"Housing",
+"Older Adults"
+],
+"locs": [
+"East Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.67969,
+-73.88525
+],
+"src": "https://legistar.council.nyc.gov/View.ashx?G=2FD004F1-D85B-4588-A648-0A736C77D6E3&GUID=569AE8AE-8242-4636-94E4-3606D2508498&ID=14979685&M=F"
+},
+{
+"name": "Educational Video Center",
+"desc": "Teaches and mobilizes young people to channel their creativity to produce media through documentary workshops and professional development.",
+"issues": [
+"Arts & Culture",
+"Youth"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "exact",
+"at": [
+40.72934,
+-74.00596
+],
+"src": "990/IRS address"
+},
+{
+"name": "Envision Freedom Fund",
+"desc": "Works to end immigration detention and pretrial jailing, freeing people through bond payments, supporting them after release, and building power in the communities most impacted by the criminal legal system.",
+"issues": [
+"Civic Engagement",
+"Civil Rights",
+"Immigrants",
+"Justice Reform"
+],
+"locs": [
+"Brooklyn-wide",
+"North Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.69131,
+-73.99151
+],
+"src": "https://envisionfreedom.org/contact-us/"
+},
+{
+"name": "Expecting Relief",
+"desc": "Combines direct aid and maternal health advocacy to meet immediate needs and address systemic inequities impacting families in East New York, providing essentials like food, menstrual supplies, and diapers through their Diaper Bank.",
+"issues": [
+"Families",
+"Health & Well-Being",
+"Immigrants",
+"Older Adults"
+],
+"locs": [
+"East Brooklyn",
+"North Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.67917,
+-73.89537
+],
+"src": "990/IRS address"
+},
+{
+"name": "Families and Friends of the Wrongfully Convicted",
+"desc": "Works to end wrongful convictions by advocating for policy reform, supporting exonerees and their families with casework, and building a fairer criminal justice system rooted in racial justice and equity.",
+"issues": [
+"Civic Engagement",
+"Civil Rights",
+"Families",
+"Jobs & Economic Opportunity",
+"Justice Reform"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "exact",
+"at": [
+40.67812,
+-73.95898
+],
+"src": "https://projects.propublica.org/nonprofits/organizations/844884133"
+},
+{
+"name": "The Family Center",
+"desc": "Supports families and children affected by crisis, illness, or loss through legal support for custody and eviction, HIV/AIDS prevention services, and mental health services.",
+"issues": [
+"Families",
+"Health & Well-Being",
+"Immigrants",
+"Older Adults",
+"Youth"
+],
+"locs": [
+"Central Brooklyn",
+"North Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.68046,
+-73.9495
+],
+"src": "990/IRS address"
+},
+{
+"name": "FentCheck",
+"desc": "Works to decrease the number of accidental drug overdoses by providing life-saving resources like Fentanyl Test Strips and NARCAN through collaborations with nightlife, social clubs, and schools across New York City.",
+"issues": [
+"Health & Well-Being"
+],
+"locs": [
+"North Brooklyn"
+],
+"mode": "hood",
+"hood": "Williamsburg",
+"src": "https://fentcheck.org/"
+},
+{
+"name": "Fifth Avenue Committee",
+"desc": "Combines organizing, advocacy, and direct services to promote equitable and affordable housing, with programs that include financial coaching, free tax preparation, and support navigating government assistance and benefits for low- and moderate- income communities.",
+"issues": [
+"Civic Engagement",
+"Health & Well-Being",
+"Housing",
+"Older Adults"
+],
+"locs": [
+"West Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.67883,
+-73.98238
+],
+"src": "990/IRS address"
+},
+{
+"name": "First Tech Fund",
+"desc": "Equalizes the academic and professional playing field for low-income high school students by providing them with access to free technology and internet access, mentorship, and a digital skills curriculum.",
+"issues": [
+"Jobs & Economic Opportunity",
+"Youth"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "hood",
+"at": [
+40.69099,
+-73.93567
+],
+"src": "home or PO address: neighborhood only"
+},
+{
+"name": "Flanbwayan Haitian Literacy Project",
+"desc": "Supports Haitian immigrant youth in New York City through educational assistance, leadership development, community-building opportunities and partnerships with local schools and cultural organizations.",
+"issues": [
+"Arts & Culture",
+"Immigrants",
+"Youth"
+],
+"locs": [
+"Central Brooklyn",
+"East Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.65523,
+-73.96082
+],
+"src": "990/IRS address"
+},
+{
+"name": "Flatbush Development Corporation",
+"desc": "Helps Flatbush and East Flatbush families weather rising costs by offering emergency food assistance, benefits and case management support, tenant organizing through the Flatbush Tenant Coalition, and small business help that strengthens local stability.",
+"issues": [
+"Families",
+"Health & Well-Being",
+"Housing",
+"Older Adults",
+"Youth"
+],
+"locs": [
+"Central Brooklyn",
+"East Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.63598,
+-73.96225
+],
+"src": "990/IRS address"
+},
+{
+"name": "Flex Dance Program",
+"desc": "Helps young people impacted by the justice system build self-esteem, cooperation, and communication skills through FlexN street dance, using movement as a tool for self-expression and an alternative to conflict.",
+"issues": [
+"Arts & Culture",
+"Health & Well-Being",
+"Youth"
+],
+"locs": [
+"Central Brooklyn",
+"East Brooklyn",
+"North Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.7146,
+-73.9617
+],
+"src": "990/IRS address"
+},
+{
+"name": "The Flossy Organization",
+"desc": "Builds local leadership in Canarsie through political education, engaging youth and older adults, and partnerships that push for community-led solutions to gun violence, underfunded services, and environmental harm to improve quality of life in the neighborhood.",
+"issues": [
+"Civic Engagement",
+"Older Adults",
+"Youth"
+],
+"locs": [
+"East Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.63829,
+-73.91627
+],
+"src": "990/IRS address"
+},
+{
+"name": "Footsteps",
+"desc": "Supports and affirms individuals and families who have left, or are contemplating leaving, ultra-Orthodox Jewish communities in order to lead self-determined lives through social services and educational workshops.",
+"issues": [
+"Youth"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "exact",
+"at": [
+40.70771,
+-74.00591
+],
+"src": "990/IRS address"
+},
+{
+"name": "For The Better Inc.",
+"desc": "Cultivates youth health ambassadors through nutrition education, cooking classes, fitness programs, and community wellness events that support healthier lifestyles across Brooklyn neighborhoods.",
+"issues": [
+"Health & Well-Being",
+"Youth"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "exact",
+"at": [
+40.61474,
+-73.92549
+],
+"src": "990/IRS address"
+},
+{
+"name": "Fort Greene Park Conservancy",
+"desc": "Stewards Fort Greene Park as a public space where neighbors gather, connect, and enjoy nature through arts, wellness, and environmental programs, youth internships, and community partnerships.",
+"issues": [
+"Arts & Culture",
+"Environmental Justice",
+"Health & Well-Being",
+"Jobs & Economic Opportunity",
+"Youth"
+],
+"locs": [
+"North Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.68702,
+-73.97352
+],
+"src": "990/IRS address"
+},
+{
+"name": "Freedom To Thrive",
+"desc": "Strives to abolish the punishment-based carceral systems that disproportionately affect BIPOC and immigrant communities by organizing, creating strategic partnerships, and convening shared learning spaces.",
+"issues": [
+"Civic Engagement",
+"Immigrants"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "region",
+"src": "https://www.brooklyncommunityfoundation.org/grant-recipients/freedom-thrive"
+},
+{
+"name": "Friends of Abolitionist Place",
+"desc": "Expands Mama Joy Abolitionist Walking Tours to celebrate Downtown Brooklyn’s Black liberation history and advances plans to establish an Abolitionist Heritage Center.",
+"issues": [
+"Families"
+],
+"locs": [
+"East Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.67581,
+-73.93145
+],
+"src": "990/IRS address"
+},
+{
+"name": "Friends of Saratoga Park BedStuy",
+"desc": "Transforms Saratoga Park, one of Bed-Stuy’s only large green spaces, into a year-round community hub with beautification projects, fashion and arts showcases, wellness programs, and activities for neighbors of all ages.",
+"issues": [
+"Environmental Justice",
+"Families",
+"Health & Well-Being"
+],
+"locs": [
+"Central Brooklyn",
+"North Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.68473,
+-73.92044
+],
+"src": "https://www.eventbrite.com/o/friends-of-saratoga-park-bedstuy-69745121093"
+},
+{
+"name": "GayRidge",
+"desc": "Creates a joyful, inclusive Queer Prom where LGBTQ+ people of all ages can safely dance, celebrate, and connect in a space that affirms their identities.",
+"issues": [
+"Arts & Culture",
+"Civil Rights"
+],
+"locs": [
+"South Brooklyn",
+"West Brooklyn"
+],
+"mode": "hood",
+"hood": "Bay Ridge",
+"src": "https://www.brooklynpaper.com/gayridge-bay-ridge-pride-event/"
+},
+{
+"name": "Genspace NYC",
+"desc": "Provides hands-on STEAM education programs for youth and adults, public cultural and outreach events, and a membership program for creatives, researchers, and entrepreneurs.",
+"issues": [
+"Youth"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "exact",
+"at": [
+40.65704,
+-74.00303
+],
+"src": "990/IRS address"
+},
+{
+"name": "Girl Be Heard",
+"desc": "Inspires girls and young women to be leaders, changemakers, and activists through socially conscious theater making, storytelling, and performance that develop, amplify, and celebrate their voices.",
+"issues": [
+"Arts & Culture",
+"Youth"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "exact",
+"at": [
+40.70419,
+-73.98665
+],
+"src": "990/IRS address"
+},
+{
+"name": "Girls for Gender Equity",
+"desc": "Ensures that NYC youth have a safe place to achieve academic excellence, be community leaders, and maintain healthy lifestyles, and strives to eliminate sex discrimination through community organizing.",
+"issues": [
+"Civil Rights",
+"Youth"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "exact",
+"at": [
+40.69732,
+-73.98655
+],
+"src": "990/IRS address"
+},
+{
+"name": "Global Trauma Research",
+"desc": "Provides accessible, culturally responsive, and trauma-informed mental health and education services to immigrants and underserved residents, including crisis intervention and harm reduction for those struggling with substance misuse.",
+"issues": [
+"Health & Well-Being",
+"Immigrants"
+],
+"locs": [
+"Central Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.62795,
+-73.94702
+],
+"src": "990/IRS address"
+},
+{
+"name": "Good Call",
+"desc": "Provides immediate access to legal support through a 24/7 hotline that connects people to attorneys after arrest, offering early intervention that improves case outcomes while building youth leadership and advancing policies that disrupt cycles of incarceration.",
+"issues": [
+"Civic Engagement",
+"Civil Rights",
+"Justice Reform",
+"Youth"
+],
+"locs": [
+"Brooklyn-wide",
+"Central Brooklyn",
+"North Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.69225,
+-73.98619
+],
+"src": "990/IRS address"
+},
+{
+"name": "Good Co. Cares",
+"desc": "Makes cycling more accessible to underrepresented riders through hands-on bike education, youth Build-A-Bike programs, community rides, equipment giveaways, and advocacy for safer streets and protected bike lanes.",
+"issues": [
+"Health & Well-Being",
+"Jobs & Economic Opportunity"
+],
+"locs": [
+"Central Brooklyn",
+"East Brooklyn",
+"North Brooklyn"
+],
+"mode": "hood",
+"hood": "Prospect Lefferts Gardens",
+"src": "https://goodcocares.org"
+},
+{
+"name": "Gowanus Mutual Aid",
+"desc": "Builds a network of mutual aid support among neighbors through free grocery and produce distributions, supply drives, cash assistance, and direct services for Gowanus and nearby NYCHA residents.",
+"issues": [
+"Civic Engagement",
+"Environmental Justice",
+"Health & Well-Being",
+"Older Adults"
+],
+"locs": [
+"West Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.68229,
+-73.98807
+],
+"src": "https://www.signupgenius.com/go/10C0E4EAAA728A0F4C52-gowanus"
+},
+{
+"name": "Green City Force",
+"desc": "Engages young adults from public housing in service and training programs focused on sustainability, clean energy, and environmental justice, preparing them for careers in the green economy.",
+"issues": [
+"Environmental Justice",
+"Jobs & Economic Opportunity",
+"Youth"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "exact",
+"at": [
+40.69994,
+-73.9482
+],
+"src": "990/IRS address"
+},
+{
+"name": "Green Guerillas",
+"desc": "Utilizes education, organizing and advocacy to help people cultivate community gardens, sustain grassroots groups, grow food, and address critical issues in food justice and urban agriculture.",
+"issues": [
+"Environmental Justice",
+"Jobs & Economic Opportunity",
+"Youth"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "exact",
+"at": [
+40.73081,
+-73.98756
+],
+"src": "990/IRS address"
+},
+{
+"name": "GRIOT Circle",
+"desc": "Builds community for LGBTQ+ older adults of color with a welcoming space, culturally sensitive services, and member-centered programs that address physical and mental health, create opportunities to socialize, and provide life-affirming caregiving assistance.",
+"issues": [
+"Health & Well-Being",
+"Older Adults"
+],
+"locs": [
+"Central Brooklyn",
+"West Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.68849,
+-73.98055
+],
+"src": "990/IRS address"
+},
+{
+"name": "Groundswell Community Mural Project",
+"desc": "Provides youth with arts education and development opportunities by engaging them in mural projects via school-based and studio programs rooted in social justice and community care.",
+"issues": [
+"Arts & Culture",
+"Youth"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "exact",
+"at": [
+40.67734,
+-73.98508
+],
+"src": "990/IRS address"
+},
+{
+"name": "Grow Brooklyn",
+"desc": "Supports homeowners at risk of displacement in maintaining stable homeownership through legal services, housing counseling, and financial support, including guidance to access energy efficiency resources and manage rising housing costs.",
+"issues": [
+"Families",
+"Housing",
+"Jobs & Economic Opportunity"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "exact",
+"at": [
+40.69903,
+-73.91564
+],
+"src": "990/IRS address"
+},
+{
+"name": "GrowHouse NYC",
+"desc": "Builds Black people’s capacity to become developers of their communities through collective ownership of their artistic production, neighborhood real estate and land, businesses, and cultural institutions.",
+"issues": [
+"Arts & Culture",
+"Youth"
+],
+"locs": [
+"Central Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.66883,
+-73.95566
+],
+"src": "990/IRS address"
+},
+{
+"name": "Haiti Cultural Exchange",
+"desc": "Strengthens Brooklyn’s Haitian cultural community by supporting Haitian artists, presenting public programs, and creating opportunities for families and neighbors to gather around Haitian art, history, and traditions.",
+"issues": [
+"Arts & Culture"
+],
+"locs": [
+"Brooklyn-wide",
+"Central Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.68694,
+-73.9777
+],
+"src": "990/IRS address"
+},
+{
+"name": "Haitian Women for Haitian Refugees",
+"desc": "Supports Haitian immigrants and refugees via legal and social services referrals, case management, language classes, Know Your Rights trainings, leadership opportunities, and organizing to build connections and community.",
+"issues": [
+"Civic Engagement",
+"Health & Well-Being",
+"Immigrants",
+"Jobs & Economic Opportunity"
+],
+"locs": [
+"Central Brooklyn",
+"South Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.64326,
+-73.94758
+],
+"src": "990/IRS address"
+},
+{
+"name": "The Hannah Legacy",
+"desc": "Creates opportunities for individuals and families from disenfranchised communities to succeed through workforce development and trainings, community safety programs, and familial support.",
+"issues": [
+"Health & Well-Being"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "region",
+"src": "https://www.insidephilanthropy.com/find-a-grant-places/new-york-grants/brooklyn-community-foundation"
+},
+{
+"name": "HealthJox Foundation",
+"desc": "Provides young people in under-resourced communities with mental health and sports programs, creative arts and career training initiatives, and neighborhood festivals and resource giveaways that foster positive pathways.",
+"issues": [
+"Health & Well-Being",
+"Youth"
+],
+"locs": [
+"East Brooklyn",
+"North Brooklyn",
+"South Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.66568,
+-73.92233
+],
+"src": "990/IRS address"
+},
+{
+"name": "Heart, Body & Soul",
+"desc": "Advances health equity for Black men through community health festivals, screenings, wellness conversations, and educational events that connect men with healthcare providers and resources.",
+"issues": [
+"Health & Well-Being"
+],
+"locs": [
+"Central Brooklyn",
+"East Brooklyn",
+"North Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.66642,
+-73.95429
+],
+"src": "990/IRS address"
+},
+{
+"name": "HEAT Program",
+"desc": "Supports young people who are at risk or living with HIV/AIDS by providing a unique health and mental health program to remove the barriers that often prevent youth from accessing health care.",
+"issues": [
+"Health & Well-Being",
+"Youth"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "exact",
+"at": [
+40.65567,
+-73.94495
+],
+"src": "990/IRS address"
+},
+{
+"name": "Heights and Hills",
+"desc": "Provides services that address the needs of older adults as they age to improve their health, well-being, financial security, and physical safety, and to prevent social isolation.",
+"issues": [
+"Health & Well-Being",
+"Older Adults"
+],
+"locs": [
+"Central Brooklyn",
+"East Brooklyn",
+"North Brooklyn",
+"West Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.69225,
+-73.98619
+],
+"src": "990/IRS address"
+},
+{
+"name": "Homecrest Community Services",
+"desc": "Provides nutritious meals, wellness programming, cultural activities, and civic engagement events at older adult centers while advocating for language access, healthcare, and housing older adults in South Brooklyn.",
+"issues": [
+"Arts & Culture",
+"Civic Engagement",
+"Families",
+"Health & Well-Being",
+"Immigrants",
+"Older Adults"
+],
+"locs": [
+"South Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.60106,
+-73.95765
+],
+"src": "990/IRS address"
+},
+{
+"name": "Hook Arts Media",
+"desc": "Connects young people in transfer high schools and Red Hook community programs to arts, media, and technology training that builds creative skills, digital literacy, and pathways to college and careers.",
+"issues": [
+"Arts & Culture",
+"Youth"
+],
+"locs": [
+"West Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.67467,
+-74.01614
+],
+"src": "990/IRS address"
+},
+{
+"name": "The HOPE Program",
+"desc": "Provides comprehensive job training, career readiness, and employment placement services for New Yorkers facing barriers to work, with growing pathways into energy and infrastructure sectors.",
+"issues": [
+"Environmental Justice",
+"Jobs & Economic Opportunity"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "exact",
+"at": [
+40.69138,
+-73.98731
+],
+"src": "990/IRS address"
+},
+{
+"name": "HousingPlus",
+"desc": "Provides women and families with housing and comprehensive support and case management through housing and justice initiatives, including an alternative to detention for women at Rikers Island",
+"issues": [
+"Health & Well-Being",
+"Housing"
+],
+"locs": [
+"Central Brooklyn",
+"East Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.67794,
+-73.88355
+],
+"src": "990/IRS address"
+},
+{
+"name": "Ifetayo Cultural Arts Academy",
+"desc": "Serves as a cultural hub for Black families in Central Brooklyn through Africana-centered arts education, rites of passage programming, and holistic youth development rooted in the traditions of the African diaspora.",
+"issues": [
+"Arts & Culture",
+"Families",
+"Youth"
+],
+"locs": [
+"Central Brooklyn",
+"East Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.64015,
+-73.94353
+],
+"src": "990/IRS address"
+},
+{
+"name": "Iglesia Cristiana Pentecostal Movimiento Las Maravillas del Éxodo",
+"desc": "Feeds hundreds of East Brooklyn families each week through a neighborhood food pantry offering weekly food distributions, emergency food assistance, and community outreach.",
+"issues": [
+"Civic Engagement",
+"Health & Well-Being",
+"Older Adults"
+],
+"locs": [
+"East Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.67589,
+-73.88402
+],
+"src": "https://directory.plentiful.org/new-york/brooklyn/las-maravillas-del-exodo-225f9d76"
+},
+{
+"name": "Imani’s Safehouse",
+"desc": "Supports women and girls impacted by violence and incarceration through housing and benefits navigation, direct aid, and survivor-informed policy advocacy.",
+"issues": [
+"Families",
+"Justice Reform"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "region",
+"src": "serves Brooklyn-wide"
+},
+{
+"name": "Immigrant Children Advocates' Relief Effort (ICARE)",
+"desc": "Connects unaccompanied immigrant children to legal and social services through a citywide referral network while leading rapid-response advocacy, policy monitoring, and court support that safeguard young people facing deportation.",
+"issues": [
+"Immigrants",
+"Youth"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "region",
+"src": "https://www.icarecoalition.org/"
+},
+{
+"name": "ImmSchools",
+"desc": "Partners with school districts, schools, and educational organizations to provide high-quality programming co-created with undocumented and mixed-status students and families to establish schools as a safe haven for these groups.",
+"issues": [
+"Families",
+"Immigrants",
+"Youth"
+],
+"locs": [
+"Central Brooklyn",
+"East Brooklyn"
+],
+"mode": "hood",
+"hood": "East Flatbush",
+"src": "https://www.guidestar.org/profile/82-3350805"
+},
+{
+"name": "IMPACCT Brooklyn",
+"desc": "Builds and preserves affordable housing in Central Brooklyn through community development and tenant organizing, including developing new units and supporting resident-led associations that help long-term residents remain in their homes.",
+"issues": [
+"Housing",
+"Jobs & Economic Opportunity"
+],
+"locs": [
+"Central Brooklyn",
+"East Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.67789,
+-73.95725
+],
+"src": "990/IRS address"
+},
+{
+"name": "IntegrateNYC",
+"desc": "Engages young people in youth leadership councils and campaigns against racist educational practices in order to repair the harms of segregation and achieve authentic integration and equity.",
+"issues": [
+"Civic Engagement",
+"Youth"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "exact",
+"at": [
+40.72934,
+-73.99337
+],
+"src": "990/IRS address"
+},
+{
+"name": "Isabahlia Ladies Of Elegance Foundation",
+"desc": "Expands a Healthy Food Fair Festival in Brownsville with cooking demos, produce giveaways, and nutrition education to fight food-related diseases in the community.",
+"issues": [
+"Jobs & Economic Opportunity"
+],
+"locs": [
+"East Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.66684,
+-73.914
+],
+"src": "990/IRS address"
+},
+{
+"name": "It’s All Love Assisting Through Action",
+"desc": "Distributes nutritious food through mobile pantry programs that remove transportation barriers and serve Brooklyn families, youth, and older adults with dignity, as a “pantry without borders.”",
+"issues": [
+"Families",
+"Health & Well-Being",
+"Older Adults"
+],
+"locs": [
+"Central Brooklyn",
+"North Brooklyn"
+],
+"mode": "hood",
+"at": [
+40.68245,
+-73.98503
+],
+"src": "home or PO address: neighborhood only"
+},
+{
+"name": "Jamel Gaines Creative Outlet",
+"desc": "Creates dance-theater performances and arts education programs that connect Brooklyn youth and communities to Black history, social justice, and professional training in the arts.",
+"issues": [
+"Arts & Culture",
+"Justice Reform",
+"Youth"
+],
+"locs": [
+"Central Brooklyn",
+"East Brooklyn",
+"North Brooklyn",
+"West Brooklyn"
+],
+"mode": "hood",
+"at": [
+40.68515,
+-73.9733
+],
+"src": "home or PO address: neighborhood only"
+},
+{
+"name": "Jews for Racial and Economic Justice",
+"desc": "Organizes Jewish communities to advocate for housing justice, migrant rights, caregiver support, and to challenge systemic racism through grassroots campaigns, political education, direct action, and strategic partnerships.",
+"issues": [
+"Civic Engagement",
+"Health & Well-Being",
+"Justice Reform",
+"Older Adults"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "exact",
+"at": [
+40.69609,
+-73.96757
+],
+"src": "990/IRS address"
+},
+{
+"name": "JMACforFamilies",
+"desc": "Uses advocacy, storytelling, and programs that promote healing and reduce harm in order to dismantle the family policing system, especially policies that discriminate against birthing people who use substances.",
+"issues": [
+"Families",
+"Health & Well-Being"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "exact",
+"at": [
+40.68459,
+-73.9094
+],
+"src": "https://jmacforfamilies.org/st-thomas-closet"
+},
+{
+"name": "JobsFirstNYC",
+"desc": "Creates and advances localized solutions rooted in policies and practices that equip young adults with pathways to secondary education, career opportunities, and financial success.",
+"issues": [
+"Jobs & Economic Opportunity",
+"Youth"
+],
+"locs": [
+"Central Brooklyn",
+"East Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.71285,
+-74.00821
+],
+"src": "990/IRS address"
+},
+{
+"name": "Kings Against Violence Initiative (KAVI)",
+"desc": "Addresses violence as a public health issue through hospital, school, and community-based programs, including bedside intervention for survivors of violence, restorative justice programs in schools, and youth leadership initiatives that help young people heal from trauma and lead community safety efforts.",
+"issues": [
+"Health & Well-Being",
+"Justice Reform",
+"Youth"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "exact",
+"at": [
+40.65577,
+-73.94523
+],
+"src": "990/IRS address"
+},
+{
+"name": "Kindred Bakery",
+"desc": "Offers pathways to culinary careers for neurodivergent teens for through baking programs that blend STEAM learning, problem-solving, and building emotional resilience with mentorship and hands-on job experience.",
+"issues": [
+"Families",
+"Health & Well-Being",
+"Jobs & Economic Opportunity",
+"Youth"
+],
+"locs": [
+"Central Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.65301,
+-73.95887
+],
+"src": "https://www.kindredbakerybk.org/"
+},
+{
+"name": "Lantern Community Services",
+"desc": "Offers supportive housing, emergency shelter, and wraparound services to New Yorkers threatened with homelessness, in order to level the playing field for those who face housing instability, health disparities, and barriers to education, employment, self-sufficiency and wellness.",
+"issues": [
+"Health & Well-Being",
+"Housing"
+],
+"locs": [
+"Central Brooklyn",
+"North Brooklyn"
+],
+"mode": "region",
+"src": "serves Central Brooklyn, North Brooklyn"
+},
+{
+"name": "Laundry Workers Center",
+"desc": "Organizes low-wage immigrant workers in food service, laundry, and warehouse jobs to fight wage theft, unsafe housing, and workplace exploitation.",
+"issues": [
+"Families",
+"Immigrants",
+"Jobs & Economic Opportunity"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "exact",
+"at": [
+40.7064,
+-74.01272
+],
+"src": "990/IRS address"
+},
+{
+"name": "LiveOn NY",
+"desc": "Mobilizes a membership network of over 100 aging and senior service organizations to strengthen services older New Yorkers rely on—from senior centers and home-delivered meals to caregiver support and affordable housing—while advocating for city and state funding that helps Brooklyn elders age equitably and with dignity.",
+"issues": [
+"Civic Engagement",
+"Civil Rights",
+"Health & Well-Being",
+"Housing",
+"Older Adults"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "region",
+"src": "https://www.liveon-ny.org/contact"
+},
+{
+"name": "Loving You Into Freedom",
+"desc": "Supports individuals and families impacted by incarceration through reentry coaching, family reunification services, mentorship programs for youth, and legal and workforce resources that promote healing and long-term stability.",
+"issues": [
+"Families",
+"Justice Reform"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "hood",
+"at": [
+40.69262,
+-73.99102
+],
+"src": "home or PO address: neighborhood only"
+},
+{
+"name": "The Marcy Lab School",
+"desc": "Trains low-income young adults for high-paying careers in tech through an alternative education model focused on software engineering and data analytics, with expanding opportunities tied to energy and infrastructure innovation.",
+"issues": [
+"Jobs & Economic Opportunity"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "exact",
+"at": [
+40.65763,
+-74.00463
+],
+"src": "https://www.marcylabschool.org/program"
+},
+{
+"name": "Mark Morris Dance Group",
+"desc": "Creates and presents acclaimed dance, music, and opera works while serving Brooklyn through accessible dance education, community programs, and performances at the Mark Morris Dance Center in Downtown Brooklyn.",
+"issues": [
+"Arts & Culture"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "exact",
+"at": [
+40.68679,
+-73.97889
+],
+"src": "990/IRS address"
+},
+{
+"name": "May Day Space",
+"desc": "Operates a community center and hub for grassroots organizing and education with programming that includes healing clinics, colllaborative art projects, concerts and film screenings, political teach-ins, language classes, and food distribution.",
+"issues": [
+"Arts & Culture",
+"Civic Engagement",
+"Environmental Justice"
+],
+"locs": [
+"North Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.70415,
+-73.91606
+],
+"src": "https://maydayspace.wordpress.com/spaces/"
+},
+{
+"name": "Meals for Unity",
+"desc": "Distributes free meals through volunteer-led food distributions and restaurant partnerships that address food insecurity and support Asian American and Pacific Islander seniors across New York City.",
+"issues": [
+"Immigrants",
+"Older Adults"
+],
+"locs": [
+"West Brooklyn"
+],
+"mode": "region",
+"src": "serves West Brooklyn"
+},
+{
+"name": "Mexican Coalition",
+"desc": "Provides Latinx community members with language classes, citizenship classes, health services, and legal services to assist them in achieving their full civic, cultural, and political integration into American society.",
+"issues": [
+"Families",
+"Health & Well-Being",
+"Immigrants",
+"Jobs & Economic Opportunity"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "region",
+"src": "serves Brooklyn-wide"
+},
+{
+"name": "Mindfulness & S.T.E.A.M. Lab",
+"desc": "Cultivates joyful, healing-centered learning environments for BIPOC and immigrant youth in NYC public school through programs integrating mindfulness, social-emotional learning, wellness education, and hands-on STEAM education.",
+"issues": [
+"Health & Well-Being",
+"Youth"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "exact",
+"at": [
+40.64039,
+-73.89168
+],
+"src": "990/IRS address"
+},
+{
+"name": "Mixteca",
+"desc": "Provides Mexican and Latin American immigrants with a wide range of services spanning migrant rights, economic justice, mental health, and health and wellness, and encourages community organizing and civic engagement to help immigrants establish sustainable themselves socially and economically.",
+"issues": [
+"Civic Engagement",
+"Families",
+"Health & Well-Being",
+"Immigrants",
+"Jobs & Economic Opportunity",
+"Older Adults"
+],
+"locs": [
+"Brooklyn-wide",
+"West Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.66011,
+-73.99427
+],
+"src": "990/IRS address"
+},
+{
+"name": "Multiculture Center Kaleidoscope",
+"desc": "Teaches children and youth multicultural folk dance through year-round classes, leadership programs, and free public performances in South Brooklyn parks, including its annual Dance Under the Sky street festival that features 20+ folk dance groups in Brighton Beach every year.",
+"issues": [
+"Arts & Culture",
+"Families",
+"Immigrants"
+],
+"locs": [
+"South Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.57957,
+-73.95969
+],
+"src": "990/IRS address"
+},
+{
+"name": "Muscle Inspires New Empowerment",
+"desc": "Harnesses trauma-informed strength training to help survivors of gender-based violence rebuild physical health, reclaim agency over their bodies, and connect with a supportive community through guided weightlifting.",
+"issues": [
+"Health & Well-Being"
+],
+"locs": [
+"Central Brooklyn",
+"North Brooklyn",
+"South Brooklyn"
+],
+"mode": "hood",
+"at": [
+40.67824,
+-73.87793
+],
+"src": "home or PO address: neighborhood only"
+},
+{
+"name": "Museum of Contemporary African Diasporan Art (MoCADA)",
+"desc": "Celebrates contemporary art from Africa and its diaspora through exhibitions, public programs, education, and community events that connect art with social justice and neighborhood life.",
+"issues": [
+"Arts & Culture",
+"Families",
+"Jobs & Economic Opportunity"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "exact",
+"at": [
+40.68675,
+-73.97827
+],
+"src": "https://artguide.artforum.com/venue/museum-of-contemporary-african-diasporan-art-5286/"
+},
+{
+"name": "Muslim Community Network",
+"desc": "Provides civic engagement workshops for women, mentorship programs for justice-involved youth, and public education classes to Muslim Americans and people of all faiths to demonstrate the complexity of and to enhance the Muslim American experience.",
+"issues": [
+"Civic Engagement",
+"Civil Rights",
+"Immigrants"
+],
+"locs": [
+"Central Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.70477,
+-74.00675
+],
+"src": "990/IRS address"
+},
+{
+"name": "Myrtle Avenue Brooklyn Partnership",
+"desc": "Fosters an inclusive vibrant community anchored in Brooklyn’s Myrtle Avenue through partnerships, community capacity building, and connecting neighbors to resources and opportunities like older adult-friendly programming and fresh pantries.",
+"issues": [
+"Health & Well-Being",
+"Jobs & Economic Opportunity",
+"Older Adults"
+],
+"locs": [
+"Central Brooklyn",
+"West Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.69333,
+-73.96643
+],
+"src": "https://myrtleavenue.org/about/contact/"
+},
+{
+"name": "Ñaños in Action",
+"desc": "Connects Ecuadorian and Latino immigrants to healthcare, housing, legal, and education resources while offering newcomer support, older adult engagement programs, and cultural workshops that strengthen community connection.",
+"issues": [
+"Health & Well-Being",
+"Immigrants"
+],
+"locs": [
+"East Brooklyn",
+"North Brooklyn"
+],
+"mode": "hood",
+"hood": "Bushwick",
+"src": "https://taxexemptworld.com/organizations/ridgewood_ny_11385.asp"
+},
+{
+"name": "Naturally Occurring Cultural Districts NY",
+"desc": "Builds community power through arts and culture by organizing artists, businesses, and neighborhood leaders into neighborhood-based cultural councils, delivering multilingual programming, festivals, and peer learning exchanges that support local artists and nurture creative and cultural ecosystems at a neighborhood level.",
+"issues": [
+"Arts & Culture",
+"Civic Engagement",
+"Families",
+"Immigrants"
+],
+"locs": [
+"Brooklyn-wide",
+"West Brooklyn"
+],
+"mode": "hood",
+"at": [
+40.66744,
+-73.97458
+],
+"src": "home or PO address: neighborhood only"
+},
+{
+"name": "Neighborhood Housing Services of Brooklyn (NHS)",
+"desc": "Creates and preserves affordable housing through homeownership education, financial assistance, foreclosure/eviction prevention counseling and support, and property management services for residents in underserved neighborhoods including East Flatbush and Canarsie.",
+"issues": [
+"Housing"
+],
+"locs": [
+"East Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.65067,
+-73.95125
+],
+"src": "https://www.ehomeamerica.org/nhsbrooklyn"
+},
+{
+"name": "Neighbors in Action",
+"desc": "Provides Bedford Stuyvesant and Crown Heights community members with a hub where they can seek resolutions for interpersonal conflict and be connected with resources that promote safety, healing, and wellness, with programs that range from anti-gun violence work to youth services.",
+"issues": [
+"Health & Well-Being",
+"Justice Reform",
+"Youth"
+],
+"locs": [
+"Central Brooklyn"
+],
+"mode": "region",
+"src": "serves Central Brooklyn"
+},
+{
+"name": "New Sanctuary Coalition",
+"desc": "Mobilizes volunteers and faith communities to support immigrants facing detention and deportation through court accompaniment, legal clinics, rapid response to ICE activity, and community organizing.",
+"issues": [
+"Civil Rights",
+"Immigrants"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "exact",
+"at": [
+40.69005,
+-73.98901
+],
+"src": "990/IRS address"
+},
+{
+"name": "New York Communities for Change",
+"desc": "Equips Brooklyn residents with policy and community education programs, leadership training, and financial services to tackle housing, economic, and environmental injustices across Flatbush, East New York, Brownsville, and beyond.",
+"issues": [
+"Civil Rights",
+"Environmental Justice",
+"Immigrants",
+"Jobs & Economic Opportunity",
+"Older Adults",
+"Youth"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "exact",
+"at": [
+40.68366,
+-73.96802
+],
+"src": "990/IRS address"
+},
+{
+"name": "New York Immigration Coalition",
+"desc": "Builds collective power for immigrant communities by coordinating a statewide network of over 200 immigrant and refugee rights groups advancing campaigns for access to representation, expanded healthcare coverage, and lasting protections for Brooklyn residents facing rising enforcement and instability.",
+"issues": [
+"Civic Engagement",
+"Civil Rights",
+"Immigrants"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "region",
+"src": "serves Brooklyn-wide"
+},
+{
+"name": "New York State Youth Leadership Council",
+"desc": "Guides immigrant youth through leadership development, grassroots organizing, educational advancement, and opportunities for self-expression that give them the tools to organize and create change in their communities.",
+"issues": [
+"Civic Engagement",
+"Immigrants",
+"Youth"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "exact",
+"at": [
+40.71951,
+-73.99884
+],
+"src": "990/IRS address"
+},
+{
+"name": "North Brooklyn Mutual Aid",
+"desc": "Builds neighbor-to-neighbor support across Greenpoint and Williamsburg by maintaining community fridges, coordinating food rescue and compost collection, and caring for shared green spaces like the McCarren Park Demonstration Garden.",
+"issues": [
+"Civic Engagement",
+"Environmental Justice",
+"Health & Well-Being"
+],
+"locs": [
+"North Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.71885,
+-73.94856
+],
+"src": "https://northbrooklynmutualaid.org/McCarren-Demonstration-Garden"
+},
+{
+"name": "The NY Birth Control Access Project",
+"desc": "Equips young people to expand access to birth control and reproductive options in Brooklyn and statewide through legislative training, work on college campuses, and paid professional development that prepares them for public service careers.",
+"issues": [
+"Civic Engagement",
+"Health & Well-Being",
+"Youth"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "hood",
+"at": [
+40.71344,
+-73.96727
+],
+"src": "home or PO address: neighborhood only"
+},
+{
+"name": "NYC Together",
+"desc": "Engages youth in alternative-to-suspension programming, quarterly education days, and collaborations with NYPD officers to increase public safety and reduce youth violence and justice involvement",
+"issues": [
+"Health & Well-Being"
+],
+"locs": [
+"East Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.72991,
+-73.95789
+],
+"src": "990/IRS address"
+},
+{
+"name": "NYC Trans Archives",
+"desc": "Preserves transgender history and culture by collecting community archives, including zines, flyers, and other ephemera often excluded from traditional institutions, and hosting public programs that explore trans activism, scholarship, and cultural legacies.",
+"issues": [
+"Arts & Culture"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "hood",
+"hood": "Bedford-Stuyvesant",
+"src": "https://transarchives.org/support/"
+},
+{
+"name": "Octavia Project",
+"desc": "Equips girls and gender-expansive youth of color with opportunities to explore STEM, art, and writing through summer camps, afterschool programs, and workshops rooted in Afrofuturism and creative expression.",
+"issues": [
+"Youth"
+],
+"locs": [
+"Central Brooklyn"
+],
+"mode": "region",
+"src": "serves Central Brooklyn"
+},
+{
+"name": "Opening Act",
+"desc": "Provides underserved youth of color across 55 New York City schools with high quality theater after-school and extracurricular programming to gain confidence and pride.",
+"issues": [
+"Arts & Culture",
+"Youth"
+],
+"locs": [
+"Central Brooklyn",
+"East Brooklyn",
+"North Brooklyn"
+],
+"mode": "region",
+"src": "serves Central Brooklyn, East Brooklyn, North Brooklyn"
+},
+{
+"name": "The Opportunity Hub",
+"desc": "Runs a community center that connects residents of the Starrett City and East New York area to career prep, benefits counseling, and wellness services, alongside community meals and food grown on-site in its Learning Garden.",
+"issues": [
+"Environmental Justice",
+"Families",
+"Health & Well-Being",
+"Jobs & Economic Opportunity",
+"Older Adults",
+"Youth"
+],
+"locs": [
+"East Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.65047,
+-73.88464
+],
+"src": "https://www.theopphub.org/"
+},
+{
+"name": "Osborne Association",
+"desc": "Supports justice-impacted Brooklynites rebuild their lives through reentry planning, housing and benefits navigation, employment support, and family reunification services, while advocating to reduce the barriers people face after incarceration.",
+"issues": [
+"Civil Rights",
+"Families",
+"Justice Reform"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "region",
+"src": "serves Brooklyn-wide"
+},
+{
+"name": "¡Oye! Group",
+"desc": "Provides low-income residents and minority groups – especially young people and older adults – with opportunities to engage in arts education and performance arts.",
+"issues": [
+"Arts & Culture",
+"Youth"
+],
+"locs": [
+"Central Brooklyn",
+"North Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.70479,
+-73.92335
+],
+"src": "990/IRS address"
+},
+{
+"name": "Parent-Child Relationship Association",
+"desc": "Strengthens family relationships and promotes parent-child bonding through volunteer days, youth leadership programming, adult ESL classes, social service assistance, and a wide range of culturally competent programs.",
+"issues": [
+"Civic Engagement",
+"Families",
+"Immigrants",
+"Youth"
+],
+"locs": [
+"West Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.63522,
+-74.0059
+],
+"src": "990/IRS address"
+},
+{
+"name": "Parlé Endeavors",
+"desc": "Cultivates creative expression and leadership among Black youth and young people in historically underserved communities through spoken word and arts programming, mentorship, and scholarships that support personal and career growth.",
+"issues": [
+"Arts & Culture",
+"Civic Engagement",
+"Youth"
+],
+"locs": [
+"East Brooklyn",
+"North Brooklyn",
+"West Brooklyn"
+],
+"mode": "hood",
+"hood": "Flatlands",
+"src": "https://parleendeavors.org/about/"
+},
+{
+"name": "Passive House for Everyone",
+"desc": "Introduces K-12 students to Passive House energy-efficient building design through hands-on STEAM workshops that combine science, climate action, and creative learning.",
+"issues": [
+"Environmental Justice",
+"Jobs & Economic Opportunity",
+"Youth"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "exact",
+"at": [
+40.65571,
+-73.9579
+],
+"src": "990/IRS address"
+},
+{
+"name": "Perennial Muse",
+"desc": "Offers free concerts, music lessons, and interactive workshops and performances, including classes and live music at senior centers, that bring older adults and their caregivers together through shared musical experiences.",
+"issues": [
+"Arts & Culture",
+"Older Adults"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "region",
+"src": "serves Brooklyn-wide"
+},
+{
+"name": "Pineapple Ride",
+"desc": "Builds community in South Brooklyn through inclusive bike rides, free bike tune-ups and safety gear, and neighborhood events that connect cyclists while promoting safer, greener streets.",
+"issues": [
+"Civic Engagement",
+"Environmental Justice",
+"Health & Well-Being"
+],
+"locs": [
+"South Brooklyn"
+],
+"mode": "hood",
+"at": [
+40.59869,
+-74.00073
+],
+"src": "home or PO address: neighborhood only"
+},
+{
+"name": "Plaza Proletaria",
+"desc": "Creates spaces in Sunset Park where immigrant families connect through cultural programming, youth tutoring, and workshops that strengthen parent engagement and community connection.",
+"issues": [
+"Families",
+"Immigrants"
+],
+"locs": [
+"West Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.6541,
+-74.01182
+],
+"src": "https://www.tiktok.com/discover/plaza-proletaria-brooklyn-nyc"
+},
+{
+"name": "Power of Two",
+"desc": "Provides parenting programs and resources that help caregivers tap into their inherent potential to parent sensitively and nurture their children’s developing brains during the first 1,000 days of life, working to interrupt intergenerational trauma and reduce adverse childhood experiences.",
+"issues": [
+"Families",
+"Health & Well-Being"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "exact",
+"at": [
+40.66166,
+-73.91531
+],
+"src": "990/IRS address"
+},
+{
+"name": "Power Of We (POW!)",
+"desc": "Provides inclusive arts, sports, and play programs where neurodiverse children and children with disabilities of all ages can explore music, dance, reading, and movement in a welcoming environment open to all.",
+"issues": [
+"Families",
+"Health & Well-Being"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "exact",
+"at": [
+40.72742,
+-73.95563
+],
+"src": "https://www.charitynavigator.org/ein/874671907"
+},
+{
+"name": "Pratt Center for Community Development",
+"desc": "Advances housing and climate justice through community-led planning, policy advocacy, and technical assistance, including helping homeowners navigate energy retrofits while using resident data to improve public programs.",
+"issues": [
+"Civic Engagement",
+"Environmental Justice",
+"Housing",
+"Jobs & Economic Opportunity"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "exact",
+"at": [
+40.69807,
+-73.97494
+],
+"src": "https://www.prattcenter.net/contact"
+},
+{
+"name": "The Prescod Institute for Sport, Teamwork, and Education",
+"desc": "Provides athletic programs for Black youth in underserved communities to learn fencing (an often-inaccessible sport), and experience personal growth, community connection, and trips abroad and domestically to compete.",
+"issues": [
+"Health & Well-Being",
+"Jobs & Economic Opportunity",
+"Youth"
+],
+"locs": [
+"Central Brooklyn",
+"South Brooklyn",
+"West Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.64815,
+-73.88219
+],
+"src": "https://www.askfred.net/clinics/e7d529b8-b136-4b9e-8137-e419c8575a6d"
+},
+{
+"name": "Princess Chambers",
+"desc": "Supports girls from low-income and underserved communities with mentorship, college scholarships, and programs that build confidence and open doors—from prom preparation to college and career guidance.",
+"issues": [
+"Youth"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "region",
+"src": "serves Brooklyn-wide"
+},
+{
+"name": "Project Guardianship",
+"desc": "Supports NYC’s growing population of older and disabled adults who have no family or friends to care for them, by advocating for more state resources to train guardians, providing holistic benefits and case management services, and developing legal models that preserve independence for older adults without the need for full guardianship.",
+"issues": [
+"Health & Well-Being",
+"Justice Reform",
+"Older Adults"
+],
+"locs": [
+"Brooklyn-wide",
+"North Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.69384,
+-73.98728
+],
+"src": "990/IRS address"
+},
+{
+"name": "Project: Anti-Violence Workshops for Youth and Families in East Flatbush",
+"desc": "This grant is part of the Neighborhood Collective Impact Project, which provides funding for local nonprofit collaborations addressing concerns raised through Brooklyn Org’s annual Listening Tours and 2025 People’s Pulse survey.",
+"issues": [
+"Families",
+"Health & Well-Being",
+"Immigrants"
+],
+"locs": [
+"Central Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.64326,
+-73.94758
+],
+"src": "https://brooklyn.org/neighborhood-collective-impact-project-grants/"
+},
+{
+"name": "Project: Bed-Stuy University",
+"desc": "This grant is part of the Neighborhood Collective Impact Project, which provides funding for local nonprofit collaborations addressing concerns raised through Brooklyn Org’s annual Listening Tours and 2025 People’s Pulse survey.",
+"issues": [
+"Civic Engagement",
+"Housing",
+"Jobs & Economic Opportunity"
+],
+"locs": [
+"North Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.69046,
+-73.94678
+],
+"src": "https://brooklyn.org/neighborhood-collective-impact-project-grants/"
+},
+{
+"name": "Project: Beyond Memorial",
+"desc": "This grant is part of the Neighborhood Collective Impact Project, which provides funding to address concerns raised during Brooklyn Org’s annual Listening Tours.",
+"issues": [
+"Environmental Justice",
+"Families",
+"Health & Well-Being",
+"Youth"
+],
+"locs": [
+"East Brooklyn"
+],
+"mode": "hood",
+"hood": "Brownsville",
+"src": "https://brooklyn.org/neighborhood-collective-impact-project-grants/"
+},
+{
+"name": "Project: Creative Conversations: Art and Dialogue for Racial Justice",
+"desc": "This grant is part of the Neighborhood Collective Impact Project, which provides funding to address concerns raised during Brooklyn Org’s annual Listening Tours.",
+"issues": [
+"Arts & Culture",
+"Civil Rights",
+"Youth"
+],
+"locs": [
+"West Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.67885,
+-74.01105
+],
+"src": "https://www.redhookartproject.org/donate"
+},
+{
+"name": "Project: Cultivate Green",
+"desc": "This grant is part of the Neighborhood Collective Impact Project, which provides funding to address concerns raised during Brooklyn Org’s annual Listening Tours.",
+"issues": [
+"Environmental Justice",
+"Health & Well-Being",
+"Housing",
+"Jobs & Economic Opportunity",
+"Older Adults",
+"Youth"
+],
+"locs": [
+"Central Brooklyn",
+"East Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.6364,
+-73.94503
+],
+"src": "https://brooklyn.org/article/brooklyn-org-announces-awards-to-neighborhood-collective-impact-projects/"
+},
+{
+"name": "Project: D13 Teach Fabulous! Family Engagement Initiative",
+"desc": "This grant is part of the Neighborhood Collective Impact Project, which provides funding for local nonprofit collaborations addressing concerns raised through Brooklyn Org’s annual Listening Tours and 2025 People’s Pulse survey.",
+"issues": [
+"Civil Rights",
+"Families",
+"Health & Well-Being"
+],
+"locs": [
+"Central Brooklyn",
+"North Brooklyn"
+],
+"mode": "hood",
+"hood": "Bedford-Stuyvesant",
+"src": "https://www.teachfabulous.org/district-13-pilot-program"
+},
+{
+"name": "Project: Kensington Cultural Council",
+"desc": "This grant is part of the Neighborhood Collective Impact Project, which provides funding to address concerns raised during Brooklyn Org’s annual Listening Tours.",
+"issues": [
+"Arts & Culture",
+"Families",
+"Immigrants"
+],
+"locs": [
+"Central Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.64033,
+-73.97893
+],
+"src": "https://www.nocdny.org/neighborhood-projects/2019/2/19/kensington-cultural-council"
+},
+{
+"name": "Project: ROOTED",
+"desc": "This grant is part of the Neighborhood Collective Impact Project, which provides funding to address concerns raised during Brooklyn Org’s annual Listening Tours.",
+"issues": [
+"Arts & Culture",
+"Environmental Justice",
+"Youth"
+],
+"locs": [
+"East Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.65819,
+-73.90113
+],
+"src": "https://brooklyn.org/article/funding-for-neighborhood-collective-impact-projects-2025/"
+},
+{
+"name": "Project: X Marks the SPOT",
+"desc": "This grant is part of the Neighborhood Collective Impact Project, which provides funding to address concerns raised during Brooklyn Org’s annual Listening Tours.",
+"issues": [
+"Jobs & Economic Opportunity"
+],
+"locs": [
+"North Brooklyn"
+],
+"mode": "hood",
+"hood": "Bedford-Stuyvesant",
+"src": "https://brooklyn.org/article/funding-for-neighborhood-collective-impact-projects-2025/"
+},
+{
+"name": "Prospect Lefferts Gardens Heritage Council",
+"desc": "Preserves the Caribbean, African American, and architectural heritage of Prospect Lefferts Gardens through history programs and the annual Fenimore Block Party, while guiding homeowners through historic tax credits that make restoring their homes more affordable.",
+"issues": [
+"Arts & Culture",
+"Housing",
+"Jobs & Economic Opportunity"
+],
+"locs": [
+"Central Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.65852,
+-73.95414
+],
+"src": "990/IRS address"
+},
+{
+"name": "Prospect Park Alliance",
+"desc": "Sustains and activates “Brooklyn’s Backyard” through environmental stewardship, restoration, free public programming, and large-scale cultural events that bring Brooklyn communities together.",
+"issues": [
+"Arts & Culture",
+"Environmental Justice",
+"Health & Well-Being"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "exact",
+"at": [
+40.66704,
+-73.97473
+],
+"src": "990/IRS address"
+},
+{
+"name": "Pure Legacee",
+"desc": "Offers opportunities for healing and mentorship for young women who have experienced trauma as a direct result of the criminal justice system, aging out of foster care, and facing homelessness.",
+"issues": [
+"Justice Reform",
+"Youth"
+],
+"locs": [
+"East Brooklyn"
+],
+"mode": "hood",
+"at": [
+40.57952,
+-74.00036
+],
+"src": "home or PO address: neighborhood only"
+},
+{
+"name": "QARAVAN",
+"desc": "Offers therapy groups, legal assistance, English classes, case management, and multilingual peer support alongside community events like Brighton Beach Pride to help LGBTQ+ immigrants and refugees in South Brooklyn navigate services, reduce isolation, and build visibility.",
+"issues": [
+"Health & Well-Being",
+"Immigrants"
+],
+"locs": [
+"South Brooklyn"
+],
+"mode": "hood",
+"hood": "Brighton Beach",
+"src": "https://www.qaravan.org/about/"
+},
+{
+"name": "Queer Detainee Empowerment Project",
+"desc": "Assists people who are leaving immigration detention to secure structural, health and wellness, educational, legal, and emotional support services, with a particular focus on immigrants in the LGBTQIA+ community.",
+"issues": [
+"Health & Well-Being",
+"Immigrants"
+],
+"locs": [
+"Central Brooklyn"
+],
+"mode": "region",
+"src": "serves Central Brooklyn"
+},
+{
+"name": "Rain or Shine Diaper Fund",
+"desc": "Provides free diapers and baby wipes to 100+ families each week through no-questions-asked distributions in Bushwick, easing the rising cost of baby essentials with support from community donors and volunteers.",
+"issues": [
+"Families",
+"Health & Well-Being",
+"Youth"
+],
+"locs": [
+"North Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.69424,
+-73.9305
+],
+"src": "https://resources.mutualaid.nyc/services/595589711347087"
+},
+{
+"name": "RaisingHealth Partners",
+"desc": "Connects immigrants in Sunset Park to a range of services including health screenings and English classes, providing a welcoming community resource hub.",
+"issues": [
+"Health & Well-Being",
+"Immigrants"
+],
+"locs": [
+"South Brooklyn",
+"West Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.64603,
+-74.01661
+],
+"src": "https://council.nyc.gov/alexa-aviles/sunset-park-borough-park/"
+},
+{
+"name": "Ready, Set, Grow to Glow",
+"desc": "Offers hands-on wellness workshops that support children’s emotional health and academic growth through creative self-care activities like mask-making, herbal hair care, essential oils, mindfulness exercises, and literacy education.",
+"issues": [
+"Health & Well-Being",
+"Youth"
+],
+"locs": [
+"East Brooklyn",
+"North Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.68695,
+-73.9317
+],
+"src": "990/IRS address"
+},
+{
+"name": "Recess",
+"desc": "Partners with artists, youth, writers, and their chosen communities to collaborate on art projects that use abolitionist decision-making frameworks in order to cultivate joy and promote community safety by combining creative expression with career support wraparound support services.",
+"issues": [
+"Arts & Culture",
+"Justice Reform",
+"Youth"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "exact",
+"at": [
+40.71703,
+-73.9955
+],
+"src": "990/IRS address"
+},
+{
+"name": "Red Hook Initiative",
+"desc": "Connects Red Hook youth, young adults, and families to pathways for stability through workforce development, community building programs, afterschool activities, benefits case management, and leadership development opportunities, including pathways into emerging industries.",
+"issues": [
+"Arts & Culture",
+"Environmental Justice",
+"Families",
+"Jobs & Economic Opportunity",
+"Youth"
+],
+"locs": [
+"West Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.67674,
+-74.00467
+],
+"src": "990/IRS address"
+},
+{
+"name": "Red Hook Mutual Aid",
+"desc": "Responds to needs shared directly by Red Hook residents through a community phone line, delivering groceries, medical supplies, cash assistance, and prepared meals while running free stores, community fridges, and English classes.",
+"issues": [
+"Arts & Culture",
+"Civic Engagement",
+"Health & Well-Being",
+"Housing"
+],
+"locs": [
+"West Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.67968,
+-74.00534
+],
+"src": "https://council.nyc.gov/alexa-aviles/wp-content/uploads/sites/110/2025/11/Food-Pantries-List-CM-Alexa-Aviles-District-38.pdf"
+},
+{
+"name": "Refugee Translation Project",
+"desc": "Provides pro-bono translation services for displaced people  to support them building a strong legal case for asylum, bridging gaps between social services agencies and refugees while creating employment opportunities by also hiring refugees as interpreters.",
+"issues": [
+"Immigrants",
+"Jobs & Economic Opportunity"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "exact",
+"at": [
+40.70639,
+-74.0094
+],
+"src": "990/IRS address"
+},
+{
+"name": "ReImagine Legacy",
+"desc": "Provides culturally informed care for Black families through holistic health education, culturally attuned reproductive and mental health support, and traditional healing practices that address gaps in medical systems.",
+"issues": [
+"Families",
+"Health & Well-Being"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "region",
+"src": "https://bkgives.brooklyn.org/organization/ReImagine-Legacy"
+},
+{
+"name": "Release Aging People in Prison",
+"desc": "Works to end mass incarceration and promote social justice by championing a grassroots campaign that proposes legislation for the release of aging people in prison and those serving long sentences.",
+"issues": [
+"Civic Engagement",
+"Justice Reform",
+"Older Adults"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "exact",
+"at": [
+40.71655,
+-73.99718
+],
+"src": "990/IRS address"
+},
+{
+"name": "Restore Forward",
+"desc": "Provides Black women with a land-based healing program, farm programs, crisis intervention and mental health services, reproductive health services, and retreats in upstate New York.",
+"issues": [
+"Families",
+"Health & Well-Being"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "exact",
+"at": [
+40.66384,
+-73.95294
+],
+"src": "990/IRS address"
+},
+{
+"name": "The RETI Center",
+"desc": "Advances community-led climate solutions through solar projects and hands-on workforce training in construction and environmental systems, creating pathways to careers in the green economy while building local power and reducing energy costs.",
+"issues": [
+"Environmental Justice",
+"Jobs & Economic Opportunity"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "exact",
+"at": [
+40.67645,
+-74.01315
+],
+"src": "990/IRS address"
+},
+{
+"name": "Riders Alliance",
+"desc": "Organizes bus and subway riders to advocate for faster, more reliable, and affordable public transit, including campaigns to improve service and expand reduced-fare access for low-income Brooklynites.",
+"issues": [
+"Civic Engagement"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "exact",
+"at": [
+40.70933,
+-74.0103
+],
+"src": "990/IRS address"
+},
+{
+"name": "Rockaway Parkway Merchants Association",
+"desc": "Supports Canarsie small businesses with monthly workshops, legal and lease help, and networking events to rebuild post-COVID and grow local entrepreneurship.",
+"issues": [
+"Jobs & Economic Opportunity"
+],
+"locs": [
+"South Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.64627,
+-73.90368
+],
+"src": "https://www.citizensnyc.org/grantees/rockaway-parkway-merchants-corridor-association-inc/"
+},
+{
+"name": "Rooted Theater Company",
+"desc": "Stages original theater and youth productions about East New York, centering BIPOC and LGBTQ+ voices through performances, festivals, and post-show community conversations.",
+"issues": [
+"Arts & Culture",
+"Civic Engagement"
+],
+"locs": [
+"East Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.66315,
+-73.89933
+],
+"src": "990/IRS address"
+},
+{
+"name": "Rovaco Dance Company",
+"desc": "Produces contemporary dance-theater and immersive performances that examine Indian and queer perspectives in the Asian American experience.",
+"issues": [
+"Arts & Culture",
+"Civic Engagement"
+],
+"locs": [
+"Central Brooklyn",
+"North Brooklyn",
+"West Brooklyn"
+],
+"mode": "hood",
+"hood": "Greenpoint",
+"src": "https://www.dance.nyc/for-audiences/community-calendar/view/Rovaco-Dance-Party-2025/2025-09-27/"
+},
+{
+"name": "Sadie Nash Leadership Project",
+"desc": "Strengthens and equips young women and gender-expansive youth of color as agents for change in their lives and in the world through leadership and mentorship programs and scholarships.",
+"issues": [
+"Youth"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "region",
+"src": "serves Brooklyn-wide"
+},
+{
+"name": "Safe Passage Project",
+"desc": "Provides free immigration legal services, including direct legal assistance and trainings, to refugee and immigrant children in the New York City area who face deportation back to life-threatening situations.",
+"issues": [
+"Arts & Culture",
+"Immigrants",
+"Youth"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "exact",
+"at": [
+40.71801,
+-74.00717
+],
+"src": "990/IRS address"
+},
+{
+"name": "Sakhi for South Asian Survivors",
+"desc": "Supports South Asian and Indo-Caribbean survivors of gender-based violence with crisis intervention, counseling, legal advocacy, housing support, and survivor-led services shaped by cultural understanding and language access, while advancing community organizing and policy change.",
+"issues": [
+"Families",
+"Health & Well-Being",
+"Housing",
+"Immigrants"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "region",
+"src": "serves Brooklyn-wide"
+},
+{
+"name": "Sauti Yetu",
+"desc": "Mobilizes low- and no-income African immigrant women to improve their quality of life and strengthen their families and communities through direct services like youth education programs, domestic violence crisis intervention, counseling, public education, and advocacy.",
+"issues": [
+"Families",
+"Health & Well-Being",
+"Housing",
+"Immigrants"
+],
+"locs": [
+"East Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.66451,
+-73.89527
+],
+"src": "https://www.linkedin.com/company/sauti-yetu"
+},
+{
+"name": "Shoot Hoops Not Guns Brower Park",
+"desc": "Mentors Crown Heights youth through basketball, hosting a community league and summer tournaments at Brower Park since 1993, and leads a peer-based violence interruption program that offers an alternative to policing.",
+"issues": [
+"Civic Engagement",
+"Health & Well-Being",
+"Youth"
+],
+"locs": [
+"Central Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.68313,
+-73.94536
+],
+"src": "990/IRS address"
+},
+{
+"name": "South Brooklyn Sanctuary",
+"desc": "Supports immigrants without legal representation through volunteer-led legal assistance, including application support, court preparation, and “Know Your Rights” clinics that help people understand their rights and respond to shifting immigration policies.",
+"issues": [
+"Civil Rights",
+"Immigrants",
+"Jobs & Economic Opportunity"
+],
+"locs": [
+"South Brooklyn"
+],
+"mode": "region",
+"src": "serves South Brooklyn"
+},
+{
+"name": "St. Nicks Alliance",
+"desc": "Connects low-income residents to careers in HVAC, construction, building operations, and electrical work through credentialed training, paid internships, and direct job placement with industry partners.",
+"issues": [
+"Environmental Justice",
+"Jobs & Economic Opportunity"
+],
+"locs": [
+"Brooklyn-wide",
+"North Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.71588,
+-73.93996
+],
+"src": "990/IRS address"
+},
+{
+"name": "Stay’n Out",
+"desc": "Provides justice-involved adults with community-based residential and outpatient programs that utilize a therapeutic community model to help them prepare to re-enter their communities and lead healthy, positive lifestyles.",
+"issues": [
+"Health & Well-Being"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "region",
+"src": "serves Brooklyn-wide"
+},
+{
+"name": "STEM From Dance",
+"desc": "Combines dance with technology and engineering education, empowering girls of color to pursue STEM careers through creative, hands-on learning experiences.",
+"issues": [
+"Arts & Culture",
+"Jobs & Economic Opportunity",
+"Youth"
+],
+"locs": [
+"Central Brooklyn",
+"East Brooklyn",
+"West Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.66391,
+-73.95177
+],
+"src": "990/IRS address"
+},
+{
+"name": "Stoop Stories",
+"desc": "Documents Brooklyn neighborhood stories at risk of being lost to gentrification through community-made films, intergenerational Stoop Chat conversations, and storytelling workshops that connect older adults, youth, and neighbors across the borough.",
+"issues": [
+"Arts & Culture",
+"Civic Engagement",
+"Health & Well-Being",
+"Older Adults",
+"Youth"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "exact",
+"at": [
+40.68545,
+-73.98706
+],
+"src": "990/IRS address"
+},
+{
+"name": "Street Vendor Project",
+"desc": "Conducts grassroots labor organizing to support the rights of street vendors—NYC’s smallest small businesses—using public education, business and leadership development, legislative advocacy, and direct legal support to expand vending as a viable, lawful employment option for immigrants and other entrepreneurs",
+"issues": [
+"Civic Engagement",
+"Civil Rights",
+"Immigrants",
+"Jobs & Economic Opportunity"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "hood",
+"hood": "Sunset Park",
+"src": "https://www.streetvendor.org/who-we-are"
+},
+{
+"name": "Student Dream",
+"desc": "Prepares students to achieve their financial, investment, and entrepreneurial aspirations through financial literacy education, career exportation, and mentorship programming.",
+"issues": [
+"Jobs & Economic Opportunity",
+"Youth"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "hood",
+"at": [
+40.68178,
+-73.97525
+],
+"src": "home or PO address: neighborhood only"
+},
+{
+"name": "Sure We Can",
+"desc": "Fosters a supportive, compassionate alternative for canners — people who collect empty beverage containers to then redeem for five cents each — to access redemption services that create pathways for their financial, social, and environmental empowerment.",
+"issues": [
+"Civic Engagement",
+"Environmental Justice",
+"Health & Well-Being",
+"Immigrants",
+"Jobs & Economic Opportunity"
+],
+"locs": [
+"East Brooklyn",
+"North Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.70556,
+-73.93816
+],
+"src": "990/IRS address"
+},
+{
+"name": "Surveillance Technology Oversight Project (STOP)",
+"desc": "Founded in Brooklyn in 2019, S.T.O.P. protects civil rights by confronting the expansion of discriminatory surveillance technologies, like facial recognition tools, that threaten privacy and deepen racial and religious profiling of overpoliced communities. As a leading advocacy organization and legal services provider, S.T.O.P pairs community-led digital safety trainings with litigation, research, and policy advocacy to equip communities across Brooklyn and beyond with tools to protect their rights and drive systemic change.",
+"issues": [
+"Civil Rights",
+"Housing",
+"Immigrants",
+"Justice Reform"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "exact",
+"at": [
+40.7083,
+-74.01445
+],
+"src": "990/IRS address"
+},
+{
+"name": "Tea Arts & Culture",
+"desc": "Cultivates community with intergenerational gatherings in parks and gardens that invite older adults and neighbors to share mindfulness, poetry, music, and creative arts by celebrating the art of tea together.",
+"issues": [
+"Older Adults"
+],
+"locs": [
+"Central Brooklyn",
+"East Brooklyn",
+"West Brooklyn"
+],
+"mode": "hood",
+"at": [
+40.66056,
+-73.9791
+],
+"src": "home or PO address: neighborhood only"
+},
+{
+"name": "Technology for Families in Need (TechFIN)",
+"desc": "Helps narrow the digital divide by addressing a major hurdle to computer hardware ownership: its cost. TechFIN collects used PC-based laptops and desktop computers, in bulk, from corporations, refurbishes these devices, and partners with other nonprofits to distribute the equipment to low-income families at no cost to them. They have provided thousands of refurbished computers to low-income households across New York City, equipping them with the tools needed to succeed in today’s digital age.",
+"issues": [
+"Environmental Justice",
+"Families",
+"Youth"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "exact",
+"at": [
+40.65728,
+-74.00643
+],
+"src": "https://wearetechfin.org/contact-us/"
+},
+{
+"name": "Teens Take Charge",
+"desc": "Equips New York City public school students with the tools to organize their communities and amplify their voices in order to reimagine an equitable, anti-racist future for themselves and their communities.",
+"issues": [
+"Civic Engagement",
+"Jobs & Economic Opportunity",
+"Justice Reform",
+"Youth"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "region",
+"src": "serves Brooklyn-wide"
+},
+{
+"name": "Theatre of the Oppressed NYC",
+"desc": "",
+"issues": [
+"Arts & Culture",
+"Youth"
+],
+"locs": [
+"North Brooklyn",
+"West Brooklyn"
+],
+"mode": "region",
+"src": "serves North Brooklyn, West Brooklyn"
+},
+{
+"name": "Tomorrow’s Leaders NYC",
+"desc": "Provides students and community members with academic support, family support, and vocational readiness to help them overcome social, emotional, and academic challenges and encourage them to become leaders.",
+"issues": [
+"Youth"
+],
+"locs": [
+"East Brooklyn",
+"West Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.66415,
+-73.88607
+],
+"src": "990/IRS address"
+},
+{
+"name": "Uniquely Me Creative Arts",
+"desc": "Fosters inclusive spaces where children of all ages with special needs explore creative arts while equipping parents with training, advocacy tools, and community support.",
+"issues": [
+"Families",
+"Health & Well-Being"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "exact",
+"at": [
+40.68888,
+-73.93995
+],
+"src": "990/IRS address"
+},
+{
+"name": "United Chinese Association of Brooklyn",
+"desc": "Mobilizes community resources to improve the quality of life for underserved Chinese immigrants in South Brooklyn through ESL classes, older adult programming, youth arts education, and immigration classes.",
+"issues": [
+"Families",
+"Health & Well-Being",
+"Immigrants",
+"Older Adults"
+],
+"locs": [
+"South Brooklyn",
+"West Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.60537,
+-73.98378
+],
+"src": "990/IRS address"
+},
+{
+"name": "United Community Centers",
+"desc": "Provides East New York residents of all ages with resources to thrive, including reproductive health workshops, sex education outreach, urban farming, and a youth internship program.",
+"issues": [
+"Environmental Justice",
+"Families",
+"Immigrants",
+"Youth"
+],
+"locs": [
+"East Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.66479,
+-73.88655
+],
+"src": "990/IRS address"
+},
+{
+"name": "United For Brownsville",
+"desc": "Supports families across Brownsville through affordable housing development and early childhood programming, using public data and insights from local residents and businesses to improve the overall quality of life in the neighborhood.",
+"issues": [
+"Families",
+"Health & Well-Being",
+"Housing",
+"Older Adults",
+"Youth"
+],
+"locs": [
+"East Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.66722,
+-73.91003
+],
+"src": "https://unitedforbrownsville.org/contact/"
+},
+{
+"name": "Unlock NYC",
+"desc": "Combats income-based housing discrimination with tenant-led tech tools, direct advocacy, and data analysis that hold landlords accountable and promote the rights of low-income voucher holders.",
+"issues": [
+"Civil Rights",
+"Families",
+"Housing",
+"Older Adults"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "exact",
+"at": [
+40.68892,
+-73.99282
+],
+"src": "https://www.linkedin.com/company/unlock-nyc"
+},
+{
+"name": "UPROSE",
+"desc": "Promotes community-led sustainability, resiliency, and climate justice through community organizing, education, leadership development, and cultural and artistic expression in Sunset Park.",
+"issues": [
+"Arts & Culture",
+"Environmental Justice",
+"Health & Well-Being",
+"Jobs & Economic Opportunity",
+"Youth"
+],
+"locs": [
+"West Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.65342,
+-74.00304
+],
+"src": "990/IRS address"
+},
+{
+"name": "Urban Homesteading Assistance Board",
+"desc": "Builds tenant power in Brownsville and East Brooklyn by organizing residents into tenant associations, supporting eviction defense, and advancing pathways to community homeownership that helps tenants fight displacement, secure repairs, and remain in their homes.",
+"issues": [
+"Housing",
+"Older Adults"
+],
+"locs": [
+"East Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.70472,
+-74.0067
+],
+"src": "990/IRS address"
+},
+{
+"name": "Urban Youth Collaborative",
+"desc": "Organizes student-led policy change and advocacy to end the school-to-prison pipeline that disproportionately affects Black and Latinx students and to remove police from New York City schools.",
+"issues": [
+"Justice Reform",
+"Youth"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "exact",
+"at": [
+40.69892,
+-73.91524
+],
+"src": "990/IRS address"
+},
+{
+"name": "viBe Theater Experience",
+"desc": "Amplifies the voices of girls and nonbinary youth of color by teaching them how to produce original theater, music, and media inspired by real-life issues they experience.",
+"issues": [
+"Arts & Culture",
+"Youth"
+],
+"locs": [
+"Central Brooklyn",
+"East Brooklyn",
+"North Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.68515,
+-73.9733
+],
+"src": "990/IRS address"
+},
+{
+"name": "VOCAL-NY",
+"desc": "Builds power among low-income people affected by HIV/AIDS, the drug war, mass incarceration, and homelessness through community organizing, leadership development, policy advocacy, direct services, and research.",
+"issues": [
+"Civic Engagement",
+"Civil Rights",
+"Health & Well-Being",
+"Housing",
+"Justice Reform"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "exact",
+"at": [
+40.67984,
+-73.98327
+],
+"src": "990/IRS address"
+},
+{
+"name": "Voces Ciudadanas",
+"desc": "Builds the collective power of migrants and other under-served residents through community leadership and organizing, including working with street vendors  — many of whom are immigrant women — to open and run a market in Sunset Park.",
+"issues": [
+"Civic Engagement",
+"Families",
+"Immigrants",
+"Jobs & Economic Opportunity"
+],
+"locs": [
+"West Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.6565,
+-74.00578
+],
+"src": "990/IRS address"
+},
+{
+"name": "Volunteers of Legal Service",
+"desc": "Provides free civil legal services and a citywide pro bono network, helping low-income older adults in Brooklyn plan for their medical and financial futures and navigate systems that often exclude them.",
+"issues": [
+"Civil Rights",
+"Families",
+"Immigrants",
+"Older Adults"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "exact",
+"at": [
+40.71716,
+-74.00657
+],
+"src": "990/IRS address"
+},
+{
+"name": "We Build The Block",
+"desc": "Provides therapy, case management, court advocacy, and restorative justice circles as well as everyday needs like groceries, haircuts, and daily-living support in a trusted drop-in space for young men affected by gun violence and incarceration.",
+"issues": [
+"Civil Rights",
+"Health & Well-Being",
+"Jobs & Economic Opportunity",
+"Justice Reform",
+"Youth"
+],
+"locs": [
+"Central Brooklyn",
+"East Brooklyn",
+"North Brooklyn"
+],
+"mode": "hood",
+"hood": "East New York",
+"src": "https://webuildtheblock.org/"
+},
+{
+"name": "Weeksville Heritage Center",
+"desc": "Combines education, the arts, and a social justice lens to preserve, document, and inspire local community engagement with the cultural center and historical site of Weeksville, one of the largest free Black communities in pre-Civil War America.",
+"issues": [
+"Arts & Culture"
+],
+"locs": [
+"Central Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.67391,
+-73.92515
+],
+"src": "https://www.weeksvillesociety.org/visit/"
+},
+{
+"name": "Welder Underground",
+"desc": "Trains young adults for careers in welding and advanced manufacturing through a paid, hands-on apprenticeship inside a professional fabrication shop.",
+"issues": [
+"Jobs & Economic Opportunity"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "exact",
+"at": [
+40.70734,
+-73.92099
+],
+"src": "990/IRS address"
+},
+{
+"name": "Woman Unsilenced",
+"desc": "Creates pathways to economic independence for women impacted by trauma and incarceration through digital literacy trainings, entrepreneurship programs, and career coaching.",
+"issues": [
+"Jobs & Economic Opportunity",
+"Justice Reform"
+],
+"locs": [
+"East Brooklyn",
+"North Brooklyn"
+],
+"mode": "hood",
+"hood": "Crown Heights",
+"src": "https://womanunsilenced.org/privacy-policy"
+},
+{
+"name": "Women’s Empowerment Coalition of NYC",
+"desc": "Provides immigrant women with holistic support and case management services, from safety planning to secure emergency housing and medical assistance, to ESL, Know Your Rights, financial literacy and  job training courses, and connection to vital resources for women without access to other social service agencies.",
+"issues": [
+"Arts & Culture",
+"Families",
+"Health & Well-Being",
+"Immigrants",
+"Jobs & Economic Opportunity"
+],
+"locs": [
+"South Brooklyn",
+"West Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.6289,
+-74.02472
+],
+"src": "https://www.wecnyc.org/our-mission"
+},
+{
+"name": "Worker’s Justice Project",
+"desc": "Organizes low-wage and immigrant workers across industries including construction, cleaning, food and app delivery services, tobacco processing, and more to advocate for fair wages and safe working conditions through education, leadership development, grassroots outreach, and legislative advocacy that builds a strong labor movement.",
+"issues": [
+"Immigrants",
+"Jobs & Economic Opportunity"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "exact",
+"at": [
+40.59506,
+-74.00088
+],
+"src": "990/IRS address"
+},
+{
+"name": "Wyckoff House Museum",
+"desc": "Offers educational and farm-based programs in New York’s oldest building and surrounding park to connect with the community through history and agriculture, with an emphasis on immigration, family, and food.",
+"issues": [
+"Youth"
+],
+"locs": [
+"Central Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.64492,
+-73.9209
+],
+"src": "990/IRS address"
+},
+{
+"name": "Yadestiny Treasure Chest",
+"desc": "Uses fashion, sewing, and entrepreneurship workshops to help youth from underserved communities build confidence and explore careers in fashion, media and design.",
+"issues": [
+"Jobs & Economic Opportunity",
+"Youth"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "hood",
+"at": [
+40.69564,
+-73.9743
+],
+"src": "home or PO address: neighborhood only"
+},
+{
+"name": "You Gotta Believe",
+"desc": "Connects foster youth with permanent families via family finding, parent training, youth trauma therapy, and more to ensure that they have safe and secure support systems that allow them to thrive.",
+"issues": [
+"Families",
+"Youth"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "exact",
+"at": [
+40.57514,
+-73.99769
+],
+"src": "990/IRS address"
+},
+{
+"name": "Youth Advocacy Corps",
+"desc": "Empowers youth to become leaders in fighting against poverty by helping them better understand the complexities of health and economic inequity and providing them with advocacy and job training.",
+"issues": [
+"Civic Engagement",
+"Youth"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "region",
+"src": "serves Brooklyn-wide"
+},
+{
+"name": "Youth Design Center",
+"desc": "Provides young people with marketable hard skills in STEAM like graphic and web design, and access to post-secondary education in order to achieve economic mobility and engage in community revitalization.",
+"issues": [
+"Arts & Culture",
+"Jobs & Economic Opportunity",
+"Youth"
+],
+"locs": [
+"East Brooklyn",
+"North Brooklyn"
+],
+"mode": "exact",
+"at": [
+40.65793,
+-73.90171
+],
+"src": "990/IRS address"
+},
+{
+"name": "Youth Justice Network",
+"desc": "Provides advocacy, mentorship, and wraparound support for young people impacted by the carceral system, working in detention facilities and communities to provide reentry support, court advocacy, a youth law library, family coaching, and a mobile outreach bus that brings resources directly to neighborhoods.",
+"issues": [
+"Civil Rights",
+"Families",
+"Jobs & Economic Opportunity",
+"Justice Reform",
+"Youth"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "region",
+"src": "serves Brooklyn-wide"
+},
+{
+"name": "YVote",
+"desc": "Builds pathways for young people to actively shape democracy through peer-led, issue-driven civic engagement led by students and educators. Founded in Brooklyn in 2017, YVote works in high schools across the borough to equip the next generation of civic leaders with real-world organizing and leadership experience through voter registration drives, participatory budgeting campaigns, and school-based civic clubs.",
+"issues": [
+"Civic Engagement",
+"Youth"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "hood",
+"hood": "Park Slope",
+"src": "https://thecivicseason.com/activities/the-round-table-podcast-playlists"
+},
+{
+"name": "The YWCA of Brooklyn",
+"desc": "Supports women and girls, champions gender equity, and strives to eliminate racism through housing support, leadership development, immigration services, advocacy and policy, and community engagement.",
+"issues": [
+"Health & Well-Being",
+"Housing",
+"Older Adults"
+],
+"locs": [
+"Brooklyn-wide"
+],
+"mode": "exact",
+"at": [
+40.68558,
+-73.98061
+],
+"src": "990/IRS address"
+}
+]

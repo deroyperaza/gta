@@ -5,6 +5,7 @@ import { GHOST_AT, STREET_GHOST_AT } from '../data/ghosts';
 import { VILLAIN_AT } from '../data/villains';
 import { PAINTED, PAINTED_AT } from '../data/landmarks';
 import { CAMEO_AT } from '../data/cameos';
+import { NONPROFITS, REGION_HOODS } from '../data/nonprofits';
 import { CELLS, GRID, KINDS, LAT_EDGES, LNG_EDGES, NEIGHBORHOODS, PARKNAMES } from './brooklynGrid';
 
 /**
@@ -837,6 +838,49 @@ export function generateLayout(): WorldLayout {
         if (d < bd) { bd = d; best = { x: px(x) + 16, y: px(y) + 16 }; }
       }
       if (best) { spots[f.spot] = best; occ.add(`${Math.floor(best.x / TILE)},${Math.floor(best.y / TILE)}`); }
+    }
+  }
+  // Every Brooklyn Org grantee (src/data/nonprofits.ts): a staffer at the group's real address, or in its neighborhood or the
+  // part of Brooklyn it serves when that's all we know (homes and PO boxes are never pinned exactly)
+  {
+    const occ = new Set<string>();
+    for (const p of Object.values(spots)) occ.add(`${Math.floor(p.x / TILE)},${Math.floor(p.y / TILE)}`);
+    const near = (x: number, y: number) => { for (let oy = -2; oy <= 2; oy++) for (let ox = -4; ox <= 4; ox++) if (occ.has(`${x + ox},${y + oy}`)) return true; return false; };
+    const ok = (x: number, y: number) => { const k = tiles[y]?.[x]; return (k === T.SIDEWALK || k === T.PLAZA) && !blocked[y][x] && !near(x, y); };
+    const hoodBlocks: Record<string, [number, number][]> = {};
+    for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) { const h = neighborhoodOfBlock(c, r); if (h) (hoodBlocks[h] ??= []).push([c, r]); }
+    const nearest = (cx: number, cy: number, R: number, hood?: string) => {
+      let best: Spot | null = null, bd = Infinity;
+      for (let dy = -R; dy <= R; dy++) for (let dx = -R; dx <= R; dx++) {
+        const x = cx + dx, y = cy + dy; if (!ok(x, y)) continue;
+        if (hood && neighborhoodOfBlock(Math.floor(x / BLOCK_W), Math.floor(y / BLOCK_H)) !== hood) continue;
+        const d = dx * dx + dy * dy; if (d < bd) { bd = d; best = { x: px(x) + 16, y: px(y) + 16 }; }
+      }
+      return best;
+    };
+    const inHood = (hood: string, seed: number) => { // a block in that neighborhood, picked by the group's id, then the nearest open sidewalk
+      const bl = hoodBlocks[hood]; if (!bl?.length) return null;
+      for (let i = 0; i < bl.length; i++) {
+        const [c, r] = bl[(seed + i * 7) % bl.length];
+        const s = nearest(c * BLOCK_W + ROAD + ((seed >>> 4) % (BLOCK_W - ROAD)), r * BLOCK_H + BLOCK_H - 2, 10, hood);
+        if (s) return s;
+      }
+      return null;
+    };
+    const seedOf = (id: string) => { let h = 2166136261; for (let i = 0; i < id.length; i++) { h ^= id.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; };
+    const NP_PIN: Record<string, string> = { 'The Billie Holiday Theatre': 'Bedford-Stuyvesant', 'Bed-Stuy Restoration': 'Bedford-Stuyvesant' }; // Restoration Plaza, 1368 Fulton St
+    for (const np of NONPROFITS) {
+      const seed = seedOf(np.id);
+      let s: Spot | null = null;
+      if (np.at) {
+        const g = geo(np.at[0], np.at[1]), cx = Math.floor(g.x), cy = Math.floor(g.y);
+        const pin = NP_PIN[np.org]; // the coarse grid rounds a few border corners into the next neighborhood
+        if (np.mode === 'exact') s = pin ? nearest(cx, cy, 30, pin) : nearest(cx, cy, 8) ?? nearest(cx, cy, 16);
+        else { const h = neighborhoodOfBlock(Math.floor(cx / BLOCK_W), Math.floor(cy / BLOCK_H)); if (h) s = inHood(h, seed); } // home or PO box: somewhere in that neighborhood
+      }
+      if (!s && np.hood) s = inHood(np.hood, seed);
+      if (!s) { const reg = np.locs.find((l) => l !== 'Brooklyn-wide') ?? 'Brooklyn-wide', hs = REGION_HOODS[reg] ?? REGION_HOODS['Brooklyn-wide']; for (let i = 0; !s && i < hs.length; i++) s = inHood(hs[(seed + i) % hs.length], seed >>> 3); }
+      if (s) { spots[np.spot] = s; occ.add(`${Math.floor(s.x / TILE)},${Math.floor(s.y / TILE)}`); }
     }
   }
   // Floyd Bennett's runways are open concrete: no trees, lamps or benches on them
