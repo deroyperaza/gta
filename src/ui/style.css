@@ -445,6 +445,7 @@ body:has(#mission-intro.show) #district { visibility: hidden; }
 .meters-explain { display: grid; gap: 8px; margin: 10px 0 12px; }
 .meters-explain div { font: 600 14px/1.4 var(--body, Nunito, Arial, sans-serif); background: #fff; border: 2px solid var(--ink); border-radius: 10px; padding: 8px 10px; }
 .meters-explain b { display: block; font: 900 13px Nunito, Arial, sans-serif; letter-spacing: 1px; color: var(--pink); }
+@media (max-width: 600px) { .meters-explain { gap: 6px; } .meters-explain div { padding: 6px 10px; font-size: 13.5px; } .meters-explain b { display: inline; margin-right: 5px; } } /* phones: label runs into its line, less scrolling */
 
 /* Pocket Civics notebook */
 .lesson { background: #fff; border: 2px solid var(--ink); border-radius: 10px; padding: 8px 10px; margin: 6px 0; }
