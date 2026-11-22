@@ -240,6 +240,7 @@ class UI {
     $('#pow-val').textContent = String(d.power);
     $('#att-val').textContent = String(d.attention);
     $<HTMLElement>('#att-fill').style.width = `${d.attention}%`;
+    { const st = state.stars(); $('#att-stars').textContent = st ? '★'.repeat(st) : ''; }
     const inv = (Object.keys(ITEMS) as ItemId[]).filter((k) => d.inventory[k] > 0);
     $('#inventory').innerHTML = inv.length
       ? inv.map((k) => `<div class="inv${k === 'flyers' ? ' inv-flyers' : ''}" title="${ITEMS[k].name}: ${ITEMS[k].desc}${k === 'flyers' ? ' (tap to see it)' : ''}">${ITEMS[k].icon}<span>${d.inventory[k]}</span></div>`).join('')

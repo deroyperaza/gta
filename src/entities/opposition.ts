@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 import { bus } from '../core/bus';
 import type { Dialogue } from '../systems/dialogue';
 import { makeCharacter } from '../world/golden';
-import { TILE, WALKABLE, type WorldLayout } from '../world/layout';
+import { T, TILE, WALKABLE, type WorldLayout } from '../world/layout';
 
 /**
  * The Free Parking Caucus: satirical obstructionists who show up during missions
@@ -17,9 +17,15 @@ export interface Squad {
   sprite: Phaser.GameObjects.Sprite; tag: Phaser.GameObjects.Text;
   home: { x: number; y: number }; state: 'patrol' | 'chase' | 'cool' | 'gone';
   t: number; vx: number; vy: number;
+  /** 'wreck': walking the streets to undo a stop the player already finished */
+  role: 'chase' | 'wreck'; goal?: string; goalPos?: { x: number; y: number }; field?: Int32Array;
 }
 
-const CHASE = 170, PATROL = 45, SEE = 300, GIVE_UP = 440, CATCH = 30;
+/** How hard the Caucus pushes right now (set each frame from the mission number and Attention stars). */
+export interface OppConfig { limit: number; chase: number; wreck: number; respawn: number }
+const DEFAULT_CFG: OppConfig = { limit: 3, chase: 170, wreck: 110, respawn: 35 };
+
+const PATROL = 45, SEE = 300, GIVE_UP = 440, CATCH = 30;
 
 /** Talking points, each answered by something the cast actually teaches. */
 const DEBATES: { q: string; right: string; wrong: [string, string] }[] = [
@@ -37,7 +43,100 @@ const TAUNTS = ['JUST ONE QUICK QUESTION!', 'HAVE YOU CONSIDERED THE PARKING?', 
 export class Opposition {
   squads: Squad[] = [];
   engaged: Squad | null = null;
+  cfg: OppConfig = DEFAULT_CFG;
   private wasActive = false;
+
+  /** Someone is already out undoing your work */
+  wrecking(): Squad | null { return this.squads.find((s) => s.role === 'wreck' && s.state !== 'gone') ?? null; }
+
+  private endWreck(s: Squad) {
+    s.role = 'chase'; s.goal = undefined; s.goalPos = undefined; s.field = undefined;
+    s.tag.setText('FREE PARKING CAUCUS').setBackgroundColor('#d8262e');
+  }
+
+  private tileOk(tx: number, ty: number) {
+    const L = this.layout;
+    if (ty < 0 || tx < 0 || ty >= L.tiles.length || tx >= L.tiles[0].length || L.blocked[ty][tx]) return false;
+    const k = L.tiles[ty][tx];
+    return WALKABLE.has(k) || k === T.CROSS_V || k === T.CROSS_H; // sidewalks, and across the street at the crosswalk
+  }
+
+  /** Street distance (in tiles) from every walkable tile to the goal: the wrecker walks downhill. */
+  private distanceField(goal: { x: number; y: number }): { field: Int32Array; seed: number } | null {
+    const W = this.layout.tiles[0].length, H = this.layout.tiles.length;
+    let gx = Math.floor(goal.x / TILE), gy = Math.floor(goal.y / TILE), found = this.tileOk(gx, gy);
+    for (let r = 1; r <= 3 && !found; r++) for (let dy = -r; dy <= r && !found; dy++) for (let dx = -r; dx <= r && !found; dx++) {
+      if (this.tileOk(gx + dx, gy + dy)) { gx += dx; gy += dy; found = true; }
+    }
+    if (!found) return null;
+    const field = new Int32Array(W * H).fill(-1), q = new Int32Array(W * H);
+    let h = 0, t = 0; const seed = gy * W + gx; field[seed] = 0; q[t++] = seed;
+    while (h < t) {
+      const i = q[h++], x = i % W, y = (i / W) | 0, d = field[i];
+      if (d > 90) continue; // a few blocks of street is plenty
+      for (const [ax, ay] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
+        const nx = x + ax, ny = y + ay, j = ny * W + nx;
+        if (nx < 0 || ny < 0 || nx >= W || ny >= H || field[j] >= 0 || !this.tileOk(nx, ny)) continue;
+        field[j] = d + 1; q[t++] = j;
+      }
+    }
+    return { field, seed };
+  }
+
+  /**
+   * Send a Caucus member to undo a finished stop. They start a few blocks away (off screen if possible)
+   * and walk the streets to it. Reach them first and they turn on you instead.
+   */
+  dispatchWrecker(goal: string, goalPos: { x: number; y: number }, player: { x: number; y: number }): boolean {
+    if (this.wrecking()) return false;
+    const s = this.squads.find((q) => q.state === 'gone');
+    const df = s && this.distanceField(goalPos);
+    if (!s || !df) return false;
+    const W = this.layout.tiles[0].length;
+    let pick = -1, best = -Infinity;
+    for (let i = 0; i < df.field.length; i++) {
+      const d = df.field[i];
+      if (d < 40 || d > 70) continue;
+      const x = (i % W + 0.5) * TILE, y = (((i / W) | 0) + 0.5) * TILE, pd = Math.hypot(x - player.x, y - player.y);
+      const score = Math.min(pd, 700) - Math.abs(d - 52) * 4 + Math.random() * 120;
+      if (pd > 380 && score > best) { best = score; pick = i; }
+    }
+    if (pick < 0) return false;
+    const x = (pick % W + 0.5) * TILE, y = (((pick / W) | 0) + 0.5) * TILE;
+    s.role = 'wreck'; s.goal = goal; s.goalPos = goalPos; s.field = df.field;
+    s.state = 'patrol'; s.t = 0; s.home = { x, y };
+    this.scene.tweens.killTweensOf([s.sprite, s.tag]); // a fade-out from their last exit would hide them mid-walk
+    s.sprite.setPosition(x, y).setVisible(true).setAlpha(1);
+    s.tag.setText('UNDOING YOUR WORK').setBackgroundColor('#8a1016').setVisible(true).setAlpha(1);
+    return true;
+  }
+
+  private updateWrecker(s: Squad, dt: number, player: { x: number; y: number }) {
+    const spr = s.sprite, W = this.layout.tiles[0].length, f = s.field!;
+    const d = Math.hypot(player.x - spr.x, player.y - spr.y);
+    if (d < 210) { // caught in the act: they turn on you instead
+      this.endWreck(s); s.state = 'chase';
+      this.scene.events.emit('gop:taunt', s, Phaser.Utils.Array.GetRandom(['I WAS JUST WALKING. NEAR YOUR SIGN-UP SHEET.', 'THIS IS A PUBLIC SIDEWALK!', 'I\'M NOT UNDOING ANYTHING. I\'M REVIEWING IT.']));
+      return;
+    }
+    const tx = Math.floor(spr.x / TILE), ty = Math.floor(spr.y / TILE), here = f[ty * W + tx];
+    if (here >= 0 && here <= 1) { // made it
+      bus.emit('opposition:wrecked', s.goal);
+      s.state = 'gone'; s.t = this.cfg.respawn; this.endWreck(s);
+      this.scene.tweens.add({ targets: [spr, s.tag], alpha: 0, duration: 500, onComplete: () => { spr.setVisible(false); s.tag.setVisible(false).setAlpha(1); } });
+      return;
+    }
+    let nx = tx, ny = ty, nd = here < 0 ? Infinity : here;
+    for (const [ax, ay] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
+      const v = f[(ty + ay) * W + tx + ax];
+      if (v >= 0 && v < nd) { nd = v; nx = tx + ax; ny = ty + ay; }
+    }
+    if (nd === Infinity) { this.disperse(s, false); return; } // lost the trail
+    const cx = (nx + 0.5) * TILE, cy = (ny + 0.5) * TILE, mx = cx - spr.x, my = cy - spr.y, l = Math.hypot(mx, my) || 1;
+    spr.setPosition(spr.x + (mx / l) * this.cfg.wreck * dt, spr.y + (my / l) * this.cfg.wreck * dt);
+    spr.setRotation(Math.atan2(my, mx) + Math.PI / 2).setDepth(spr.y);
+    s.tag.setPosition(spr.x, spr.y - 34);
+  }
 
   constructor(private scene: Phaser.Scene, private layout: WorldLayout, count = 3) {
     const looks = [
@@ -49,7 +148,7 @@ export class Opposition {
     for (let i = 0; i < count; i++) {
       const sprite = scene.add.sprite(-999, -999, `gop${i % 3}`, 0).setOrigin(0.5).setVisible(false);
       const tag = scene.add.text(-999, -999, 'FREE PARKING CAUCUS', { fontFamily: 'Nunito, Arial, sans-serif', fontSize: '11px', fontStyle: '900', color: '#ffffff', backgroundColor: '#d8262e', padding: { x: 5, y: 2 } }).setOrigin(0.5).setDepth(1e5).setVisible(false);
-      this.squads.push({ sprite, tag, home: { x: 0, y: 0 }, state: 'gone', t: 2 + i * 3, vx: 0, vy: 0 });
+      this.squads.push({ sprite, tag, home: { x: 0, y: 0 }, state: 'gone', t: 2 + i * 3, vx: 0, vy: 0, role: 'chase' });
     }
     bus.on('event:gop:won', () => this.disperse(this.engaged, true));
     bus.on('event:gop:lost', () => { if (this.engaged) this.caught(this.engaged); });
@@ -75,8 +174,9 @@ export class Opposition {
         x = player.x + Math.cos(a) * r; y = player.y + Math.sin(a) * r;
       }
       if (Math.hypot(x - player.x, y - player.y) < 320 || !this.walkable(x, y)) continue;
+      this.scene.tweens.killTweensOf([s.sprite, s.tag]);
       s.sprite.setPosition(x, y).setVisible(true).setAlpha(1);
-      s.tag.setVisible(true);
+      s.tag.setVisible(true).setAlpha(1);
       s.home = { x, y }; s.state = 'patrol'; s.t = 0;
       return;
     }
@@ -85,7 +185,8 @@ export class Opposition {
   private disperse(s: Squad | null, won: boolean) {
     if (!s) return;
     if (won) bus.emit('ui:toast', Phaser.Utils.Array.GetRandom(['THEY FOLD THEIR LAWN CHAIRS', 'FACT-CHECKED. THEY LEAVE.', 'THE CAUCUS RETREATS TO THE PARKING LOT']));
-    s.state = 'gone'; s.t = 35;
+    s.state = 'gone'; s.t = this.cfg.respawn;
+    if (s.role === 'wreck') this.endWreck(s);
     this.scene.tweens.add({ targets: [s.sprite, s.tag], alpha: 0, duration: 600, onComplete: () => { s.sprite.setVisible(false); s.tag.setVisible(false).setAlpha(1); } });
     this.engaged = null;
   }
@@ -110,7 +211,7 @@ export class Opposition {
     this.engaged = s;
     const d = Phaser.Utils.Array.GetRandom(DEBATES);
     const opts = Phaser.Utils.Array.Shuffle([
-      { text: d.right, effects: { solidarity: 15, inc: { gop_beaten: 1 }, event: 'gop:won' }, next: 'won' },
+      { text: d.right, effects: { solidarity: 15, attention: 3, inc: { gop_beaten: 1 }, event: 'gop:won' }, next: 'won' },
       { text: d.wrong[0], effects: { event: 'gop:lost' }, next: 'lost' },
       { text: d.wrong[1], effects: { event: 'gop:lost' }, next: 'lost' },
     ]);
@@ -129,23 +230,26 @@ export class Opposition {
    * @param target  where the mission is pointing (squads spawn in the way)
    * @param marchers how many people are following the player
    */
-  update(dt: number, player: { x: number; y: number }, fast: boolean, active: boolean, target: { x: number; y: number } | null, marchers: number) {
+  update(dt: number, player: { x: number; y: number }, fast: boolean, active: boolean, target: { x: number; y: number } | null, marchers: number, cfg: OppConfig = DEFAULT_CFG) {
+    this.cfg = cfg;
     if (!active) {
       if (this.wasActive) for (const s of this.squads) if (s.state !== 'gone') this.disperse(s, false);
       this.wasActive = false;
       return;
     }
     this.wasActive = true;
+    const out = this.squads.filter((s) => s.state !== 'gone' && s.role === 'chase').length;
     for (const s of this.squads) {
       const spr = s.sprite;
-      if (s.state === 'gone') { s.t -= dt; if (s.t <= 0) this.spawn(s, player, target); continue; }
+      if (s.state === 'gone') { s.t -= dt; if (s.t <= 0 && out < cfg.limit && this.squads.indexOf(s) < cfg.limit) this.spawn(s, player, target); continue; }
+      if (s.role === 'wreck') { this.updateWrecker(s, dt, player); continue; }
       const dx = player.x - spr.x, dy = player.y - spr.y, d = Math.hypot(dx, dy);
       if (d > 1500) { s.state = 'gone'; s.t = 3; spr.setVisible(false); s.tag.setVisible(false); continue; }
       if (s.state === 'cool') { s.t -= dt; if (s.t <= 0) s.state = 'patrol'; }
       if (s.state === 'patrol' && d < SEE) { s.state = 'chase'; this.scene.events.emit('gop:taunt', s, Phaser.Utils.Array.GetRandom(TAUNTS)); }
       if (s.state === 'chase' && d > GIVE_UP) s.state = 'patrol';
       let mx = 0, my = 0, sp = PATROL;
-      if (s.state === 'chase') { mx = dx / (d || 1); my = dy / (d || 1); sp = CHASE; }
+      if (s.state === 'chase') { mx = dx / (d || 1); my = dy / (d || 1); sp = cfg.chase; }
       else if (s.state === 'cool') { mx = -dx / (d || 1); my = -dy / (d || 1); sp = 60; }
       else {
         s.t -= dt;

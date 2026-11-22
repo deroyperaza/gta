@@ -6,7 +6,7 @@ import { DIALOGUES } from '../data/dialogues';
 import { FLYER_LINES, NPCS, PED_LINES, PLAYER_LOOK, type NpcDef } from '../data/npcs';
 import { Pedestrians, type Ped } from '../entities/pedestrians';
 import { Traffic } from '../entities/traffic';
-import { Opposition } from '../entities/opposition';
+import { Opposition, type OppConfig } from '../entities/opposition';
 import { dialogue } from '../systems/dialogue';
 import { missions } from '../systems/missions';
 import { ui } from '../ui/ui';
@@ -32,6 +32,12 @@ export class WorldScene extends Phaser.Scene {
   dragSteer = false;
   opp!: Opposition;
   stunUntil = 0;
+  /** Difficulty layers (missions 5+): standing at a stop takes time, set by that neighborhood's Trust */
+  private hold: { name: string; t: number; need: number } | null = null;
+  private holdRing!: Phaser.GameObjects.Graphics;
+  /** Stops finished in the current stage: the ones a wrecker can undo */
+  private stageSpots: string[] = [];
+  private quietT = 0; private lastAtt = 0; private attDrain = 0; private lastStars = -1;
   peds!: Pedestrians;
   traffic!: Traffic;
   minimap!: Phaser.Cameras.Scene2D.Camera;
@@ -101,7 +107,11 @@ export class WorldScene extends Phaser.Scene {
     this.buildNpcs(solids);
     this.setupMarch();
     this.peds = new Pedestrians(this, this.layout, 170);
-    this.opp = new Opposition(this, this.layout, 3);
+    this.opp = new Opposition(this, this.layout, 6);
+    this.holdRing = this.add.graphics().setDepth(1e6);
+    this.miniIgnore.push(this.holdRing);
+    bus.on('mission:stage', () => { this.stageSpots = []; this.hold = null; });
+    bus.on('opposition:wrecked', (name: string) => this.wrecked(name));
     this.events.on('gop:taunt', (sq: any, t: string) => this.bubble(sq.sprite, t));
     bus.on('opposition:caught', () => this.heldUp());
     bus.on('opposition:outnumbered', () => state.apply({ solidarity: 8 }, { quiet: true }));
@@ -623,7 +633,9 @@ export class WorldScene extends Phaser.Scene {
   // ------------------------------------------------------------------ MISSION 3 · THE PEOPLE VS. THE POWER
   /** Caught by the Free Parking Caucus: a hold-up, and they take something. */
   private heldUp() {
-    this.stunUntil = performance.now() + 1800;
+    const tough = (missions.active?.number ?? 0) >= 5;
+    this.stunUntil = performance.now() + 1800 + (tough ? state.stars() * 300 : 0);
+    if (this.hold) { this.hold = null; bus.emit('ui:toast', 'THEY TALKED OVER YOU. START AGAIN.'); }
     this.cameras.main.shake(200, 0.004);
     const losses: string[] = [];
     if (state.count('flyers') > 0) { const n = Math.min(2, state.count('flyers')); state.apply({ items: { flyers: -n } }, { quiet: true }); losses.push(`-${n} FLYERS`); }
@@ -658,15 +670,95 @@ export class WorldScene extends Phaser.Scene {
   }
 
   /** Mission stages can target a place (`spot:<name>`): getting there sets the flag `at_<name>`. */
-  private spotArrivals() {
+  private spotArrivals(dt: number) {
+    const n = missions.active?.number ?? 0;
+    let inside: string | null = null;
     for (const id of missions.targets()) {
       if (!id.startsWith('spot:')) continue;
       const name = id.slice(5), p = this.layout.spots[name];
-      if (p && !state.flag(`at_${name}`) && Math.hypot(p.x - this.player.x, p.y - this.player.y) < 90) {
-        state.apply({ flags: { [`at_${name}`]: true } });
-        this.celebrate(this.player.x, this.player.y);
+      if (!p || state.flag(`at_${name}`) || Math.hypot(p.x - this.player.x, p.y - this.player.y) >= 90) continue;
+      inside = name;
+      const need = n >= 5 ? this.holdTime(p) : 0;
+      if (need > 0) {
+        if (this.hold?.name !== name) this.hold = { name, t: 0, need };
+        this.hold.t += dt;
+        if (this.hold.t < this.hold.need) break;
       }
+      this.hold = null;
+      this.stageSpots.push(name); // before apply: if this finishes the stage, the stage reset clears it
+      state.apply({ flags: { [`at_${name}`]: true } });
+      this.celebrate(this.player.x, this.player.y);
+      this.maybeWreck(n);
+      break;
     }
+    if (!inside) this.hold = null;
+    this.holdRing.clear();
+    if (this.hold) {
+      const k = Math.min(1, this.hold.t / this.hold.need), r = 40;
+      this.holdRing.lineStyle(8, 0x000000, 0.35).strokeCircle(this.player.x, this.player.y, r);
+      this.holdRing.lineStyle(6, 0xffd23f, 1).beginPath().arc(this.player.x, this.player.y, r, -Math.PI / 2, -Math.PI / 2 + k * Math.PI * 2).strokePath();
+    }
+  }
+
+  /** Seconds of talking it takes to win a stop over: 1 with strong Trust, 3 at zero, 4 if they distrust you. */
+  private holdTime(p: { x: number; y: number }) {
+    const tr = state.d.trust[districtAt(p.x, p.y)] ?? 0;
+    return Phaser.Math.Clamp(3 - tr / 25, 1, 4);
+  }
+
+  /** Missions 7+: after you finish a stop, the Caucus may send someone to undo one. */
+  private maybeWreck(n: number) {
+    if (n < 7 || this.opp.wrecking()) return;
+    const left = missions.targets().filter((t) => t.startsWith('spot:') && !state.flag(`at_${t.slice(5)}`));
+    if (!left.length || !this.stageSpots.length) return;
+    const chance = Math.min(0.9, 0.4 + (n - 7) * 0.08 + state.stars() * 0.1);
+    if (Math.random() > chance) return;
+    this.time.delayedCall(2500, () => {
+      const name = Phaser.Utils.Array.GetRandom(this.stageSpots.filter((s) => state.flag(`at_${s}`)));
+      const p = name && this.layout.spots[name];
+      if (!p || !missions.active || this.mode !== 'play') return;
+      if (this.opp.dispatchWrecker(name, p, this.player)) {
+        bus.emit('ui:toast', state.flag('seen_wrecker') ? 'THE CAUCUS IS GOING BACK TO UNDO A STOP' : 'THE CAUCUS IS HEADING TO UNDO YOUR WORK. HEAD THEM OFF!');
+        state.setFlag('seen_wrecker', true);
+      }
+    });
+  }
+
+  private wrecked(name: string) {
+    if (!missions.active || !state.flag(`at_${name}`)) return;
+    this.stageSpots = this.stageSpots.filter((s) => s !== name);
+    state.apply({ flags: { [`at_${name}`]: false }, solidarity: -10 }, { quiet: true });
+    bus.emit('ui:toast', 'THE CAUCUS TALKED THEM OUT OF IT. GO BACK.');
+    this.cameras.main.shake(250, 0.004);
+  }
+
+  /** Difficulty for the Caucus right now: later missions and more stars mean more of them, faster, sooner. */
+  private oppConfig(): OppConfig {
+    const n = missions.active?.number ?? 0, st = state.stars();
+    if (n < 5) return { limit: 3, chase: 170, wreck: 110, respawn: 35 };
+    return {
+      limit: Math.min(6, 3 + (n >= 10 ? 1 : 0) + (st >= 3 ? 1 : 0) + (st >= 5 ? 1 : 0)),
+      chase: 170 + st * 9 + (n >= 10 ? 8 : 0), // tops out at 223: a sprint (245) still gets away
+      wreck: 80 + st * 6, // slower than a walk (150): you can always get back in time if you go now
+      respawn: Math.max(12, 35 - st * 5),
+    };
+  }
+
+  /** Attention drains when you lie low (no new attention for 12 seconds), and the stars go with it. */
+  private attentionTick(dt: number) {
+    const a = state.d.attention;
+    if (a > this.lastAtt) this.quietT = 0; else this.quietT += dt;
+    if (this.quietT > 12 && a > 0) {
+      this.attDrain += dt;
+      if (this.attDrain >= 2) { this.attDrain = 0; state.d.attention = a - 1; state.changed(); }
+    }
+    this.lastAtt = state.d.attention;
+    const st = state.stars();
+    if (this.lastStars >= 0 && st !== this.lastStars) {
+      const s = '★'.repeat(st) || 'NO STARS';
+      bus.emit('ui:toast', st > this.lastStars ? `${s} · THE CAUCUS HAS NOTICED YOU` : `${s} · LYING LOW`);
+    }
+    this.lastStars = st;
   }
 
   private celebrate(x: number, y: number) { this.hearts(x, y - 30, 20); this.cameras.main.flash(300, 255, 210, 63); }
@@ -733,9 +825,11 @@ export class WorldScene extends Phaser.Scene {
       const am = missions.active, st = am ? state.mission(am.id).stage : 0;
       const tp = missions.targets().map((id) => this.entityPos[id]).find(Boolean) ?? null;
       const fast = this.onBike || this.keys.SHIFT.isDown;
-      this.opp.update(dt, this.player, fast, !!am && st >= 1 && !blocking, tp, this.peds.followers().length);
+      this.opp.update(dt, this.player, fast, !!am && st >= 1 && !blocking, tp, this.peds.followers().length, this.oppConfig());
     }
-    if (!blocking) { this.marchTriggers(); this.spotArrivals(); }
+    if (!blocking) { this.marchTriggers(); this.spotArrivals(dt); }
+    else this.holdRing.clear();
+    if (!blocking && this.mode === 'play') this.attentionTick(dt);
     this.traffic.update(dt, this.player, (dx, dy) => { if (this.mode === 'play') { this.player.x += dx; this.player.y += dy; } });
 
     // Prompt
@@ -744,6 +838,7 @@ export class WorldScene extends Phaser.Scene {
       const it = sq ? null : this.nearestInteractable();
       const ped = !it && !sq ? this.nearPed() : null;
       const parts: string[] = [];
+      if (this.hold) parts.push(`<span class="pa">Winning them over… ${Math.max(0, this.hold.need - this.hold.t).toFixed(1)}s · stay close</span>`);
       if (sq) parts.push('<span class="pa" data-act="interact"><b>E</b> Debate the Caucus</span>');
       if (it) parts.push(`<span class="pa" data-act="interact"><b>E</b> ${it.label()}</span>`);
       else if (ped) parts.push('<span class="pa" data-act="interact"><b>E</b> Chat</span>');
@@ -773,6 +868,8 @@ export class WorldScene extends Phaser.Scene {
 
     // Waypoint arrow toward nearest target
     const targets = missions.targets().map((id) => this.entityPos[id]).filter(Boolean);
+    const wr = this.opp.wrecking();
+    if (wr) targets.push({ x: wr.sprite.x, y: wr.sprite.y });
     if (targets.length && this.mode === 'play' && !blocking) {
       let best = targets[0], bd = Infinity;
       for (const t of targets) { const dd = Phaser.Math.Distance.Between(this.player.x, this.player.y, t.x, t.y); if (dd < bd) { bd = dd; best = t; } }

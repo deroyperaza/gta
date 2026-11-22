@@ -88,6 +88,12 @@ class MissionSystem {
     const bonus = (def.optional ?? []).filter((o) => m.optionalDone[o.id]).length;
     if (def.optional?.length) lines.push(`BONUS OBJECTIVES ${bonus}/${def.optional.length}`);
     state.apply(reward, { quiet: true });
+    // Missions 5+: a weak result costs you. The neighborhood trusts you less (so its stops take longer next time),
+    // and the person who brought you in is a little let down.
+    if (def.number >= 5 && state.flag(`${def.id}_result`) === 'weak') {
+      state.apply({ trust: { [def.district]: -8 }, rel: { [def.giver]: -4 } }, { quiet: true });
+      lines.push(`${DISTRICTS[def.district].name.toUpperCase()} TRUST -8 · THE BLOCK REMEMBERS`);
+    }
     bus.emit('mission:passed', { def, lines, toast: reward.toast });
     if (def.next) {
       const nm = state.mission(def.next);

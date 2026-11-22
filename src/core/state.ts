@@ -39,6 +39,8 @@ class GameState {
   addSolidarity(n: number) { this.d.solidarity = Math.max(0, this.d.solidarity + n); }
   addPower(n: number) { this.d.power = Math.max(0, this.d.power + n); }
   addAttention(n: number) { this.d.attention = Math.max(0, Math.min(100, this.d.attention + n)); }
+  /** Attention as a wanted level: 0–5 stars. The louder you are, the more the Caucus shows up. */
+  stars(): number { const a = this.d.attention; return a >= 80 ? 5 : a >= 60 ? 4 : a >= 40 ? 3 : a >= 20 ? 2 : a >= 8 ? 1 : 0; }
   addTrust(dist: District, n: number) { this.d.trust[dist] = Math.max(-100, Math.min(100, this.d.trust[dist] + n)); }
   rel(id: string) { return this.d.relationships[id] ?? 0; }
   addRel(id: string, n: number) { this.d.relationships[id] = Math.max(-100, Math.min(100, this.rel(id) + n)); }
