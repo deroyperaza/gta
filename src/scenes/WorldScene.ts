@@ -375,6 +375,10 @@ export class WorldScene extends Phaser.Scene {
     for (const l of this.layout.labels) {
       const t = this.add.text(l.x, l.y - 40, l.text.toUpperCase().split('').join(' '), { fontFamily: '"Helvetica Neue", Inter, Arial, sans-serif', fontSize: '22px', fontStyle: '300', color: '#f4ece0', shadow: { offsetX: 0, offsetY: 2, color: 'rgba(0,0,0,.6)', blur: 6, fill: true } }).setOrigin(0.5).setDepth(5).setAlpha(0.8).setRotation(l.angle ?? 0);
       this.miniIgnore.push(t);
+      // A street name painted on the road gets a block of road color behind it, so the yellow center line doesn't run through the letters
+      const tile = this.layout.tiles[Math.floor((l.y - 40) / TILE)]?.[Math.floor(l.x / TILE)];
+      const onRoad = l.angle !== undefined || [T.ASPHALT, T.LANE_V, T.LANE_H, T.INTERSECTION].includes(tile as T);
+      if (onRoad) this.miniIgnore.push(this.add.rectangle(l.x, l.y - 40, t.width + 28, t.height + 8, l.angle !== undefined ? 0x24272a : 0x34363a, 1).setRotation(l.angle ?? 0).setDepth(4.9));
     }
   }
 
