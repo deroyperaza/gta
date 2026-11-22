@@ -170,6 +170,13 @@ export function makeBuilding(scene: Phaser.Scene, b: BuildingDef) {
   makeBuildingShadow(scene, b);
 }
 
+/** The storefront sign band of a shop building, in world px (null if it has no storefront). */
+export function signBand(b: BuildingDef) {
+  if (!SHOPS.has(b.type)) return null;
+  const sfH = Math.min(26, facadeH(b) * 0.42);
+  return { x: b.x + 4, y: b.y + b.h - sfH, w: b.w - 8, h: 10 };
+}
+
 const PAD = 10;
 export function shadowOffset(b: BuildingDef) { const ht = heightOf(b); return { dx: Math.min(ht * SUN_SHADOW.dx, 190), dy: Math.min(ht * SUN_SHADOW.dy, 60) }; }
 export function makeBuildingShadow(scene: Phaser.Scene, b: BuildingDef) {
@@ -411,7 +418,7 @@ function storefront(c: Ctx, b: BuildingDef, wall: string, y: number, sfH: number
   const [bg, fg] = SIGNS[type] ?? ['#1c1a18', '#f4efe6'];
   c.fillStyle = bg; c.fillRect(4, y, w - 8, 10);
   c.fillStyle = 'rgba(255,255,255,.12)'; c.fillRect(4, y, w - 8, 1);
-  if (b.name || type !== 'studio') sign(c, b.name || type.toUpperCase(), w / 2, y + 5.5, w - 14, 8, fg, 800);
+  if (b.name) sign(c, b.name, w / 2, y + 5.5, w - 14, 8, fg, 800); // unnamed shops get a named sign laid over this band (WorldScene)
   // glass + door
   c.fillStyle = lg(c, 0, y + 10, 0, y + sfH, [[0, '#2e3a44'], [1, '#141a20']]); c.fillRect(4, y + 10, w - 8, sfH - 10);
   c.fillStyle = 'rgba(255,200,140,.28)'; c.fillRect(6, y + 12, (w - 12) * 0.55, sfH - 14);

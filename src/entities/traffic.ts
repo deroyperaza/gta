@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { BLOCK_H, BLOCK_W, COLS, GAP_CIRCLE, ROWS, TILE, isLand } from '../world/layout';
+import { BLOCK_H, BLOCK_W, COLS, GAP_CIRCLE, ROAD, ROWS, T, TILE, isLand } from '../world/layout';
 
 /** Grand Army Plaza: lanes that meet the island swing around it, counterclockwise like a real NYC circle. */
 const GCX = GAP_CIRCLE.x * TILE, GCY = GAP_CIRCLE.y * TILE, GA = (GAP_CIRCLE.ax + GAP_CIRCLE.w / 2) * TILE, GB = (GAP_CIRCLE.ay + GAP_CIRCLE.w / 2) * TILE;
@@ -42,8 +42,12 @@ export class Traffic {
   constructor(private scene: Phaser.Scene, onHonk: (x: number, y: number) => void) {
     this.onHonk = onHonk;
     const r = Phaser.Math.RND;
+    // A stretch of street only gets cars if it's really road there (not the boardwalk, the beach or the ocean)
+    const tiles: number[][] = (scene as any).layout.tiles;
+    const ROADT = new Set<number>([T.ASPHALT, T.LANE_V, T.LANE_H, T.INTERSECTION, T.CROSS_V, T.CROSS_H]);
+    const road = (tx: number, ty: number) => ROADT.has(tiles[ty]?.[tx] ?? -1);
     // Vertical streets: line k runs between block columns k-1 and k, wherever one of them is Brooklyn
-    for (let k = 0; k <= COLS; k++) for (const [a, b] of runs(ROWS, (row) => isLand(k - 1, row) || isLand(k, row))) {
+    for (let k = 0; k <= COLS; k++) for (const [a, b] of runs(ROWS, (row) => (isLand(k - 1, row) || isLand(k, row)) && road(k * BLOCK_W + 1, row * BLOCK_H + ROAD + 9))) {
       const x0 = k * BLOCK_W * TILE, min = a * BLOCK_H * TILE + 48, max = b * BLOCK_H * TILE + 48;
       for (const [dir, off] of [[1, 24], [-1, 72]] as const) {
         const n = Math.max(1, Math.round((b - a) * 0.22 + r.frac()));
@@ -51,7 +55,7 @@ export class Traffic {
       }
     }
     // Horizontal streets
-    for (let k = 0; k <= ROWS; k++) for (const [a, b] of runs(COLS, (col) => isLand(col, k - 1) || isLand(col, k))) {
+    for (let k = 0; k <= ROWS; k++) for (const [a, b] of runs(COLS, (col) => (isLand(col, k - 1) || isLand(col, k)) && road(col * BLOCK_W + ROAD + 9, k * BLOCK_H + 1))) {
       const y0 = k * BLOCK_H * TILE, min = a * BLOCK_W * TILE + 48, max = b * BLOCK_W * TILE + 48;
       for (const [dir, off] of [[-1, 24], [1, 72]] as const) {
         const n = Math.max(1, Math.round((b - a) * 0.22 + r.frac()));

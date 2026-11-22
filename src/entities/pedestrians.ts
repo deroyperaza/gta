@@ -94,7 +94,7 @@ export class Pedestrians {
       p.timer -= dt;
       if (p.timer <= 0) { if (Math.random() < 0.25) { p.pause = Phaser.Math.FloatBetween(1, 3); p.timer = 1; continue; } this.pickDir(p); }
       const nx = s.x + p.vx * p.speed * dt, ny = s.y + p.vy * p.speed * dt;
-      if (this.walkable(nx + p.vx * 10, ny + p.vy * 6)) { s.x = nx; s.y = ny; if (visible && !s.anims.isPlaying) s.anims.resume(); }
+      if (this.walkable(nx + p.vx * 10, ny + p.vy * (p.vy > 0 ? 16 : 6))) { s.x = nx; s.y = ny; if (visible && !s.anims.isPlaying) s.anims.resume(); }
       else this.pickDir(p);
       s.setRotation(Math.atan2(p.vy, p.vx) + Math.PI / 2);
       s.setDepth(s.y);

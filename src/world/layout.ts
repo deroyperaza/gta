@@ -822,7 +822,8 @@ export function generateLayout(): WorldLayout {
     const t = Math.max(0, Math.min(1, ((x - ax) * dx + (y - ay) * dy) / (dx * dx + dy * dy)));
     return Math.hypot(x - ax - t * dx, y - ay - t * dy) < RUNWAY_W / 2 + 18;
   });
-  const keptProps = props.filter((p) => !onRunway(p.x, p.y));
+  // ...and nothing stands in the water (streetlamps from a street that became ocean, for one)
+  const keptProps = props.filter((p) => !onRunway(p.x, p.y) && tiles[Math.floor(p.y / TILE)]?.[Math.floor(p.x / TILE)] !== T.WATER);
   return { tiles, blocked, buildings, props: keptProps, spots, labels, avenues };
 }
 

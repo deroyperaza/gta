@@ -16,6 +16,8 @@ import { missions } from '../systems/missions';
 import { ui } from '../ui/ui';
 import { BLOCK_H, BLOCK_W, COLS, ROWS, RUNWAYS, RUNWAY_W, geo, neighborhoodOfBlock, GAP_CIRCLE, gapOutline, ROAD, T, TILE, WORLD_H, WORLD_W, districtAt, generateLayout, neighborhoodAt, type BuildingDef, type WorldLayout } from '../world/layout';
 import { makeProps } from '../world/textures';
+import { signBand } from '../world/golden';
+import { storefrontFor } from '../data/storefronts';
 import { buildingKey, makeBikeRider, makeBridgeTower, makeBuilding, makeCharacter, makePlayerMarker, makeStreetProps, makeTiles, makeVehicles, shadowKey, shadowOffset, SHADOW_PAD } from '../world/golden';
 
 interface Interactable {
@@ -37,6 +39,7 @@ export class WorldScene extends Phaser.Scene {
   opp!: Opposition;
   transit!: Transit;
   stunUntil = 0;
+  storeNames = new Set<string>(); // every shop's name, kept unique
   dragonSign?: Phaser.GameObjects.Text; dragonMM?: Phaser.GameObjects.Text;
   /** Naim's dragon: 30 seconds of flight over buildings, cars and water */
   private flyUntil = 0; private flyShadow?: Phaser.GameObjects.Ellipse; private flap?: Phaser.Tweens.Tween;
@@ -204,6 +207,15 @@ export class WorldScene extends Phaser.Scene {
       this.miniIgnore.push(shd);
       const img = solids.create(b.x + b.w / 2, b.y + b.h / 2, buildingKey(b)) as Phaser.Physics.Arcade.Image;
       img.setDepth(b.y + b.h);
+      // Unnamed shops: a named sign over the storefront band (live text, so every shop can have its own name)
+      const band = !b.name ? signBand(b) : null;
+      if (band) {
+        const st = storefrontFor(b.id, b.district, neighborhoodAt(b.x + b.w / 2, b.y + b.h + 20) ?? null, this.storeNames);
+        const bg = Phaser.Display.Color.HexStringToColor(st.sign[0]).color;
+        const sb = this.add.rectangle(band.x, band.y, band.w, band.h, bg).setOrigin(0).setDepth(b.y + b.h + 0.1);
+        const t = this.add.text(band.x + band.w / 2, band.y + band.h / 2 + 0.5, st.name, { fontFamily: 'Nunito, Arial, sans-serif', fontStyle: '900', fontSize: '24px', color: st.sign[1] }).setOrigin(0.5).setDepth(b.y + b.h + 0.2);
+        t.setScale(Math.min(8 / 24, (band.w - 6) / t.width)); this.miniIgnore.push(sb, t);
+      }
       // Slightly inset collision so the player can hug facades
       (img.body as Phaser.Physics.Arcade.StaticBody).setSize(b.w - 4, b.h - 6).setOffset(2, 0);
       if (this.textures.exists(`lm-${b.id}`)) {
