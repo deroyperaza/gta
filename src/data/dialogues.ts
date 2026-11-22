@@ -725,7 +725,8 @@ import { NEIGHBORS } from './neighbors';
 import { GHOSTS } from './ghosts';
 import { VILLAINS, villainDialogue } from './villains';
 for (const v of VILLAINS) DIALOGUES[v.id] = villainDialogue(v); // boss fights
-for (const nb of [...NEIGHBORS, ...GHOSTS]) {
+import { CAMEOS } from './cameos';
+for (const nb of [...NEIGHBORS, ...GHOSTS, ...CAMEOS]) {
   for (const n of Object.values(nb.dialogue.nodes)) { const cs = n.choices ?? []; if (cs.length > 1 && cs.some((c) => c.tag) && cs.some((c) => !c.tag)) n.shuffle = true; }
   const base = DIALOGUES[nb.id];
   if (!base) { DIALOGUES[nb.id] = nb.dialogue; continue; }
