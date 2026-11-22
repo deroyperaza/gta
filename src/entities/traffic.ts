@@ -23,16 +23,20 @@ function runs(n: number, has: (i: number) => boolean) {
 
 interface Vehicle {
   sprite: Phaser.GameObjects.Image; shadow: Phaser.GameObjects.Image;
+  /** Police and ambulances on a call: flashing light bar, a little faster */
+  lights?: Phaser.GameObjects.Graphics; ems?: boolean;
   axis: 'x' | 'y'; dir: 1 | -1; lane: number; speed: number; cur: number; len: number; bike: boolean;
   /** this street's stretch (px along the axis) and its two lanes; at either end the car U-turns into the other lane */
   min: number; max: number; lanes: [number, number];
 }
 
-const CAR_KEYS = ['car0', 'car1', 'car2', 'car3', 'car3', 'car4', 'car5', 'van', 'car6'];
+const CAR_KEYS = ['car0', 'car1', 'car2', 'car3', 'car3', 'car4', 'car5', 'van', 'car6', 'police', 'police', 'ambulance', 'ambulance'];
 
 /** Lane-following traffic that brakes for the player and for each other. */
 export class Traffic {
   vehicles: Vehicle[] = [];
+  /** Light bars, so the minimap can ignore them */
+  lightSprites: Phaser.GameObjects.Graphics[] = [];
   private honkCooldown = 0;
 
   constructor(private scene: Phaser.Scene, onHonk: (x: number, y: number) => void) {
@@ -64,7 +68,11 @@ export class Traffic {
     s.rotation = axis === 'y' ? (dir === 1 ? Math.PI : 0) : dir === 1 ? Math.PI / 2 : -Math.PI / 2;
     const shadow = this.scene.add.image(x, y, `${key}-shd`).setRotation(s.rotation).setDepth(-4);
     const speed = bike ? Phaser.Math.Between(80, 110) : Phaser.Math.Between(110, 190);
-    this.vehicles.push({ sprite: s, shadow, axis, dir, lane, speed, cur: speed, len: s.height, bike, min, max, lanes });
+    const emergency = key === 'police' || key === 'ambulance';
+    const onCall = emergency && Math.random() < 0.5;
+    const lights = onCall ? this.scene.add.graphics().setDepth(s.depth + 1) : undefined;
+    this.vehicles.push({ sprite: s, shadow, axis, dir, lane, speed: onCall ? speed * 1.35 : speed, cur: onCall ? speed * 1.35 : speed, len: s.height, bike, min, max, lanes, lights, ems: key === 'ambulance' });
+    if (lights) this.lightSprites.push(lights);
   }
 
   update(dt: number, player: { x: number; y: number }, pushPlayer: (dx: number, dy: number) => void) {
@@ -99,6 +107,14 @@ export class Traffic {
       v.shadow.setRotation(s.rotation);
       s.setDepth(s.y + 20);
       v.shadow.setPosition(s.x + 9, s.y + 3);
+      if (v.lights) { // the light bar flashes: red/blue for police, red/white for EMS
+        const on = Math.floor(this.scene.time.now / 160) % 2 === 0, g = v.lights;
+        g.clear().setPosition(s.x, s.y).setRotation(s.rotation).setDepth(s.depth + 1);
+        const off = v.ems ? -v.len / 2 + 14 : v.len * 0.12; // light bar position along the vehicle (it faces up before rotation)
+        g.fillStyle(on ? 0xff2a2a : (v.ems ? 0xffffff : 0x2a6bff), 1).fillCircle(-7, off, 3.2);
+        g.fillStyle(on ? (v.ems ? 0xffffff : 0x2a6bff) : 0xff2a2a, 1).fillCircle(7, off, 3.2);
+        g.fillStyle(on ? 0xff2a2a : 0x2a6bff, 0.18).fillCircle(on ? -7 : 7, off, 12);
+      }
 
       // Collision with player: shove them sideways out of the lane.
       const w = v.axis === 'y' ? 20 : v.len / 2, h = v.axis === 'y' ? v.len / 2 : 20;

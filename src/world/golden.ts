@@ -540,7 +540,7 @@ export function makeBikeRider(scene: Phaser.Scene, key: string, look: Look) {
 }
 
 // ------------------------------------------------------------------ VEHICLES (top-down, facing up)
-function drawCar(c: Ctx, L: number, Wd: number, body: string, o: { taxi?: boolean; box?: boolean; label?: string; boro?: boolean }) {
+function drawCar(c: Ctx, L: number, Wd: number, body: string, o: { taxi?: boolean; box?: boolean; label?: string; boro?: boolean; police?: boolean; ems?: boolean; labelColor?: string }) {
   c.save(); c.rotate(-Math.PI / 2);
   c.fillStyle = '#0d0d0f'; [[-L * 0.3, -1], [L * 0.3, -1], [-L * 0.3, 1], [L * 0.3, 1]].forEach(([tx, s]) => c.fillRect(tx - 7, s * Wd / 2 - 2, 14, 4));
   const gloss = (p: () => void) => { c.fillStyle = lg(c, 0, -Wd / 2, 0, Wd / 2, [[0, 'rgba(255,255,255,.3)'], [0.35, 'rgba(255,255,255,.06)'], [0.65, 'rgba(0,0,0,.05)'], [1, 'rgba(0,0,0,.38)']]); p(); c.fill(); };
@@ -549,7 +549,8 @@ function drawCar(c: Ctx, L: number, Wd: number, body: string, o: { taxi?: boolea
     c.fillStyle = '#1b232c'; c.fillRect(L / 2 - 11, -Wd / 2 + 4, 6, Wd - 8);
     c.fillStyle = '#ecebe6'; rr(c, -L / 2, -Wd / 2 - 1, L - 26, Wd + 2, 2); c.fill(); gloss(() => rr(c, -L / 2, -Wd / 2 - 1, L - 26, Wd + 2, 2));
     c.strokeStyle = '#b9b7b0'; c.lineWidth = 0.8; for (let i = -L / 2 + 6; i < L / 2 - 30; i += 7) line(c, i, -Wd / 2, i, Wd / 2);
-    if (o.label) { c.save(); c.translate(-6, 0); c.font = `900 10px ${SANS}`; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillStyle = '#e8702a'; c.fillText(o.label, 0, 0); c.restore(); }
+    if (o.label) { c.save(); c.translate(-6, 0); c.font = `900 10px ${SANS}`; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillStyle = o.labelColor ?? '#e8702a'; c.fillText(o.label, 0, 0); c.restore(); }
+    if (o.ems) { c.fillStyle = '#d8262e'; c.fillRect(-L / 2, -Wd / 2 - 1, L - 26, 3); c.fillRect(-L / 2, Wd / 2 - 2, L - 26, 3); c.fillStyle = '#26282c'; c.fillRect(L / 2 - 30, -Wd * 0.34, 4, Wd * 0.68); } // red stripes, light bar over the cab
   } else {
     c.fillStyle = body; rr(c, -L / 2, -Wd / 2, L, Wd, 9); c.fill(); gloss(() => rr(c, -L / 2, -Wd / 2, L, Wd, 9));
     c.strokeStyle = 'rgba(0,0,0,.25)'; c.lineWidth = 0.8; line(c, L * 0.3, -Wd * 0.25, L * 0.45, -Wd * 0.28); line(c, L * 0.3, Wd * 0.25, L * 0.45, Wd * 0.28);
@@ -559,6 +560,7 @@ function drawCar(c: Ctx, L: number, Wd: number, body: string, o: { taxi?: boolea
     c.fillStyle = col(body, 1, 0.9); rr(c, -L * 0.26, -Wd * 0.39, L * 0.32, Wd * 0.78, 4); c.fill(); gloss(() => rr(c, -L * 0.26, -Wd * 0.39, L * 0.32, Wd * 0.78, 4));
     c.fillStyle = '#10151b'; c.fillRect(-L * 0.25, -Wd * 0.46, L * 0.3, Wd * 0.07); c.fillRect(-L * 0.25, Wd * 0.39, L * 0.3, Wd * 0.07);
     if (o.taxi) { c.fillStyle = '#f5f0d8'; rr(c, -L * 0.14, -5, 9, 10, 2); c.fill(); }
+    if (o.police) { c.fillStyle = '#1f4fb8'; c.fillRect(-L * 0.42, -Wd / 2, L * 0.84, 2.5); c.fillRect(-L * 0.42, Wd / 2 - 2.5, L * 0.84, 2.5); c.fillStyle = '#26282c'; c.fillRect(-L * 0.12, -Wd * 0.34, 4, Wd * 0.68); } // blue stripes, roof light bar
     if (o.boro) { c.fillStyle = 'rgba(255,255,255,.7)'; c.fillRect(-L * 0.4, -Wd / 2 + 1, L * 0.7, 2); c.fillRect(-L * 0.4, Wd / 2 - 3, L * 0.7, 2); }
   }
   c.fillStyle = '#f2efe2'; c.fillRect(L / 2 - 3, -Wd * 0.38, 2.5, 6); c.fillRect(L / 2 - 3, Wd * 0.38 - 6, 2.5, 6);
@@ -567,14 +569,15 @@ function drawCar(c: Ctx, L: number, Wd: number, body: string, o: { taxi?: boolea
 }
 
 export function makeVehicles(scene: Phaser.Scene) {
-  const cars: { key: string; body: string; long?: boolean; taxi?: boolean; boro?: boolean; label?: string }[] = [
+  const cars: { key: string; body: string; long?: boolean; taxi?: boolean; boro?: boolean; label?: string; police?: boolean; ems?: boolean; labelColor?: string }[] = [
     { key: 'car0', body: '#1c1d20' }, { key: 'car1', body: '#e4e4e2' }, { key: 'car2', body: '#e9b32a', taxi: true },
     { key: 'car3', body: '#7fb84a', taxi: true, boro: true }, { key: 'car4', body: '#141518' },
     { key: 'car5', body: '#5b1e22' }, { key: 'van', body: '#d8d6d0', long: true, label: 'SMAZON' }, { key: 'car6', body: '#2d3f5c' },
+    { key: 'police', body: '#f2f2f0', police: true }, { key: 'ambulance', body: '#f2f2f0', long: true, ems: true, label: 'EMS', labelColor: '#d8262e' },
   ];
   for (const v of cars) {
     const w = 38, h = v.long ? 84 : 66;
-    canvas(scene, v.key, w, h, (c) => { c.translate(w / 2, h / 2); drawCar(c, h - 4, w - 8, v.body, { taxi: v.taxi, boro: v.boro, box: v.long, label: v.label }); });
+    canvas(scene, v.key, w, h, (c) => { c.translate(w / 2, h / 2); drawCar(c, h - 4, w - 8, v.body, { taxi: v.taxi, boro: v.boro, box: v.long, label: v.label, police: v.police, ems: v.ems, labelColor: v.labelColor }); });
     canvas(scene, `${v.key}-shd`, w + 12, h + 12, (c) => { c.filter = 'blur(4px)'; c.fillStyle = 'rgba(8,5,14,.55)'; rr(c, 6, 6, w, h, 10); c.fill(); });
   }
   canvas(scene, 'cyclist', 22, 44, (c) => { c.translate(11, 22); drawBike(c, '#c8322a', 0, 38); c.translate(0, 3); drawWalker(c, { skin: '#c58a5c', hair: '#1a1010', style: 'cap', hatColor: '#2b3a6b', shirt: '#e8e6df', pants: '#2b3a6b' }, 0, 1.3); });

@@ -465,7 +465,7 @@ export class WorldScene extends Phaser.Scene {
     this.layoutMinimap();
     this.mmPlayer = this.add.image(0, 0, 'mm-player').setDepth(2e6).setScale(1.2);
     this.cameras.main.ignore(this.mmPlayer);
-    this.minimap.ignore([this.player, this.arrow, ...this.miniIgnore, ...this.peds.sprites(), ...this.opp.sprites()]);
+    this.minimap.ignore([this.player, this.arrow, ...this.miniIgnore, ...this.peds.sprites(), ...this.opp.sprites(), ...this.traffic.lightSprites]);
   }
   private layoutMinimap() {
     if (!this.minimap) return;
