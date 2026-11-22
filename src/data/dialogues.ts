@@ -716,3 +716,11 @@ for (const mod of MODULES) for (const [npc, d] of Object.entries(mod.dialogue)) 
   base.entries.unshift(...d.entries);
   for (const [k, n] of Object.entries(d.nodes)) { if (base.nodes[k]) console.warn('dialogue node clash', npc, k); base.nodes[k] = n; }
 }
+
+// Neighbors (src/data/neighbors.ts): each brings their own conversation. Shuffle any choice with a best answer.
+import { NEIGHBORS } from './neighbors';
+for (const nb of NEIGHBORS) {
+  if (DIALOGUES[nb.id]) { console.warn('neighbor id clash', nb.id); continue; }
+  for (const n of Object.values(nb.dialogue.nodes)) { const cs = n.choices ?? []; if (cs.length > 1 && cs.some((c) => c.tag) && cs.some((c) => !c.tag)) n.shuffle = true; }
+  DIALOGUES[nb.id] = nb.dialogue;
+}

@@ -462,6 +462,9 @@ function drawWalker(c: Ctx, L: Look, f: number, scale = PS) {
   if (L.acc === 'ringlight') { c.strokeStyle = 'rgba(255,255,240,.95)'; c.lineWidth = 1; ell(c, 7, -3, 2.4, 2.4); c.stroke(); }
   // head + hair
   c.fillStyle = L.skin; ell(c, 0.6, 0, 3.2, 3.1); c.fill();
+  if (L.acc === 'wheelchair') { c.fillStyle = '#2a2a30'; rr(c, -5.5, -6.8, 9, 2.2, 1); c.fill(); rr(c, -5.5, 4.6, 9, 2.2, 1); c.fill(); c.fillStyle = '#5a5a62'; c.fillRect(-6.5, -4.5, 2, 9); }
+  if (L.acc === 'whitecane') { c.strokeStyle = '#f4f4f4'; c.lineWidth = 0.7; line(c, 2.5, 6.5, 9.5, 8); c.strokeStyle = '#c8322a'; line(c, 8.8, 7.85, 9.5, 8); }
+  const covered = L.style === 'hijab' || L.style === 'turban';
   const hat = L.style === 'beanie' || L.style === 'cap' || L.acc === 'beret';
   switch (L.style) {
     case 'bald': c.fillStyle = 'rgba(255,230,200,.35)'; ell(c, -0.4, -0.8, 1.4, 1.1); c.fill(); break;
@@ -470,13 +473,16 @@ function drawWalker(c: Ctx, L: Look, f: number, scale = PS) {
     case 'bun': c.fillStyle = L.hair; ell(c, -0.5, 0, 3.1, 3.2); c.fill(); ell(c, -3.6, 0, 1.6, 1.6); c.fill(); break;
     case 'curly': c.fillStyle = L.hair; for (let i = 0; i < 6; i++) { const a = (i / 6) * Math.PI * 2; ell(c, -0.6 + Math.cos(a) * 1.9, Math.sin(a) * 1.9, 1.7, 1.7); c.fill(); } break;
     case 'beanie': case 'cap': break;
+    case 'hijab': c.fillStyle = L.hatColor ?? '#2fd1c5'; ell(c, -0.9, 0, 3.8, 3.7); c.fill(); ell(c, -3.2, 0, 2.4, 3.3); c.fill(); c.fillStyle = L.skin; ell(c, 1.7, 0, 1.4, 1.9); c.fill(); break;
+    case 'turban': c.fillStyle = L.hatColor ?? '#e0702d'; ell(c, -0.5, 0, 3.9, 3.9); c.fill(); c.fillStyle = 'rgba(0,0,0,.18)'; ell(c, -0.5, -0.8, 2.6, 1.2); c.fill(); break;
+    case 'kippah': c.fillStyle = L.hair; ell(c, -0.5, 0, 3.1, 3.2); c.fill(); c.fillStyle = L.hatColor ?? '#1c1a18'; ell(c, -1.2, 0, 1.5, 1.5); c.fill(); break;
     default: c.fillStyle = L.hair; ell(c, -0.5, 0, 3.1, 3.2); c.fill();
   }
   if (hat) {
     c.fillStyle = L.hatColor ?? (L.acc === 'beret' ? '#1c1a18' : '#e0702d'); ell(c, -0.5, 0, 3.5, 3.5); c.fill();
     if (L.style === 'cap') { ell(c, 3.2, 0, 1.6, 2.6); c.fill(); }
     if (L.style === 'beanie') { c.fillStyle = 'rgba(0,0,0,.15)'; ell(c, -0.5, 0, 2.2, 2.2); c.fill(); }
-  } else if (L.style !== 'bald' && L.style !== 'afro' && L.style !== 'mohawk') { c.fillStyle = L.skin; ell(c, 1.6, 0, 1.6, 2.2); c.fill(); }
+  } else if (!covered && L.style !== 'bald' && L.style !== 'afro' && L.style !== 'mohawk') { c.fillStyle = L.skin; ell(c, 1.6, 0, 1.6, 2.2); c.fill(); }
   if (L.acc === 'headphones') { c.strokeStyle = '#1c1a18'; c.lineWidth = 0.8; c.beginPath(); c.arc(0, 0, 3.6, Math.PI * 0.6, Math.PI * 1.4); c.stroke(); c.fillStyle = '#e8509a'; ell(c, 0, -3.4, 1, 1.2); c.fill(); ell(c, 0, 3.4, 1, 1.2); c.fill(); }
   if (L.acc === 'glasses') { c.fillStyle = '#1c1a18'; c.fillRect(2.9, -1.8, 0.7, 3.6); }
   c.restore();

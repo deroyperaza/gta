@@ -166,6 +166,14 @@ export function drawBust(c: Ctx, L: Look, key: string) {
       break;
     }
   }
+  if (L.style === 'hijab') { // fabric over the head and shoulders, the face open
+    const hc = L.hatColor ?? '#2f8f7a';
+    c.beginPath(); c.ellipse(cx, cy - 6, f.w + 30, f.top + 34, 0, Math.PI, 0); c.lineTo(cx + f.w + 48, cy + 230); c.lineTo(cx - f.w - 48, cy + 230); c.closePath();
+    c.moveTo(cx + f.w - 4, cy + 14); c.ellipse(cx, cy + 14, f.w - 4, 92, 0, 0, Math.PI * 2); // a new subpath: no stray line into the face
+    c.fillStyle = lg(c, cx - f.w, cy - 140, cx + f.w, cy + 200, [[0, mul(hc, 1.25)], [1, mul(hc, 0.7)]]); c.fill('evenodd'); c.strokeStyle = INK; c.lineWidth = 3; c.stroke();
+  }
+  if (L.style === 'turban') { const hc = L.hatColor ?? '#e0702d'; c.fillStyle = lg(c, cx - f.w, cy - 170, cx + f.w, cy - 50, [[0, mul(hc, 1.3)], [1, mul(hc, 0.75)]]); ell(c, cx, cy - f.top + 4, f.w + 18, 62); c.fill(); c.strokeStyle = INK; c.lineWidth = 3; c.stroke(); c.strokeStyle = mul(hc, 0.6, 0.8); c.lineWidth = 3; for (let i = 0; i < 4; i++) { c.beginPath(); c.moveTo(cx - f.w, cy - f.top + 20 - i * 14); c.quadraticCurveTo(cx, cy - f.top - 30 - i * 10, cx + f.w, cy - f.top + 6 - i * 14); c.stroke(); } }
+  if (L.style === 'kippah') { cap(mul(L.hair, 1), 40); c.strokeStyle = INK; c.lineWidth = 3; c.stroke(); c.fillStyle = L.hatColor ?? '#1c1a18'; ell(c, cx - 8, cy - f.top - 16, 38, 13); c.fill(); c.stroke(); }
   if (L.acc === 'beret') { c.fillStyle = L.hatColor ?? '#1c1a18'; ell(c, cx + 14, cy - f.top - 8, 80, 26, -0.15); c.fill(); c.strokeStyle = INK; c.lineWidth = 3; c.stroke(); }
   if (L.acc === 'headphones') { c.strokeStyle = '#1c1a18'; c.lineWidth = 12; c.beginPath(); c.arc(cx, cy - 20, f.w + 14, Math.PI * 1.05, Math.PI * 1.95); c.stroke(); [-1, 1].forEach((s) => { c.fillStyle = '#e8509a'; ell(c, cx + s * (f.w + 12), cy, 16, 26); c.fill(); c.strokeStyle = INK; c.lineWidth = 3; c.stroke(); }); }
 

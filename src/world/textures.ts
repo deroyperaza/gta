@@ -346,8 +346,8 @@ function storefront(c: Ctx, b: BuildingDef, base: string, signY: number) {
 
 // ------------------------------------------------------------------ CHARACTERS
 export interface Look {
-  skin: string; hair: string; style: 'short' | 'afro' | 'bun' | 'long' | 'bald' | 'beanie' | 'cap' | 'mohawk' | 'braids' | 'curly';
-  shirt: string; pants: string; shoes?: string; acc?: 'tote' | 'phone' | 'glasses' | 'clipboard' | 'scarf' | 'beret' | 'apron' | 'headphones' | 'tie' | 'cane' | 'ringlight' | 'bandana';
+  skin: string; hair: string; style: 'short' | 'afro' | 'bun' | 'long' | 'bald' | 'beanie' | 'cap' | 'mohawk' | 'braids' | 'curly' | 'hijab' | 'turban' | 'kippah';
+  shirt: string; pants: string; shoes?: string; acc?: 'tote' | 'phone' | 'glasses' | 'clipboard' | 'scarf' | 'beret' | 'apron' | 'headphones' | 'tie' | 'cane' | 'ringlight' | 'bandana' | 'wheelchair' | 'whitecane';
   hatColor?: string; dress?: boolean;
 }
 export const CHAR_W = 36, CHAR_H = 52;
@@ -392,7 +392,12 @@ function drawChar(c: Ctx, L: Look, f: number) {
     case 'beanie': c.beginPath(); c.arc(cx, 10, 9, Math.PI, 0); c.closePath(); c.fillStyle = L.hatColor ?? PAL.orange; c.fill(); c.stroke(); box(c, cx - 9.5, 8, 19, 4, shade(L.hatColor ?? PAL.orange, -0.15), 2); circ(c, cx, 1, 3, L.hatColor ?? PAL.orange, 2); break;
     case 'cap': c.beginPath(); c.arc(cx, 10, 8.8, Math.PI, 0); c.closePath(); c.fillStyle = L.hatColor ?? PAL.blue; c.fill(); c.stroke(); box(c, cx - 2, 8, 13, 3.5, L.hatColor ?? PAL.blue, 2); break;
     case 'bald': c.fillStyle = 'rgba(255,255,255,.35)'; c.beginPath(); c.arc(cx - 3, 8, 2.5, 0, Math.PI * 2); c.fill(); break;
+    case 'hijab': { const hc = L.hatColor ?? PAL.teal; c.beginPath(); c.arc(cx, 12, 10.5, Math.PI * 0.95, Math.PI * 0.05); c.lineTo(cx + 11, 24); c.lineTo(cx - 11, 24); c.closePath(); c.fillStyle = hc; c.fill(); c.stroke(); circ(c, cx, 13, 6.4, L.skin, 0); break; }
+    case 'turban': { const hc = L.hatColor ?? PAL.orange; c.beginPath(); c.ellipse(cx, 6, 10, 7, 0, 0, Math.PI * 2); c.fillStyle = hc; c.fill(); c.stroke(); c.strokeStyle = shade(hc, -0.25); c.lineWidth = 1.5; c.beginPath(); c.moveTo(cx - 8, 9); c.quadraticCurveTo(cx, 1, cx + 8, 5); c.stroke(); break; }
+    case 'kippah': c.beginPath(); c.arc(cx, 11, 8.5, Math.PI * 1.05, -0.05); c.lineTo(cx + 6, 8); c.lineTo(cx - 6, 8); c.closePath(); c.fill(); c.stroke(); c.beginPath(); c.arc(cx - 1, 4.5, 4, Math.PI, 0); c.fillStyle = L.hatColor ?? INK; c.fill(); break;
   }
+  if (L.acc === 'wheelchair') { circ(c, cx - 13, 34, 8, '#3a3a40', 2.5); circ(c, cx + 13, 34, 8, '#3a3a40', 2.5); box(c, cx - 11, 28, 22, 5, '#6a6a72', 2, 1); }
+  if (L.acc === 'whitecane') { c.strokeStyle = '#f4f4f4'; c.lineWidth = 2.5; c.beginPath(); c.moveTo(cx + 11, 34); c.lineTo(cx + 18, 52); c.stroke(); c.strokeStyle = '#c8322a'; c.beginPath(); c.moveTo(cx + 17, 49); c.lineTo(cx + 18, 52); c.stroke(); }
   if (L.style === 'braids') { box(c, cx - 11, 12, 4, 14, L.hair, 2, 2); box(c, cx + 7, 12, 4, 14, L.hair, 2, 2); }
   // face
   c.fillStyle = INK; c.beginPath(); c.arc(cx - 3, 13, 1.4, 0, 7); c.arc(cx + 3, 13, 1.4, 0, 7); c.fill();

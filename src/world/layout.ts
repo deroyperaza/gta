@@ -1,4 +1,5 @@
 import type { District } from '../core/types';
+import { NEIGHBOR_AT } from '../data/neighbors';
 import { CELLS, GRID, KINDS, LAT_EDGES, LNG_EDGES, NEIGHBORHOODS, PARKNAMES } from './brooklynGrid';
 
 /**
@@ -585,6 +586,7 @@ export function generateLayout(): WorldLayout {
   const avenues = AVENUES.map((a) => ({ name: a.name, hw: a.hw * TILE, pts: a.pts.map((p) => ({ x: p.x * TILE, y: p.y * TILE })) }));
   // ---------- Parks with character (drawn in src/world/parks.ts) ----------
   const px = (tx: number) => tx * TILE;
+  const spotTaken = (x: number, y: number) => Object.values(spots).some((p) => Math.abs(p.x - px(x) - 16) < 48 && Math.abs(p.y - px(y) - 16) < 48);
   const cellPx = (c: number, r: number, fx: number, fy: number) => ({ x: px(c * BLOCK_W + ROAD + fx * (BLOCK_W - ROAD)), y: px(r * BLOCK_H + ROAD + fy * (BLOCK_H - ROAD)) });
   spots.bandshell = cellPx(8, 11, 0.3, 0.32);  // Lena Horne Bandshell, west side of Prospect Park near Prospect Park West
   spots.gwgate = cellPx(5, 12, 0.5, 0.06);     // Green-Wood's main gate, at the cemetery's north edge (5th Ave & 25th St)
@@ -606,6 +608,19 @@ export function generateLayout(): WorldLayout {
     }
     if (built) { labels.push({ text: name, x: px(xs - 6), y: px(y0 + 2) + 16 }); spots[`pier${i + 1}`] = { x: px(xs - 6), y: px(y0 + 2) + 16 }; }
   });
+  // Neighbors (src/data/neighbors.ts) stand on the nearest open sidewalk to where they really live
+  for (const [key, [la, ln]] of Object.entries(NEIGHBOR_AT)) {
+    const g = geo(la, ln), cx = Math.floor(g.x), cy = Math.floor(g.y);
+    let best: Spot | null = null, bd = Infinity;
+    for (let dy = -12; dy <= 12; dy++) for (let dx = -12; dx <= 12; dx++) {
+      const x = cx + dx, y = cy + dy;
+      const k = tiles[y]?.[x];
+      if ((k !== T.SIDEWALK && k !== T.PLAZA && k !== T.SAND) || blocked[y][x] || spotTaken(x, y)) continue;
+      const d = dx * dx + dy * dy + (k === T.SIDEWALK ? 0 : 60); // the boardwalk if there's no sidewalk (Brighton Beach)
+      if (d < bd) { bd = d; best = { x: px(x) + 16, y: px(y) + 16 }; }
+    }
+    if (best) spots[key] = best;
+  }
   return { tiles, blocked, buildings, props, spots, labels, avenues };
 }
 

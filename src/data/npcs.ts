@@ -143,6 +143,8 @@ export const NPCS: NpcDef[] = [
 
 import { MODULE_NPCS } from './mission-modules';
 NPCS.push(...MODULE_NPCS);
+import { NEIGHBORS } from './neighbors';
+NPCS.push(...NEIGHBORS);
 
 export const NPC_BY_ID = Object.fromEntries(NPCS.map((n) => [n.id, n])) as Record<string, NpcDef>;
 
