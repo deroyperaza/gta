@@ -58,6 +58,7 @@ export const common: MissionModule = {
     },
     failText: 'Tyler\'s flyers stayed up. The meeting got postponed "until things calm down," which is how things never calm down. Try again.',
     onFail: () => { state.clearFlagsWithPrefix('common_'); for (const k of Object.keys(RESET)) delete state.d.flags[k]; },
+    next: 'bridge',
   },
 
   dialogue: {

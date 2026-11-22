@@ -83,6 +83,7 @@ const BLOCKS: Record<string, BlockSpec> = {
     { id: 'bktower', type: 'supertall', w: 6, name: 'THE BROOKLYN TOWER' },
     { id: 'atlterm', type: 'boutique', w: 8, name: 'ATLANTIC TERMINAL-ISH MALL' } ] },
   // ---------- FORT GREENE ----------
+  '8,5': { kind: 'row', landmarks: [{ id: 'bkorg', type: 'nonprofit', w: 7, name: 'BROOKLYN ORG' }] }, // the community foundation, by Hanson Place
   '8,6': { kind: 'row', landmarks: [ // just east of Flatbush, like the real Savings Bank and BAM
     { id: 'church', type: 'church', w: 5, name: 'FIRST CHURCH OF THE BLOCK PARTY', spot: 'deroy' },
     { id: 'savingsbank', type: 'clocktower', w: 5, name: 'WILLIAMSBURGH SAVINGS BANK' },
