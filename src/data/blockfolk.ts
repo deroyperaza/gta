@@ -70,6 +70,23 @@ const JOBS: { title: string; lines: string[]; look?: Partial<Look>; where?: 'par
   { title: 'Fisherman', where: 'beach', look: { acc: 'tote' }, lines: ['Fluke biting today. Or I am lying. One of those.', 'Been fishing here since before the condos. The fish don\'t care about condos.', 'Patience. That\'s the whole sport.', 'Caught a shopping cart once. Threw it back.'] },
 ];
 
+// Gay, lesbian and trans neighbors (Deroy, Nov 22 2026), in their own words; never the joke. The lines say it plainly,
+// whoever is speaking. New York's marriage equality law took effect in July 2011.
+const QUEER = [
+  'We got married at Borough Hall the summer it became legal in New York. 2011. Two grooms, one very nervous cake.',
+  'We got married the summer it became legal here. 2011. Two brides, and my mother cried the loudest.',
+  "I'm gay, I'm sixty-four, and I've lived on this block my whole life. This block is my family. Some of it is my actual family.",
+  'Me and my girlfriend run the block\'s tool library. Need a ladder? We have four.',
+  'My husband and I fostered six kids on this street. Two of them still come for Sunday dinner. With their kids.',
+  'Our rainbow flag has hung in that window since the nineties. The neighbors replace it when it fades. Every time.',
+];
+const TRANS = [
+  'I came out at forty. My neighbors threw me a block party. Best birthday of my life.',
+  'New name, same stoop. The block caught on fast. The bodega cat took a week.',
+  "I'm trans and I'm from Brooklyn. Both are permanent. Both are the best thing about me.",
+  'My abuela corrects people on my pronouns now. She\'s faster than me.',
+];
+
 const SKIN = ['#2e1a12', '#3e2418', '#4a2c1c', '#5a3624', '#6b4430', '#7a4a30', '#8d5a3a', '#a8714a', '#b98058', '#c58a5c', '#d9a679', '#e2b08a', '#e8c0a0', '#f2d2b8', '#f6dcc6'];
 const HAIR = ['#1a1010', '#1a1010', '#2a1c14', '#3a2418', '#4a2a1a', '#6a4a2a', '#7a5a3a', '#a8743a', '#c9a25a', '#e0c070', '#8a3a2a', '#b84a2a', '#d8d4dc', '#e8e4f0', '#9a9aa8', '#ff4fa3', '#7b3fe4', '#2fd1c5'];
 const SHIRT = ['#ff4fa3', '#2fd1c5', '#ffd23f', '#7b3fe4', '#ff8a3d', '#6fcf5e', '#1b4fa0', '#c83a4a', '#e8e4dc', '#3a3a4a', '#9b59d0', '#ff6b6b', '#2f6a4a', '#8a5a3a', '#f2efe6', '#4a6a8a', '#c9a43a', '#5a3a6a', '#e86a9a', '#3a8ad4', '#a8b98e', '#d4a24a', '#1a1a20', '#b85a3a'];
@@ -107,7 +124,8 @@ function folkFor(c: number, r: number): BlockFolk | null {
   };
   return {
     id: `bf_${c}_${r}`, name, short: name, title: `${job.title}, ${hood}`, district, spot: `bf_${c}_${r}`, color: COLORS[at(COLORS.length, 9)],
-    look, bio: `${job.title} in ${hood}. Has opinions about this block, and about you, which are mostly good.`, idle: job.lines, block: [c, r], blockFolk: true,
+    look, bio: `${job.title} in ${hood}. Has opinions about this block, and about you, which are mostly good.`, block: [c, r], blockFolk: true,
+    idle: (() => { const who = roll('who', 25); return who < 2 ? [QUEER[roll('q', QUEER.length)], ...job.lines] : who === 2 ? [TRANS[roll('t', TRANS.length)], ...job.lines] : job.lines; })(),
   };
 }
 
