@@ -22,10 +22,10 @@ export const PAINTED: PaintedLandmark[] = [
   { id: 'floydbennett', name: 'FLOYD BENNETT FIELD', at: [40.5930, -73.8875], file: 'floydbennett', fact: "NYC'S FIRST CITY AIRPORT (1931). IN 1938 HOWARD HUGHES FLEW AROUND THE WORLD FROM HERE IN UNDER 4 DAYS.", scale: 0.85, ready: true },
   { id: 'armyterminal', name: 'BROOKLYN ARMY TERMINAL', at: [40.64472, -74.02778], file: 'armyterminal', fact: 'IN 1958 ELVIS PRESLEY BOARDED AN ARMY SHIP HERE, HEADED TO GERMANY AS A SOLDIER.', scale: 1.0, ready: true },
   // History and civic weight
-  { id: 'weeksville', name: 'WEEKSVILLE HERITAGE CENTER', at: [40.67399, -73.92537], file: 'weeksville', fact: 'FREE BLACK FAMILIES FOUNDED WEEKSVILLE IN 1838. ITS HOUSES WERE REDISCOVERED IN 1968 FROM AN AIRPLANE.', ready: false },
-  { id: 'prisonship', name: "PRISON SHIP MARTYRS' MONUMENT", at: [40.6918, -73.9756], file: 'prisonship', fact: 'IT HONORS MORE THAN 11,000 AMERICAN PRISONERS WHO DIED ON BRITISH SHIPS IN THE REVOLUTIONARY WAR.', ready: false },
-  { id: 'navyyard', name: 'BROOKLYN NAVY YARD', at: [40.6995, -73.9800], file: 'navyyard', fact: 'THE BATTLESHIP USS MISSOURI WAS BUILT HERE. WORLD WAR II OFFICIALLY ENDED ON ITS DECK IN 1945.', ready: false },
-  { id: 'erasmus', name: 'ERASMUS HALL HIGH SCHOOL', at: [40.64944, -73.95778], file: 'erasmus', fact: 'STARTED IN 1786. ITS ORIGINAL WOODEN SCHOOLHOUSE STILL STANDS IN THE COURTYARD.', ready: false },
+  { id: 'weeksville', name: 'WEEKSVILLE HERITAGE CENTER', at: [40.67399, -73.92537], file: 'weeksville', fact: 'FREE BLACK FAMILIES FOUNDED WEEKSVILLE IN 1838. ITS HOUSES WERE REDISCOVERED IN 1968 FROM AN AIRPLANE.', scale: 0.75, ready: true },
+  { id: 'prisonship', name: "PRISON SHIP MARTYRS' MONUMENT", at: [40.6918, -73.9756], file: 'prisonship', fact: 'IT HONORS MORE THAN 11,000 AMERICAN PRISONERS WHO DIED ON BRITISH SHIPS IN THE REVOLUTIONARY WAR.', scale: 0.8, ready: true },
+  { id: 'navyyard', name: 'BROOKLYN NAVY YARD', at: [40.6995, -73.9800], file: 'navyyard', fact: 'THE BATTLESHIP USS MISSOURI WAS BUILT HERE. WORLD WAR II OFFICIALLY ENDED ON ITS DECK IN 1945.', scale: 1.0, ready: true },
+  { id: 'erasmus', name: 'ERASMUS HALL HIGH SCHOOL', at: [40.64944, -73.95778], file: 'erasmus', fact: 'STARTED IN 1786. ITS ORIGINAL WOODEN SCHOOLHOUSE STILL STANDS IN THE COURTYARD.', scale: 0.9, ready: true },
 ];
 
 export const PAINTED_AT: Record<string, [number, number]> = Object.fromEntries(PAINTED.filter((p) => p.ready).map((p) => [`lmk_${p.id}`, p.at]));
