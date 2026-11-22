@@ -186,6 +186,7 @@ const BLOCKS: Record<string, BlockSpec> = {
   '11,14': { kind: 'row', landmarks: [{ id: 'dollarvan', type: 'sales', w: 5, name: 'DOLLAR VAN DISPATCH' }] },
   '9,15': { kind: 'park', name: 'Parade Grounds' },
   '11,15': { kind: 'row', landmarks: [{ id: 'fbchurch', type: 'church', w: 5, name: 'CHURCH OF THE TUESDAY MEETING' }] },
+  '11,16': { kind: 'park', name: 'Brooklyn College' }, // Midwood: the quad (painted sprite) and the athletic field inside its track
   // ---------- SUNSET PARK ----------
   '4,13': { kind: 'park', name: 'Sunset Park (The Actual Park)' },
   '3,13': { kind: 'row', landmarks: [
@@ -613,6 +614,16 @@ export function generateLayout(): WorldLayout {
       spots.liufield = { x: px((x0 + x1 + 1) / 2), y: px(y1 + 1) + 8 };
       labels.push({ text: 'LIU BROOKLYN FIELD', x: px((x0 + x1 + 1) / 2), y: px(y0) - 6 });
     }
+  }
+  // Brooklyn College (Midwood): the athletic field with its running track on the west side of the campus, the quad east
+  {
+    const ix = 11 * BLOCK_W + ROAD, iy = 16 * BLOCK_H + ROAD, ih = BLOCK_H - ROAD;
+    const x0 = ix + 1, x1 = ix + 8, y0 = iy + 1, y1 = iy + ih - 2;
+    for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) set(x, y, T.GRASS);
+    for (let i = props.length - 1; i >= 0; i--) { const tx = Math.floor(props[i].x / TILE), ty = Math.floor(props[i].y / TILE); if (tx >= x0 - 1 && tx <= x1 + 1 && ty >= y0 - 1 && ty <= y1 + 1) props.splice(i, 1); }
+    spots.bcfield_tl = { x: px(x0), y: px(y0) }; spots.bcfield_br = { x: px(x1 + 1), y: px(y1 + 1) };
+    spots.bcfield = { x: px((x0 + x1 + 1) / 2), y: px(y1 + 1) + 8 };
+    spots.bkcollege = { x: px(ix + 13), y: px(iy + 9) }; // the quad: La Guardia Hall's clock tower sprite goes here
   }
   // Brooklyn Bridge Park's piers, DUMBO down to Atlantic Ave, built out over the East River
   const PIERS: [string, T][] = [['PIER 1', T.GRASS], ['PIER 2', T.COURT], ['PIER 3', T.GRASS], ['PIER 4', T.SAND], ['PIER 5', T.GRASS], ['PIER 6', T.PLAZA]];

@@ -315,7 +315,8 @@ export class WorldScene extends Phaser.Scene {
       this.miniIgnore.push(sm, ln, xw);
     }
     this.drawCourts();
-    this.drawField();
+    this.drawField('liufield', false, 'LIU\'S FIELD BELONGS TO THE UNIVERSITY: ASK LIU. A CITY PARK FIELD? BOOK IT WITH AN NYC PARKS PERMIT, $25 TO PROCESS. (LUCO SAYS HI.)');
+    this.drawField('bcfield', true, 'BROOKLYN COLLEGE\'S FIELD: THE COLLEGE BOOKS IT, NOT THE CITY. CITY FIELDS TAKE AN NYC PARKS PERMIT, $25 TO PROCESS.');
     // Grand Army Plaza: the traffic circle and its painted island (arch + Bailey Fountain)
     {
       const g = GAP_CIRCLE, cx = g.x * TILE, cy = g.y * TILE;
@@ -730,11 +731,17 @@ export class WorldScene extends Phaser.Scene {
     if (p && Math.hypot(p.x - this.player.x, p.y - this.player.y) < 80) dialogue.start(owner, DIALOGUES[dlg]);
   }
 
-  /** LIU Brooklyn's turf soccer field: real markings, goals, and Luco's lesson on E. */
-  private drawField() {
-    const a = this.layout.spots.liufield_tl, b = this.layout.spots.liufield_br, sp = this.layout.spots.liufield;
+  /** A turf soccer field (LIU, Brooklyn College): real markings, goals, an optional running track, and who books it on E. */
+  private drawField(id: string, track: boolean, lesson: string) {
+    let a = this.layout.spots[`${id}_tl`], b = this.layout.spots[`${id}_br`]; const sp = this.layout.spots[id];
     if (!a || !b || !sp) return;
     const g = this.add.graphics().setDepth(-8); this.miniIgnore.push(g);
+    if (track) { // red running track around the pitch: an oval of lanes, the field inset inside it
+      const tw = b.x - a.x, th = b.y - a.y, r = Math.min(tw, th) / 2;
+      g.fillStyle(0xb5492f, 1).fillRoundedRect(a.x, a.y, tw, th, r);
+      g.lineStyle(1.5, 0xf2e6dc, 0.8); for (let k = 1; k <= 4; k++) g.strokeRoundedRect(a.x + k * 5, a.y + k * 5, tw - k * 10, th - k * 10, Math.max(4, r - k * 5));
+      const ins = 30; a = { x: a.x + ins, y: a.y + ins + 26 }; b = { x: b.x - ins, y: b.y - ins - 26 };
+    }
     const w = b.x - a.x, h = b.y - a.y, vert = h > w; // goals at the short ends
     for (let i = 0; i < 12; i++) { // turf, mowed in stripes across the pitch
       g.fillStyle(i % 2 ? 0x3f9a4a : 0x47a653, 1);
@@ -756,9 +763,7 @@ export class WorldScene extends Phaser.Scene {
       const spot = P(u + d * pl * 0.72, vm); g.fillStyle(0xf4f4ee, 1).fillCircle(spot.x, spot.y, 2.5);
       g.lineStyle(4, 0xffffff, 1); box(u - d * 8, vm - wid * 0.08, u, vm + wid * 0.08); g.lineStyle(2.5, 0xf4f4ee, 0.95); // goal
     }
-    this.interactables.push({ id: 'liufield', x: sp.x, y: sp.y - 30, r: 120, label: () => 'Book the field', act: () => {
-      bus.emit('ui:toast', 'LIU\'S FIELD BELONGS TO THE UNIVERSITY: ASK LIU. A CITY PARK FIELD? BOOK IT WITH AN NYC PARKS PERMIT, $25 TO PROCESS. (LUCO SAYS HI.)');
-    } });
+    this.interactables.push({ id, x: sp.x, y: sp.y - 30, r: 120, label: () => 'Book the field', act: () => bus.emit('ui:toast', lesson) });
   }
 
   /**
