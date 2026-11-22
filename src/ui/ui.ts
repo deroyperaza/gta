@@ -576,10 +576,6 @@ class UI {
       const a = (acc[name] ??= [0, 0, 0, districtOfBlock(k, r)]);
       a[0] += (k * BLOCK_W + ROAD + BLOCK_W / 2) * s; a[1] += (r * BLOCK_H + ROAD + BLOCK_H / 2) * s; a[2]++;
     }
-    for (const [name, [sx, sy, n, d]] of Object.entries(acc)) {
-      const t = name.toUpperCase(), color = DISTRICTS[d].color;
-      c.lineWidth = 9; c.strokeStyle = '#16101f'; c.strokeText(t, sx / n, sy / n); c.fillStyle = color; c.fillText(t, sx / n, sy / n);
-    }
     const w = this.world as any;
     // The subway: every Brooklyn line, station to station (southeast Brooklyn's empty space is the transit desert)
     if (w.transit) {
@@ -602,6 +598,25 @@ class UI {
     }
     const fp = w.entityPos.fridge;
     if (fp) { const x = (fp.x / TILE) * s, y = (fp.y / TILE) * s; c.fillStyle = targets.has('fridge') ? '#ffd23f' : '#fff'; c.fillRect(x - 6, y - 8, 12, 16); c.strokeRect(x - 6, y - 8, 12, 16); }
+    // Neighborhood names go on top of everything (subway, stations, people), each on a dark tag so it always reads
+    c.font = '900 40px Nunito, Arial'; c.textAlign = 'center'; c.textBaseline = 'middle';
+    const placed: [number, number, number, number][] = []; // tags already down: x, y, w, h (centers)
+    const hits = (x: number, y: number, tw: number, th: number) => placed.some(([px2, py2, pw, ph]) => Math.abs(x - px2) < (tw + pw) / 2 + 6 && Math.abs(y - py2) < (th + ph) / 2 + 4);
+    for (const [name, [sx, sy, n, d]] of Object.entries(acc).sort((a, b) => a[1][1] / a[1][2] - b[1][1] / b[1][2])) {
+      const t = name.toUpperCase(), tw = c.measureText(t).width + 28, th = 54, x0 = Math.min(Math.max(sx / n, tw / 2 + 6), cv.width - tw / 2 - 6), y0 = Math.min(Math.max(sy / n, th / 2 + 6), cv.height - th / 2 - 6); // never past the map's edge
+      // Crowded corners: slide the tag up or down (then sideways) until it clears the others
+      let x = x0, y = y0;
+      search: for (const dx of [0, -0.35, 0.35]) for (const dy of [0, 1, -1, 2, -2, 3, -3]) {
+        const cx = x0 + dx * tw, cy = y0 + dy * (th + 6);
+        if (!hits(cx, cy, tw, th)) { x = cx; y = cy; break search; }
+      }
+      placed.push([x, y, tw, th]);
+      c.fillStyle = 'rgba(22,16,31,0.88)'; c.beginPath();
+      if (c.roundRect) c.roundRect(x - tw / 2, y - th / 2, tw, th, 14); else c.rect(x - tw / 2, y - th / 2, tw, th);
+      c.fill(); c.lineWidth = 3; c.strokeStyle = DISTRICTS[d].color; c.stroke();
+      c.fillStyle = DISTRICTS[d].color; c.fillText(t, x, y + 2);
+    }
+    c.textBaseline = 'alphabetic';
     const px = (w.player.x / TILE) * s, py = (w.player.y / TILE) * s;
     // You are here: a draggable pin (drop it anywhere to move there)
     this.mapPin(cv, px, py, s);
