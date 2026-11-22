@@ -929,7 +929,7 @@ export class WorldScene extends Phaser.Scene {
       const am = missions.active, st = am ? state.mission(am.id).stage : 0;
       const tp = missions.targets().map((id) => this.entityPos[id]).find(Boolean) ?? null;
       const fast = this.onBike || this.keys.SHIFT.isDown;
-      this.opp.update(dt, this.player, fast, !!am && st >= 1 && !blocking && !rideAt, tp, this.peds.followers().length, this.oppConfig());
+      this.opp.update(dt, this.player, fast, !!am && !am.side && st >= 1 && !blocking && !rideAt, tp, this.peds.followers().length, this.oppConfig());
     }
     if (!blocking && !rideAt) { this.marchTriggers(); this.spotArrivals(dt); }
     else this.holdRing.clear();

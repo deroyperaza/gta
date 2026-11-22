@@ -720,7 +720,9 @@ for (const mod of MODULES) for (const [npc, d] of Object.entries(mod.dialogue)) 
 // Neighbors (src/data/neighbors.ts): each brings their own conversation. Shuffle any choice with a best answer.
 import { NEIGHBORS } from './neighbors';
 for (const nb of NEIGHBORS) {
-  if (DIALOGUES[nb.id]) { console.warn('neighbor id clash', nb.id); continue; }
   for (const n of Object.values(nb.dialogue.nodes)) { const cs = n.choices ?? []; if (cs.length > 1 && cs.some((c) => c.tag) && cs.some((c) => !c.tag)) n.shuffle = true; }
-  DIALOGUES[nb.id] = nb.dialogue;
+  const base = DIALOGUES[nb.id];
+  if (!base) { DIALOGUES[nb.id] = nb.dialogue; continue; }
+  base.entries.push(...nb.dialogue.entries); // mission/mediation entries (already there) come first
+  for (const [k, n] of Object.entries(nb.dialogue.nodes)) base.nodes[k] ??= n;
 }

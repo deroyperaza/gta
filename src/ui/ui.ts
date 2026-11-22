@@ -18,6 +18,7 @@ type Panel = 'title' | 'pause' | 'journal' | 'map' | 'passed' | 'help' | 'choose
 export interface ChoiceItem { value: string; label: string; sub?: string; html?: string; group?: string }
 
 const $ = <T extends HTMLElement = HTMLElement>(sel: string) => document.querySelector(sel) as T;
+const mlabel = (def: MissionDef) => (def.side ? 'MEDIATION' : `MISSION ${def.number}`);
 const Phaser_rand = <T,>(a: T[]) => a[Math.floor(Math.random() * a.length)];
 
 class UI {
@@ -313,7 +314,7 @@ class UI {
 
   private renderObjective() {
     const def = missions.active;
-    $('#obj-title').textContent = def ? `MISSION ${def.number} · ${def.title}` : 'FREE ROAM';
+    $('#obj-title').textContent = def ? `${mlabel(def)} · ${def.title}` : 'FREE ROAM';
     const text = missions.objectiveText(), el = $('#objective');
     if (text !== this.lastObjText && this.lastObjText !== null && el.classList.contains('min')) {
       el.classList.add('peek'); clearTimeout(this.peekTimer); this.peekTimer = window.setTimeout(() => el.classList.remove('peek'), 5000);
@@ -349,7 +350,7 @@ class UI {
 
   private missionIntro(def: MissionDef) {
     const el = $('#mission-intro');
-    el.innerHTML = `<div class="mi-num">MISSION ${def.number}</div><div class="mi-title">${def.title}</div><div class="mi-tag">${def.tagline}</div>`;
+    el.innerHTML = `<div class="mi-num">${mlabel(def)}</div><div class="mi-title">${def.title}</div><div class="mi-tag">${def.tagline}</div>`;
     el.classList.remove('show'); void el.offsetWidth; el.classList.add('show');
     // Clear the flag when the intro finishes so the mission box and neighborhood banner come back.
     clearTimeout(this.introTimer);
@@ -490,7 +491,7 @@ class UI {
     this.passedAt = performance.now();
     const el = $('#passed');
     el.className = 'overlay open passed';
-    el.innerHTML = `<div class="burst"></div><div class="mp-sub">MISSION ${def.number} · ${def.title}</div><div class="mp-big">MISSION PASSED</div>
+    el.innerHTML = `<div class="burst"></div><div class="mp-sub">${mlabel(def)} · ${def.title}</div><div class="mp-big">MISSION PASSED</div>
       ${extra ? `<div class="mp-extra">${extra}</div>` : ''}
       <ul class="mp-lines">${lines.map((l, i) => `<li style="animation-delay:${0.5 + i * 0.18}s">${l}</li>`).join('')}</ul>
       <div class="mp-hint">PRESS ANY KEY</div>`;
@@ -502,13 +503,13 @@ class UI {
     this.passedAt = performance.now();
     const el = $('#passed');
     el.className = 'overlay open failed';
-    el.innerHTML = `<div class="mp-sub">MISSION ${def.number} · ${def.title}</div><div class="mp-big">MISSION FAILED</div><p class="mp-fail">${text}</p><div class="mp-hint">Talk to ${NPC_BY_ID[def.giver]?.short ?? 'them'} to try again · PRESS ANY KEY</div>`;
+    el.innerHTML = `<div class="mp-sub">${mlabel(def)} · ${def.title}</div><div class="mp-big">MISSION FAILED</div><p class="mp-fail">${text}</p><div class="mp-hint">Talk to ${NPC_BY_ID[def.giver]?.short ?? 'them'} to try again · PRESS ANY KEY</div>`;
   }
 
   // ------------------------------------------------------------------ JOURNAL
   private renderJournal() {
     const d = state.d;
-    const mrows = MISSIONS.map((def) => {
+    const mrows = MISSIONS.filter((def) => !def.side || state.mission(def.id).status !== 'locked').map((def) => {
       const m = state.mission(def.id);
       const status = def.comingSoon ? (m.status === 'available' ? 'NEXT BUILD' : 'LOCKED') : m.status.toUpperCase();
       const cls = m.status === 'complete' ? 'complete' : m.status === 'active' ? 'active' : 'locked';
@@ -517,7 +518,7 @@ class UI {
         body += '<ol>' + def.stages.map((s, i) => `<li class="${i < m.stage ? 'done' : i === m.stage ? 'cur' : ''}">${i <= m.stage ? s.text() : '???'}</li>`).join('') + '</ol>';
         if (def.optional) body += '<ul class="opt">' + def.optional.map((o) => `<li class="${m.optionalDone[o.id] ? 'done' : ''}">${m.optionalDone[o.id] ? '★' : '☆'} ${o.text}</li>`).join('') + '</ul>';
       }
-      return `<div class="jm ${cls}"><div class="jm-h"><span>#${def.number} ${def.title}</span><em>${status}</em></div>${body}</div>`;
+      return `<div class="jm ${cls}"><div class="jm-h"><span>${def.side ? 'MEDIATION ·' : '#' + def.number} ${def.title}</span><em>${status}</em></div>${body}</div>`;
     }).join('');
     const trust = (Object.keys(DISTRICTS) as District[]).map((k) => `<div class="bar"><label style="color:${DISTRICTS[k].color}">${DISTRICTS[k].name}</label><div class="track"><i style="width:${(d.trust[k] + 100) / 2}%;background:${DISTRICTS[k].color}"></i></div><b>${d.trust[k]}</b></div>`).join('');
     const people = NPCS.map((n) => {

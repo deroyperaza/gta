@@ -27,6 +27,7 @@ class MissionSystem {
     const m = state.mission(id);
     if (def.comingSoon) { m.status = 'available'; state.changed(); return; }
     m.status = 'active'; m.stage = 0; m.vars = {}; m.optionalDone = {}; m.timeLeft = null;
+    if (def.side && state.d.activeMission && state.d.activeMission !== id && !MISSION_BY_ID[state.d.activeMission]?.side) state.setFlag('resume_mission', state.d.activeMission);
     state.d.activeMission = id;
     this.enterStage(def, 0);
     bus.emit('mission:started', def);
@@ -97,6 +98,10 @@ class MissionSystem {
       lines.push(`${DISTRICTS[def.district].name.toUpperCase()} TRUST -${hit} · THE BLOCK REMEMBERS`);
     }
     bus.emit('mission:passed', { def, lines, toast: reward.toast });
+    if (def.side) { // back to the main mission, right where you left it
+      const r = state.flag('resume_mission'); delete state.d.flags.resume_mission;
+      if (typeof r === 'string' && state.mission(r).status === 'active') state.d.activeMission = r;
+    }
     if (def.next) {
       const nm = state.mission(def.next);
       if (nm.status === 'locked') this.start(def.next);

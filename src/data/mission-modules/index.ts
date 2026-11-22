@@ -12,8 +12,9 @@ import { blockparty } from './blockparty';
 import { fares } from './fares';
 import { food } from './food';
 import { common } from './common';
+import { medBike, medTriangle, medMosque, medChoir } from './mediations';
 
 /** Missions 4+ — one file each, in play order. */
-export const MODULES: MissionModule[] = [rent, board, reentry, pbudget, access, streets, robot, culture, heat, blockparty, fares, food, common];
+export const MODULES: MissionModule[] = [rent, board, reentry, pbudget, access, streets, robot, culture, heat, blockparty, fares, food, common, medBike, medTriangle, medMosque, medChoir];
 
 export const MODULE_NPCS = MODULES.flatMap((m) => m.npcs ?? []);

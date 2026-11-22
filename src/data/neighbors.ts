@@ -281,6 +281,42 @@ export const NEIGHBORS: Neighbor[] = [
       harjit_1: { speaker: 'harjit', text: 'Bus lanes. Signals that know I\'m coming. And people at the meetings when the city redraws the routes. The riders who need it most can\'t get off work to show up. Somebody should bring their voices.', choices: [{ text: '(Promise to bring them.)', effects: { solidarity: 6, rel: { harjit: 5 }, ...met('harjit') } }] },
     }, 'harjit_0', 'The man with the parrot says hi. The parrot does not.'),
   },
+  // ---------------------------------------------------------------- people in the mediation calls (mission-modules/mediations.ts)
+  {
+    id: 'teo', name: 'Teo', short: 'Teo', title: 'Delivery Rider, Bedford Ave', district: 'bushwick', spot: 'nb_teo', at: [40.7078, -73.9592], color: '#ff9f3d',
+    look: { skin: '#a8714a', hair: '#1a1010', style: 'cap', hatColor: '#ffd23f', shirt: '#2f8f7a', pants: '#2b2b40', shoes: '#f2f2f2', acc: 'phone' },
+    bio: 'From Guerrero. Forty deliveries a day on an e-bike he\'s still paying off. Has a daughter in second grade who corrects his English and his parking.',
+    idle: ['Forty deliveries. Zero bathroom breaks.', 'The lane is my office.', 'My daughter says slow down. I slow down.'],
+    dialogue: talk('teo', { teo_0: { speaker: 'teo', text: 'Can\'t talk long. The app gives me eleven minutes for a two-mile ride. ...Okay, one minute. What?', choices: [{ text: '(Just say hi.)', effects: met('teo') }] } }, 'teo_0', 'Eleven minutes. Always eleven minutes.'),
+  },
+  {
+    id: 'yossel', name: 'Yossel', short: 'Yossel', title: 'Father of Eight, Union Ave', district: 'bushwick', spot: 'nb_yossel', at: [40.7008, -73.9505], color: '#c9d2ff',
+    look: { skin: '#ecc8a8', hair: '#3a2a1a', style: 'cap', hatColor: '#111111', shirt: '#111111', pants: '#111111', shoes: '#111' },
+    bio: 'Bookkeeper, father of eight, one bathroom. Satmar, born and raised in Williamsburg. Very good with numbers. Very bad at dominoes.',
+    idle: ['Eight children. One bathroom. Pray for us.', 'They build studios. For who? Dogs?', 'Numbers I understand. Rents I don\'t.'],
+    dialogue: talk('yossel', { yossel_0: { speaker: 'yossel', text: 'You\'re lost? Everyone is lost on Union Avenue. The buildings change every week.', choices: [{ text: '(Ask for directions. Get a history lesson.)', effects: met('yossel') }] } }, 'yossel_0', 'Still one bathroom. Still praying.'),
+  },
+  {
+    id: 'boris', name: 'Boris', short: 'Boris', title: 'Retired Engineer, Voorhies Ave', district: 'coneyisland', spot: 'nb_boris', at: [40.5870, -73.9562], color: '#a0b8ff',
+    look: { skin: '#f0c8a8', hair: '#d8d4dc', style: 'cap', hatColor: '#5a5a62', shirt: '#2b3a6b', pants: '#5a5040', shoes: '#111', acc: 'glasses' },
+    bio: 'Came from Kharkiv in 1992. Thirty years designing bridges. Now designs elaborate systems for keeping his driveway clear, none of which work.',
+    idle: ['My driveway is not a parking space. It says so. In three languages.', 'I built bridges. I can\'t build a parking spot.', 'My wife\'s dialysis is Friday. Fridays are hard.'],
+    dialogue: talk('boris', { boris_0: { speaker: 'boris', text: 'You see that hydrant? Every Friday, a car. That driveway? Every Friday, a car. I am an engineer. This is not an engineering problem. It is a people problem. I hate those.', choices: [{ text: '(Listen. He\'ll want help next time.)', effects: met('boris') }] } }, 'boris_0', 'Friday is coming. Friday is always coming.'),
+  },
+  {
+    id: 'bilal', name: 'Bilal', short: 'Bilal', title: 'Mosque Board, Voorhies Ave', district: 'coneyisland', spot: 'nb_bilal', at: [40.5864, -73.9528], color: '#7fd45a',
+    look: { skin: '#b07a52', hair: '#1a1010', style: 'kippah', hatColor: '#f2f2f2', shirt: '#f2f2f2', pants: '#5a5040', shoes: '#5a3a2a', acc: 'clipboard' },
+    bio: 'Pharmacist, mosque board volunteer, Little League coach. Born in Karachi, raised in Sheepshead Bay. Patient in a way that he says took fifteen years of practice.',
+    idle: ['As-salamu alaykum. Also: good afternoon.', 'Fridays are a logistics problem. I love a logistics problem.', 'My son\'s team lost 14 to 2. Character building.'],
+    dialogue: talk('bilal', { bilal_0: { speaker: 'bilal', text: 'Good afternoon. Can I help you find something? People usually look lost on this block. Then they find the bakery and they\'re fine.', choices: [{ text: '(Ask about the bakery.)', effects: met('bilal') }] } }, 'bilal_0', 'Did you find the bakery? Get the honey cake.'),
+  },
+  {
+    id: 'becca', name: 'Becca', short: 'Becca', title: 'Baker, New in Flatbush', district: 'flatbush', spot: 'nb_becca', at: [40.6448, -73.9570], color: '#ffb8d0',
+    look: { skin: '#f6d2b8', hair: '#c9a25a', style: 'long', shirt: '#f2f2f2', pants: '#2b3a6b', shoes: '#c08a4f', acc: 'apron' },
+    bio: 'Moved from Ohio in June. Bakes bread from 4:30 a.m. Loves her new neighborhood and has not yet figured out how to live in it.',
+    idle: ['I\'m up at 4:30. Every day. Bread waits for no one.', 'Everyone here knows each other. I\'m working on it.', 'I should have knocked. I know.'],
+    dialogue: talk('becca', { becca_0: { speaker: 'becca', text: 'Hi! Sorry, I\'m new. I\'m still learning which bodega cat is which. Is that one Mango or Sergeant?', choices: [{ text: '(It\'s Sergeant.)', effects: met('becca') }] } }, 'becca_0', 'Sergeant hissed at me. Progress?'),
+  },
 ];
 
 export const NEIGHBOR_AT: Record<string, [number, number]> = Object.fromEntries(NEIGHBORS.map((n) => [n.spot, n.at]));

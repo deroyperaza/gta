@@ -23,6 +23,8 @@ export interface MissionDef {
   /** Checked on every state change; true fails the mission */
   failIf?: () => boolean;
   failText?: string;
+  /** A side mission (mediation calls): pauses the main mission and hands it back when done */
+  side?: boolean;
 }
 
 const f = (k: string) => !!state.flag(k);
