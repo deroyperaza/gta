@@ -191,10 +191,15 @@ export class Transit {
       this.stations.push(placed); this.byId[st.id] = placed;
       this.scene.add.image(p.x, p.y, 'subway-entrance').setDepth(p.y - 30);
       const label = this.scene.add.text(p.x, p.y - 40, st.name, { fontFamily: 'Nunito, Arial, sans-serif', fontSize: '11px', fontStyle: '900', color: '#ffffff', backgroundColor: '#1d1d1f', padding: { x: 4, y: 2 } }).setOrigin(0.5, 1).setDepth(p.y + 40);
-      const g2 = this.scene.add.graphics().setDepth(p.y + 41);
+      // Route bullets are small baked circles (one texture per line), not a Graphics per station: ~190 Graphics cost real frame time on phones
       st.routes.forEach((r, i) => {
-        const bx = p!.x - (st.routes.length - 1) * 8 + i * 16, by = p!.y - 40 - label.height - 8;
-        g2.fillStyle(Phaser.Display.Color.HexStringToColor(LINE_COLORS[r] ?? '#888').color).fillCircle(bx, by, 7);
+        const bx = p!.x - (st.routes.length - 1) * 8 + i * 16, by = p!.y - 40 - label.height - 8, key = `bullet-${r}`;
+        if (!this.scene.textures.exists(key)) {
+          const g2 = this.scene.make.graphics({}, false);
+          g2.fillStyle(Phaser.Display.Color.HexStringToColor(LINE_COLORS[r] ?? '#888').color).fillCircle(8, 8, 7).generateTexture(key, 16, 16);
+          g2.destroy();
+        }
+        this.scene.add.image(bx, by, key).setDepth(p!.y + 41);
       });
       st.routes.forEach((r, i) => {
         const bx = p!.x - (st.routes.length - 1) * 8 + i * 16, by = p!.y - 40 - label.height - 8;

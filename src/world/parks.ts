@@ -21,6 +21,12 @@ export function drawParks(scene: Phaser.Scene, L: WorldLayout, ignore: Phaser.Ga
   const out: ParkSpot[] = [];
   const rng = new Phaser.Math.RandomDataGenerator(['brooklyn-parks']);
   const once = (k: string, ms: number) => { const now = Date.now(), last = Number(state.flag(k) ?? 0); if (now - last < ms) return false; state.setFlag(k, now); return true; };
+  // Static drawings with thousands of shapes are baked into one texture: a Graphics object is re-drawn every frame, a texture isn't.
+  const bake = (g: Phaser.GameObjects.Graphics, x: number, y: number, w: number, h: number) => {
+    const rt = scene.add.renderTexture(x, y, w, h).setOrigin(0).setDepth(g.depth);
+    rt.draw(g, -x, -y); g.destroy();
+    return rt;
+  };
   const label = (x: number, y: number, text: string, bg = '#1d1d1f') =>
     scene.add.text(x, y, text, { fontFamily: 'Nunito, Arial, sans-serif', fontSize: '12px', fontStyle: '900', color: '#fff', backgroundColor: bg, padding: { x: 5, y: 2 } }).setOrigin(0.5).setDepth(y + 400);
 
@@ -81,7 +87,7 @@ export function drawParks(scene: Phaser.Scene, L: WorldLayout, ignore: Phaser.Ga
       else if (kind > 0.88) { g.fillStyle(0xb9b4aa, 1).fillRect(x, y - 4, 6, 12); g.fillStyle(0xd8d3c8, 1).fillTriangle(x, y - 4, x + 6, y - 4, x + 3, y - 9); } // obelisk
       else { g.fillStyle(0xa8a39a, 1).fillRoundedRect(x, y, 9, 5, 2); }
     }
-    ignore.push(g);
+    ignore.push(bake(g, b.x - 8, b.y - 16, b.w + 32, b.h + 32));
   }
   const gw = L.spots.gwgate;
   if (gw) {
@@ -137,7 +143,7 @@ export function drawParks(scene: Phaser.Scene, L: WorldLayout, ignore: Phaser.Ga
     g.fillStyle(0x3a8fb0, 1).fillEllipse(b.x + b.w * 0.3, py, b.w * 0.42, b.h * 0.34);
     g.fillStyle(0x5aa64a, 1).fillEllipse(b.x + b.w * 0.3, py, 40, 24);
     g.fillStyle(0xd8262e, 1).fillRect(b.x + b.w * 0.18 - 18, py - 30, 36, 5).fillRect(b.x + b.w * 0.18 - 14, py - 30, 4, 22).fillRect(b.x + b.w * 0.18 + 10, py - 30, 4, 22);
-    ignore.push(g);
+    ignore.push(bake(g, b.x - 32, b.y - 32, b.w + 64, b.h + 64));
     // Steinhardt Conservatory, painted in ChatGPT
     const gc = scene.add.image(b.x + b.w * 0.78, b.y + b.h - 6, 'park-conservatory').setOrigin(0.5, 1).setScale(0.82).setDepth(b.y + b.h);
     ignore.push(gc);

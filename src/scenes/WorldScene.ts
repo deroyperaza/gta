@@ -163,7 +163,8 @@ export class WorldScene extends Phaser.Scene {
 
     // Cameras
     const cam = this.cameras.main;
-    cam.setBounds(0, 0, WORLD_W, WORLD_H);
+    // Let the camera run past the map's edge so you stay centered on the waterfront (clamped, you slid under the joystick)
+    const EDGE = 600; cam.setBounds(-EDGE, -EDGE, WORLD_W + EDGE * 2, WORLD_H + EDGE * 2);
     cam.setBackgroundColor('#2b2622');
     cam.startFollow(this.player, true, 0.12, 0.12);
     this.applyZoom();
