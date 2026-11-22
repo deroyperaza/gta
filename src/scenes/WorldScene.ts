@@ -283,44 +283,27 @@ export class WorldScene extends Phaser.Scene {
         const dx = b.x - a.x, dy = b.y - a.y, L = Math.hypot(dx, dy), ux = dx / L, uy = dy / L, nx = -uy, ny = ux;
         for (let t = 70; t < L - 70; t += 34) for (const o of [-2.5, 2.5]) ln.lineBetween(a.x + ux * t + nx * o, a.y + uy * t + ny * o, a.x + ux * (t + 20) + nx * o, a.y + uy * (t + 20) + ny * o);
       }
-      // Where the avenue crosses a grid street, its sidewalk band stops: the street keeps its asphalt,
-      // with a zebra crosswalk across it at the avenue's edge (no sidewalk running over the cross street)
-      // Drawn as geometry, not tiles: the cross street's asphalt runs straight through the band, and one clean zebra
-      // sits where the avenue's sidewalk meets each side of it (none inside an intersection).
-      const xw = this.add.graphics().setDepth(-8.5);
+      // Where the avenue crosses a grid street, the street wins: its own tiles (asphalt, lane lines, the regular
+      // intersection crosswalks) are laid back over the avenue's smooth sidewalk band. No extra crosswalks at an angle,
+      // and no wedge of sidewalk left inside an intersection.
+      const xw = this.add.container(0, 0).setDepth(-8.5);
+      const tilesTex = this.textures.get('tiles');
       const ROADT = new Set<number>([T.ASPHALT, T.LANE_V, T.LANE_H, T.INTERSECTION, T.CROSS_V, T.CROSS_H]);
-      const isRoad = (x: number, y: number) => ROADT.has(this.layout.tiles[Math.floor(y / TILE)]?.[Math.floor(x / TILE)] ?? -1);
-      const SW = ROAD * TILE, edge = av.hw + 1.2 * TILE, mid = av.hw + 0.6 * TILE, ZW = 24;
-      const zebra = (x: number, y: number, w: number, h: number, bars: 'v' | 'h') => {
-        xw.fillStyle(0xe9e4d8, 0.92);
-        if (bars === 'v') for (let i = 3; i < w - 3; i += 10) xw.fillRect(x + i, y, 6, h);
-        else for (let i = 3; i < h - 3; i += 10) xw.fillRect(x, y + i, w, 6);
-      };
+      const reach = av.hw + 2.6 * TILE, done = new Set<string>();
       for (const [a, b] of segs) {
-        const dx = b.x - a.x, dy = b.y - a.y, L = Math.hypot(dx, dy), ux = dx / L, uy = dy / L;
-        // north-south streets crossing this piece of the avenue
-        if (Math.abs(ux) > 0.25) for (let k = 0; k * BLOCK_W * TILE < this.layout.tiles[0].length * TILE; k++) {
-          const sx = (k * BLOCK_W + ROAD / 2) * TILE, t = (sx - a.x) / dx; if (t < 0 || t > 1) continue;
-          const cy = a.y + dy * t; if (!isRoad(sx, cy - edge / Math.abs(ux) - 8) && !isRoad(sx, cy + edge / Math.abs(ux) + 8)) continue;
-          const hy = edge / Math.abs(ux);
-          xw.fillStyle(0x24272a, 1).fillRect(sx - SW / 2, cy - hy, SW, hy * 2);
-          for (const s of [-1, 1]) {
-            const zy = cy + (s * mid) / Math.abs(ux);
-            if ((Math.floor(zy / TILE) % BLOCK_H) < ROAD) continue; // that's an intersection, not a crosswalk
-            zebra(sx - SW / 2 + 2, zy - ZW / 2, SW - 4, ZW, 'v');
-          }
-        }
-        // east-west streets crossing it
-        if (Math.abs(uy) > 0.25) for (let k = 0; k * BLOCK_H * TILE < this.layout.tiles.length * TILE; k++) {
-          const sy = (k * BLOCK_H + ROAD / 2) * TILE, t = (sy - a.y) / dy; if (t < 0 || t > 1) continue;
-          const cx = a.x + dx * t; if (!isRoad(cx - edge / Math.abs(uy) - 8, sy) && !isRoad(cx + edge / Math.abs(uy) + 8, sy)) continue;
-          const hx = edge / Math.abs(uy);
-          xw.fillStyle(0x24272a, 1).fillRect(cx - hx, sy - SW / 2, hx * 2, SW);
-          for (const s of [-1, 1]) {
-            const zx = cx + (s * mid) / Math.abs(uy);
-            if ((Math.floor(zx / TILE) % BLOCK_W) < ROAD) continue;
-            zebra(zx - ZW / 2, sy - SW / 2 + 2, ZW, SW - 4, 'h');
-          }
+        const dx = b.x - a.x, dy = b.y - a.y, L2 = dx * dx + dy * dy;
+        const x0 = Math.floor((Math.min(a.x, b.x) - reach) / TILE), x1 = Math.ceil((Math.max(a.x, b.x) + reach) / TILE);
+        const y0 = Math.floor((Math.min(a.y, b.y) - reach) / TILE), y1 = Math.ceil((Math.max(a.y, b.y) + reach) / TILE);
+        for (let ty = y0; ty <= y1; ty++) for (let tx = x0; tx <= x1; tx++) {
+          const k = this.layout.tiles[ty]?.[tx];
+          if (k === undefined || !ROADT.has(k) || done.has(`${tx},${ty}`)) continue;
+          if ((tx % BLOCK_W) >= ROAD && (ty % BLOCK_H) >= ROAD) continue; // the avenue's own tiles, not a grid street
+          const cx = (tx + 0.5) * TILE, cy = (ty + 0.5) * TILE, t = Math.max(0, Math.min(1, ((cx - a.x) * dx + (cy - a.y) * dy) / L2));
+          const d = Math.hypot(cx - a.x - t * dx, cy - a.y - t * dy);
+          if (d < av.hw - TILE * 0.3 || d > reach) continue; // under the avenue's roadway, or clear of its sidewalk
+          if (!tilesTex.has(`t${k}`)) tilesTex.add(`t${k}`, 0, k * TILE, 0, TILE, TILE);
+          xw.add(this.add.image(tx * TILE, ty * TILE, 'tiles', `t${k}`).setOrigin(0));
+          done.add(`${tx},${ty}`);
         }
       }
       this.miniIgnore.push(sm, ln, xw);

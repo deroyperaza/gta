@@ -193,7 +193,7 @@ const BLOCKS: Record<string, BlockSpec> = {
   '7,20': { kind: 'beach', amusements: true, name: 'The Boardwalk' },
   '8,20': { kind: 'beach', amusements: true, name: 'Polar Bear Plunge Point' },
   // ---------- FLATBUSH ----------
-  '10,13': { kind: 'row', landmarks: [{ id: 'kingsish', type: 'community', w: 8, name: 'THE KINGS-ISH THEATRE' }] },
+  '11,13': { kind: 'row', landmarks: [{ id: 'kingsish', type: 'community', w: 8, name: 'THE KINGS-ISH THEATRE' }] }, // east of Flatbush Ave, like the real one
   '10,14': { kind: 'row', landmarks: [
     { id: 'patty', type: 'bakery', w: 5, name: 'PATTY & COCO BREAD' },
     { id: 'fbtenants', type: 'tenant', w: 6, name: 'FLATBUSH TENANTS COALITION' } ] },
