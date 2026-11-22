@@ -74,6 +74,7 @@ export class WorldScene extends Phaser.Scene {
     this.load.image('barclays-sprite', 'sprites/barclays.png');
     this.load.image('bridge-tower-art', 'sprites/bridgetower.png');
     this.load.image('gap-island', 'sprites/gap.png'); // Grand Army Plaza's island, painted in ChatGPT, keyed
+    for (const id of ['bandshell', 'gwgate', 'carousel', 'conservatory', 'bkcollege']) this.load.image(`park-${id}`, `sprites/${id}.png`); // painted in ChatGPT, keyed
     for (const id of PAINTED_LANDMARKS) this.load.image(`lm-${id}`, `sprites/${id}.png`);
   }
 
