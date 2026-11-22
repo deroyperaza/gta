@@ -219,6 +219,11 @@ const FILLER: Record<District, BuildingType[]> = {
   plg: ['brownstone', 'apartment', 'apartment', 'laundromat'],
   waterfront: ['warehouse', 'apartment', 'coffee'],
 };
+/** Brownstone Brooklyn: these neighborhoods' rows are mostly brownstones, whatever district they sit in
+ *  (Brooklyn Heights, Fort Greene, Cobble Hill and Boerum Hill would otherwise get Downtown's towers). */
+const BROWNSTONE_HOODS = new Set(['Brooklyn Heights', 'Cobble Hill', 'Boerum Hill', 'Carroll Gardens', 'Fort Greene', 'Clinton Hill',
+  'Prospect Heights', 'Park Slope', 'Bedford-Stuyvesant', 'Crown Heights', 'Prospect Lefferts Gardens', 'Ocean Hill', 'Weeksville']);
+const BROWNSTONE_ROW: BuildingType[] = ['brownstone', 'brownstone', 'brownstone', 'brownstone', 'coffee', 'bodega'];
 const HEIGHT: Record<BuildingType, [number, number]> = {
   brownstone: [6, 7], coffee: [5, 5], boutique: [5, 6], nonprofit: [7, 7], coop: [6, 6], bodega: [5, 5],
   mural: [7, 7], tenant: [7, 7], community: [7, 7], studio: [7, 8], warehouse: [7, 8], gallery: [6, 7],
@@ -331,6 +336,7 @@ export function generateLayout(): WorldLayout {
 
   for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) {
     const dist = districtOfBlock(c, r);
+    const brownstones = BROWNSTONE_HOODS.has(neighborhoodOfBlock(c, r) ?? '');
     const bx = c * BLOCK_W + ROAD, by = r * BLOCK_H + ROAD; // block tile origin
     const bw = BLOCK_W - ROAD, bh = BLOCK_H - ROAD; // 19 x 15
     const roll = rand();
@@ -486,7 +492,7 @@ export function generateLayout(): WorldLayout {
       let type: BuildingType, w: number;
       if (lm) { type = lm.type; w = Math.min(lm.w, end - cursor); }
       else {
-        const pool = FILLER[dist];
+        const pool = brownstones ? BROWNSTONE_ROW : FILLER[dist];
         type = pool[Math.floor(rand() * pool.length)];
         w = Math.min(type === 'brownstone' ? 3 : 3 + Math.floor(rand() * 3), end - cursor);
         if (end - cursor - w < 3) w = end - cursor; // avoid slivers
