@@ -18,7 +18,7 @@
  *   more weakly than the other factors. https://a816-dohbesp.nyc.gov/IndicatorPublic/data-features/hvi/
  * - Local Laws 60 and 64 of 2017: an EJ study, an online mapping tool and a citywide EJ Plan; the EJNYC report and
  *   mapping tool came out in April 2024. https://climate.cityofnewyork.us/ejnyc-report/introduction/
- * - Itzel, Don Rafa, Ms. Toni, Doña Lupe and the Collective are fiction.
+ * - Itzel, Don Rafa, Ms. Toni, Doña Amparo and the Collective are fiction.
  */
 import { state } from '../../core/state';
 import type { Effect } from '../../core/types';
@@ -30,9 +30,9 @@ const S = (id: string, is: number | number[]) => ({ missionStage: { id, is } });
 const STOPS: [string, string, string][] = [
   ['ej_rafa', 'rafa', 'Don Rafa on the waterfront'],
   ['ej_toni', 'toni', 'Ms. Toni in Red Hook'],
-  ['ej_lupe', 'lupe', 'Doña Lupe on Fifth Ave'],
+  ['ej_amparo', 'amparo', 'Doña Amparo on Fifth Ave'],
 ];
-const RESET = { ej_rafa: false, ej_toni: false, ej_lupe: false };
+const RESET = { ej_rafa: false, ej_toni: false, ej_amparo: false };
 
 export const ej: MissionModule = {
   mission: {
@@ -53,7 +53,7 @@ export const ej: MissionModule = {
     ],
     rewards: (): Effect => {
       const r = state.flag('ej_result');
-      if (r === 'good') return { solidarity: 380, power: 4, trust: { sunsetpark: 18, redhook: 10 }, rel: { itzel: 10, toni: 5, lupe: 5 }, toast: 'THE BLOCK IS ON THE RECORD, AND ON THE ROOF' };
+      if (r === 'good') return { solidarity: 380, power: 4, trust: { sunsetpark: 18, redhook: 10 }, rel: { itzel: 10, toni: 5, amparo: 5 }, toast: 'THE BLOCK IS ON THE RECORD, AND ON THE ROOF' };
       if (r === 'ok') return { solidarity: 200, power: 2, trust: { sunsetpark: 9, redhook: 5 }, rel: { itzel: 5 } };
       return { solidarity: 70, trust: { sunsetpark: 2 } };
     },
@@ -75,10 +75,10 @@ export const ej: MissionModule = {
         ej_0: { speaker: 'itzel', text: 'Sunset Park has been fighting for clean air since before I was born. UPROSE, down the street, started in 1966. It\'s the oldest Latino community group in Brooklyn. They taught me everything. Including this:', next: 'ej_1' },
         ej_1: { speaker: 'itzel', text: 'Environmental justice means asking who breathes the worst air, who gets the hottest blocks, and who gets left out of the decisions. In Brooklyn the answer keeps being the same neighborhoods.', next: 'ej_2' },
         ej_2: {
-          speaker: 'itzel', text: 'Three check-ins. Don Rafa fishes off the waterfront every day. Ms. Toni in Red Hook just finished a solar class. Doña Lupe on Fifth Ave has no AC. Go before the afternoon peak.',
+          speaker: 'itzel', text: 'Three check-ins. Don Rafa fishes off the waterfront every day. Ms. Toni in Red Hook just finished a solar class. Doña Amparo on Fifth Ave has no AC. Go before the afternoon peak.',
           choices: [{ text: 'Waterfront, Red Hook, Fifth Ave. Go.', effects: { rel: { itzel: 4 }, flags: { ej_accepted: true, ej_score: 0, rode_car: false, ...RESET } } }],
         },
-        ej_wait: { speaker: 'itzel', text: 'Rafa, Toni, Lupe. Drink water between stops. I mean it.' },
+        ej_wait: { speaker: 'itzel', text: 'Rafa, Toni, Amparo. Drink water between stops. I mean it.' },
         ej_c0: { speaker: 'itzel', text: '*Itzel unrolls a city map covered in sticky notes. The darkest red squares are the hottest blocks.* The city made this. Two laws from 2017, Local Laws 60 and 64, said: study environmental justice, map it, and write a citywide plan. The study and the map came out in April 2024.', next: 'ej_c1' },
         ej_c1: {
           speaker: 'itzel', text: 'The plan is where neighbors get a say. When the city opens it for comment, what do we bring?',
@@ -137,21 +137,21 @@ export const ej: MissionModule = {
       },
     },
 
-    lupe: {
-      entries: [{ cond: { missionStage: { id: 'ej', is: 1 }, notFlag: 'ej_lupe' }, node: 'ej_k0' }],
+    amparo: {
+      entries: [{ cond: { missionStage: { id: 'ej', is: 1 }, notFlag: 'ej_amparo' }, node: 'ej_k0' }],
       nodes: {
-        ej_k0: { speaker: 'lupe', text: '*Doña Lupe fans herself on a folding chair in the shade of the awning.* Fourth floor. No AC. The window unit died in July and the super says "soon." I come down here because the apartment is an oven.', next: 'ej_k1' },
+        ej_k0: { speaker: 'amparo', text: '*Doña Amparo fans herself on a folding chair in the shade of the awning.* Fourth floor. No AC. The window unit died in July and the super says "soon." I come down here because the apartment is an oven.', next: 'ej_k1' },
         ej_k1: {
-          speaker: 'lupe', text: 'My niece says the city ranks the blocks by heat danger. What makes a block more dangerous than another one?',
+          speaker: 'amparo', text: 'My niece says the city ranks the blocks by heat danger. What makes a block more dangerous than another one?',
           choices: [
             { text: 'Hot pavement, little green space, fewer homes with AC, and more low-income and Black neighbors. The city says those gaps are rooted in racism.', tag: 'BEST', next: 'ej_k2', effects: { inc: { ej_score: 1 } } },
             { text: 'Mostly trees. The blocks with the fewest trees are the deadliest, so planting trees fixes most of it.', next: 'ej_k3' },
             { text: 'Mostly how close you are to the water. Waterfront blocks are cooler, inland blocks are hotter.', next: 'ej_k3' },
           ],
         },
-        ej_k2: { speaker: 'lupe', text: 'So it\'s not bad luck. It\'s where the money and the AC went. *She takes a long sip of water.* Put me on the list.', next: 'ej_k4' },
-        ej_k3: { speaker: 'lupe', text: 'My niece showed me the city\'s map. Trees help, but they count less than you\'d think. It\'s the heat of the pavement, the green space, who has AC, and how many neighbors are poor or Black. The city itself says that\'s rooted in racism. Put me on the list.', next: 'ej_k4' },
-        ej_k4: { speaker: 'lupe', text: 'And if it\'s an emergency, honey, I call 311 for a cooling center. I know. I\'m old, not new.', choices: [{ text: '(Put her on the list. Leave two bottles of water.)', effects: { flags: { ej_lupe: true }, rel: { lupe: 3 }, toast: 'POCKET CIVICS · HEAT VULNERABILITY' } }] },
+        ej_k2: { speaker: 'amparo', text: 'So it\'s not bad luck. It\'s where the money and the AC went. *She takes a long sip of water.* Put me on the list.', next: 'ej_k4' },
+        ej_k3: { speaker: 'amparo', text: 'My niece showed me the city\'s map. Trees help, but they count less than you\'d think. It\'s the heat of the pavement, the green space, who has AC, and how many neighbors are poor or Black. The city itself says that\'s rooted in racism. Put me on the list.', next: 'ej_k4' },
+        ej_k4: { speaker: 'amparo', text: 'And if it\'s an emergency, honey, I call 311 for a cooling center. I know. I\'m old, not new.', choices: [{ text: '(Put her on the list. Leave two bottles of water.)', effects: { flags: { ej_amparo: true }, rel: { amparo: 3 }, toast: 'POCKET CIVICS · HEAT VULNERABILITY' } }] },
       },
     },
   },
@@ -179,7 +179,7 @@ export const ej: MissionModule = {
       idle: ['No roof required.', 'Twenty years of school buses. Solar panels don\'t talk back.', 'Red Hook\'s in.'],
     },
     {
-      id: 'lupe', name: 'Doña Lupe', short: 'Doña Lupe', title: 'Neighbor, Fifth Ave', district: 'sunsetpark', spot: 'lm_taqueria', color: '#ff9ec7',
+      id: 'amparo', name: 'Doña Amparo', short: 'Doña Amparo', title: 'Neighbor, Fifth Ave', district: 'sunsetpark', spot: 'lm_taqueria', color: '#ff9ec7',
       offset: { dx: 36, dy: 4 },
       look: { skin: '#c89070', hair: '#e8e4f0', style: 'bun', shirt: '#e86a9a', pants: '#3a2a5a', shoes: '#111', dress: true, acc: 'cane' },
       bio: 'Eighty-one. Came from Puebla in 1979. Fourth-floor walk-up, no working AC since July. Spends heat waves under the taqueria awning, where everybody knows to bring her water.',

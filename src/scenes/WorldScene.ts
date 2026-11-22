@@ -13,7 +13,7 @@ import { PAINTED } from '../data/landmarks';
 import { dialogue } from '../systems/dialogue';
 import { missions } from '../systems/missions';
 import { ui } from '../ui/ui';
-import { BLOCK_H, BLOCK_W, COLS, ROWS, neighborhoodOfBlock, GAP_CIRCLE, gapOutline, ROAD, T, TILE, WORLD_H, WORLD_W, districtAt, generateLayout, neighborhoodAt, type BuildingDef, type WorldLayout } from '../world/layout';
+import { BLOCK_H, BLOCK_W, COLS, ROWS, RUNWAYS, RUNWAY_W, geo, neighborhoodOfBlock, GAP_CIRCLE, gapOutline, ROAD, T, TILE, WORLD_H, WORLD_W, districtAt, generateLayout, neighborhoodAt, type BuildingDef, type WorldLayout } from '../world/layout';
 import { makeProps } from '../world/textures';
 import { buildingKey, makeBikeRider, makeBridgeTower, makeBuilding, makeCharacter, makePlayerMarker, makeStreetProps, makeTiles, makeVehicles, shadowKey, shadowOffset, SHADOW_PAD } from '../world/golden';
 
@@ -325,6 +325,7 @@ export class WorldScene extends Phaser.Scene {
       this.miniIgnore.push(sm, ln, xw);
     }
     this.drawCourts();
+    this.drawRunways();
     this.drawField('liufield', false, 'LIU\'S FIELD BELONGS TO THE UNIVERSITY: ASK LIU. A CITY PARK FIELD? BOOK IT WITH AN NYC PARKS PERMIT, $25 TO PROCESS. (LUCO SAYS HI.)');
     this.drawField('bcfield', true, 'BROOKLYN COLLEGE\'S FIELD: THE COLLEGE BOOKS IT, NOT THE CITY. CITY FIELDS TAKE AN NYC PARKS PERMIT, $25 TO PROCESS.');
     // Grand Army Plaza: the traffic circle and its painted island (arch + Bailey Fountain)
@@ -750,6 +751,38 @@ export class WorldScene extends Phaser.Scene {
     if (!id || !dlg) return;
     const p = this.entityPos[id];
     if (p && Math.hypot(p.x - this.player.x, p.y - this.player.y) < 80) dialogue.start(owner, DIALOGUES[dlg]);
+  }
+
+  /**
+   * Floyd Bennett Field's four old runways, drawn as ground at their real coordinates (RUNWAYS in layout.ts): weathered concrete, faded edge and
+   * centerline dashes, numbers painted at each end. The painted hangars (src/data/landmarks.ts) sit on top.
+   */
+  private drawRunways() {
+    const g = this.add.graphics().setDepth(-8); this.miniIgnore.push(g);
+    const W = RUNWAY_W;
+    const ends = RUNWAYS.map(([n0, n1, A, B]) => { const a = geo(...A), b = geo(...B); return { n0, n1, a: { x: a.x * TILE, y: a.y * TILE }, b: { x: b.x * TILE, y: b.y * TILE } }; });
+    const strip = (a: { x: number; y: number }, b: { x: number; y: number }, w: number, color: number, alpha = 1) => {
+      const dx = b.x - a.x, dy = b.y - a.y, L = Math.hypot(dx, dy), nx = (-dy / L) * w / 2, ny = (dx / L) * w / 2;
+      g.fillStyle(color, alpha).fillPoints([{ x: a.x + nx, y: a.y + ny }, { x: b.x + nx, y: b.y + ny }, { x: b.x - nx, y: b.y - ny }, { x: a.x - nx, y: a.y - ny }], true);
+    };
+    for (const r of ends) strip(r.a, r.b, W + 8, 0x6f6a5e); // weedy shoulders
+    for (const r of ends) strip(r.a, r.b, W, 0x9c978a); // old concrete
+    for (const r of ends) {
+      const dx = r.b.x - r.a.x, dy = r.b.y - r.a.y, L = Math.hypot(dx, dy), ux = dx / L, uy = dy / L, nx = -uy, ny = ux;
+      g.lineStyle(2, 0xe8e4d8, 0.55);
+      for (const s of [-1, 1]) g.lineBetween(r.a.x + nx * s * (W / 2 - 5), r.a.y + ny * s * (W / 2 - 5), r.b.x + nx * s * (W / 2 - 5), r.b.y + ny * s * (W / 2 - 5));
+      g.lineStyle(3, 0xf2eee2, 0.6);
+      for (let d = 90; d < L - 90; d += 56) g.lineBetween(r.a.x + ux * d, r.a.y + uy * d, r.a.x + ux * (d + 30), r.a.y + uy * (d + 30)); // centerline dashes
+      for (const [p, u, n] of [[r.a, 1, r.n0], [r.b, -1, r.n1]] as const) {
+        g.lineStyle(3, 0xf2eee2, 0.6); // threshold bars
+        for (let k = -3; k <= 3; k++) { if (!k) continue; const o = (k * W) / 8; g.lineBetween(p.x + nx * o + ux * u * 12, p.y + ny * o + uy * u * 12, p.x + nx * o + ux * u * 40, p.y + ny * o + uy * u * 40); }
+        const t = this.add.text(p.x + ux * u * 62, p.y + uy * u * 62, n, { fontFamily: 'monospace', fontSize: '22px', color: '#f2eee2' })
+          .setOrigin(0.5).setAlpha(0.6).setDepth(-7).setRotation(Math.atan2(uy * u, ux * u) + Math.PI / 2);
+        this.miniIgnore.push(t);
+      }
+    }
+    const c = geo(40.5935, -73.8925);
+    this.interactables.push({ id: 'floydbennett_rwy', x: c.x * TILE, y: c.y * TILE, r: 160, label: () => 'Look at the runways', act: () => bus.emit('ui:toast', 'FLOYD BENNETT FIELD, NYC\'S FIRST CITY AIRPORT (1931). FOUR OLD RUNWAYS STILL CROSS THE FIELD.') });
   }
 
   /** A turf soccer field (LIU, Brooklyn College): real markings, goals, an optional running track, and who books it on E. */

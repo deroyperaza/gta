@@ -66,6 +66,15 @@ function frac(E: number[], v: number) {
 /** A real place (lat, lng) on the map, in tiles. Integer grid lines are street centers, like I(c, r). */
 export const geo = (lat: number, lng: number) => ({ x: frac(LNG_EDGES, lng) * BLOCK_W + 1.5, y: frac(LAT_EDGES, lat) * BLOCK_H + 1.5 });
 
+/** Floyd Bennett Field's four old runways (OpenStreetMap abandoned:aeroway=runway, © OpenStreetMap contributors, ODbL). */
+export const RUNWAYS: [string, string, [number, number], [number, number]][] = [
+  ['6', '24', [40.59418, -73.90001], [40.60449, -73.88399]],
+  ['1', '19', [40.58276, -73.89124], [40.60388, -73.88978]],
+  ['15', '33', [40.59418, -73.90001], [40.58381, -73.88871]],
+  ['12', '30', [40.60343, -73.88926], [40.59502, -73.88437]],
+];
+export const RUNWAY_W = 2.4 * TILE;
+
 // Hand-authored blocks, keyed "c,r" on the real-Brooklyn grid (see the cell picture from tools/build-grid.py).
 // Each sits in the block that holds its real location; unlisted Brooklyn blocks get a default from their neighborhood.
 const BLOCKS: Record<string, BlockSpec> = {
@@ -697,7 +706,14 @@ export function generateLayout(): WorldLayout {
     }
     if (best) spots[key] = best;
   }
-  return { tiles, blocked, buildings, props, spots, labels, avenues };
+  // Floyd Bennett's runways are open concrete: no trees, lamps or benches on them
+  const onRunway = (x: number, y: number) => RUNWAYS.some(([, , A, B]) => {
+    const a = geo(...A), b = geo(...B), ax = a.x * TILE, ay = a.y * TILE, dx = b.x * TILE - ax, dy = b.y * TILE - ay;
+    const t = Math.max(0, Math.min(1, ((x - ax) * dx + (y - ay) * dy) / (dx * dx + dy * dy)));
+    return Math.hypot(x - ax - t * dx, y - ay - t * dy) < RUNWAY_W / 2 + 18;
+  });
+  const keptProps = props.filter((p) => !onRunway(p.x, p.y));
+  return { tiles, blocked, buildings, props: keptProps, spots, labels, avenues };
 }
 
 function markBlocked(b: boolean[][], x: number, y: number, w: number, h: number) {
