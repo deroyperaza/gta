@@ -670,7 +670,7 @@ export function generateLayout(): WorldLayout {
     let best: Spot | null = null, bd = Infinity;
     for (let dy = -10; dy <= 10; dy++) for (let dx = -10; dx <= 10; dx++) {
       const x = cx + dx, y = cy + dy, k = tiles[y]?.[x];
-      if ((k !== T.GRASS && k !== T.PLAZA) || blocked[y][x] || !neighborhoodOfBlock(Math.floor(x / BLOCK_W), Math.floor(y / BLOCK_H))?.startsWith('Green-Wood')) continue;
+      if ((k !== T.GRASS && k !== T.PLAZA) || blocked[y][x] || spotTaken(x, y) || !neighborhoodOfBlock(Math.floor(x / BLOCK_W), Math.floor(y / BLOCK_H))?.startsWith('Green-Wood')) continue;
       const d = dx * dx + dy * dy; if (d < bd) { bd = d; best = { x: px(x) + 16, y: px(y) + 16 }; }
     }
     if (best) spots[key] = best;
