@@ -997,12 +997,18 @@ export class WorldScene extends Phaser.Scene {
     return best;
   }
 
+  /** Which way B is from A on the map (north is up): an arrow and N/NE/E/SE/S/SW/W/NW */
+  private compass(ax: number, ay: number, bx: number, by: number) {
+    const a = Math.atan2(-(by - ay), bx - ax), k = ((Math.round(a / (Math.PI / 4)) % 8) + 8) % 8;
+    return [['→', 'E'], ['↗', 'NE'], ['↑', 'N'], ['↖', 'NW'], ['←', 'W'], ['↙', 'SW'], ['↓', 'S'], ['↘', 'SE']][k] as [string, string];
+  }
+
   private takeSubway(from: { st: { id: string; name: string; routes: string[]; ada: number }; x: number; y: number }) {
     const tr = this.transit, obj = this.objectivePos(), near = obj ? tr.nearestStation(obj.x, obj.y)?.p : null;
     const items = tr.stations.filter((p) => p.st.id !== from.st.id).sort((a, b) => a.st.name.localeCompare(b.st.name)).map((p) => {
       const pl = tr.plan(from.st.id, p.st.id);
       return { value: p.st.id, label: p.st.name, html: `${p.st.routes.map(bullet).join('')} ${p.st.name}${p.st.ada === 1 ? ' ♿' : ''}`,
-        sub: pl ? `${pl.stops} stops${pl.transfers ? ` · ${pl.transfers} transfer${pl.transfers > 1 ? 's' : ''}` : ''} · ${neighborhoodAt(p.x, p.y) ?? ''}` : 'No route', group: 'All Brooklyn stations' };
+        sub: `<span class="dir">${this.compass(from.x, from.y, p.x, p.y).join(' ')}</span> ` + (pl ? `${pl.stops} stops${pl.transfers ? ` · ${pl.transfers} transfer${pl.transfers > 1 ? 's' : ''}` : ''} · ${neighborhoodAt(p.x, p.y) ?? ''}` : 'No route'), group: 'All Brooklyn stations' };
     });
     if (near && near.st.id !== from.st.id) { const it = items.find((i) => i.value === near.st.id); if (it) items.unshift({ ...it, group: 'Closest to your objective' }); }
     const ada = from.st.ada === 1 ? '♿ Elevator access.' : from.st.ada === 2 ? '♿ Partly accessible (one direction only).' : '<b>Stairs only.</b> ' + Transit.adaLine();
@@ -1010,7 +1016,8 @@ export class WorldScene extends Phaser.Scene {
       const pl = tr.plan(from.st.id, id), dest = tr.byId[id];
       if (!pl || !dest) { bus.emit('ui:toast', 'NO TRAINS. (PLANNED WORK.)'); return; }
       const name = (sid: string) => tr.byId[sid]?.st.name ?? sid;
-      ui.rideSubway(pl.legs.map((l) => ({ route: l.route, color: LINE_COLORS[l.route] ?? '#888', dark: 'NQRW'.includes(l.route), stops: l.stops.map(name) })), () => {
+      const heading = (a: string, b: string) => { const p = tr.byId[a], q = tr.byId[b]; return p && q ? this.compass(p.x, p.y, q.x, q.y).join(' ') : ''; }; // which way the train is going into each stop
+      ui.rideSubway(pl.legs.map((l) => ({ route: l.route, color: LINE_COLORS[l.route] ?? '#888', dark: 'NQRW'.includes(l.route), stops: l.stops.map(name), dirs: l.stops.map((sid, i) => (i ? heading(l.stops[i - 1], sid) : '')) })), () => {
         (this.player.body as Phaser.Physics.Arcade.Body).reset(dest.x, dest.y + 40);
         state.apply({ flags: { rode_subway: true } }, { quiet: true });
         bus.emit('ui:toast', `YOU COME UP AT ${dest.st.name.toUpperCase()}`);

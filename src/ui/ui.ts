@@ -132,18 +132,18 @@ class UI {
   }
 
   /** Riding the subway: a car interior, the line bullets, the stops ticking by. */
-  rideSubway(legs: { route: string; color: string; dark: boolean; stops: string[] }[], onDone: () => void) {
+  rideSubway(legs: { route: string; color: string; dark: boolean; stops: string[]; dirs?: string[] }[], onDone: () => void) {
     this.openPanel('ride');
     const card = $('#ride-card');
-    const seq: { route: string; color: string; dark: boolean; name: string; transfer: boolean }[] = [];
-    legs.forEach((l, li) => l.stops.slice(1).forEach((n, i) => seq.push({ route: l.route, color: l.color, dark: l.dark, name: n, transfer: li > 0 && i === 0 })));
+    const seq: { route: string; color: string; dark: boolean; name: string; transfer: boolean; dir: string }[] = [];
+    legs.forEach((l, li) => l.stops.slice(1).forEach((n, i) => seq.push({ route: l.route, color: l.color, dark: l.dark, name: n, transfer: li > 0 && i === 0, dir: l.dirs?.[i + 1] ?? '' })));
     let i = 0;
     const lines = ['STAND CLEAR OF THE CLOSING DOORS, PLEASE.', 'WE ARE BEING HELD MOMENTARILY BY THE TRAIN DISPATCHER.', 'SHOWTIME! (A MAN SWINGS FROM THE POLE.)', 'IF YOU SEE SOMETHING, SAY SOMETHING.', 'THE NEXT STOP IS…', 'SOMEONE IS EATING A WHOLE ROTISSERIE CHICKEN.'];
     const show = () => {
       const st = seq[i];
       if (!st) { this.closePanel(); onDone(); return; }
       card.innerHTML = `<div class="ride-line"><i class="bullet big" style="background:${st.color};color:${st.dark ? '#111' : '#fff'}">${st.route}</i>${st.transfer ? '<em>TRANSFER</em>' : ''}</div>
-        <div class="ride-next">${i === seq.length - 1 ? 'LAST STOP FOR YOU' : 'NEXT STOP'}</div><div class="ride-stop">${st.name}</div>
+        <div class="ride-next">${i === seq.length - 1 ? 'LAST STOP FOR YOU' : 'NEXT STOP'}${st.dir ? ` <span class="ride-dir">HEADING ${st.dir}</span>` : ''}</div><div class="ride-stop">${st.name}</div>
         <div class="ride-bar"><i style="width:${((i + 1) / seq.length) * 100}%"></i></div>
         <div class="ride-pa">${Phaser_rand(lines)}</div>`;
       i++; setTimeout(show, st.transfer ? 1400 : 750);
