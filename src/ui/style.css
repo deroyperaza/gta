@@ -118,8 +118,8 @@ body.touch #touch-btns { display: flex; gap: 14px; position: absolute; right: 30
 #dlg-rel .rt { width: 80px; height: 10px; border: 2px solid var(--ink); border-radius: 5px; background: #e5d9f2; overflow: hidden; }
 #dlg-rel i { display: block; height: 100%; background: var(--pink); }
 #dlg-text { font: 800 19px/1.4 var(--body); margin: 10px 0 8px; min-height: 54px; }
-#dlg-choices { display: grid; gap: 6px; opacity: 0; transition: opacity .15s; }
-#dlg-choices.show { opacity: 1; }
+#dlg-choices { display: grid; gap: 6px; opacity: 0; transition: none; } /* hide instantly, so the next line's answers never flash */
+#dlg-choices.show { opacity: 1; transition: opacity .15s; }
 #dlg-choices button { text-align: left; font: 800 15px var(--body); background: #fff; color: var(--ink); border: 3px solid var(--ink); border-radius: 10px; padding: 7px 12px; box-shadow: 3px 3px 0 var(--ink); transition: .08s; }
 #dlg-choices button:hover { background: var(--yellow); transform: translate(-1px,-1px); box-shadow: 5px 5px 0 var(--ink); }
 #dlg-choices button b { display: inline-block; width: 22px; height: 22px; border-radius: 6px; background: var(--purple); color: #fff; text-align: center; font: 15px/22px var(--display); margin-right: 6px; }
