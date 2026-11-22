@@ -274,32 +274,47 @@ export class WorldScene extends Phaser.Scene {
       }
       // Where the avenue crosses a grid street, its sidewalk band stops: the street keeps its asphalt,
       // with a zebra crosswalk across it at the avenue's edge (no sidewalk running over the cross street)
+      // Drawn as geometry, not tiles: the cross street's asphalt runs straight through the band, and one clean zebra
+      // sits where the avenue's sidewalk meets each side of it (none inside an intersection).
       const xw = this.add.graphics().setDepth(-8.5);
       const ROADT = new Set<number>([T.ASPHALT, T.LANE_V, T.LANE_H, T.INTERSECTION, T.CROSS_V, T.CROSS_H]);
-      const seen = new Set<number>();
+      const isRoad = (x: number, y: number) => ROADT.has(this.layout.tiles[Math.floor(y / TILE)]?.[Math.floor(x / TILE)] ?? -1);
+      const SW = ROAD * TILE, edge = av.hw + 1.2 * TILE, mid = av.hw + 0.6 * TILE, ZW = 24;
+      const zebra = (x: number, y: number, w: number, h: number, bars: 'v' | 'h') => {
+        xw.fillStyle(0xe9e4d8, 0.92);
+        if (bars === 'v') for (let i = 3; i < w - 3; i += 10) xw.fillRect(x + i, y, 6, h);
+        else for (let i = 3; i < h - 3; i += 10) xw.fillRect(x, y + i, w, 6);
+      };
       for (const [a, b] of segs) {
-        const x0 = Math.floor((Math.min(a.x, b.x) - av.hw) / TILE) - 3, x1 = Math.ceil((Math.max(a.x, b.x) + av.hw) / TILE) + 3;
-        const y0 = Math.floor((Math.min(a.y, b.y) - av.hw) / TILE) - 3, y1 = Math.ceil((Math.max(a.y, b.y) + av.hw) / TILE) + 3;
-        const dx = b.x - a.x, dy = b.y - a.y, L2 = dx * dx + dy * dy || 1;
-        for (let ty = y0; ty <= y1; ty++) for (let tx = x0; tx <= x1; tx++) {
-          const key = ty * 100000 + tx; if (seen.has(key)) continue;
-          const kind = this.layout.tiles[ty]?.[tx]; if (kind === undefined || !ROADT.has(kind)) continue;
-          const vert = (tx % BLOCK_W) < ROAD, horiz = (ty % BLOCK_H) < ROAD; if (!vert && !horiz) continue;
-          const px = (tx + 0.5) * TILE, py = (ty + 0.5) * TILE;
-          const t = Math.max(0, Math.min(1, ((px - a.x) * dx + (py - a.y) * dy) / L2));
-          const d = Math.hypot(a.x + dx * t - px, a.y + dy * t - py) - av.hw;
-          if (d <= -2 || d > 1.2 * TILE + 18) continue; // only the sidewalk band (and its soft edge)
-          seen.add(key);
-          xw.fillStyle(0x2b2e31, 1).fillRect(tx * TILE, ty * TILE, TILE, TILE);
-          if (d > 22 && !(vert && horiz)) { // zebra stripes across the cross street, one row at the avenue's outer edge
-            xw.fillStyle(0xe9e4d8, 0.9);
-            if (vert) for (let i = 4; i < TILE; i += 9) xw.fillRect(tx * TILE + i, ty * TILE + 3, 5, TILE - 6);
-            else for (let i = 4; i < TILE; i += 9) xw.fillRect(tx * TILE + 3, ty * TILE + i, TILE - 6, 5);
+        const dx = b.x - a.x, dy = b.y - a.y, L = Math.hypot(dx, dy), ux = dx / L, uy = dy / L;
+        // north-south streets crossing this piece of the avenue
+        if (Math.abs(ux) > 0.25) for (let k = 0; k * BLOCK_W * TILE < this.layout.tiles[0].length * TILE; k++) {
+          const sx = (k * BLOCK_W + ROAD / 2) * TILE, t = (sx - a.x) / dx; if (t < 0 || t > 1) continue;
+          const cy = a.y + dy * t; if (!isRoad(sx, cy - edge / Math.abs(ux) - 8) && !isRoad(sx, cy + edge / Math.abs(ux) + 8)) continue;
+          const hy = edge / Math.abs(ux);
+          xw.fillStyle(0x24272a, 1).fillRect(sx - SW / 2, cy - hy, SW, hy * 2);
+          for (const s of [-1, 1]) {
+            const zy = cy + (s * mid) / Math.abs(ux);
+            if ((Math.floor(zy / TILE) % BLOCK_H) < ROAD) continue; // that's an intersection, not a crosswalk
+            zebra(sx - SW / 2 + 2, zy - ZW / 2, SW - 4, ZW, 'v');
+          }
+        }
+        // east-west streets crossing it
+        if (Math.abs(uy) > 0.25) for (let k = 0; k * BLOCK_H * TILE < this.layout.tiles.length * TILE; k++) {
+          const sy = (k * BLOCK_H + ROAD / 2) * TILE, t = (sy - a.y) / dy; if (t < 0 || t > 1) continue;
+          const cx = a.x + dx * t; if (!isRoad(cx - edge / Math.abs(uy) - 8, sy) && !isRoad(cx + edge / Math.abs(uy) + 8, sy)) continue;
+          const hx = edge / Math.abs(uy);
+          xw.fillStyle(0x24272a, 1).fillRect(cx - hx, sy - SW / 2, hx * 2, SW);
+          for (const s of [-1, 1]) {
+            const zx = cx + (s * mid) / Math.abs(uy);
+            if ((Math.floor(zx / TILE) % BLOCK_W) < ROAD) continue;
+            zebra(zx - ZW / 2, sy - SW / 2 + 2, ZW, SW - 4, 'h');
           }
         }
       }
       this.miniIgnore.push(sm, ln, xw);
     }
+    this.drawCourts();
     // Grand Army Plaza: the traffic circle and its painted island (arch + Bailey Fountain)
     {
       const g = GAP_CIRCLE, cx = g.x * TILE, cy = g.y * TILE;
@@ -712,6 +727,55 @@ export class WorldScene extends Phaser.Scene {
     if (!id || !dlg) return;
     const p = this.entityPos[id];
     if (p && Math.hypot(p.x - this.player.x, p.y - this.player.y) < 80) dialogue.start(owner, DIALOGUES[dlg]);
+  }
+
+  /**
+   * Basketball courts: every patch of court tiles gets real markings (boundary, half-court line, center circle,
+   * red keys, three-point arcs) and hoops where none are standing. Long strips (Pier 2) become several courts.
+   */
+  private drawCourts() {
+    const L = this.layout, H = L.tiles.length, W = L.tiles[0].length, seen = new Uint8Array(W * H);
+    const g = this.add.graphics().setDepth(-8);
+    this.miniIgnore.push(g);
+    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+      if (seen[y * W + x] || L.tiles[y][x] !== T.COURT) continue;
+      let x1 = x; while (x1 + 1 < W && L.tiles[y][x1 + 1] === T.COURT) x1++;
+      let y1 = y; while (y1 + 1 < H && L.tiles[y1 + 1][x] === T.COURT) y1++;
+      for (let yy = y; yy <= y1; yy++) for (let xx = x; xx <= x1; xx++) seen[yy * W + xx] = 1;
+      const bx = x * TILE, by = y * TILE, bw = (x1 - x + 1) * TILE, bh = (y1 - y + 1) * TILE;
+      if (bw < 3 * TILE || bh < 2 * TILE) continue;
+      const horiz = bw >= bh, long = horiz ? bw : bh, short = horiz ? bh : bw;
+      const n = Math.max(1, Math.round(long / (short * 1.9))); // a court is about 94 x 50 ft
+      const hasHoops = L.props.some((p) => p.kind === 'hoop' && p.x >= bx - 40 && p.x <= bx + bw + 40 && p.y >= by - 40 && p.y <= by + bh + 40);
+      for (let i = 0; i < n; i++) {
+        // court i in local coordinates (u along the long axis, v across)
+        const u0 = (long / n) * i + 8, u1 = (long / n) * (i + 1) - 8, v0 = 8, v1 = short - 8;
+        const P = (u: number, v: number) => (horiz ? { x: bx + u, y: by + v } : { x: bx + v, y: by + u });
+        const rect = (ua: number, va: number, ub: number, vb: number) => { const a = P(ua, va), b = P(ub, vb); return [Math.min(a.x, b.x), Math.min(a.y, b.y), Math.abs(b.x - a.x), Math.abs(b.y - a.y)] as const; };
+        const um = (u0 + u1) / 2, vm = (v0 + v1) / 2, len = u1 - u0, wid = v1 - v0;
+        const keyL = len * 0.2, keyW = wid * 0.32, arcR = wid * 0.44, circR = wid * 0.13;
+        // red painted keys
+        g.fillStyle(0xb8432f, 1);
+        g.fillRect(...rect(u0, vm - keyW / 2, u0 + keyL, vm + keyW / 2)); g.fillRect(...rect(u1 - keyL, vm - keyW / 2, u1, vm + keyW / 2));
+        g.lineStyle(2.5, 0xf2efe6, 0.95);
+        g.strokeRect(...rect(u0, v0, u1, v1));
+        const a = P(um, v0), b = P(um, v1); g.lineBetween(a.x, a.y, b.x, b.y); // half-court line
+        const c = P(um, vm); g.strokeCircle(c.x, c.y, circR);
+        g.strokeRect(...rect(u0, vm - keyW / 2, u0 + keyL, vm + keyW / 2)); g.strokeRect(...rect(u1 - keyL, vm - keyW / 2, u1, vm + keyW / 2));
+        for (const [end, dir] of [[u0, 1], [u1, -1]] as const) {
+          const ctr = P(end + dir * len * 0.06, vm);
+          const base = horiz ? (dir > 0 ? 0 : Math.PI) : (dir > 0 ? Math.PI / 2 : -Math.PI / 2);
+          g.beginPath(); g.arc(ctr.x, ctr.y, arcR, base - Math.PI / 2, base + Math.PI / 2); g.strokePath(); // three-point arc
+          const ft = P(end + dir * keyL, vm); g.strokeCircle(ft.x, ft.y, keyW / 2); // free-throw circle
+          if (!hasHoops) { // backboard and orange rim
+            const bb0 = P(end + dir * 4, vm - wid * 0.09), bb1 = P(end + dir * 4, vm + wid * 0.09);
+            g.lineStyle(4, 0xf2f2f2, 1); g.lineBetween(bb0.x, bb0.y, bb1.x, bb1.y);
+            g.lineStyle(2.5, 0xff7a1a, 1); g.strokeCircle(ctr.x, ctr.y, 6);
+            g.lineStyle(2.5, 0xf2efe6, 0.95);
+          }
+        }
+      }
+    }
   }
 
   /** Where the mission wants you (the nearest target), for "closest stop to your objective" */

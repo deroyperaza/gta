@@ -83,7 +83,8 @@ export const board: MissionModule = {
       ],
       nodes: {
         board_vega: { speaker: 'vega', text: 'Tyler wants to block the sunset in SUNSET PARK? That should be illegal. Okay. We need a plan. And a dance.', next: 'board_vega2' },
-        board_vega2: { speaker: 'vega', text: 'Tonight the community board holds a public hearing and votes on what to recommend. Then it keeps going, all the way to the City Council.', next: 'board_vega3' },
+        board_vega2: { speaker: 'vega', text: 'Tonight the community board holds a public hearing and votes on what to recommend. Recommend! It\'s advice, not the final word. Then it keeps going.', next: 'board_vega2b' },
+        board_vega2b: { speaker: 'vega', text: 'I made a song so I remember the order. Board, then the Borough President (more advice!), then City Planning votes, then the City Council! Then the Mayor. The Mayor doesn\'t rhyme.', next: 'board_vega3' },
         board_vega3: {
           speaker: 'vega', text: 'And anybody can sign up to testify at the Council. In person, on Zoom, or in writing. You talk right to the people who make the rules.',
           choices: [
@@ -91,8 +92,9 @@ export const board: MissionModule = {
             { text: 'Even nine-year-olds?', next: 'board_vega_kid' },
           ],
         },
-        board_vega4: { speaker: 'vega', text: 'Yep! You can send written testimony up to three days after the hearing. I\'m writing mine in glitter pen. Then typing it. Then glitter again.', next: 'board_vega5' },
-        board_vega_kid: { speaker: 'vega', text: 'It says "members of the public." I\'m the public! I\'m a WHOLE public!', next: 'board_vega5' },
+        board_vega4: { speaker: 'vega', text: 'Yep! You can send written testimony up to three days after the hearing. I\'m writing mine in glitter pen. Then typing it. Then glitter again.', next: 'board_vega_tip' },
+        board_vega_kid: { speaker: 'vega', text: 'It says "members of the public." I\'m the public! I\'m a WHOLE public!', next: 'board_vega_tip' },
+        board_vega_tip: { speaker: 'vega', text: 'My mom\'s rule for testimony: two minutes, ONE real person\'s story, then ONE ask they can vote on, with a number in it. Not a list. Not a speech. Not vibes.', next: 'board_vega5' },
         board_vega5: {
           speaker: 'vega', text: 'Here. Flyers for the hearing. I drew the dance moves on the back. Hand them out [SPACE] and get to the board before seven!',
           choices: [{ text: '(Take 8 flyers. Learn one dance move.)', effects: { items: { flyers: 8 }, flags: { board_prep: true }, rel: { vega: 5 } } }],
@@ -112,9 +114,10 @@ export const board: MissionModule = {
         board_skye2: {
           speaker: 'you', text: '*4,100 watching. The top comment: "so it\'s dead right??"*',
           choices: [
-            { text: 'Not yet. The board\'s vote is a recommendation. Next the Borough President weighs in, then City Planning votes, then the City Council.', next: 'board_skye_good', effects: { flags: { board_skye_ok: true } } },
-            { text: 'Yes! Dead! Everybody go home!', next: 'board_skye_bad' },
-            { text: 'Tyler is canceled. Next question.', next: 'board_skye_bad2' },
+            { text: 'Not yet. The board only recommends. Next the Borough President weighs in, then City Planning votes, then the Council.', next: 'board_skye_good', effects: { flags: { board_skye_ok: true } } },
+            { text: 'Not yet. The board only recommends. Next it goes straight to the City Council for the final vote.', next: 'board_skye_bad' },
+            { text: 'Pretty much. A community board no is binding unless the Mayor overrides it. So, dead-ish.', next: 'board_skye_bad2' },
+            { text: 'Not yet. The board only recommends. Next City Planning weighs in, then the Borough President votes, then the Council.', next: 'board_skye_bad3' },
           ],
         },
         board_skye_good: {
@@ -124,8 +127,9 @@ export const board: MissionModule = {
             { text: 'Just tell chat: sign up to testify at the Council.', next: 'board_skye_end' },
           ],
         },
-        board_skye_bad: { speaker: 'skye', text: 'Chat is celebrating! ...Gary just commented: "it goes to the Council, sweetie." Oh. So it\'s NOT over? Plot twist.', next: 'board_skye_end' },
-        board_skye_bad2: { speaker: 'skye', text: 'Tyler just commented "see you at City Planning 😘". What\'s City Planning? Is that a club? Is it exclusive?', next: 'board_skye_end' },
+        board_skye_bad: { speaker: 'skye', text: 'Gary just commented: "you skipped two steps, sweetie. Borough President, then City Planning votes, THEN us." Two whole steps? Plot twist. Plot twists.', next: 'board_skye_end' },
+        board_skye_bad2: { speaker: 'skye', text: 'Chat is celebrating! ...Tyler just commented "it\'s a recommendation 😘 see you at City Planning". What\'s City Planning? Is that a club? Is it exclusive?', next: 'board_skye_end' },
+        board_skye_bad3: { speaker: 'skye', text: 'Vega just commented with a SONG: "board, Borough President, City Planning, Council." Other way around, bestie. ...Did a nine-year-old just fact-check me live?', next: 'board_skye_end' },
         board_skye_end: {
           speaker: 'skye', text: 'Okay. Gary has the Council hearing. I\'m going LIVE. Please be iconic. Or at least not boring.',
           choices: [{ text: '(Head to Borough Hall.)', effects: { flags: { board_recap: true }, rel: { skye: 3 } } }],
@@ -145,30 +149,33 @@ export const board: MissionModule = {
         board_h1: {
           speaker: 'Sergeant-at-Arms', text: 'Next speaker. You. Are you signed up?',
           choices: [
-            { text: 'I signed up to testify. Any member of the public can. Neighbors who work nights are sending written testimony.', next: 'board_h2', effects: { inc: { board_score: 1 } } },
-            { text: 'I\'m with the band.', next: 'board_h1b' },
-            { text: 'Wait, don\'t I need to be a lawyer?', next: 'board_h1c' },
+            { text: 'Signed up. Neighbors who work nights will send written testimony in the next three days.', next: 'board_h2', effects: { inc: { board_score: 1 } } },
+            { text: 'Signed up. Neighbors who work nights already sent written testimony, since it closes when the hearing ends.', next: 'board_h1b' },
+            { text: 'Signed up. Neighbors who work nights couldn\'t come, since you can only testify here in person.', next: 'board_h1c' },
           ],
         },
-        board_h1b: { speaker: 'Sergeant-at-Arms', text: 'There\'s no band. There\'s a stenographer. ...Members of the public can testify. You have two minutes.', next: 'board_h2' },
-        board_h1c: { speaker: 'gary', text: 'No! Anybody can sign up. In person, on Zoom, or in writing. Please. My chamber is so empty.', next: 'board_h2' },
+        board_h1b: { speaker: 'Sergeant-at-Arms', text: 'Closes? Written testimony stays open 72 hours after we adjourn. Your night shift could have slept first. ...You have two minutes.', next: 'board_h2' },
+        board_h1c: { speaker: 'gary', text: 'Only in person? No! In person, on Zoom, or in writing up to three days after. Tell them! Please. My chamber is so empty.', next: 'board_h2' },
         board_h2: {
           speaker: 'you', text: '*The clock starts. Skye\'s ring light clicks on. Vega gives you a thumbs-up from the back, in squeaky shoes.*',
           choices: [
-            { text: 'Tell one story: Rosa, 30 years in Sunset Park, fishing off that pier every Sunday. The pier is where the parking lot goes.', next: 'board_h3', effects: { inc: { board_score: 1 } } },
-            { text: 'Read the zoning text aloud. All of it.', next: 'board_h2b' },
-            { text: 'Perform Vega\'s choreography in total silence.', next: 'board_h2c' },
+            { text: 'Tell Rosa\'s story: 30 years fishing off that pier every Sunday. The pier is where the parking lot goes.', next: 'board_h3', effects: { inc: { board_score: 1 } } },
+            { text: 'Cover every problem fast: traffic, shadows, the sewers, rents, the pier, the views. Two minutes, all of it.', next: 'board_h2b' },
+            { text: 'Speak for all of Sunset Park: everyone here is against this, and you\'d know, you\'ve talked to all of them.', next: 'board_h2c' },
           ],
         },
-        board_h2b: { speaker: 'you', text: '*By the second "notwithstanding," a councilmember is asleep. Impressive posture, honestly. You skip to the end.*', next: 'board_h3' },
-        board_h2c: { speaker: 'vega', text: 'IT\'S CALLED EXPRESSION, GARY.', next: 'board_h3' },
+        board_h2b: { speaker: 'you', text: '*By item four, the sewers, a councilmember is asleep. Impressive posture, honestly. In the back, Vega mouths: "ONE. STORY."*', next: 'board_h3' },
+        board_h2c: { speaker: 'gary', text: 'All of them? Tyler says all of them are FOR it. Everyone knows everyone, apparently. ...Give me one person. One name.', next: 'board_h3' },
         board_h3: {
           speaker: 'you', text: '*Thirty seconds left. One person, one stake. Now the ask.*',
           choices: [
             { text: '"Vote no unless half the units are affordable to people who live here now. On the record."', next: 'board_tally', effects: { inc: { board_score: 1 } } },
-            { text: '"Just... better vibes, Gary. Generally."', next: 'board_tally' },
+            { text: '"Please take the community\'s concerns seriously as you weigh this project. On the record."', next: 'board_h3b' },
+            { text: '"The Borough President should veto this, and I hope this Council backs that veto up."', next: 'board_h3c' },
           ],
         },
+        board_h3b: { speaker: 'gary', text: 'Oh, I take ALL concerns seriously. Very seriously. Weighing them now. ...Done. *Nobody can tell what he just promised, including Gary.*', next: 'board_tally' },
+        board_h3c: { speaker: 'gary', text: 'Veto? The Borough President recommends, same as the board. City Planning and the Council vote. I\'m the vote, sweetie. Ask ME for something. With a number.', next: 'board_tally' },
         board_tally: {
           speaker: 'gary', text: '*Gary looks at the sign-up sheet, then at Skye\'s viewer count, then at his own reflection in the microphone.*',
           choices: [

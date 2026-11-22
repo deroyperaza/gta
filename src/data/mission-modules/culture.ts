@@ -68,7 +68,7 @@ export const culture: MissionModule = {
         { cond: S(4), node: 'culture_end' },
       ],
       nodes: {
-        culture_0: { speaker: 'danae', text: 'Twelve kids from the block. Saturday. The Brooklyn Museum. Budget: one MetroCard and my optimism.', next: 'culture_0b', effects: { flags: { culture_iq: 0, ...RESET } } },
+        culture_0: { speaker: 'danae', text: 'Twelve kids from the block. Saturday. The Brooklyn Museum. Budget: one MetroCard and my optimism. Good news: in this city, a library card gets you free museum passes. That\'s the whole secret.', next: 'culture_0b', effects: { flags: { culture_iq: 0, ...RESET } } },
         culture_0b: {
           speaker: 'danae', text: 'Meanwhile Tyler is selling a "Luxe Culture Club." $400 a month for "curated access" to museums. Curated by who? Tyler.',
           choices: [
@@ -78,17 +78,20 @@ export const culture: MissionModule = {
         },
         culture_tyler: { speaker: 'danae', text: 'It comes with a tote bag that says "I Support The Arts." The tote is the only thing it supports.', next: 'culture_how' },
         culture_how: {
-          speaker: 'danae', text: 'So think. What\'s free, open to everybody, and sitting right on Grand Army Plaza?',
+          speaker: 'danae', text: 'So think. We\'re standing on Grand Army Plaza with twelve kids and zero dollars. Where do we start?',
           choices: [
             { text: 'The Central Library. Library card, then Culture Pass.', next: 'culture_yes', effects: { inc: { culture_iq: 1 }, rel: { danae: 3 } } },
-            { text: 'The arch. We climb it and look at the museum from up there.', next: 'culture_arch' },
-            { text: 'Tyler\'s free trial. Then we cancel.', next: 'culture_trial' },
+            { text: 'The Brooklyn Museum. We ask the front desk for twelve free Culture Passes.', next: 'culture_arch' },
+            { text: 'Tyler\'s free trial. One sign-up, all twelve kids, then we cancel.', next: 'culture_trial' },
           ],
         },
-        culture_arch: { speaker: 'danae', text: 'That\'s not a field trip, that\'s a news story. No. Look across the plaza. The big building with the books.', next: 'culture_yes' },
+        culture_arch: { speaker: 'danae', text: 'The museum takes the pass. It doesn\'t hand them out. Twelve kids asking for passes at the door is a very long line to nowhere. Passes come with a library card. Look across the plaza. The big building with the books.', next: 'culture_yes' },
         culture_trial: { speaker: 'danae', text: 'The cancel button is in a different borough. I checked. Look across the plaza instead. The big building with the books.', next: 'culture_yes' },
         culture_yes: {
-          speaker: 'danae', text: 'Culture Pass. With a library card, you reserve free passes to over 100 museums and cultural spots in all five boroughs. Naim\'s on the library steps. Go get these kids carded.',
+          speaker: 'danae', text: 'Culture Pass. With a library card, you reserve free passes to over 100 museums and cultural spots in all five boroughs. Naim\'s on the library steps.', next: 'culture_rules',
+        },
+        culture_rules: {
+          speaker: 'danae', text: 'The fine print. To reserve, you\'re 13 or older with a regular library card, not an ecard, and you show up with ID that matches. One pass per venue per year. Up to four reservations at a time.',
           choices: [{ text: 'Library cards first.', effects: { flags: { culture_accepted: true } } }],
         },
         culture_wait: { speaker: 'danae', text: 'Cards, then passes, then the museum. The kids already picked their outfits. One of them is dressed as a sarcophagus.' },
@@ -97,22 +100,22 @@ export const culture: MissionModule = {
           speaker: 'danae', text: 'Now make it a habit, not a field trip. Next month: same museum again?',
           choices: [
             { text: 'Somewhere new. It\'s one pass per venue per year, and up to four reservations at a time.', next: 'culture_e2', effects: { inc: { culture_iq: 1 } } },
-            { text: 'Same museum. We wear disguises.', next: 'culture_disguise' },
-            { text: 'Fine. Tyler\'s club.', next: 'culture_club' },
+            { text: 'Same museum. Passes reset every month, so we can book it again in four weeks.', next: 'culture_disguise' },
+            { text: 'Somewhere new. Let\'s book all twelve months at once so nobody misses a trip.', next: 'culture_club' },
           ],
         },
-        culture_disguise: { speaker: 'danae', text: 'The cardholder has to show up with ID that matches the pass. A mustache is not ID. One pass per venue per year. Spread the love around.', next: 'culture_e2' },
-        culture_club: { speaker: 'danae', text: 'His "curated access" is a bus tour past the museum. It does not stop. One pass per venue per year. There are a hundred more.', next: 'culture_e2' },
+        culture_disguise: { speaker: 'danae', text: 'Every month? The kids already planned mustache disguises for that. No. It\'s one pass per venue per year. Spread the love around. There are a hundred more.', next: 'culture_e2' },
+        culture_club: { speaker: 'danae', text: 'Twelve at once is a Tyler move. Culture Pass caps you at four reservations at a time, and one pass per venue per year. Book four, go, book more.', next: 'culture_e2' },
         culture_e2: {
           speaker: 'danae', text: 'And the little ones under 13? The grown-ups who can\'t get a library card yet?',
           choices: [
             { text: 'IDNYC. Free city ID for New Yorkers 10 and up, any immigration status. Some places give cardholders a free year of membership.', next: 'culture_id', effects: { inc: { culture_iq: 1 } } },
-            { text: 'They wait in the gift shop.', next: 'culture_shop' },
-            { text: 'They wait until they\'re 13.', next: 'culture_wait13' },
+            { text: 'IDNYC. Free city ID for New Yorkers 10 and up, but you need a green card. Some places give a free year.', next: 'culture_shop' },
+            { text: 'IDNYC. Free city ID for New Yorkers 13 and up, any immigration status. Some places give a free year.', next: 'culture_wait13' },
           ],
         },
-        culture_shop: { speaker: 'danae', text: 'The gift shop is where joy goes to cost $34. No. Think about the free city ID.', next: 'culture_id' },
-        culture_wait13: { speaker: 'danae', text: 'Three years is a long time to be nine. There\'s a faster way, and it\'s free.', next: 'culture_id' },
+        culture_shop: { speaker: 'danae', text: 'Close. No green card needed. IDNYC is for any immigration status. Nobody in our group waits in the gift shop, where joy goes to cost $34.', next: 'culture_id' },
+        culture_wait13: { speaker: 'danae', text: 'IDNYC starts at 10, not 13. Three years is a long time to be nine.', next: 'culture_id' },
         culture_id: {
           speaker: 'danae', text: 'IDNYC. Free, for New Yorkers 10 and up, no matter your immigration status. Participating places give cardholders a free year of membership or a discount. Rules vary, so check the list.',
           next: 'culture_res',
@@ -140,14 +143,14 @@ export const culture: MissionModule = {
           speaker: 'naim', text: 'Quiz before I hand you anything. Who in your group can actually reserve a Culture Pass?',
           choices: [
             { text: 'Anyone 13 or older with a regular library card. And they come along, with ID.', next: 'culture_nright', effects: { inc: { culture_iq: 1 }, rel: { naim: 3 } } },
-            { text: 'Anybody with the library app. Ecards are faster.', next: 'culture_necard' },
-            { text: 'Whoever yells "I love museums" the loudest.', next: 'culture_nyell' },
+            { text: 'Anyone 13 or older with a library card. The app\'s ecard works, and they come along with ID.', next: 'culture_necard' },
+            { text: 'Anyone 10 or older with a regular library card. They book it, then send the kids.', next: 'culture_nyell' },
           ],
         },
         culture_necard: { speaker: 'naim', text: 'Ecards are great for books. Not for Culture Pass. You need a regular, full-service card. I asked twice. Politely.', next: 'culture_nright' },
-        culture_nyell: { speaker: 'naim', text: 'This is a library. Also, no. You have to be 13 to reserve, with a regular card, and the cardholder shows up with ID.', next: 'culture_nright' },
+        culture_nyell: { speaker: 'naim', text: 'Shh. This is a library. Also, no. You have to be 13 to reserve, with a regular card, and the cardholder shows up with ID. Nobody gets sent solo.', next: 'culture_nright' },
         culture_nright: {
-          speaker: 'naim', text: 'Cards are free if you live in New York State, or work or go to school in the city. Here: sign-up flyers. Hand them out around the plaza.',
+          speaker: 'naim', text: 'Cards are free if you live in New York State, or work or go to school in the city. No card yet? IDNYC: free city ID, 10 and up, any immigration status. Here: sign-up flyers. Hand them out around the plaza.',
           choices: [{ text: 'Okay, but when do the cards come?', next: 'culture_nwhen' }, { text: 'Flyers. Got it.', effects: { items: { flyers: 10 }, flags: { culture_cards: true }, toast: 'LIBRARY CARD DRIVE' } }],
         },
         culture_nwhen: {

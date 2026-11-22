@@ -94,22 +94,26 @@ export const heat: MissionModule = {
       nodes: {
         heat_pre: { speaker: 'inez', text: 'Every floor needs a captain. I\'m the captain of all fourteen. Nobody voted. Nobody had to.' },
         heat_0: {
-          speaker: 'inez', text: 'Day three over 95. The elevator is "resting," says management. From Montauk. I\'ve got a list of neighbors who live alone, and my knees don\'t do stairs in this.',
-          effects: { flags: { ...RESET } }, next: 'heat_1',
+          speaker: 'inez', text: 'Day three over 95. The elevator is "resting," says management. From Montauk. The city called a heat emergency, so cooling centers are open. 311 or the Cooling Center Finder says which. Call ahead. Hours change.',
+          effects: { flags: { ...RESET } }, next: 'heat_0b',
+        },
+        heat_0b: {
+          speaker: 'inez', text: 'I\'ve got a list of neighbors who live alone, and my knees don\'t do stairs in this. So you\'re my legs. Let\'s see if you\'re also my ears.',
+          next: 'heat_1',
         },
         heat_1: {
-          speaker: 'inez', text: 'First thing. When I find them, where do I send them to cool off?',
+          speaker: 'inez', text: 'Say Dot picks up and says, "Inez, I\'m melting. Where do I go?" What do I tell her?',
           choices: [
             { text: 'A cooling center. Call 311 or use the city\'s Cooling Center Finder, then call the site before you go.', next: 'heat_right', effects: { mvar: { score: 1 }, flags: { heat_finder: true }, rel: { inez: 3 } } },
-            { text: 'Ask management.', next: 'heat_mgmt' },
-            { text: 'The walk-in freezer at the steakhouse?', next: 'heat_freezer' },
+            { text: 'A cooling center. Call 911 to find the closest one, then head straight over.', next: 'heat_mgmt' },
+            { text: 'A cooling center. Look one up on the Finder and just go. Once it\'s hot, they\'re all open all day.', next: 'heat_freezer' },
           ],
         },
-        heat_mgmt: { speaker: 'inez', text: 'Management\'s answer to everything is a laminated sign. Today\'s says "Stay Hydrated :)" and it\'s taped over the broken water fountain.', next: 'heat_right' },
-        heat_freezer: { speaker: 'inez', text: 'Lovely staff. Very confused. No. The city has a better freezer, and nobody has to order the porterhouse.', next: 'heat_right' },
+        heat_mgmt: { speaker: 'inez', text: '911 is for emergencies, sweetheart, like somebody confused with hot, dry skin. Finding a cooling center is 311. Management would have gotten that wrong too, on a laminated sign.', next: 'heat_right' },
+        heat_freezer: { speaker: 'inez', text: 'All day? I once walked Dot eleven blocks to a locked door. She still brings it up. Hours change. Call the site first.', next: 'heat_right' },
         heat_right: { speaker: 'inez', text: 'When the city calls a heat emergency, it opens cooling centers. 311 or the Cooling Center Finder tells you which ones are open. Call ahead. Hours change.', next: 'heat_list' },
         heat_list: {
-          speaker: 'inez', text: 'Now, the list. Dot likes the AC by the Skee-Ball. Wally "supervises" at Hot Dog Hall. Pearl sews at the Mermaid Workshop. Nobody\'s picking up. Go see them with your own eyes.',
+          speaker: 'inez', text: 'Now, the list. Dot likes the AC by the Skee-Ball. Wally "supervises" at Hot Dog Hall. Pearl sews at the Mermaid Workshop. Nobody\'s picking up. In a heat wave, folks like these need somebody checking at least twice a day. Go see them with your own eyes.',
           choices: [{ text: 'Knocking on doors. Take some flyers?', effects: { flags: { heat_accepted: true }, items: { flyers: 8 }, toast: 'COOLING CENTER FLYERS' } }],
         },
         heat_wait: { speaker: 'inez', text: 'Don\'t stand here sweating at me. The list, sweetheart. The clock is the thermometer.' },
@@ -117,14 +121,14 @@ export const heat: MissionModule = {
         heat_e1: {
           speaker: 'inez', text: 'Summer\'s got two more months. How do we make sure nobody on this list goes a day without somebody checking?',
           choices: [
-            { text: 'A buddy for everyone on the list. A call at least twice a day in a heat wave, help getting to AC, water, and 911 for confusion or hot, dry skin.', next: 'heat_buddy', effects: { mvar: { score: 1 } } },
-            { text: 'Buy everybody a fan.', next: 'heat_fan' },
-            { text: 'Email the landlord. Again.', next: 'heat_landlord' },
+            { text: 'A buddy for everyone on the list. Two calls a day in a heat wave, help getting to AC, water, and 911 for hot, dry skin.', next: 'heat_buddy', effects: { mvar: { score: 1 } } },
+            { text: 'A buddy for everyone on the list. One call a week, and a fan in every apartment so they can stay home.', next: 'heat_fan' },
+            { text: 'A sign-up sheet in the lobby. Anyone who feels sick calls me, and I send help right away.', next: 'heat_landlord' },
           ],
         },
         heat_buddy: { speaker: 'inez', text: 'Be a buddy. That\'s what the city calls it, and that\'s what I\'ve been calling Tuesday since 1989. Now it\'s every floor, not just mine.', next: 'heat_res' },
-        heat_fan: { speaker: 'inez', text: 'Fans are lovely. But when it\'s this hot, the Health Department says a fan alone won\'t cool you down. AC or a cool place. And a buddy who checks.', next: 'heat_res' },
-        heat_landlord: { speaker: 'inez', text: 'Sent eleven. Got one back: "Per policy, outdoor temperatures are outside our control." So is my patience. We do it ourselves. A buddy for everyone.', next: 'heat_res' },
+        heat_fan: { speaker: 'inez', text: 'Once a week? Abe would be a raisin. In a heat wave it\'s at least twice a day. And when it\'s this hot, a fan alone won\'t cool you down. AC or a cool place. And a buddy who checks.', next: 'heat_res' },
+        heat_landlord: { speaker: 'inez', text: 'Abe didn\'t feel sick. He felt "cooled off." People who live alone don\'t call. We call them. A buddy for everyone, twice a day. The landlord can sign up last.', next: 'heat_res' },
         heat_res: {
           speaker: 'inez', text: 'Pen\'s in my hand. What goes on the lobby door?',
           choices: [
@@ -143,7 +147,7 @@ export const heat: MissionModule = {
       nodes: {
         heat_em: { speaker: 'emily', text: 'Abe? He sits under the Parachute Jump every afternoon. Says it\'s the best shade on Coney. It is not. It\'s a skinny shadow.', next: 'heat_em2' },
         heat_em2: {
-          speaker: 'emily', text: 'My cake fridge is all water today. The fondant can wait. Take it. Run.',
+          speaker: 'emily', text: 'My cake fridge is all water today. The fondant can wait. Take it. And if his skin is hot and dry, or he\'s confused, that\'s heat stroke. Call 911 right away. Run.',
           choices: [{ text: '(Grab the water and run.)', effects: { items: { groceries: 2 }, flags: { heat_water: true }, rel: { emily: 3 }, toast: 'COLD WATER' } }],
         },
       },
@@ -166,14 +170,14 @@ export const heat: MissionModule = {
           speaker: 'abe', text: 'Ralphie. The Cyclone\'s running slow today. Funny thing, I stopped sweating. Figured it must have cooled off.',
           choices: [
             { text: 'Call 911 now. Then shade, cold water on his skin, and stay with him until they come.', next: 'heat_a911', effects: { mvar: { score: 2 } } },
-            { text: 'Walk him to the cooling center. It\'s only twenty minutes.', next: 'heat_awalk' },
-            { text: 'Get him a hot dog. Salt helps, right?', next: 'heat_adog' },
-            { text: 'Post in the Surfside group chat and ask what to do.', next: 'heat_achat' },
+            { text: 'Get him to a cooling center. Call 311 for the closest one, and walk him there slowly.', next: 'heat_awalk' },
+            { text: 'Sit him in the shade, give him Emily\'s water to sip, and check on him again in an hour.', next: 'heat_adog' },
+            { text: 'Text Ms. Inez and the Surfside group chat, so someone who knows him can decide.', next: 'heat_achat' },
           ],
         },
         heat_awalk: { speaker: 'you', text: '*Abe makes it four steps and sits back down. Confused, hot, dry skin: that\'s heat stroke. That\'s a 911 call, not a stroll. You call.*', next: 'heat_a911' },
-        heat_adog: { speaker: 'you', text: '*Abe looks at the hot dog like it owes him money. Confusion and hot, dry skin are signs of heat stroke. You put the hot dog down and call 911.*', next: 'heat_a911' },
-        heat_achat: { speaker: 'you', text: '*Fourteen replies. Six say "praying." Three say "who is this." One is a recipe. You put the phone to your ear instead and call 911.*', next: 'heat_a911' },
+        heat_adog: { speaker: 'you', text: '*Abe looks at the cup like it owes him money and asks for Ralphie again. Confusion and hot, dry skin are signs of heat stroke. Shade and water help, but this is a 911 call. You call.*', next: 'heat_a911' },
+        heat_achat: { speaker: 'you', text: '*Fourteen replies. Six say "praying." Three say "who is this." One is a recipe. Confused, hot, dry skin: that\'s heat stroke, and nobody needs a vote. You call 911.*', next: 'heat_a911' },
         heat_a911: { speaker: 'you', text: '*You get him into deeper shade and pour Emily\'s water on his neck and arms. Sirens on Surf Avenue. Abe squints at you. "You\'re not Ralphie." "No, sir."*', next: 'heat_a2' },
         heat_a2: {
           speaker: 'abe', text: 'The EMTs say I\'ll be fine. Ninety-one years, never needed a buddy. Turns out the buddy needed to come find me.',

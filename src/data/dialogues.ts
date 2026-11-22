@@ -140,25 +140,25 @@ export const DIALOGUES: Record<string, Dialogue> = {
       },
       c1b: { speaker: 'hattie', text: 'That\'s exactly why. Nobody\'s mad at you yet. Give it twenty minutes.', next: 'c2' },
       c2: {
-        speaker: 'marcus', text: 'I\'m not trying to be a problem. I practice my sets at night \'cause that\'s when I\'m home from the MTA yard. And she bangs on the ceiling with a BROOM. Like it\'s 1890.',
+        speaker: 'marcus', text: 'I\'m not trying to be a problem. I practice my sets at night \'cause that\'s when I\'m home from the MTA yard. And she bangs on the ceiling with a BROOM. Like it\'s 1890.', shuffle: true,
         choices: [
           { text: 'It sounds like you feel disrespected.', next: 'm_heard', effects: { mvar: { marcus: 1 } } },
           { text: 'When are you actually free to practice?', next: 'm_sched', effects: { mvar: { marcus: 1, needs: 1 } } },
-          { text: 'Have you considered... headphones?', next: 'm_head', effects: { mvar: { marcus: -1 } } },
-          { text: 'The broom thing is honestly kind of iconic.', next: 'm_broom', effects: { mvar: { marcus: 1, priya: -1 } } },
+          { text: 'Could you switch to headphones at night? That might fix it.', next: 'm_head', effects: { mvar: { marcus: -1 } } },
+          { text: 'Banging on the ceiling isn\'t okay. You have every right to be upset.', next: 'm_broom', effects: { mvar: { marcus: 1, priya: -1 } } },
         ],
       },
       m_heard: { speaker: 'marcus', text: 'Yeah. Disrespected. I DJ\'d her cousin\'s wedding for free! ...She doesn\'t know that. Nobody asked.', next: 'c3' },
       m_sched: { speaker: 'marcus', text: 'Honestly? Weekdays I\'m off at 2. Afternoons are wide open. I just never thought about it, \'cause the night is when the vibes are.', next: 'c3' },
       m_head: { speaker: 'marcus', text: 'Headphones. Wow. Tell a painter to use invisible paint while you\'re at it.', next: 'c3' },
-      m_broom: { speaker: 'priya', text: 'It is NOT iconic. It\'s the only tool I have. I am four feet away from a man\'s subwoofer, spiritually.', next: 'c3' },
+      m_broom: { speaker: 'priya', text: 'Every RIGHT? The broom is the only tool I have. I am four feet away from a man\'s subwoofer, spiritually. Pick a team after you hear both of us.', next: 'c3' },
       c3: {
-        speaker: 'priya', text: 'I work twelve-hour shifts keeping people alive. I sleep nine to three. His bass comes through my floor at 11pm AND at 8am. I\'m not petty. I\'m exhausted.',
+        speaker: 'priya', text: 'I work twelve-hour shifts keeping people alive. I sleep nine to three. His bass comes through my floor at 11pm AND at 8am. I\'m not petty. I\'m exhausted.', shuffle: true,
         choices: [
           { text: 'So the real need is reliable sleep in the daytime.', next: 'p_need', effects: { mvar: { priya: 1, needs: 1 } } },
           { text: 'That sounds unbearable. You\'re carrying a lot.', next: 'p_heard', effects: { mvar: { priya: 1 } } },
-          { text: 'Marcus, apologize to her.', next: 'p_force', effects: { mvar: { marcus: -1 } } },
-          { text: 'Have you tried earplugs?', next: 'p_ear', effects: { mvar: { priya: -1 } } },
+          { text: 'Marcus, can you start by apologizing to her?', next: 'p_force', effects: { mvar: { marcus: -1 } } },
+          { text: 'Would earplugs or a white noise machine help you sleep?', next: 'p_ear', effects: { mvar: { priya: -1 } } },
         ],
       },
       p_need: { speaker: 'priya', text: 'Yes. Thank you. I don\'t need him to stop. I need to know WHEN. Predictability is the whole thing.', next: 'c4' },
@@ -166,28 +166,29 @@ export const DIALOGUES: Record<string, Dialogue> = {
       p_force: { speaker: 'hattie', text: 'Mm-mm. We don\'t make anybody do anything in this circle, baby. Apologies that get assigned don\'t hold water.', next: 'c4' },
       p_ear: { speaker: 'priya', text: 'Earplugs. I have earplugs. I have earplugs in my earplugs. The bass goes through BONE.', next: 'c4' },
       c4: {
-        speaker: 'hattie', text: 'Mm-hm. Now. Did anybody notice what they BOTH said about the floor?',
+        speaker: 'hattie', text: 'Mm-hm. Now. They each told you the same thing about this building. Did you catch it?', shuffle: true,
         choices: [
-          { text: 'The floor. The sound goes straight through it.', next: 'c5', effects: { mvar: { needs: 1 }, rel: { hattie: 5 } } },
-          { text: 'Not... really?', next: 'c4b' },
+          { text: 'His floor is her ceiling, and the sound goes straight through it.', next: 'c5', effects: { mvar: { needs: 1 }, rel: { hattie: 5 } } },
+          { text: 'The broom. She bangs on the ceiling and he hears every hit.', next: 'c4b' },
+          { text: 'The hours. He\'s up at night and she\'s up all day.', next: 'c4b' },
         ],
       },
-      c4b: { speaker: 'hattie', text: 'The FLOOR, baby. Look at the floor.', next: 'c5' },
+      c4b: { speaker: 'hattie', text: 'Mm. That\'s HIS side or HER side. Listen for what they share. The FLOOR, baby. His bass going down, her broom coming up. Same boards.', next: 'c5' },
       c5: { speaker: 'marcus', text: 'Wait. The landlord ripped out all the old carpet last year. Called it "luxury hardwood." Raised my rent two hundred.', next: 'c5b' },
       c5b: { speaker: 'priya', text: '...He did the same thing in my unit. Took out the insulation, raised the rent, called it a "renovation." Oh my god.', next: 'c6' },
       c6: {
-        speaker: 'hattie', text: 'So. What do we agree to?',
+        speaker: 'hattie', text: 'So. What do we agree to?', shuffle: true,
         choices: [
-          { text: 'Marcus practices 3–7pm weekdays, music down by 10. AND you both send the landlord a joint demand to restore the soundproofing.', cond: { mvarMin: { needs: 2, marcus: 1, priya: 1 } }, next: 'good', tag: 'BEST', effects: { flags: { circle_result: 'good' } } },
-          { text: 'Quiet hours after 10pm. Headphones on weeknights.', next: 'ok', effects: { flags: { circle_result: 'ok' } } },
-          { text: 'Let\'s just let the landlord sort it out.', next: 'bad', effects: { flags: { circle_result: 'bad' } } },
+          { text: 'Marcus plays 3 to 7 on weekdays, down by 10. And you two send the landlord one joint letter about the floor.', cond: { mvarMin: { needs: 2, marcus: 1, priya: 1 } }, next: 'good', tag: 'BEST', effects: { flags: { circle_result: 'good' } } },
+          { text: 'Marcus plays 3 to 7 on weekdays and keeps it down by 10. Priya retires the broom.', next: 'ok', effects: { flags: { circle_result: 'ok' } } },
+          { text: 'Marcus plays 9 to 3 while Priya\'s out, and you each call the landlord about the noise.', next: 'bad', effects: { flags: { circle_result: 'bad' } } },
         ],
       },
       good: { speaker: 'marcus', text: 'I could do that. And honestly? I\'d LOVE to yell at the landlord with somebody.', next: 'good2' },
       good2: { speaker: 'priya', text: 'I\'ll bring the broom. For symbolism.', next: 'good3' },
       good3: { speaker: 'hattie', text: 'And THAT is how a tenant association gets started. Two tired people and a common enemy. Good work, baby.', choices: [{ text: '(Pass the talking stick back.)', effects: { flags: { circle_done: true }, rel: { marcus: 10, priya: 10, hattie: 10 } } }] },
       ok: { speaker: 'hattie', text: 'It\'s a deal. Not a friendship. But a deal\'s a start. Somebody still has to fix that floor.', choices: [{ text: '(Pass the talking stick back.)', effects: { flags: { circle_done: true }, rel: { marcus: 3, priya: 3 } } }] },
-      bad: { speaker: 'hattie', text: 'The landlord, baby? He\'s the reason that floor sounds like a drum. ...We\'ll sit again next week. Circles are patient.', choices: [{ text: '(Pass the stick back, sheepishly.)', effects: { flags: { circle_done: true }, rel: { hattie: -3 } } }] },
+      bad: { speaker: 'hattie', text: 'Nine to three is when Priya SLEEPS, baby. And one call at a time, the landlord just lets it ring. He\'s the reason that floor sounds like a drum. We\'ll sit again next week.', choices: [{ text: '(Pass the stick back, sheepishly.)', effects: { flags: { circle_done: true }, rel: { hattie: -3 } } }] },
       after: {
         speaker: 'hattie', text: 'Movements move at the speed of trust. You\'re building some. Now go rest — or don\'t, I\'m not your mother. Downtown\'s about to get loud.',
         choices: [{ text: 'Where do grown-ups fight about the neighborhood?', next: 'cb' }, { text: 'Yes, Ms. Hattie.' }],
@@ -423,7 +424,7 @@ export const DIALOGUES: Record<string, Dialogue> = {
       deputy: { speaker: 'adrian', text: 'Done. First duty: make sure the small kids get the ball sometimes. Second duty: help me close the block.', next: 'open' },
       open: { speaker: 'adrian', text: 'Open Streets. Community groups, schools and merchants apply to the city\'s transportation department, DOT, to close a street to cars on set days.', next: 'open2' },
       open2: {
-        speaker: 'adrian', text: 'You run it, the city backs it. Barricades, chalk, a pickup game, chairs for the grandmothers. The block becomes a plaza. Applications open every fall.',
+        speaker: 'adrian', text: 'You run it, the city backs it. Barricades, chalk, a pickup game, chairs for the grandmothers. The block becomes a plaza. Next year\'s application is open right now.',
         choices: [{ text: 'Applying for Saturdays.', effects: { rel: { adrian: 6 }, solidarity: 10, trust: { parkslope: 3 }, toast: 'POCKET CIVICS · OPEN STREETS' } }],
       },
       job: { speaker: 'adrian', text: 'Soccer justice is self-appointed. Designing spaces is the day job. Same idea: who gets to use it, and how do you make room for everybody?' },
@@ -633,10 +634,10 @@ export const DIALOGUES: Record<string, Dialogue> = {
     nodes: {
       a: { speaker: 'tyler', text: 'Welcome, marchers! Free cold brew for everybody! Our lobby celebrates protest. We literally have a mural of a march. Very on-brand for you guys.', next: 'b' },
       b: {
-        speaker: 'you', text: '*Somebody in your crowd weighs a full cold brew in one hand and looks at Tyler\'s very clean glass door.*',
+        speaker: 'you', text: '*Somebody in your crowd weighs a full cold brew in one hand and looks at Tyler\'s very clean glass door.*', shuffle: true,
         choices: [
           { text: 'Start a chant: "Fund the fridge, not the gazebo!"', next: 'chant', effects: { inc: { pvp_spirit: 1 }, solidarity: 10 } },
-          { text: 'Let the crowd egg on Tyler. He did ask for it.', next: 'egg', effects: { inc: { pvp_tension: 1 }, attention: 4 } },
+          { text: 'Pack the crowd around his glass door and shout him down. He invited us.', next: 'egg', effects: { inc: { pvp_tension: 1 }, attention: 4 } },
           { text: '"Thanks, Tyler. This is still a protest about you." Keep walking.', next: 'thanks', effects: { rel: { tyler: 2 } } },
         ],
       },
@@ -650,35 +651,36 @@ export const DIALOGUES: Record<string, Dialogue> = {
     nodes: {
       a: { speaker: 'skye', text: 'OMG besties, this march is GIVING. 4,000 people watching live! Can somebody climb the statue for content? Just for, like, eight seconds?', next: 'b' },
       b: {
-        speaker: 'Officer Delgado', text: 'Folks, you\'re blocking the whole sidewalk. People need to get through. Let\'s keep it moving.',
+        speaker: 'Officer Delgado', text: 'Folks, you\'re blocking the whole sidewalk. People need to get through. Let\'s keep it moving.', shuffle: true,
         choices: [
-          { text: '"Everybody, tighten up on the left! Leave half the sidewalk open!"', next: 'open', cond: { flag: 'pvp_briefed' }, effects: { inc: { pvp_spirit: 1 }, solidarity: 15 } },
-          { text: '"It\'s a free country, officer!"', next: 'free', effects: { inc: { pvp_tension: 1 } } },
-          { text: 'Let Skye\'s guy climb the statue.', next: 'statue', effects: { inc: { pvp_tension: 2 }, attention: 10 } },
+          { text: '"Tighten up on the left, everybody! Leave half the sidewalk open!"', next: 'open', cond: { flag: 'pvp_briefed' }, effects: { inc: { pvp_spirit: 1 }, solidarity: 15 } },
+          { text: '"We don\'t need a permit for the sidewalk, officer. We know our rights."', next: 'free', effects: { inc: { pvp_tension: 1 } } },
+          { text: '"Everybody into the street! That frees up the whole sidewalk!"', next: 'statue', effects: { inc: { pvp_tension: 2 }, attention: 10 } },
         ],
       },
       open: { speaker: 'Officer Delgado', text: '...That\'s actually perfect. Thank you. Carry on.', choices: [{ text: '(March on to Borough Hall.)', effects: { flags: { pvp_cp2: true }, toast: 'KEPT THE SIDEWALK OPEN' } }] },
-      free: { speaker: 'Officer Delgado', text: 'It is. It\'s also a sidewalk. Half of it, please.', choices: [{ text: '(Grumble. Make room. March on.)', effects: { flags: { pvp_cp2: true }, toast: 'TENSION RISING' } }] },
-      statue: { speaker: 'skye', text: 'CHAT IS SCREAMING. Also the police are screaming. Also the statue is screaming? No, that\'s the guy. He\'s fine. Mostly.', choices: [{ text: '(Get him down. Get everyone moving.)', effects: { flags: { pvp_cp2: true }, toast: 'TENSION RISING FAST' } }] },
+      free: { speaker: 'Officer Delgado', text: 'You don\'t. As long as people can still get by. Right now a stroller can\'t. Half of it, please.', choices: [{ text: '(Grumble. Make room. March on.)', effects: { flags: { pvp_cp2: true }, toast: 'TENSION RISING' } }] },
+      statue: { speaker: 'skye', text: 'CHAT IS SCREAMING. A whole march in the middle of the street! Also the police are screaming. Something about a parade permit? We do not have a parade permit.', choices: [{ text: '(Get everyone back on the sidewalk. Keep moving.)', effects: { flags: { pvp_cp2: true }, toast: 'TENSION RISING FAST' } }] },
     },
   },
   pvp_speech: {
     entries: [{ node: 'a' }],
     nodes: {
       a: {
-        speaker: 'you', text: '*The plaza fills. Nell\'s banner goes up. Jon\'s camera light blinks on. Somebody hands you the spot on the top step. No megaphone. Just your voice.*',
+        speaker: 'you', text: '*The plaza fills. Nell\'s banner goes up. Jon\'s camera light blinks on. Somebody hands you the spot on the top step. No megaphone. Just your voice.*', shuffle: true,
         choices: [
           { text: 'Tell one story: Ms. Alvarez, 40 years on Gates Ave, fed by the fridge every winter.', next: 'ask', effects: { inc: { pvp_spirit: 2 } } },
-          { text: 'Read the budget out loud, line by line.', next: 'lines' },
-          { text: 'Lead six straight minutes of "NO GAZEBO!"', next: 'ask', effects: { inc: { pvp_spirit: 1 } } },
+          { text: 'Open with the hard numbers: rents up 30%, and every program Line 47 cuts.', next: 'lines' },
+          { text: 'Lead the plaza in "NO GAZEBO!" until every voice joins in.', next: 'ask', effects: { inc: { pvp_spirit: 1 } } },
         ],
       },
-      lines: { speaker: 'you', text: '*By line 31, a man in the back is asleep standing up. Impressive, honestly. You skip to the part that matters.*', next: 'ask' },
+      lines: { speaker: 'you', text: '*A polite nod. Another nod. By the third statistic a man in the back is asleep standing up. Facts get nods. Stories get crowds. You skip to the part that matters.*', next: 'ask' },
       ask: {
-        speaker: 'you', text: '*One person. One stake. Now the ask.*',
+        speaker: 'you', text: '*One person. One stake. Now the ask.*', shuffle: true,
         choices: [
           { text: '"Councilmember Pressman: vote NO on Line 47. Friday. On the record."', next: 'gary', effects: { inc: { pvp_spirit: 2 } } },
-          { text: '"We demand... justice, generally. In a broad sense."', next: 'gary' },
+          { text: '"Councilmember Pressman: please do the right thing for Brooklyn this week."', next: 'gary' },
+          { text: '"Councilmember Pressman: resign. Brooklyn deserves better than you."', next: 'gary' },
         ],
       },
       gary: {

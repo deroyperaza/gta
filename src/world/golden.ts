@@ -94,7 +94,7 @@ export function makeTiles(scene: Phaser.Scene) {
       grit(c, x, 0, TILE, TILE, 60, ['rgba(110,130,70,.45)', 'rgba(50,60,34,.45)', 'rgba(120,100,80,.3)'], 1, 2.2);
     });
     at(T.INTERSECTION, (x) => asphalt(x, '#313337'));
-    at(T.COURT, (x) => { c.fillStyle = '#a4553a'; c.fillRect(x, 0, TILE, TILE); grit(c, x, 0, TILE, TILE, 30, ['rgba(255,220,190,.12)', 'rgba(60,20,10,.15)']); c.fillStyle = 'rgba(240,236,228,.7)'; c.fillRect(x, 0, TILE, 1.5); });
+    at(T.COURT, (x) => { c.fillStyle = '#2f6f58'; c.fillRect(x, 0, TILE, TILE); grit(c, x, 0, TILE, TILE, 30, ['rgba(220,255,235,.08)', 'rgba(10,40,25,.15)']); }); // painted court surface; the lines are drawn per court in WorldScene.drawCourts
     at(T.LOT, (x) => {
       c.fillStyle = '#6f665a'; c.fillRect(x, 0, TILE, TILE);
       grit(c, x, 0, TILE, TILE, 120, ['rgba(111,122,60,.6)', 'rgba(79,90,42,.5)', 'rgba(122,106,85,.6)', 'rgba(62,55,47,.6)', 'rgba(138,128,112,.5)'], 0.8, 2.6);

@@ -70,7 +70,8 @@ export const food: MissionModule = {
       ],
       nodes: {
         food_start: { speaker: 'celestine', text: 'Organizer. Sit. Do you know where the nearest tomato is? Not a ketchup packet. A tomato.', choices: [{ text: 'I do not.', next: 'food_0', effects: { startMission: 'food' } }] },
-        food_0: { speaker: 'celestine', text: 'Neither do half my building. I\'m seventy-three. I have a pressure problem. My doctor says "eat fresh." My corner says "chopped cheese."', next: 'food_1' },
+        food_0: { speaker: 'celestine', text: 'Neither do half my building. I\'m seventy-three. I have a pressure problem. My doctor says "eat fresh." My corner says "chopped cheese."', next: 'food_0b' },
+        food_0b: { speaker: 'celestine', text: 'The city even has a tool for this. It\'s called FRESH. A developer who puts a full-service grocery store in a neighborhood like ours gets extra building space and tax breaks. Remember that word. FRESH.', next: 'food_1' },
         food_1: {
           speaker: 'celestine', text: 'Don\'t take my word for it. Walk the block. Count what\'s fresh. Then come tell me I\'m exaggerating.',
           choices: [
@@ -89,13 +90,13 @@ export const food: MissionModule = {
           speaker: 'celestine', text: 'What\'s the tool?',
           choices: [
             { text: 'FRESH: the city gives developers extra building space and tax breaks if they put a full-service grocery store in neighborhoods like this.', tag: 'FACT', next: 'food_c3', effects: { inc: { food_score: 1 } } },
-            { text: 'Open a twelve-dollar juice bar. Trickle-down kale.', next: 'food_c4' },
-            { text: 'Ask the grocery chains nicely.', next: 'food_c4' },
+            { text: 'FRESH: the city builds the grocery store itself and runs it, once the community board asks in writing.', next: 'food_c4' },
+            { text: 'FRESH: developers get extra space and tax breaks for any food store, so a bigger bodega on the lot counts.', next: 'food_c4' },
           ],
         },
         food_c3: { speaker: 'celestine', text: 'FRESH. Zoning bonus and tax breaks for a real grocery store. The developer on that lot wants something from the city. We make the grocery store the price.', next: 'food_c5' },
-        food_c4: { speaker: 'celestine', text: 'Baby. No. There\'s a city program called FRESH: extra building space and tax breaks for developers who put a full-service grocery store in neighborhoods like ours. We make the store the price.', next: 'food_c5' },
-        food_c5: { speaker: 'celestine', text: 'But a store takes years. People eat tonight. Go see Kofi at the New Lots Farm Stand before he packs up. Take the train. Take the bus. Don\'t take a cab, I\'ll hear about it.', choices: [{ text: 'Kofi. New Lots. Now.', effects: { flags: { food_fresh: true }, rel: { celestine: 2 } } }] },
+        food_c4: { speaker: 'celestine', text: 'Baby. No. The city doesn\'t run grocery stores, and a bigger bodega is still a bodega. Farouk\'s cousin agrees. There\'s a city program called FRESH: extra building space and tax breaks for developers who put a full-service grocery store in neighborhoods like ours. We make the store the price.', next: 'food_c5' },
+        food_c5: { speaker: 'celestine', text: 'But a store takes years. People eat tonight. Go see Kofi at the New Lots Farm Stand before he packs up. Take the train. Take the bus. Don\'t take a cab, I\'ll hear about it. And ask him about Health Bucks: at a farm stand, every $2 you spend with SNAP gets you a $2 coupon for more produce, up to $10 a day.', choices: [{ text: 'Kofi. New Lots. Now.', effects: { flags: { food_fresh: true }, rel: { celestine: 2 } } }] },
         food_wait2: { speaker: 'celestine', text: 'Kofi at the farm stand. Then Hattie\'s board meeting. Bring the count. Numbers make men nervous.' },
       },
     },
@@ -108,16 +109,17 @@ export const food: MissionModule = {
       nodes: {
         food_k0: { speaker: 'kofi', text: 'Collards, callaloo, peppers, tomatoes. Grown four blocks from here, in a lot people called empty. Most of my customers pay with SNAP. What should they know?', next: 'food_k1' },
         food_k1: {
-          speaker: 'kofi', text: 'Pop quiz.',
+          speaker: 'kofi', text: 'Pop quiz. A customer spends $10 of SNAP here today. What does she walk home with?',
           choices: [
-            { text: 'Health Bucks: for every $2 they spend with SNAP here, they get a $2 coupon for more produce. Up to $10 a day.', tag: 'FACT', next: 'food_k2', effects: { inc: { food_score: 1 } } },
-            { text: 'SNAP doesn\'t work at farm stands.', next: 'food_k3' },
-            { text: 'Vegetables are free if you\'re fast.', next: 'food_k3' },
+            { text: 'Health Bucks: a $2 coupon for every $2 of SNAP, up to $10 a day. So $20 of produce.', tag: 'FACT', next: 'food_k2', effects: { inc: { food_score: 1 } } },
+            { text: 'Health Bucks: a $2 coupon for every $10 of SNAP. So $12 of produce, and more if she comes back tomorrow.', next: 'food_k3' },
+            { text: 'Health Bucks: a $2 coupon for every $2 of SNAP, up to $14 a day starting today. So $24 of produce.', next: 'food_k3' },
+            { text: 'Just the $10. Health Bucks only work at supermarkets, so tell her to save them for a real store.', next: 'food_k3' },
           ],
         },
         food_k2: { speaker: 'kofi', text: 'Yes. Spend $10 of SNAP, take home $20 of food. And it goes up to $14 a day in January. Nobody knows. That\'s the problem.', next: 'food_k4' },
-        food_k3: { speaker: 'kofi', text: 'It does, and it doubles. Health Bucks: every $2 of SNAP gets you a $2 coupon for more produce, up to $10 a day, $14 starting in January. Nobody knows. That\'s the problem.', next: 'food_k4' },
-        food_k4: { speaker: 'kofi', text: 'And for folks who can\'t get here: GrowNYC\'s Fresh Food Box. Seven dollars with SNAP. Tell Ms. Celestine\'s building.', choices: [{ text: '(Take a stack of flyers.)', effects: { flags: { food_kofi: true }, items: { flyers: 4 }, rel: { kofi: 3 }, toast: 'POCKET CIVICS · HEALTH BUCKS' } }] },
+        food_k3: { speaker: 'kofi', text: 'Count again, friend. Every $2 of SNAP gets a $2 coupon, up to $10 a day now, $14 starting in January. Farm stands and markets, not supermarkets. So $10 of SNAP, $20 of food. Nobody knows. That\'s the problem.', next: 'food_k4' },
+        food_k4: { speaker: 'kofi', text: 'And for folks who can\'t get here: GrowNYC\'s Fresh Food Box. Seven dollars with SNAP. Tell Ms. Celestine\'s building. Then tell Hattie\'s board. A community board only advises, but the developer still wants the board on its side.', choices: [{ text: '(Take a stack of flyers.)', effects: { flags: { food_kofi: true }, items: { flyers: 4 }, rel: { kofi: 3 }, toast: 'POCKET CIVICS · HEALTH BUCKS' } }] },
         food_kwait: { speaker: 'kofi', text: 'Health Bucks. Food boxes. Tell everybody. Then come back Saturday, I\'ll have okra.' },
       },
     },
@@ -130,13 +132,14 @@ export const food: MissionModule = {
           speaker: 'hattie', text: 'Two minutes, baby. Make them count.',
           choices: [
             { text: 'We counted: one onion in three stores. Vote no unless the plan includes a full-service grocery store under FRESH, with SNAP accepted.', tag: 'BEST', next: 'food_h2', effects: { inc: { food_score: 1 } } },
-            { text: 'Food is a human right and also I\'m hungry.', next: 'food_h3' },
-            { text: 'What\'s a "food concept"?', next: 'food_h4' },
+            { text: 'We counted: one onion in three stores. This board can block the variance tonight, so vote it down for good.', next: 'food_h3' },
+            { text: 'We counted. Vote yes if the developer promises to think about a grocery store.', next: 'food_h4' },
           ],
         },
         food_h2: { speaker: 'hattie', text: 'Data and a demand. The board\'s vote is only advisory, but the developer needs friends, and you just told them the price of friendship.', next: 'food_h5' },
-        food_h3: { speaker: 'hattie', text: 'True on both counts. But the board needs a demand it can vote on. Next time bring the count and a condition.', next: 'food_h5' },
-        food_h4: { speaker: 'tyler', text: '*Tyler, at the back:* It\'s a cold-pressed experience. Eleven dollars. You wouldn\'t get it.', next: 'food_h5' },
+        food_h3: { speaker: 'hattie', text: 'Baby, I wish. This board only advises. A flat no doesn\'t stop him, and it gets us nothing. Bring the count and a condition: a full-service grocery store under FRESH.', next: 'food_h5' },
+        food_h4: { speaker: 'tyler', text: '*Tyler, at the back:* Oh, we thought about it. It\'s a cold-pressed experience. Eleven dollars. You wouldn\'t get it.', next: 'food_h4b' },
+        food_h4b: { speaker: 'hattie', text: 'That\'s what "think about it" buys you. Next time, the count and a condition: a full-service grocery store under FRESH, with SNAP.', next: 'food_h5' },
         food_h5: {
           speaker: 'hattie', text: 'The board votes...',
           choices: [

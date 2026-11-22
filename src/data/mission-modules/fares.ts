@@ -61,7 +61,8 @@ export const fares: MissionModule = {
       nodes: {
         fares_start: { speaker: 'marisol', text: 'You\'re the organizer? Good. I have a commute I want you to experience. Personally.', choices: [{ text: 'Tell me.', next: 'fares_0', effects: { startMission: 'fares' } }] },
         fares_0: { speaker: 'marisol', text: 'I\'m a home health aide. My client is in Prospect Heights. From here: a bus to Flatbush, the B41 up Flatbush, then I walk. Ninety minutes on a good day. There are no good days.', next: 'fares_1' },
-        fares_1: { speaker: 'marisol', text: 'Marine Park, Mill Basin, Bergen Beach: no subway station. None. The trains stop where the money stopped looking.', next: 'fares_2' },
+        fares_1: { speaker: 'marisol', text: 'Marine Park, Mill Basin, Bergen Beach: no subway station. None. The trains stop where the money stopped looking.', next: 'fares_1b' },
+        fares_1b: { speaker: 'marisol', text: 'One good thing. This month the city opened center-running bus lanes on Flatbush, from Livingston St Downtown up to Grand Army Plaza. North of the Plaza, the bus flies. South of it, where I ride? Still waiting.', next: 'fares_2' },
         fares_2: {
           speaker: 'marisol', text: 'So do it my way. Get to Flatbush, take the B41 or a dollar van, and get to Grand Army Plaza by nine. Then we talk about what to fix.',
           choices: [
@@ -74,13 +75,14 @@ export const fares: MissionModule = {
           choices: [{ text: 'Bus or van.', effects: { flags: { fares_accepted: true, fares_score: 0, ...RESET } } }],
         },
         fares_wait: { speaker: 'marisol', text: 'Flatbush is that way. The B41 comes when it comes. The vans come when you wave.' },
-        fares_m0: { speaker: 'marisol', text: 'You made it back. How long did that take? Don\'t tell me. I know. Now: I spend $3 a ride, four rides a day some days. What do I do about that?', next: 'fares_m1' },
+        fares_m0: { speaker: 'marisol', text: 'You made it back. How long did that take? Don\'t tell me. I know. Now: I\'m fifty-two, I spend $3 a ride, four rides a day some days, and a home health aide\'s pay is what it is.', next: 'fares_m1' },
         fares_m1: {
           speaker: 'marisol', text: 'What do you tell me?',
           choices: [
-            { text: 'Fair Fares: half-price rides, $1.50, for New Yorkers 18 to 64 under an income limit. Apply on ACCESS HRA. The limit goes up November 30.', tag: 'FACT', next: 'fares_m2', effects: { inc: { fares_score: 1 } } },
-            { text: 'Get a student MetroCard.', next: 'fares_m3' },
-            { text: 'Pay the driver in exact change. They give a discount if you\'re nice.', next: 'fares_m3' },
+            { text: 'Fair Fares. At 52 you qualify by age. Under the income limit it\'s $1.50 a ride. Apply on ACCESS HRA.', tag: 'FACT', next: 'fares_m2', effects: { inc: { fares_score: 1 } } },
+            { text: 'Fair Fares is half price, but it starts at 65. Thirteen more years. Until then, tap the same card every ride.', next: 'fares_m3' },
+            { text: 'Fair Fares. Under the income limit it\'s $1.50 a ride. Apply at the station booth in any subway stop.', next: 'fares_m3' },
+            { text: 'Fair Fares takes a dollar off every ride, so $2 instead of $3, if you\'re under the income limit. Apply on ACCESS HRA.', next: 'fares_m3' },
           ],
         },
         fares_m2: {
@@ -88,7 +90,7 @@ export const fares: MissionModule = {
           choices: [{ text: '(Help her apply.)', effects: { flags: { fares_ff: true }, rel: { marisol: 3 }, toast: 'POCKET CIVICS · FAIR FARES' } }],
         },
         fares_m3: {
-          speaker: 'marisol', text: 'I\'m fifty-two, baby. And the driver can\'t give discounts. It\'s called Fair Fares: half price, $1.50 a ride, for New Yorkers 18 to 64 under an income limit. The limit goes up November 30. I read the flyer you should have read.',
+          speaker: 'marisol', text: 'Close, baby. Not close enough. Fair Fares is half price, $1.50 a ride, for New Yorkers 18 to 64 under an income limit. Fifty-two counts. You apply on ACCESS HRA, not at a booth. The limit goes up November 30. I read the flyer you should have read.',
           choices: [{ text: '(Help her apply anyway.)', effects: { flags: { fares_ff: true }, toast: 'POCKET CIVICS · FAIR FARES' } }],
         },
         fares_wait2: { speaker: 'marisol', text: 'Gary\'s town hall. Borough Hall. Tell him about the ninety minutes. Tell him about the lanes.' },
@@ -103,15 +105,16 @@ export const fares: MissionModule = {
       nodes: {
         fares_d0: { speaker: 'desmond', text: 'Twenty-two years driving the B41. Ask me anything. Except why it\'s late. I know why it\'s late. Double-parked cars, from here to Kings Plaza.', next: 'fares_d1' },
         fares_d1: {
-          speaker: 'desmond', text: 'Something changed this month, though. From Downtown to right here. You notice?',
+          speaker: 'desmond', text: 'Something changed on Flatbush this month, though. You notice?',
           choices: [
             { text: 'Center-running bus lanes on Flatbush, Livingston St to Grand Army Plaza. They just opened.', tag: 'FACT', next: 'fares_d2', effects: { inc: { fares_score: 1 } } },
-            { text: 'They repainted the potholes.', next: 'fares_d3' },
-            { text: 'A gondola?', next: 'fares_d3' },
+            { text: 'Center-running bus lanes on Flatbush, Grand Army Plaza down to Avenue H. They just opened.', next: 'fares_d3' },
+            { text: 'A car-free busway on Flatbush from Downtown to here. No cars on the avenue at all.', next: 'fares_d3' },
           ],
         },
-        fares_d2: { speaker: 'desmond', text: 'Bus lanes down the middle. Cars can\'t park in them. My bus moves like a train for two miles. Then I hit Grand Army Plaza and it\'s 1987 again.', next: 'fares_d4' },
-        fares_d3: { speaker: 'desmond', text: 'Ha. No. Bus lanes down the middle of Flatbush, Downtown to right here. Opened this month. For two miles my bus moves like a train. Then it\'s 1987 again.', next: 'fares_d4' },
+        fares_d2: { speaker: 'desmond', text: 'Bus lanes down the middle. Cars can\'t park in them. My bus moves like a train for two miles. Then I hit Grand Army Plaza and it\'s 1987 again.', next: 'fares_dff' },
+        fares_d3: { speaker: 'desmond', text: 'Ha. I wish. Center lanes, Livingston St to right here, that\'s it. No busway. Opened this month. For two miles my bus moves like a train. Then it\'s 1987 again.', next: 'fares_dff' },
+        fares_dff: { speaker: 'desmond', text: 'And half my 6 a.m. riders pay full fare when they don\'t have to. Fair Fares: half price, $1.50 a ride, if you\'re 18 to 64 and under the income limit. Apply on ACCESS HRA. The limit goes up November 30. Nobody listens to the driver.', next: 'fares_d4' },
         fares_d4: {
           speaker: 'desmond', text: 'The city\'s doing outreach on the next piece, Grand Army Plaza to Avenue H. Outreach means meetings. Meetings mean the people who show up win. Guess who usually shows up?',
           choices: [{ text: 'The Free Parking Caucus.', next: 'fares_d5' }],
@@ -129,21 +132,24 @@ export const fares: MissionModule = {
           speaker: 'gary', text: 'You have two minutes. The Free Parking Caucus had forty.',
           choices: [
             { text: 'Extend the Flatbush center bus lanes from Grand Army Plaza to Avenue H. Will you back it at the community board meetings, yes or no?', tag: 'BEST', next: 'fares_g2', effects: { inc: { fares_score: 1 } } },
-            { text: 'Buses should be better, generally.', next: 'fares_g3' },
-            { text: 'Build a subway to Marine Park by Friday.', next: 'fares_g3' },
+            { text: 'Extend the Flatbush bus lanes. Will you look into it and get back to the riders?', next: 'fares_g3' },
+            { text: 'Extend the center lanes from Livingston St to Grand Army Plaza. Will you back it at the board, yes or no?', next: 'fares_g3' },
+            { text: 'Skip the community board meetings. Tell DOT to just paint the lanes from Grand Army Plaza to Avenue H.', next: 'fares_g3' },
           ],
         },
         fares_g2: { speaker: 'gary', text: 'A yes-or-no question. In public. With a camera running. ...Yes. I back it. Put that in the minutes before I remember who funds me.', next: 'fares_g4' },
-        fares_g3: { speaker: 'gary', text: 'Absolutely! Generally! I\'ll look into it! *He looks into it. It\'s a mirror.*', next: 'fares_g4' },
+        fares_g3: { speaker: 'gary', text: 'Absolutely! Love it! I\'ll look into it! *He looks into it. It\'s a mirror.*', next: 'fares_g3b' },
+        fares_g3b: { speaker: 'you', text: '*In the back row, Marisol mouths it slowly: the next piece. Grand Army Plaza to Avenue H. At the meetings. Yes or no.*', next: 'fares_g4' },
         fares_g4: {
           speaker: 'gary', text: 'Anything else? Make it quick. My car\'s double-parked.',
           choices: [
             { text: 'Yes: have your office sign people up for Fair Fares before the limit goes up November 30. Riders in Marine Park need it most.', tag: 'BEST', next: 'fares_g5', effects: { inc: { fares_score: 1 } } },
-            { text: 'Where are you parked? In the bus lane?', next: 'fares_g6' },
+            { text: 'Yes: have your office sign up seniors over 65 for Fair Fares. They ride the most and pay the most.', next: 'fares_g6' },
+            { text: 'Yes: have your office sign people up for Fair Fares in January, once the new income limit kicks in.', next: 'fares_g6' },
           ],
         },
         fares_g5: { speaker: 'gary', text: 'A sign-up table. That\'s... actually easy. And it photographs well. Done.', next: 'fares_end' },
-        fares_g6: { speaker: 'gary', text: '...No comment. *It is in the bus lane.*', next: 'fares_end' },
+        fares_g6: { speaker: 'gary', text: 'Wonderful! Done! *Marisol shouts from the back: "18 to 64! The limit goes up November 30!" Gary writes it on his hand. His car is in the bus lane.*', next: 'fares_end' },
         fares_end: {
           speaker: 'you', text: '*Marisol texts you a photo: her new Fair Fares card. Caption: "half off my ninety minutes."*',
           choices: [

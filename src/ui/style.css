@@ -442,3 +442,9 @@ body:has(#mission-intro.show) #district { visibility: hidden; }
 .meters-explain { display: grid; gap: 8px; margin: 10px 0 12px; }
 .meters-explain div { font: 600 14px/1.4 var(--body, Nunito, Arial, sans-serif); background: #fff; border: 2px solid var(--ink); border-radius: 10px; padding: 8px 10px; }
 .meters-explain b { display: block; font: 900 13px Nunito, Arial, sans-serif; letter-spacing: 1px; color: var(--pink); }
+
+/* Pocket Civics notebook */
+.lesson { background: #fff; border: 2px solid var(--ink); border-radius: 10px; padding: 8px 10px; margin: 6px 0; }
+.lesson b { font: 900 13px Nunito, Arial, sans-serif; letter-spacing: .5px; color: var(--pink); }
+.lesson em { font: 600 12px Nunito, Arial, sans-serif; color: #7a6a8c; margin-left: 6px; font-style: normal; }
+.lesson p { font: 600 14px/1.4 Nunito, Arial, sans-serif; margin: 4px 0 0; }

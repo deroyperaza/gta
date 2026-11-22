@@ -3,6 +3,7 @@ import { state } from '../core/state';
 import { MISSION_BY_ID, type MissionDef } from '../data/missions';
 import { DISTRICTS } from '../core/types';
 import { NPC_BY_ID } from '../data/npcs';
+import { granteesFor } from '../data/grantees';
 
 /**
  * Data-driven mission runner. Missions are sequences of stages whose
@@ -97,6 +98,8 @@ class MissionSystem {
       state.apply({ trust: { [def.district]: -hit }, rel: { [def.giver]: def.number >= 5 ? -4 : -2 } }, { quiet: true });
       lines.push(`${DISTRICTS[def.district].name.toUpperCase()} TRUST -${hit} · THE BLOCK REMEMBERS`);
     }
+    const real = granteesFor(def.id);
+    if (real.length) lines.push(`IN REAL LIFE · BROOKLYN ORG GRANTEES DOING THIS WORK: ${real.map((g) => g.name.toUpperCase()).join(' · ')}`);
     bus.emit('mission:passed', { def, lines, toast: reward.toast });
     if (def.side) { // back to the main mission, right where you left it
       const r = state.flag('resume_mission'); delete state.d.flags.resume_mission;

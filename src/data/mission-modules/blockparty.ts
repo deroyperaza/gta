@@ -112,22 +112,29 @@ export const blockparty: MissionModule = {
       nodes: {
         blockparty_0: {
           speaker: 'emily', text: 'The fridge. The circle. The march. Library cards. Abe. You know what all of that deserves? Cake. In the street. With everybody.',
-          effects: { flags: { blockparty_score: 0, at_lm_mermaid: false, at_lm_hotdog: false, at_lm_coneyhouses: false } }, next: 'blockparty_1',
+          effects: { flags: { blockparty_score: 0, at_lm_mermaid: false, at_lm_hotdog: false, at_lm_coneyhouses: false } }, next: 'blockparty_rules',
         },
+        blockparty_rules: {
+          speaker: 'emily', text: 'Before cake: paperwork. The street belongs to the city. I called the Street Activity Permit Office. You apply online at least 60 days ahead and pay a $25 fee. The neighbors on the block sign on, and the community board reviews it. One block, one day, nothing for sale.',
+          next: 'blockparty_cake',
+        },
+        blockparty_cake: { speaker: 'emily', text: 'I have already designed the cake. I have not designed the paperwork. You\'re the organizer. You\'re filing.', next: 'blockparty_1' },
         blockparty_1: {
-          speaker: 'emily', text: 'Before cake: paperwork. The street belongs to the city. How do we get it for a day?',
+          speaker: 'emily', text: 'So walk me through it. What do we do?',
           choices: [
-            { text: 'Apply online to the city\'s Street Activity Permit Office, 60+ days ahead. $25. The block signs on and the community board reviews it.', next: 'blockparty_right', effects: { inc: { blockparty_score: 1 }, rel: { emily: 3 } } },
-            { text: 'Put out cones and act confident.', next: 'blockparty_cones' },
-            { text: 'Ask Tyler to "activate" the street.', next: 'blockparty_tyler' },
+            { text: 'File online with the Street Activity Permit Office 60+ days out, pay $25, get the block to sign on. The board reviews it.', next: 'blockparty_right', effects: { inc: { blockparty_score: 1 }, rel: { emily: 3 } } },
+            { text: 'File online with the permit office two weeks out, pay $25, and get the block to sign on. The board reviews it.', next: 'blockparty_cones' },
+            { text: 'File online 60+ days out and pay $25. Then sell plates at the party so the block doesn\'t have to chip in.', next: 'blockparty_tyler' },
+            { text: 'Ask the community board for the permit 60+ days out. They issue it, take the $25, and the block signs on.', next: 'blockparty_board' },
           ],
         },
-        blockparty_cones: { speaker: 'emily', text: 'Confidence is not a permit. The Free Parking Caucus has a whole binder about cones. It\'s laminated.', next: 'blockparty_right' },
-        blockparty_tyler: { speaker: 'emily', text: 'He\'d sell tickets. A block party can\'t sell anything. That\'s the whole point: free, and open to every neighbor on the block.', next: 'blockparty_right' },
+        blockparty_cones: { speaker: 'emily', text: 'Two weeks? In two weeks the Free Parking Caucus can laminate a whole binder about us. The city wants at least 60 days.', next: 'blockparty_right' },
+        blockparty_tyler: { speaker: 'emily', text: 'You sound like Tyler. A block party can\'t sell anything. That\'s the whole point: free, and open to every neighbor on the block.', next: 'blockparty_right' },
+        blockparty_board: { speaker: 'emily', text: 'Close. The board reviews it and comments. The city\'s Street Activity Permit Office is who you apply to, and who issues it. I offered the board cake anyway. They reviewed it and commented.', next: 'blockparty_right' },
         blockparty_right: { speaker: 'emily', text: 'Apply online at least 60 days out. $25. Your neighbors sign on, the community board weighs in. One block, one day, nothing for sale.', next: 'blockparty_skip' },
         blockparty_skip: { speaker: 'you', text: '*Sixty days pass. Emily bakes eleven test cakes. The permit arrives. It is the most beautiful document you have ever held.*', next: 'blockparty_go' },
         blockparty_go: {
-          speaker: 'emily', text: 'Now, guests. A party is only as good as who you call. Go get the people who got you here. And take flyers for the whole neighborhood.',
+          speaker: 'emily', text: 'Now, guests. A party is only as good as who you call. Go get the people who got you here. And take flyers for the whole neighborhood. The day of, it\'s not about the cake or me. It\'s about every person who shows up.',
           choices: [{ text: 'Calling everybody.', effects: { flags: { blockparty_accepted: true }, items: { flyers: 12 }, toast: 'PERMIT APPROVED' } }],
         },
         blockparty_wait: { speaker: 'emily', text: 'Test cake number twelve. It\'s the boardwalk, in fondant, with a tiny community fridge on top. Go. Invite. Set up. I\'m piping.' },
@@ -136,24 +143,24 @@ export const blockparty: MissionModule = {
           speaker: 'Free Parking Caucus', text: 'Excuse me. This is a STREET. Streets are for PARKING. Where is the Caucus supposed to put the Buick?',
           choices: [
             { text: 'Show them the permit. City-approved, community board reviewed, today only. Neptune Ave has spots.', next: 'blockparty_permit', effects: { inc: { blockparty_score: 1 } } },
-            { text: 'Out-dance them.', next: 'blockparty_dance' },
-            { text: 'Call Gary.', next: 'blockparty_gary' },
+            { text: 'Tell them a free party doesn\'t need a permit. Nothing\'s for sale, so the street is ours today.', next: 'blockparty_dance' },
+            { text: 'Show them the permit and tell them this block is car-free from now on. Neptune Ave has spots.', next: 'blockparty_gary' },
           ],
         },
         blockparty_permit: { speaker: 'Free Parking Caucus', text: '...This is a valid permit. Fine. We\'ll be filing a complaint. With ourselves. At our next meeting. Is that lemon tart?', next: 'blockparty_f2' },
-        blockparty_dance: { speaker: 'you', text: '*The kids invent a dance called "Get Out of Our Street." The Caucus does not leave. One of them is learning the moves.*', next: 'blockparty_f2' },
-        blockparty_gary: { speaker: 'gary', text: '*Gary arrives in nine minutes, takes a photo with the Buick, says "I hear both sides," and leaves with a plate.*', next: 'blockparty_f2' },
+        blockparty_dance: { speaker: 'you', text: '*The Caucus opens its laminated binder to tab F: "FREE IS NOT A PERMIT." Fair. You pull out the real one: city-issued, board reviewed, today only. One of them is learning the kids\' dance.*', next: 'blockparty_f2' },
+        blockparty_gary: { speaker: 'gary', text: '*Gary arrives in nine minutes, reads the permit, and says "it says one day." The Caucus cheers. Gary takes a photo with the Buick, says "I hear both sides," and leaves with a plate.*', next: 'blockparty_f2' },
         blockparty_f2: {
           speaker: 'emily', text: '*Emily wheels out the cake: five tiers, the boardwalk in fondant, a tiny fridge on top.* Somebody has to give the toast. It\'s you. Obviously.',
           choices: [
             { text: 'Name everybody. Every single person on this street who showed up.', next: 'blockparty_names', effects: { inc: { blockparty_score: 1 } } },
-            { text: 'Thank the sponsors.', next: 'blockparty_spons' },
-            { text: 'Read the permit out loud.', next: 'blockparty_read' },
+            { text: 'Thank Emily. She baked the cake and chased the permit. None of this happens without her.', next: 'blockparty_spons' },
+            { text: 'Thank the city for the permit and Jon for the cameras. Then let everybody eat.', next: 'blockparty_read' },
           ],
         },
         blockparty_names: { speaker: 'you', text: '*You name every person who showed up, one by one. It takes a while. Nobody minds. Somebody yells "don\'t make it weird." You make it a little weird.*', next: 'blockparty_res' },
-        blockparty_spons: { speaker: 'you', text: '*There are no sponsors. That\'s the point. Tyler waves from across the street holding a sign that says "Proud Sponsor (Spiritually)."*', next: 'blockparty_res' },
-        blockparty_read: { speaker: 'you', text: '*By clause four, Ms. Hattie is asleep in her chair. By clause six, so is Gary. You skip to the part where everybody eats.*', next: 'blockparty_res' },
+        blockparty_spons: { speaker: 'you', text: '*Emily turns the color of red velvet and points the cake knife at the crowd. "Not me. THEM." Tyler, across the street, applauds himself just in case.*', next: 'blockparty_res' },
+        blockparty_read: { speaker: 'you', text: '*By the second city office, Ms. Hattie is asleep in her chair. Jon lowers the camera and whispers "the people, not the paperwork." You skip to the part where everybody eats.*', next: 'blockparty_res' },
         blockparty_res: {
           speaker: 'emily', text: 'Okay. Knife. Go.',
           choices: [
@@ -170,17 +177,18 @@ export const blockparty: MissionModule = {
     jon: {
       entries: [{ cond: S(2), node: 'blockparty_j0' }],
       nodes: {
-        blockparty_j0: { speaker: 'jon', text: 'A block party nobody filmed is a rumor. A block party on TV is history. Where does it air?', next: 'blockparty_j1' },
+        blockparty_j0: { speaker: 'jon', text: 'A block party nobody filmed is a rumor. A block party on TV is history. I learned on public access: BRIC runs Brooklyn Free Speech. Live in Brooklyn, finish a certification course, and the cameras and studios cost nothing.', next: 'blockparty_jbuzz' },
+        blockparty_jbuzz: { speaker: 'jon', text: 'Meanwhile Skye wants to livestream it, a streamer emailed me twice, and Tyler offered a "content partnership." Everybody wants your block.', next: 'blockparty_j1' },
         blockparty_j1: {
-          speaker: 'jon', text: 'Pick one.',
+          speaker: 'jon', text: 'So. Where does it air, and how do we get the gear?',
           choices: [
             { text: 'Public access. Take a BRIC certification course, borrow the cameras free, and air it on Brooklyn Free Speech.', next: 'blockparty_jright', effects: { inc: { blockparty_score: 1 }, rel: { jon: 3 } } },
-            { text: 'Skye livestreams it.', next: 'blockparty_jskye' },
-            { text: 'Sell it to a streamer.', next: 'blockparty_jstream' },
+            { text: 'Public access. Take the BRIC course, pay the day rate on the cameras, and air it on Brooklyn Free Speech.', next: 'blockparty_jskye' },
+            { text: 'Public access. Skip the course. Any Brooklynite can walk in, grab a BRIC camera free, and air it on Brooklyn Free Speech.', next: 'blockparty_jstream' },
           ],
         },
-        blockparty_jskye: { speaker: 'jon', text: 'Skye\'s stream ends with a detox tea ad. Public access ends with your block. Public.', next: 'blockparty_jright' },
-        blockparty_jstream: { speaker: 'jon', text: 'They\'d cut it into a true-crime doc called "Party." Eight episodes. Nobody eats cake until episode seven. No.', next: 'blockparty_jright' },
+        blockparty_jskye: { speaker: 'jon', text: 'Day rate? There is no day rate. Finish the course and the gear is free. You\'re thinking of Skye. Her stream costs you a detox tea ad.', next: 'blockparty_jright' },
+        blockparty_jstream: { speaker: 'jon', text: 'Walk in and grab a camera? That\'s how you end up in a true-crime doc called "Party." Take the course first. Then the gear is free.', next: 'blockparty_jright' },
         blockparty_jright: {
           speaker: 'jon', text: 'BRIC runs Brooklyn Free Speech, the borough\'s public access TV. Live in Brooklyn, finish a certification course, and the cameras and studios are free to use. I\'ll cut it.',
           choices: [{ text: 'Roll camera.', effects: { flags: { blockparty_jon: true }, attention: 6, toast: 'POCKET CIVICS · BLOCK PARTIES + PUBLIC ACCESS TV' } }],

@@ -90,6 +90,7 @@ class GameState {
       if (m.timeLeft != null) { m.timeLeft = Math.max(1, m.timeLeft + e.time); toasts.push(`${e.time > 0 ? '+' : ''}${e.time}s ON THE CLOCK`); }
     }
     if (e.toast) toasts.unshift(e.toast);
+    if (e.toast?.startsWith('POCKET CIVICS · ')) this.setFlag(`lesson_${e.toast.slice(16)}`, true); // into the notebook
     if (!opts.quiet) toasts.forEach((t, i) => setTimeout(() => bus.emit('ui:toast', t), i * 260));
     if (e.startMission) bus.emit('mission:start', e.startMission);
     if (e.event) bus.emit(`event:${e.event}`);

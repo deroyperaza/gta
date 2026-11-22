@@ -72,7 +72,7 @@ export const access: MissionModule = {
       ],
       nodes: {
         access_start: { speaker: 'naim', text: 'I noticed something. I always notice something. This one\'s big.', choices: [{ text: 'What did you notice?', next: 'access_0', effects: { startMission: 'access' } }] },
-        access_0: { speaker: 'naim', text: 'My friend Teo uses a wheelchair. Our science lab is on the fourth floor. Our elevator is a rumor. So Teo does science on a worksheet in the hallway.', next: 'access_1' },
+        access_0: { speaker: 'naim', text: 'My friend Teo uses a wheelchair. Our science lab is on the fourth floor. Our elevator is a rumor. So Teo does science on a worksheet in the hallway. Teo needs two things: a class he can reach now, and a real date for an elevator.', next: 'access_1' },
         access_1: { speaker: 'naim', text: 'Councilmember Gary is doing a "Listening Tour" at Borough Hall. Before we go, we get receipts. How do other public buildings in the neighborhood get people in the door?', next: 'access_2' },
         access_2: {
           speaker: 'naim', text: 'Check the Brooklyn Museum and the library. Count steps. Find the ramp, the elevator, the door that opens by itself. And hand out these awareness-club flyers on the way?',
@@ -91,21 +91,21 @@ export const access: MissionModule = {
           speaker: 'naim', text: 'So it\'s possible. Now the ask. Gary loves vague. What do we walk in with?',
           choices: [
             { text: 'Two asks: move Teo\'s class somewhere Teo can reach, now. And a date for the elevator.', tag: 'BEST', next: 'access_p2', effects: { inc: { access_score: 1 } } },
-            { text: 'A strongly worded vibe.', next: 'access_p3' },
-            { text: 'A petition to make the stairs shorter.', next: 'access_p4' },
+            { text: 'One big ask: an elevator this year. We don\'t leave Borough Hall until he says yes.', next: 'access_p3' },
+            { text: 'A clear ask: make school access a real priority this year, and tell us his plan.', next: 'access_p4' },
           ],
         },
         access_p2: {
-          speaker: 'naim', text: 'Yes. Specific asks get specific answers. And remember Section 504: public schools have to give students with disabilities accommodations. It\'s not a favor. It\'s a right.',
+          speaker: 'naim', text: 'Yes. Specific asks get specific answers. And remember Section 504: public schools have to give students with disabilities accommodations. It\'s not a favor. It\'s a right. And if he says "soon," ask: okay, but when?',
           choices: [{ text: 'Not a favor. A right.', effects: { flags: { access_prepped: true } } }],
         },
         access_p3: {
-          speaker: 'naim', text: 'Gary is FLUENT in vibes. He\'ll vibe right back. Let\'s at least know one thing: Section 504 says public schools have to give students with disabilities accommodations.',
+          speaker: 'naim', text: 'Gary will say yes to "this year" and mean 2031. Teo needs class now. Two asks: a room he can reach now, a date for the elevator. Section 504 says public schools have to give students with disabilities accommodations. If he says "soon": okay, but when?',
           choices: [{ text: 'Okay. 504. Got it.', effects: { flags: { access_prepped: true } } }],
         },
         access_p4: {
-          speaker: 'naim', text: 'Ha. The stairs are not the problem. The missing elevator is. And Section 504 says public schools have to give students with disabilities accommodations. Bring that.',
-          choices: [{ text: 'Bring the law. Leave the stairs.', effects: { flags: { access_prepped: true } } }],
+          speaker: 'naim', text: 'Gary is FLUENT in priorities. He\'ll prioritize right back. Two asks: Teo\'s class somewhere he can reach, now, and a date for the elevator. And Section 504 says public schools have to give students with disabilities accommodations. If he says "soon": okay, but when?',
+          choices: [{ text: 'Two asks. Bring the law.', effects: { flags: { access_prepped: true } } }],
         },
         access_wait2: { speaker: 'naim', text: 'Gary\'s at Borough Hall. Ask your question. Listen. Then ask the one he hoped you wouldn\'t.' },
         access_end: {
@@ -142,25 +142,26 @@ export const access: MissionModule = {
           speaker: 'gary', text: 'Naim! The kid who asked the Comptroller that elevator thing. Love the energy. School access is a TOP priority. Teo gets a worksheet, which is honestly very portable.',
           choices: [
             { text: 'A hallway worksheet isn\'t an accommodation. Under Section 504, public schools have to give students with disabilities accommodations.', tag: 'FACT', next: 'access_g1', effects: { inc: { access_score: 2 } } },
-            { text: 'Could we carry the whole lab downstairs ourselves? Beakers and all?', next: 'access_g2' },
-            { text: 'Can we get a photo with you about it?', next: 'access_g3', effects: { rel: { gary: 3 } } },
+            { text: 'Under Section 504, schools have to give accommodations once the family pays for them. Can your office cover Teo\'s?', next: 'access_g2' },
+            { text: 'Teo deserves better than a worksheet. Can we take a photo together for the school newsletter, so families see you care?', next: 'access_g3', effects: { rel: { gary: 3 } } },
           ],
         },
         access_g1: { speaker: 'gary', text: 'Ah. You brought... federal law. To a listening tour. Okay. Yes. Absolutely. We\'ll get Teo sorted and look at elevators. Soon. Very soon. Great talk!', next: 'access_g4' },
-        access_g2: { speaker: 'gary', text: 'Love the initiative! Liability nightmare. Absolutely not. Anyway, we\'ll look at elevators. Soon. Very soon. Great talk!', next: 'access_g4' },
-        access_g3: { speaker: 'gary', text: 'YES. Finally, somebody who speaks my language. *Click.* Beautiful. Anyway, we\'ll look at elevators. Soon. Very soon. Great talk!', next: 'access_g4' },
+        access_g2: { speaker: 'gary', text: 'Pays? Naim\'s pen just stopped. He says 504 means a FREE appropriate public education, and public schools have to give the accommodations. Free is the first word. Anyway, we\'ll look at elevators. Soon. Very soon. Great talk!', next: 'access_g4' },
+        access_g3: { speaker: 'gary', text: 'YES. Finally, somebody who speaks my language. *Click.* Beautiful. Naim is muttering that a photo isn\'t an accommodation, and Section 504 says schools owe Teo one. Anyway, we\'ll look at elevators. Soon. Very soon. Great talk!', next: 'access_g4' },
         access_g4: {
           speaker: 'gary', text: '*Gary is already turning toward the next person in line.*',
           choices: [
             { text: '"Okay, but when?"', tag: 'FOLLOW UP', next: 'access_g5', effects: { inc: { access_score: 1 } } },
-            { text: '"Thank you so much, Councilmember!"', next: 'access_g6' },
+            { text: '"Thank you! Can your office email us once there\'s a plan?"', next: 'access_g6' },
+            { text: '"Soon is great. We\'ll check back after the next budget."', next: 'access_g6' },
           ],
         },
         access_g5: {
           speaker: 'gary', text: 'When? ...In the capital planning cycle. The next one. Or the one after. It\'s a process. Processes are like seasons.',
           choices: [
             { text: '"Okay, but WHEN? A date for Teo\'s class and a date for the elevator ask."', next: 'access_g6', effects: { inc: { access_score: 1 }, flags: { access_twice: true } } },
-            { text: '"Seasons. Got it. Thanks!"', next: 'access_g6' },
+            { text: '"Okay. Then can we at least get the elevator into that next cycle?"', next: 'access_g6' },
           ],
         },
         access_g6: {

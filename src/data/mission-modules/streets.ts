@@ -71,7 +71,7 @@ export const streets: MissionModule = {
       ],
       nodes: {
         streets_start: { speaker: 'adrian', text: '*Whistle.* Deputy! Soccer Justice has a new case.', choices: [{ text: 'Reporting for duty.', next: 'streets_0', effects: { startMission: 'streets' } }] },
-        streets_0: { speaker: 'adrian', text: 'The block by the co-op. Kids play ball between parked cars. Grandmothers sit on milk crates. It\'s already a park. It just has cars in it.', next: 'streets_1' },
+        streets_0: { speaker: 'adrian', text: 'The block by the co-op. Kids play ball between parked cars. Grandmothers sit on milk crates. It\'s already a park, for everybody on the block. It just has cars in it.', next: 'streets_1' },
         streets_1: { speaker: 'adrian', text: 'Open Streets. Community groups apply to the city\'s transportation department, DOT, to close a street to cars on set days. You run it, the city backs it.', next: 'streets_2' },
         streets_2: {
           speaker: 'adrian', text: 'Next year\'s application is open right now. We need partners and neighbors on board. Sign up Brendan and Danae, then get the sign-on sheet around the block.',
@@ -90,23 +90,23 @@ export const streets: MissionModule = {
           speaker: 'Chip, Free Parking Caucus', text: 'Chip, Free Parking Caucus. You can\'t just close a street because you FEEL like it. Who even decides that? Me. I decide. I\'ve decided: no.',
           choices: [
             { text: 'Community groups apply to NYC DOT for Open Streets. The application for next year is open right now. You can apply too, Chip.', tag: 'FACT', next: 'streets_a2', effects: { inc: { streets_score: 2 } } },
-            { text: 'We were just going to put out cones and hope.', next: 'streets_a3' },
-            { text: 'We\'ll ask your permission. Nicely. Every Saturday.', next: 'streets_a4' },
+            { text: 'Community groups apply to NYC Parks for Open Streets. The application is open right now. You can apply too, Chip.', next: 'streets_a3' },
+            { text: 'Community groups apply to NYC DOT for Open Streets. Applications open again next summer. You can apply then, Chip.', next: 'streets_a4' },
           ],
         },
         streets_a2: { speaker: 'Chip, Free Parking Caucus', text: 'DOT? The city lets... PEOPLE apply for streets? Then can I apply to close a street to people? ...I\'ll be filing a strongly worded parking ticket. To myself.', next: 'streets_a5' },
-        streets_a3: { speaker: 'adrian', text: 'Cones and hope is how you get a ticket. We APPLY. Community groups apply to DOT, and next year\'s application is open right now. Most deadlines are December 31.', next: 'streets_a5' },
-        streets_a4: { speaker: 'adrian', text: 'Chip doesn\'t own the street. Nobody does. That\'s the point. We apply to DOT. Next year\'s application is open right now. Most deadlines are December 31.', next: 'streets_a5' },
+        streets_a3: { speaker: 'adrian', text: 'Parks? Chip just asked if he can apply to close a park to people. No. Parks runs parks. Streets are DOT. We apply to DOT, and next year\'s application is open right now. Most deadlines are December 31.', next: 'streets_a5' },
+        streets_a4: { speaker: 'adrian', text: 'Next summer? Chip is smiling. Never make Chip smile. The application is open RIGHT NOW. We apply to DOT, and most deadlines are December 31.', next: 'streets_a5' },
         streets_a5: {
-          speaker: 'adrian', text: 'Now the fun part. The form asks what happens on the street. What do we write?',
+          speaker: 'adrian', text: 'Now the fun part. The form asks what happens on the street. Think about who\'s on this block right now. What do we write?',
           choices: [
             { text: 'Chalk for the kids, a pickup game, shade and chairs for the grandmothers, room for the bodega to set out a table.', tag: 'BEST', next: 'streets_a6', effects: { inc: { streets_score: 1 } } },
-            { text: 'A pop-up parking lot. For bikes. Owned by cars.', next: 'streets_a7' },
-            { text: 'Whatever Brendan\'s committee decides in 2029.', next: 'streets_a7' },
+            { text: 'A real youth soccer league: goals at both ends, nets, a ref, and games all day, every Saturday.', next: 'streets_a7' },
+            { text: 'Danae\'s chalk art show, with the whole street roped off so the artists have room to work.', next: 'streets_a7' },
           ],
         },
         streets_a6: { speaker: 'adrian', text: 'Yes. A street for everybody: the fast kids, the slow kids, the grandmothers, the guy with the folding table. That\'s design.', next: 'streets_a8' },
-        streets_a7: { speaker: 'adrian', text: 'Deputy. No. We\'ll write chalk, a pickup game and chairs for the grandmothers. You can be in charge of chalk. Chalk is a big responsibility.', next: 'streets_a8' },
+        streets_a7: { speaker: 'adrian', text: 'Deputy. I love it, and it\'s a street for one crowd. The grandmothers would need a ref to cross it. We\'ll write chalk, a pickup game and chairs for the grandmothers. You can be in charge of chalk. Chalk is a big responsibility.', next: 'streets_a8' },
         streets_a8: {
           speaker: 'adrian', text: '*Adrián reads the form back, signatures stapled to the corner, and holds his whistle like a pen.*',
           choices: [
@@ -140,7 +140,7 @@ export const streets: MissionModule = {
           speaker: 'brendan', text: 'An Open Street! I LOVE this. I\'d love to form an exploratory committee to explore whether to form a committee to support it.',
           choices: [
             { text: 'No committee. Just sign as a partner. The co-op is a community group.', next: 'streets_b1', effects: { inc: { streets_score: 1 }, flags: { streets_quick: true } } },
-            { text: 'Sure. When does the committee meet?', next: 'streets_b2' },
+            { text: 'Great. Form the committee, and the co-op signs as a partner once it votes yes.', next: 'streets_b2' },
           ],
         },
         streets_b1: {

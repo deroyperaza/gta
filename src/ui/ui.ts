@@ -3,6 +3,8 @@ import { bus } from '../core/bus';
 import { state } from '../core/state';
 import { DISTRICTS, type District, type ItemId } from '../core/types';
 import { ITEMS } from '../data/items';
+import { LESSONS } from '../data/lessons';
+import { GRANTEES } from '../data/grantees';
 import { MISSIONS, type MissionDef } from '../data/missions';
 import { NPCS, NPC_BY_ID } from '../data/npcs';
 import { dialogue } from '../systems/dialogue';
@@ -419,7 +421,8 @@ class UI {
     choicesEl.innerHTML = '';
     choicesEl.classList.remove('show');
     this.choiceCount = d.choices.length;
-    choicesEl.innerHTML = d.choices.map((c, i) => `<button data-choice="${c.index}" class="${c.tag ? 'tag' : ''}"><b>${i + 1}</b> ${esc(c.text)}${c.tag ? ` <em>${c.tag}</em>` : ''}</button>`).join('');
+    // Tags (FACT, BEST...) are for scoring and testing only. Never show them: the player has to know.
+    choicesEl.innerHTML = d.choices.map((c, i) => `<button data-choice="${c.index}"><b>${i + 1}</b> ${esc(c.text)}</button>`).join('');
     // map visible order -> index
     choicesEl.dataset.map = JSON.stringify(d.choices.map((c) => c.index));
     $('#dlg-more').style.visibility = d.choices.length ? 'hidden' : 'visible';
@@ -527,8 +530,16 @@ class UI {
       return `<div class="person ${met ? '' : 'unmet'}"><div class="p-h"><b style="color:${n.color}">${met ? n.name : '???'}</b><em>${met ? n.title : DISTRICTS[n.district].name}</em></div>
         ${met ? `<p>${n.bio}</p><div class="track small"><i style="width:${(r + 100) / 2}%;background:${n.color}"></i></div>` : '<p>Haven\'t met yet.</p>'}</div>`;
     }).join('');
+    const known = GRANTEES.filter((g) => g.missions.some((m) => state.mission(m).status === 'complete'));
+    const network = (known.length ? known.map((g) => `<div class="lesson"><b>${g.name}</b><em>${g.funded}</em><p>${g.what}</p></div>`).join('') : '<p>Finish a mission to see who does this work in real life.</p>')
+      + `<p class="sub">${known.length} of ${GRANTEES.length} groups met.</p>`;
+    const earned = Object.entries(LESSONS).filter(([k]) => state.flag(`lesson_${k}`));
+    const lessons = (earned.length ? earned.map(([k, l]) => `<div class="lesson"><b>${k}</b><em>from ${l.who}</em><p>${l.text}</p></div>`).join('') : '<p>Nothing yet. Talk to people. They know things.</p>')
+      + `<p class="sub">${earned.length} of ${Object.keys(LESSONS).length} learned.</p>`;
     $('#journal .panel-body').innerHTML = `
-      <div class="jcol"><h3>MISSIONS</h3>${mrows}</div>
+      <div class="jcol"><h3>MISSIONS</h3>${mrows}
+        <h3>BROOKLYN ORG NETWORK</h3><p class="sub">Real Brooklyn nonprofits funded by Brooklyn Org, the borough's community foundation. Finish a mission to meet the groups doing that work for real.</p>${network}
+        <h3>POCKET CIVICS</h3><p class="sub">Everything you've learned, in your pocket. Later conversations will test it.</p>${lessons}</div>
       <div class="jcol"><h3>THE MOVEMENT</h3>
         <div class="stats"><div><b>${d.solidarity}</b><span>Solidarity</span></div><div><b>${d.power}</b><span>Organizing Power</span></div><div><b>${d.attention}</b><span>Public Attention</span></div><div><b>${state.num('flyers_given')}</b><span>Flyers Handed</span></div><div><b>${state.num('posters_up')}</b><span>Posters Up</span></div><div><b>${fmtTime(d.playTime)}</b><span>Time Organizing</span></div></div>
         <h3>COMMUNITY TRUST</h3>${trust}

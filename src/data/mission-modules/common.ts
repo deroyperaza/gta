@@ -72,10 +72,11 @@ export const common: MissionModule = {
       nodes: {
         common_start: { speaker: 'nadine', text: 'You organize. I mediate. Different tools, same street. I could use you.', choices: [{ text: 'What\'s going on?', next: 'common_0', effects: { startMission: 'common' } }] },
         common_0: { speaker: 'nadine', text: 'The empty lot on Montgomery. Motti wants a playground: his block has forty kids and one swing. Ms. Yvette\'s seniors want a garden: they\'ve grown callaloo in buckets for ten years.', next: 'common_1' },
-        common_1: { speaker: 'nadine', text: 'And a developer, your friend Tyler, has been putting up flyers on both sides. One says "THEY are buying the lot." The other one says the same thing, about the other "they."', next: 'common_2' },
-        common_2: { speaker: 'nadine', text: 'This neighborhood remembers August 1991. A car in the Rebbe\'s motorcade killed a seven-year-old boy, Gavin Cato. That night a young man named Yankel Rosenbaum was stabbed and killed. People here carry both names. A rumor on a lamppost isn\'t small here.', next: 'common_3' },
+        common_1: { speaker: 'nadine', text: 'And a developer, your friend Tyler, has been putting up flyers on both sides. One says "THEY are buying the lot." The other one says the same thing, about the other "they." The community board weighs in on what happens to that lot. Tyler is counting on it hearing two angry voices instead of one.', next: 'common_2' },
+        common_2: { speaker: 'nadine', text: 'This neighborhood remembers August 1991. A car in the Rebbe\'s motorcade killed a seven-year-old boy, Gavin Cato. That night a young man named Yankel Rosenbaum was stabbed and killed. People here carry both names. A rumor on a lamppost isn\'t small here.', next: 'common_2b' },
+        common_2b: { speaker: 'nadine', text: 'When we sit down, I use the same three rules every time. One voice at a time, no interrupting. We talk about the lot, not about "them." And the mediator takes no side. Hold me to it.', next: 'common_3' },
         common_3: {
-          speaker: 'nadine', text: 'So: you talk to each of them first, alone. Then the flyers come down. Then we sit together. Ready?',
+          speaker: 'nadine', text: 'So: you talk to each of them first, alone. Say back what you hear. Ask what they need, not who they\'re against. Then the flyers come down. Then we sit together. Ready?',
           choices: [
             { text: 'Listen first. Then the sit-down.', effects: { rel: { nadine: 4 }, flags: { common_accepted: true, common_score: 0, ...RESET } } },
             { text: 'Can\'t we just split the lot down the middle?', next: 'common_4' },
@@ -90,32 +91,32 @@ export const common: MissionModule = {
         common_s1: {
           speaker: 'nadine', text: 'Before anyone talks, we need ground rules. What do you suggest?',
           choices: [
-            { text: 'Each person speaks without interruption. We talk about the lot, not about "those people." Nadine stays neutral.', tag: 'BEST', next: 'common_s2', effects: { inc: { common_score: 1 } } },
-            { text: 'Loudest voice wins.', next: 'common_s2x' },
-            { text: 'No rules. Let it all out.', next: 'common_s2x' },
+            { text: 'One voice at a time, no interrupting. We stick to the lot, not "them." And you stay neutral.', tag: 'BEST', next: 'common_s2', effects: { inc: { common_score: 1 } } },
+            { text: 'One voice at a time. And you tell them early which plan is fairer, so nobody wastes the evening.', next: 'common_s2x' },
+            { text: 'We start by reading Tyler\'s flyers out loud and asking each of them who "they" really means.', next: 'common_s2x' },
           ],
         },
         common_s2x: { speaker: 'nadine', text: 'That\'s how the last meeting ended in 2019. Let\'s try: one person speaks at a time, we talk about the lot, and I stay neutral.', next: 'common_s2' },
         common_s2: {
           speaker: 'nadine', text: 'They\'ve both spoken. Now: what do they actually want, underneath "playground" and "garden"?',
           choices: [
-            { text: 'Somewhere safe outside, close to home, for the people they look after: kids for Motti, elders for Ms. Yvette. And neither of them wants to be priced out.', tag: 'BEST', next: 'common_s3', effects: { inc: { common_score: 1 } } },
-            { text: 'Motti wants to win and Yvette wants to win.', next: 'common_s3x' },
-            { text: 'Honestly? Different things. They\'ll never agree.', next: 'common_s3x' },
+            { text: 'Somewhere safe outside, near home, for the people they look after. Kids for him, elders for her. And not to get priced out.', tag: 'BEST', next: 'common_s3', effects: { inc: { common_score: 1 } } },
+            { text: 'A playground for Motti\'s block and a garden for Ms. Yvette\'s seniors. We find a second lot so each gets their own.', next: 'common_s3x' },
+            { text: 'Mostly they\'re each worried the other community will take over the block. We should reassure them first.', next: 'common_s3x' },
           ],
         },
-        common_s3x: { speaker: 'yvette', text: '*Ms. Yvette:* I don\'t need to win. I need my seniors outside. *Motti:* And I need my kids outside. *They look at each other.* ...Oh.', next: 'common_s3' },
+        common_s3x: { speaker: 'yvette', text: '*Ms. Yvette:* I don\'t need a second lot, and I don\'t need to beat anybody. I need my seniors outside, near home. *Motti:* And I need my kids outside. *They look at each other.* ...Oh.', next: 'common_s3' },
         common_s3: { speaker: 'motti', text: 'My grandmother kept a garden in Kfar Chabad. Tomatoes the size of your fist. I wouldn\'t mind if the kids grew something.', next: 'common_s4' },
         common_s4: { speaker: 'yvette', text: 'And my seniors could use some noise. It\'s too quiet on that block. Children are good noise.', next: 'common_s5' },
         common_s5: {
           speaker: 'nadine', text: 'So what goes in the agreement?',
           choices: [
-            { text: 'One lot, two halves that share a fence with a gate: raised beds for the seniors, a play area for the kids. Both sign a letter asking the community board to keep the lot public, not sold.', tag: 'BEST', next: 'common_s6', effects: { inc: { common_score: 1 } } },
-            { text: 'Sell it to Tyler and split the money.', next: 'common_s6x' },
-            { text: 'Whoever shows up first on Sunday gets it.', next: 'common_s6x' },
+            { text: 'Two halves with a gate in the fence: raised beds and a play area. One letter, both names, asking the community board to keep it public.', tag: 'BEST', next: 'common_s6', effects: { inc: { common_score: 1 } } },
+            { text: 'Raised beds on one half, a play area on the other. Then each of them writes the community board in their own words.', next: 'common_s6x' },
+            { text: 'A shared garden with a play corner, and we get Tyler to promise in writing that he won\'t build there.', next: 'common_s6x' },
           ],
         },
-        common_s6x: { speaker: 'nadine', text: 'Then Tyler wins and nobody else does. Let\'s write it together: shared lot, a garden and a play area, and a joint letter to the community board to keep it public.', next: 'common_s6' },
+        common_s6x: { speaker: 'nadine', text: 'Two letters sound like two sides, which is all Tyler needs. And Tyler\'s promise is worth about as much as his flyers. Let\'s write it together: shared lot, a garden and a play area, and a joint letter to the community board to keep it public.', next: 'common_s6' },
         common_s6: { speaker: 'nadine', text: 'One more thing, for both of you, and for you, organizer: if something comes up later, the courts fund free community mediation. In Brooklyn it\'s the Brooklyn Mediation Center. You don\'t need a lawsuit to use it. You just need a neighbor.', next: 'common_end' },
         common_end: {
           speaker: 'you', text: '*Motti tries the sorrel. Ms. Yvette takes two rugelach "for later." They sign. Tyler\'s last flyer flaps on a lamppost outside. Somebody draws a garden on it.*',
@@ -139,9 +140,9 @@ export const common: MissionModule = {
         common_m2: {
           speaker: 'motti', text: '*He waits to see what you say.*',
           choices: [
-            { text: '"So you want somewhere safe for the kids to play, close to home, and you\'re worried you\'ll lose the lot to someone you\'ve never talked to. Is that right?"', tag: 'BEST', next: 'common_m3', effects: { inc: { common_score: 1 }, flags: { common_reflect_m: true } } },
-            { text: 'Don\'t worry, I\'m on your side.', next: 'common_m4' },
-            { text: 'Have you tried just being nicer?', next: 'common_m4' },
+            { text: '"So you want somewhere safe for the kids, close to home, and you\'re afraid of losing it to people you\'ve never met?"', tag: 'BEST', next: 'common_m3', effects: { inc: { common_score: 1 }, flags: { common_reflect_m: true } } },
+            { text: 'Don\'t worry. I\'ve seen those flyers too, and I\'m on your side in this.', next: 'common_m4' },
+            { text: '"Would a playground on the lot fix it for you?"', next: 'common_m4' },
           ],
         },
         common_m3: { speaker: 'motti', text: '...Yes. That\'s it exactly. Nobody says it back to you like that. Okay. I\'ll come to the meeting.', choices: [{ text: '(Thank him.)', effects: { flags: { common_motti: true }, rel: { motti: 4 } } }] },
@@ -162,12 +163,12 @@ export const common: MissionModule = {
           speaker: 'yvette', text: '*She folds her arms and waits.*',
           choices: [
             { text: 'What would the lot need to have, for your seniors to actually use it?', tag: 'BEST', next: 'common_y3', effects: { inc: { common_score: 1 }, flags: { common_reflect_y: true } } },
-            { text: 'Motti\'s people are fine, you know.', next: 'common_y4' },
-            { text: 'So you want to block the playground?', next: 'common_y4' },
+            { text: 'Don\'t worry about the flyers. Motti seems like a good man. I\'m sure it will work out.', next: 'common_y4' },
+            { text: 'Would a garden on half the lot be enough for your seniors?', next: 'common_y4' },
           ],
         },
         common_y3: { speaker: 'yvette', text: 'Raised beds, so nobody\'s kneeling. Shade. A bench. A water tap. And to know nobody\'s going to sell it out from under us. That\'s all. That\'s everything.', choices: [{ text: '(Write it down.)', effects: { flags: { common_yvette: true }, rel: { yvette: 4 } } }] },
-        common_y4: { speaker: 'yvette', text: 'I didn\'t say anything about anybody\'s people. I said buckets. Ask me what I need, not who I\'m against. ...I\'ll come to the meeting.', choices: [{ text: '(Nod.)', effects: { flags: { common_yvette: true } } }] },
+        common_y4: { speaker: 'yvette', text: 'Hm. You\'re answering before you asked. I said buckets. Ask me what my seniors need, not what I\'ll settle for. ...I\'ll come to the meeting.', choices: [{ text: '(Nod.)', effects: { flags: { common_yvette: true } } }] },
         common_ywait: { speaker: 'yvette', text: 'I\'m bringing sorrel. It\'s a strategy.' },
       },
     },

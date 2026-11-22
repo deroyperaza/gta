@@ -74,7 +74,7 @@ export const pbudget: MissionModule = {
         pbudget_0: { speaker: 'jenna', text: 'The kids in Crown Heights have ideas for the block. Every year a grown-up says "write it down," and the paper goes in a drawer. Not this year.', next: 'pbudget_1' },
         pbudget_1: { speaker: 'jenna', text: 'The People\'s Money. The city lets New Yorkers vote on how to spend part of its budget. Any New Yorker 11 and up can vote, whatever their immigration status.', next: 'pbudget_2' },
         pbudget_2: {
-          speaker: 'jenna', text: 'We\'re holding an idea session at the Central Library. But first: one-on-ones with Naim, Vega and Luco. Ask what they care about. Then be quiet. Don\'t pitch.',
+          speaker: 'jenna', text: 'We\'re holding an idea session at the Central Library. But first: one-on-ones with Naim, Vega and Luco. Ask open questions about what they care about, not yes-or-no ones. Then be quiet. Don\'t pitch.',
           choices: [
             { text: 'Listen, don\'t pitch. Got it.', effects: { rel: { jenna: 4 }, items: { flyers: 8 }, flags: { pbudget_accepted: true, pbudget_listen: 0, ...RESET_SPOTS } } },
             { text: 'Not even a tiny pitch?', next: 'pbudget_3' },
@@ -120,7 +120,7 @@ export const pbudget: MissionModule = {
           speaker: 'naim', text: 'Jenna sent you? Then this is a one-on-one. I can tell. You have the face of someone who was told not to pitch.',
           choices: [
             { text: 'If the block were up to you, what would you change?', next: 'pbudget_n1', effects: { inc: { pbudget_listen: 1 }, rel: { naim: 3 } } },
-            { text: 'Quick idea: a bigger parking lot. Sign here?', next: 'pbudget_n2' },
+            { text: 'I\'m thinking a new playground by the library. Would you vote for that?', next: 'pbudget_n2' },
           ],
         },
         pbudget_n1: {
@@ -128,7 +128,7 @@ export const pbudget: MissionModule = {
           choices: [{ text: '(Write it down. Say nothing clever.)', effects: { flags: { pbudget_naim: true }, toast: 'IDEA · SHADE + A REAL RAMP' } }],
         },
         pbudget_n2: {
-          speaker: 'naim', text: 'You pitched. In a one-on-one. Jenna felt that from Bed-Stuy. Fine: shade on the library steps. Write that down instead.',
+          speaker: 'naim', text: 'That\'s a pitch wearing a question costume. Jenna felt that from Bed-Stuy. Ask me what I\'D change. ...Shade on the library steps. Write that down instead.',
           choices: [{ text: '(Write it down. Sheepishly.)', effects: { flags: { pbudget_naim: true } } }],
         },
         pbudget_kidwait: { speaker: 'naim', text: 'I already told three friends about the idea session. I told them twice. I have ADHD. I remember the important stuff extra.' },
@@ -137,21 +137,23 @@ export const pbudget: MissionModule = {
           speaker: 'Chip, Free Parking Caucus', text: 'Chip, Free Parking Caucus. Point of order: these are CHILDREN. They can\'t vote. Let\'s spend the money on what voters want. Forty parking spaces. Angled.',
           choices: [
             { text: 'Any New Yorker 11 and up can vote in The People\'s Money, whatever their immigration status. These kids ARE voters.', next: 'pbudget_s2', tag: 'FACT', effects: { flags: { pbudget_fact: true }, solidarity: 10 } },
-            { text: 'Kids can vote if a parent signs a permission slip.', next: 'pbudget_s3' },
-            { text: 'Let\'s settle this with a dance-off.', next: 'pbudget_s4' },
+            { text: 'Any New Yorker 11 and up can vote, as long as they\'re a citizen or have a green card. Most of these kids count.', next: 'pbudget_s3b' },
+            { text: 'Kids 11 and up can vote in The People\'s Money if a parent co-signs the ballot. These kids ARE voters.', next: 'pbudget_s3' },
+            { text: 'Any New Yorker 14 and up can vote, whatever their immigration status. The older kids here are voters.', next: 'pbudget_s4' },
           ],
         },
         pbudget_s2: { speaker: 'Chip, Free Parking Caucus', text: 'Eleven? ELEVEN? Who decided that? ...The city did. Okay. I\'ll be in the back. By the exit. Where the parking would be.', next: 'pbudget_s5' },
-        pbudget_s3: { speaker: 'naim', text: 'No slip. Any New Yorker 11 and up, any immigration status. It\'s on the city\'s own website. Chip, you can check it on your clipboard. Oh wait, it\'s paper.', next: 'pbudget_s5' },
-        pbudget_s4: { speaker: 'vega', text: 'YES. DANCE-OFF. ...Wait, Naim says that\'s not how voting works. Anyone 11 and up gets a ballot. I\'m nine. I\'m still dancing.', next: 'pbudget_s5' },
+        pbudget_s3: { speaker: 'naim', text: 'No co-sign. No slip. Any New Yorker 11 and up votes on their own. My mom asked to co-sign mine. I said no. Civics.', next: 'pbudget_s5' },
+        pbudget_s3b: { speaker: 'naim', text: 'No papers check. Any New Yorker 11 and up, WHATEVER their immigration status. It\'s on the city\'s own website. Chip, check your clipboard. Oh wait, it\'s paper.', next: 'pbudget_s5' },
+        pbudget_s4: { speaker: 'vega', text: 'Fourteen?! ...Naim says it\'s 11 and up, any immigration status. So way more of us vote than Chip thinks. I\'m nine. I\'m dancing about it.', next: 'pbudget_s5' },
         pbudget_s5: {
           speaker: 'jenna', text: '*Jenna slides in at the back with a coffee and nods at you.* Your room. Who goes first?',
           choices: [
-            { text: '(Let the kids pitch the ideas they told you: shade on the steps, a Parkway dance floor, field lights.)', tag: 'BEST', cond: { flag: 'pbudget_fact', flagMin: { pbudget_listen: 2 } }, next: 'pbudget_good' },
+            { text: '(Hand the floor to Naim, Vega and Luco to pitch the ideas they told you.)', tag: 'BEST', cond: { flag: 'pbudget_fact', flagMin: { pbudget_listen: 2 } }, next: 'pbudget_good' },
             { text: '(Let the kids pitch the ideas they told you.)', cond: { notFlag: 'pbudget_fact', flagMin: { pbudget_listen: 2 } }, next: 'pbudget_ok' },
             { text: '(Read the ideas from your notes. The kids nod along.)', cond: { flag: 'pbudget_fact', flagMax: { pbudget_listen: 1 } }, next: 'pbudget_ok' },
             { text: '(Read the ideas from your notes. You did most of the talking in those one-on-ones.)', cond: { notFlag: 'pbudget_fact', flagMax: { pbudget_listen: 1 } }, next: 'pbudget_weak' },
-            { text: '(Present your own big idea first, to warm up the room.)', next: 'pbudget_weak' },
+            { text: '(Open with an idea of your own first, just to get the room going.)', next: 'pbudget_weak' },
           ],
         },
         pbudget_good: { speaker: 'luco', text: 'Field lights: twelve more games a week after school. I made a chart. Vega made a dance about the chart. Chip just asked if the lights come with a parking spot.', next: 'pbudget_good2' },
@@ -180,7 +182,7 @@ export const pbudget: MissionModule = {
           speaker: 'vega', text: 'Is this a one-on-one? I\'ve never had a one-on-one. I\'ve had a one-on-one-on-a-trampoline.',
           choices: [
             { text: 'What do you wish your block had?', next: 'pbudget_v1', effects: { inc: { pbudget_listen: 1 }, rel: { vega: 3 } } },
-            { text: 'I\'m thinking a parking garage, but fun. Thoughts?', next: 'pbudget_v2' },
+            { text: 'Do you like your block the way it is?', next: 'pbudget_v2' },
           ],
         },
         pbudget_v1: {
@@ -188,7 +190,7 @@ export const pbudget: MissionModule = {
           choices: [{ text: '(Write it down. Resist the urge to do the arms.)', effects: { flags: { pbudget_vega: true }, toast: 'IDEA · A PARKWAY DANCE FLOOR' } }],
         },
         pbudget_v2: {
-          speaker: 'vega', text: 'A fun garage? I\'m nine. I don\'t do garages. ...Okay, a dance floor. Write that.',
+          speaker: 'vega', text: 'Yes? No? Kind of? That\'s a yes-or-no question. Jenna says those end conversations. Ask what I WISH it had. ...Okay, a dance floor. Write that.',
           choices: [{ text: '(Write it down.)', effects: { flags: { pbudget_vega: true } } }],
         },
         pbudget_kidwait: { speaker: 'vega', text: 'I\'m bringing my whole dance class to the idea session. And their grown-ups. And one hamster, but he\'s not voting.' },
@@ -205,7 +207,7 @@ export const pbudget: MissionModule = {
           speaker: 'luco', text: 'Jenna\'s method. I respect it. Twenty minutes, no pitch. I\'m timing you, by the way.',
           choices: [
             { text: 'What\'s the one thing that would change your week?', next: 'pbudget_l1', effects: { inc: { pbudget_listen: 1 }, rel: { luco: 3 } } },
-            { text: 'Let me walk you through my deck.', next: 'pbudget_l2' },
+            { text: 'I\'ve got three ideas for the park. Can I share mine first, then hear yours?', next: 'pbudget_l2' },
           ],
         },
         pbudget_l1: {
@@ -213,7 +215,7 @@ export const pbudget: MissionModule = {
           choices: [{ text: '(Write it down. Don\'t ask to see the spreadsheet. Yet.)', effects: { flags: { pbudget_luco: true }, toast: 'IDEA · FIELD LIGHTS' } }],
         },
         pbudget_l2: {
-          speaker: 'luco', text: 'You brought a deck to a one-on-one? Bold. Wrong, but bold. Field lights. Put that in your deck.',
+          speaker: 'luco', text: 'You brought three ideas to a one-on-one? Bold. Wrong, but bold. Now I\'m just reacting to yours. ...Field lights. Put that in your list.',
           choices: [{ text: '(Add a slide.)', effects: { flags: { pbudget_luco: true } } }],
         },
         pbudget_kidwait: { speaker: 'luco', text: 'I texted the tournament captains about the idea session. Every captain brings two players. That\'s math, and math is organizing.' },

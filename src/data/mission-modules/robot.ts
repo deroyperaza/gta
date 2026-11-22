@@ -194,26 +194,27 @@ export const robot: MissionModule = {
           speaker: 'skye', text: 'Hiii besties, 412K live! I have a REAL activist and thirty seconds. Go go go!',
           choices: [
             { text: 'Meet Yara. Six years delivering in Downtown Brooklyn. Rejected for dispatch by a robot in four seconds.', tag: 'ONE PERSON', next: 'robot_s1', effects: { inc: { robot_score: 1 }, flags: { robot_person: true } } },
-            { text: 'Algorithmic hiring systems can exhibit disparate impact across protected categories, per the literature...', next: 'robot_s2' },
-            { text: 'AI is evil. Everybody smash your phones.', next: 'robot_s3' },
+            { text: 'Meet HireBot. It reads a résumé in four seconds and never says why. Here\'s how it works.', next: 'robot_s2' },
+            { text: 'Picture yourself. You apply for your dream job, and a robot says no in four seconds. It could be any of you.', next: 'robot_s3' },
           ],
         },
         robot_s1: {
           speaker: 'skye', text: 'Omg. Four SECONDS? Chat is typing "same" a lot. Keep going!',
           choices: [
             { text: 'She just wants to know why. Nobody can tell her. Not the company. Not even the robot.', tag: 'ONE STAKE', next: 'robot_s4', effects: { inc: { robot_score: 1 }, flags: { robot_stake: true } } },
-            { text: 'It\'s about the future of work, generally, in a broad sense.', next: 'robot_s4' },
+            { text: 'And it\'s not just her. This is happening in every industry, to all kinds of people, everywhere.', next: 'robot_s4' },
+            { text: 'She\'s angry, and so am I. Robots shouldn\'t be allowed to hire anybody, ever.', next: 'robot_s4' },
           ],
         },
-        robot_s2: { speaker: 'skye', text: 'Chat says "huh." Chat says "is this a podcast." Somebody just asked for a face. Do you have a face? A person?', next: 'robot_s1' },
-        robot_s3: { speaker: 'skye', text: 'On my phone? LIVE? Bestie. ...Okay, chat is mad. Give me a person. Who\'s the person?', next: 'robot_s1' },
+        robot_s2: { speaker: 'skye', text: 'Chat says "huh." Chat says "is this a podcast." Nobody rallies for software, bestie. Who did the robot say no to? Give me a person.', next: 'robot_s1' },
+        robot_s3: { speaker: 'skye', text: 'Chat is picturing... their lunch. "Any of you" is nobody, bestie. Who\'s the actual person?', next: 'robot_s1' },
         robot_s4: { speaker: 'tyler', text: '*A comment floats up: "tyler_luxe: HireBot isn\'t biased, it\'s PRE-OPTIMIZED. Love this convo!!"* *Skye reads it out loud. Then looks at you.*', next: 'robot_s5' },
         robot_s5: {
           speaker: 'skye', text: 'Okay, so what do we DO? Give chat one thing.',
           choices: [
-            { text: 'Synergetix: NYC\'s Local Law 144 says post your yearly independent bias audit and tell candidates before the robot reads them. Yara is filing with the city.', tag: 'ONE ASK', next: 'robot_s6', effects: { inc: { robot_score: 2 }, flags: { robot_ask: true } } },
-            { text: 'Everybody boycott computers. Forever. Starting now.', next: 'robot_s6' },
-            { text: 'Like and subscribe?', next: 'robot_s6' },
+            { text: 'Synergetix: Local Law 144 says post your yearly independent bias audit and tell candidates first. Yara is filing with the city.', tag: 'ONE ASK', next: 'robot_s6', effects: { inc: { robot_score: 2 }, flags: { robot_ask: true } } },
+            { text: 'Synergetix: Local Law 144 says post a bias audit every five years and tell candidates after. Yara is filing with the city.', next: 'robot_s6' },
+            { text: 'Synergetix: Local Law 144 says your robot has to explain every rejection. Yara wants hers by Friday.', next: 'robot_s6' },
           ],
         },
         robot_s6: {

@@ -69,7 +69,8 @@ export const bridge: MissionModule = {
       nodes: {
         bridge_start: { speaker: 'adaeze', text: 'You\'re the organizer everyone keeps mentioning. The fridge, the farm stand, the lot in Crown Heights. Come in. I have a proposition.', choices: [{ text: 'I\'m listening.', next: 'bridge_0', effects: { startMission: 'bridge' } }] },
         bridge_0: { speaker: 'adaeze', text: 'Brooklyn Org is Brooklyn\'s community foundation. Half of what we do is a bridge: people with money on one side, the groups doing the work on the other. Last year that bridge carried about nineteen and a half million dollars.', next: 'bridge_1' },
-        bridge_1: { speaker: 'adaeze', text: 'The other half is the part I love: we don\'t decide where our grants go. Neighbors do. Now, a donor named Sloane called us. Your doing, I hear.', next: 'bridge_2' },
+        bridge_1: { speaker: 'adaeze', text: 'The other half is the part I love: we don\'t decide where our grants go. Neighbors do. And we give the way the work needs it: about $45,000 a year, for three years, as general operating support. Rent, salaries, whatever keeps the lights on.', next: 'bridge_1b' },
+        bridge_1b: { speaker: 'adaeze', text: 'Every year we also give the Spark Prize: $100,000, no strings, to nonprofits advancing racial justice and equity. Residents pick those winners too. Now, a donor named Sloane called us. Your doing, I hear.', next: 'bridge_2' },
         bridge_2: {
           speaker: 'adaeze', text: 'Bring her on a listening tour. Brownsville, East New York, Crown Heights. She listens, she doesn\'t lead. Then come sit on our resident council.',
           choices: [{ text: 'Listening tour. Then the council.', effects: { rel: { adaeze: 4 }, flags: { bridge_accepted: true, bridge_score: 0, rode_car: false, ...RESET } } }],
@@ -79,30 +80,31 @@ export const bridge: MissionModule = {
         bridge_c1: {
           speaker: 'adaeze', text: 'First question, for the new council member. Who should decide which groups get funded?',
           choices: [
-            { text: 'This table. People who live in the neighborhoods decide where the money goes.', tag: 'BEST', next: 'bridge_c2', effects: { inc: { bridge_score: 1 } } },
-            { text: 'The biggest donor. It\'s their money.', next: 'bridge_c1x' },
-            { text: 'Whoever writes the best forty-page proposal.', next: 'bridge_c1x' },
+            { text: 'This table. The residents here pick the grantees.', tag: 'BEST', next: 'bridge_c2', effects: { inc: { bridge_score: 1 } } },
+            { text: 'You and the grants staff, Adaeze, after hearing from neighbors on the tour.', next: 'bridge_c1x' },
+            { text: 'Sloane, since her fund is matching, with this table advising her.', next: 'bridge_c1x' },
           ],
         },
         bridge_c1x: { speaker: 'adaeze', text: 'That\'s how most philanthropy works. It\'s why most philanthropy misses. Here, since 2021, residents pick the grantees. This table.', next: 'bridge_c2' },
         bridge_c2: {
-          speaker: 'adaeze', text: 'Second. The tenants association, the farm stand, the Neighbors Center. What kind of grant helps them most?',
+          speaker: 'adaeze', text: 'Second. The tenants association, the farm stand, the Neighbors Center: on the tour, every one of them said they can\'t plan past next year. What do we offer?',
           choices: [
-            { text: 'Multi-year general operating support. Three years they can count on, spent on whatever the work needs, rent and salaries included.', tag: 'BEST', next: 'bridge_c3', effects: { inc: { bridge_score: 1 } } },
-            { text: 'A one-time grant for a new pilot program with a ribbon-cutting.', next: 'bridge_c2x' },
-            { text: 'A gala in their honor.', next: 'bridge_c2x' },
+            { text: 'Three years of general operating support. They spend it on what the work needs, rent and salaries too.', tag: 'BEST', next: 'bridge_c3', effects: { inc: { bridge_score: 1 } } },
+            { text: 'A three-year grant, but only for a new program, so the money is easy to track.', next: 'bridge_c2x' },
+            { text: 'General operating support for one year, renewed if they show results.', next: 'bridge_c2x' },
           ],
         },
-        bridge_c2x: { speaker: 'darnell', text: 'Nobody pays rent with a ribbon. Give them three years they can count on, and trust them to spend it.', next: 'bridge_c3' },
+        bridge_c2x: { speaker: 'darnell', text: 'A program budget won\'t pay the light bill, and a one-year grant won\'t keep an organizer past June. Give them three years of general support, and trust them to spend it.', next: 'bridge_c3' },
         bridge_c3: {
-          speaker: 'adaeze', text: 'Last. Spark Prize nominations are open: $100,000, no strings, for groups advancing racial justice and equity. Residents choose. Who do you nominate, and why?',
+          speaker: 'adaeze', text: 'Last. Spark Prize nominations are open, and you just spent a week on the ground. Who do you nominate, and why?',
           choices: [
             { text: 'Ms. Celestine\'s Tenants & Eaters: they turned one onion into a grocery store fight.', tag: 'BEST', next: 'bridge_c4', effects: { inc: { bridge_score: 1 }, flags: { bridge_spark: 'celestine' } } },
             { text: 'Nadine\'s Neighbors Center: they turned a rumor into a garden.', tag: 'BEST', next: 'bridge_c4', effects: { inc: { bridge_score: 1 }, flags: { bridge_spark: 'nadine' } } },
-            { text: 'Myself, obviously.', next: 'bridge_c3x' },
+            { text: 'Nadine herself. She\'s the one who got two neighbors to sign one letter.', next: 'bridge_c3x' },
+            { text: 'Sloane\'s fund, so her match can flow back to the groups we toured.', next: 'bridge_c3x' },
           ],
         },
-        bridge_c3x: { speaker: 'adaeze', text: '*The whole table laughs. Kindly.* Nominate the work, not the worker. Try again next cycle.', next: 'bridge_c4' },
+        bridge_c3x: { speaker: 'adaeze', text: '*The whole table laughs. Kindly. Sloane laughs hardest.* The prize goes to nonprofits doing the work. Nominate the work, not the worker, and never the wallet. Try again next cycle.', next: 'bridge_c4' },
         bridge_c4: { speaker: 'sloane', text: '*From the back, Sloane raises her hand.* I came to give. I\'m leaving with a list of who to listen to. My fund will match whatever this table decides. Without conditions. I\'m learning.', next: 'bridge_end' },
         bridge_end: {
           speaker: 'adaeze', text: 'The council votes...',
@@ -119,7 +121,8 @@ export const bridge: MissionModule = {
       nodes: {
         bridge_s0: { speaker: 'sloane', text: 'Brooklyn Org says you\'re taking me on a tour. I made a list of questions. Forty-one questions. Is that too many?', choices: [
           { text: 'Bring zero. Ask them what they need, then mostly listen.', tag: 'BEST', next: 'bridge_s1', effects: { inc: { bridge_score: 1 } } },
-          { text: 'Bring all forty-one. Grill them.', next: 'bridge_s2' }] },
+          { text: 'Trim it to your best ten and ask those first, so each visit stays focused.', next: 'bridge_s2' },
+          { text: 'Send all forty-one ahead, so each group can prepare written answers.', next: 'bridge_s2' }] },
         bridge_s1: { speaker: 'sloane', text: 'Zero questions. Terrifying. Okay. I\'m leaving the list at home. Where first?', choices: [{ text: 'Brownsville. Then East New York. Then Crown Heights.', effects: { flags: { bridge_sloane: true } } }] },
         bridge_s2: { speaker: 'sloane', text: '*She reads question one out loud: "What is your theory of change?"* ...Ms. Celestine is going to eat me alive, isn\'t she. Fine. I\'ll mostly listen.', choices: [{ text: 'Let\'s go.', effects: { flags: { bridge_sloane: true } } }] },
         bridge_swait: { speaker: 'sloane', text: 'I\'m right behind you. Listening. Visibly listening.' },

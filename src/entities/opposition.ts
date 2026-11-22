@@ -29,14 +29,14 @@ const PATROL = 45, SEE = 300, GIVE_UP = 440, CATCH = 30;
 
 /** Talking points, each answered by something the cast actually teaches. */
 const DEBATES: { q: string; right: string; wrong: [string, string] }[] = [
-  { q: 'You can\'t protest without a permit, sweetheart. I checked. On Facebook.', right: 'On the sidewalk we can, as long as people can still get by.', wrong: ['Permits are a social construct.', 'My cousin is basically a lawyer.'] },
-  { q: 'Free lawyers for tenants? In THIS economy?', right: 'NYC\'s Right to Counsel covers eviction cases for tenants who qualify.', wrong: ['Lawyers are free if you\'re polite.', 'Rent is just a vibe.'] },
-  { q: 'People with records can\'t vote. Everybody knows that.', right: 'In New York, your vote comes back the day you leave prison.', wrong: ['Only on Tuesdays.', 'Voting is overrated anyway.'] },
-  { q: 'Kids don\'t get a say in how the city spends money.', right: 'The People\'s Money lets New Yorkers 11 and up vote on part of the budget.', wrong: ['Kids should run for mayor.', 'Money is fake.'] },
-  { q: 'Close a street to cars? For PEOPLE? What about my Buick?', right: 'Open Streets: groups apply to the city every fall. Your Buick will survive.', wrong: ['Cars are illegal now.', 'We\'ll just carry the Buick.'] },
-  { q: 'Block parties are basically illegal. Too much joy.', right: 'Block party permit: $25, apply at least 60 days ahead.', wrong: ['Joy is unregulated.', 'We don\'t need a permit, we have cake.'] },
-  { q: 'AI can\'t be biased. It\'s a computer. Computers love everybody.', right: 'NYC makes companies audit AI hiring tools for bias every year.', wrong: ['Computers are people too.', 'Just unplug it.'] },
-  { q: 'Museums are for rich people. Stay in your lane.', right: 'A library card gets you free Culture Pass museum passes.', wrong: ['Museums are just big closets.', 'I don\'t like art, it looks at me.'] },
+  { q: 'You can\'t protest without a permit, sweetheart. I checked. On Facebook.', right: 'On the sidewalk we can, as long as people can still get by.', wrong: ['In the street we can, as long as it stays peaceful.', 'With a megaphone we can, as long as we stay on the sidewalk.'] },
+  { q: 'Free lawyers for tenants? In THIS economy?', right: 'NYC\'s Right to Counsel covers eviction cases for tenants who qualify.', wrong: ['NYC\'s Right to Counsel covers every tenant, any income, in any kind of case.', 'NYC\'s Right to Counsel kicks in after you lose your first Housing Court date.'] },
+  { q: 'People with records can\'t vote. Everybody knows that.', right: 'In New York, your vote comes back the day you leave prison.', wrong: ['In New York, your vote comes back once you finish parole.', 'In New York, your vote comes back on its own. No need to register again.'] },
+  { q: 'Kids don\'t get a say in how the city spends money.', right: 'The People\'s Money lets New Yorkers 11 and up vote on part of the budget.', wrong: ['The People\'s Money lets citizens 18 and up vote on part of the budget.', 'The People\'s Money lets New Yorkers 11 and up vote on the whole city budget.'] },
+  { q: 'Close a street to cars? For PEOPLE? What about my Buick?', right: 'Open Streets: community groups apply to DOT, the city\'s transportation department.', wrong: ['Open Streets: community groups apply to the Parks Department.', 'Open Streets: any neighbor can close their block whenever. No application.'] },
+  { q: 'Block parties are basically illegal. Too much joy.', right: 'Block party permit: $25, apply at least 60 days ahead.', wrong: ['Block party permit: $25, apply at least 10 days ahead.', 'Block party permit: free, as long as your community board signs off.'] },
+  { q: 'AI can\'t be biased. It\'s a computer. Computers love everybody.', right: 'NYC makes companies audit AI hiring tools for bias every year.', wrong: ['NYC makes companies audit AI hiring tools once, when they first start using them.', 'NYC makes companies audit AI hiring tools, but the results stay private.'] },
+  { q: 'Museums are for rich people. Stay in your lane.', right: 'A library card gets you free Culture Pass museum passes.', wrong: ['A MetroCard gets you free Culture Pass museum passes.', 'An IDNYC card gets you Culture Pass. A library card doesn\'t count.'] },
 ];
 const TAUNTS = ['JUST ONE QUICK QUESTION!', 'HAVE YOU CONSIDERED THE PARKING?', 'BACK IN MY DAY WE DIDN\'T HAVE NEIGHBORS!', 'THIS IS A DEBATE NOW!', 'WHO\'S PAYING FOR THIS?', 'I\'M JUST ASKING QUESTIONS!'];
 
@@ -220,7 +220,7 @@ export class Opposition {
       nodes: {
         q: { speaker: 'Chip, Free Parking Caucus', text: d.q, choices: opts },
         won: { speaker: 'Chip, Free Parking Caucus', text: Phaser.Utils.Array.GetRandom(['...I\'m going to need to see a source. Oh. That IS a source. We\'ll be in the car.', 'Hm. Well. This was a productive dialogue and I am leaving now.', 'Agree to disagree. Except you\'re right. Bye.']) },
-        lost: { speaker: 'Chip, Free Parking Caucus', text: 'HA. Gotcha. Now, about the parking. This will take forty minutes. Sit.' },
+        lost: { speaker: 'Chip, Free Parking Caucus', text: `HA. Gotcha. (Somebody behind you mutters: "${d.right}") Didn't hear that. Now, about the parking. This will take forty minutes. Sit.` },
       },
     };
   }
