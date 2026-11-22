@@ -476,3 +476,8 @@ button, a, .pa, .ch-item, #touch-btns button, #hud-buttons button { touch-action
 /* Subway: which way each station is from you, and which way the train is heading */
 .ch-item .dir { display: inline-block; min-width: 3.4em; font-weight: 900; color: var(--ink); background: #ffe36b; border-radius: 6px; padding: 0 5px; margin-right: 4px; text-align: center; }
 .ride-dir { display: inline-block; margin-left: 8px; padding: 1px 8px; border-radius: 6px; background: #ffe36b; color: #16101f; letter-spacing: 1px; }
+/* Map key: diamonds are people, circles are subway stops */
+.map-key { display: flex; flex-wrap: wrap; gap: 6px 14px; justify-content: center; margin-top: 10px; font: 700 13px var(--body); color: var(--ink); }
+.map-key span { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+.map-key svg { width: 16px; height: 16px; flex: none; }
+@media (max-width: 600px) { .map-key { font-size: 12px; gap: 4px 10px; } }

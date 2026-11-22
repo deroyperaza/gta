@@ -597,8 +597,11 @@ class UI {
       const p = w.entityPos[n.id]; if (!p) continue;
       const x = (p.x / TILE) * s, y = (p.y / TILE) * s;
       const met = n.id in state.d.relationships;
-      c.beginPath(); c.arc(x, y, targets.has(n.id) ? 9 : 6, 0, 7); c.fillStyle = targets.has(n.id) ? '#ffd23f' : n.color; c.fill(); c.lineWidth = 2.5; c.strokeStyle = '#16101f'; c.stroke();
-      if (met || targets.has(n.id)) { c.lineWidth = 4; c.strokeText(n.short, x, y - 12); c.fillStyle = '#fff'; c.fillText(n.short, x, y - 12); }
+      // People are little diamonds, so they never read as subway stops (round): teal for nonprofit staffers, yellow for your objective
+      const r = targets.has(n.id) ? 20 : 14; // big enough to read as a diamond on a phone
+      c.beginPath(); c.moveTo(x, y - r); c.lineTo(x + r, y); c.lineTo(x, y + r); c.lineTo(x - r, y); c.closePath();
+      c.fillStyle = targets.has(n.id) ? '#ffd23f' : (n as any).npOrg ? '#2fd1c5' : n.color; c.fill(); c.lineWidth = 3.5; c.strokeStyle = '#16101f'; c.stroke();
+      if (met || targets.has(n.id)) { c.lineWidth = 4; c.strokeText(n.short, x, y - r - 4); c.fillStyle = '#fff'; c.fillText(n.short, x, y - r - 4); }
     }
     const fp = w.entityPos.fridge;
     if (fp) { const x = (fp.x / TILE) * s, y = (fp.y / TILE) * s; c.fillStyle = targets.has('fridge') ? '#ffd23f' : '#fff'; c.fillRect(x - 6, y - 8, 12, 16); c.strokeRect(x - 6, y - 8, 12, 16); }
