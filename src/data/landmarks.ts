@@ -7,11 +7,11 @@ export interface PaintedLandmark { id: string; name: string; at: [number, number
 
 export const PAINTED: PaintedLandmark[] = [
   // Coney Island
-  { id: 'cyclone', name: 'THE CYCLONE', at: [40.57417, -73.97778], file: 'cyclone', fact: 'SINCE 1927 THIS WOODEN COASTER HAS DROPPED RIDERS 85 FEET AT ABOUT 60 MPH. AN OFFICIAL NYC LANDMARK.', ready: false },
-  { id: 'lunapark', name: 'LUNA PARK', at: [40.57397, -73.97848], file: 'lunapark', fact: 'NAMED FOR A 1903 CONEY PARK THAT GLOWED AT NIGHT WITH ABOUT 250,000 LIGHT BULBS.', ready: false },
-  { id: 'wonderwheel', name: "DENO'S WONDER WHEEL", at: [40.57403, -73.97914], file: 'wonderwheel', fact: 'TURNING SINCE 1920: 16 OF ITS 24 CARS SLIDE ALONG CURVED TRACKS AS THE WHEEL SPINS.', ready: false },
-  { id: 'ballpark', name: 'MAIMONIDES PARK', at: [40.57444, -73.98417], file: 'ballpark', fact: 'HOME OF THE BROOKLYN CYCLONES, BUILT WHERE STEEPLECHASE PARK ONCE STOOD.', ready: false },
-  { id: 'aquarium', name: 'NEW YORK AQUARIUM', at: [40.57429, -73.97512], file: 'aquarium', fact: 'OPENED IN 1896, MOVED TO CONEY IN 1957: THE OLDEST AQUARIUM STILL RUNNING IN THE US.', ready: false },
+  { id: 'cyclone', name: 'THE CYCLONE', at: [40.57417, -73.97778], file: 'cyclone', fact: 'SINCE 1927 THIS WOODEN COASTER HAS DROPPED RIDERS 85 FEET AT ABOUT 60 MPH. AN OFFICIAL NYC LANDMARK.', scale: 0.42, ready: true },
+  { id: 'lunapark', name: 'LUNA PARK', at: [40.57397, -73.97848], file: 'lunapark', fact: 'NAMED FOR A 1903 CONEY PARK THAT GLOWED AT NIGHT WITH ABOUT 250,000 LIGHT BULBS.', scale: 0.72, ready: true },
+  { id: 'wonderwheel', name: "DENO'S WONDER WHEEL", at: [40.57403, -73.97914], file: 'wonderwheel', fact: 'TURNING SINCE 1920: 16 OF ITS 24 CARS SLIDE ALONG CURVED TRACKS AS THE WHEEL SPINS.', scale: 0.75, ready: true },
+  { id: 'ballpark', name: 'MAIMONIDES PARK', at: [40.57444, -73.98417], file: 'ballpark', fact: 'HOME OF THE BROOKLYN CYCLONES, BUILT WHERE STEEPLECHASE PARK ONCE STOOD.', scale: 0.72, ready: true },
+  { id: 'aquarium', name: 'NEW YORK AQUARIUM', at: [40.57429, -73.97512], file: 'aquarium', fact: 'OPENED IN 1896, MOVED TO CONEY IN 1957: THE OLDEST AQUARIUM STILL RUNNING IN THE US.', scale: 0.85, ready: true },
   // The empty parts of the map
   { id: 'verrazzano', name: 'VERRAZZANO-NARROWS BRIDGE', at: [40.6086, -74.0385], file: 'verrazzano', fact: 'ITS TOWERS ARE 1⅝ INCHES FARTHER APART AT THE TOP THAN THE BOTTOM, BECAUSE THE EARTH CURVES.', ready: false },
   { id: 'dyker', name: 'DYKER HEIGHTS LIGHTS', at: [40.6215, -74.0130], file: 'dyker', fact: 'SINCE THE MID-1980S, NEIGHBORS HAVE COVERED THEIR HOMES IN HOLIDAY LIGHTS. SOME HIRE PROS!', ready: false },

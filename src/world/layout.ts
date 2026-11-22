@@ -651,19 +651,21 @@ export function generateLayout(): WorldLayout {
     if (built) { labels.push({ text: name, x: px(xs - 6), y: px(y0 + 2) + 16 }); spots[`pier${i + 1}`] = { x: px(xs - 6), y: px(y0 + 2) + 16 }; }
   });
   // Painted landmarks placed by real coordinates (src/data/landmarks.ts): open ground near the spot, clear of buildings
+  const placedLm: { x: number; y: number }[] = []; // keep painted landmarks apart (Coney's five share a couple of blocks)
   for (const [key, [la, ln]] of Object.entries(PAINTED_AT)) {
     const g = geo(la, ln), cx = Math.floor(g.x), cy = Math.floor(g.y);
     const OPEN = new Set<number>([T.GRASS, T.PLAZA, T.YARD, T.LOT, T.SAND, T.SIDEWALK, T.CURB, T.COURT]);
     let best: Spot | null = null, bd = Infinity;
-    for (let dy = -20; dy <= 20; dy++) for (let dx = -20; dx <= 20; dx++) {
+    for (let dy = -28; dy <= 28; dy++) for (let dx = -28; dx <= 28; dx++) {
       const x = cx + dx, y = cy + dy, k = tiles[y]?.[x];
       if (k === undefined || !OPEN.has(k) || blocked[y][x]) continue;
       let crowd = 0;
       for (let oy = -3; oy <= 3; oy++) for (let ox = -3; ox <= 3; ox++) if (blocked[y + oy]?.[x + ox]) crowd++;
+      if (placedLm.some((p) => Math.hypot(p.x - x, p.y - y) < 9)) continue;
       const d = Math.hypot(dx, dy) + crowd * 2 + (spotTaken(x, y) ? 50 : 0);
       if (d < bd) { bd = d; best = { x: px(x) + 16, y: px(y) + 16 }; }
     }
-    if (best) spots[key] = best;
+    if (best) { spots[key] = best; placedLm.push({ x: Math.floor(best.x / TILE), y: Math.floor(best.y / TILE) }); }
   }
   // Green-Wood's ghosts (src/data/ghosts.ts) drift on the cemetery's grass and paths, never out on the sidewalk
   for (const [key, [la, ln]] of Object.entries(GHOST_AT)) {
@@ -677,13 +679,17 @@ export function generateLayout(): WorldLayout {
     if (best) spots[key] = best;
   }
   // Neighbors (src/data/neighbors.ts) stand on the nearest open sidewalk to where they really live
+  // The coarse grid can round a real corner into the next neighborhood; these must land in their own
+  const PIN: Record<string, string> = { gh_jackie: 'Crown Heights', cm_jayz: 'Bedford-Stuyvesant', cm_yasiinbey: 'Bedford-Stuyvesant', cm_chrisrock: 'Bedford-Stuyvesant', cm_rosieperez: 'Bushwick' };
   for (const [key, [la, ln]] of Object.entries({ ...NEIGHBOR_AT, ...VILLAIN_AT, ...STREET_GHOST_AT, ...CAMEO_AT })) { // villains have lairs on real corners too
     const g = geo(la, ln), cx = Math.floor(g.x), cy = Math.floor(g.y);
     let best: Spot | null = null, bd = Infinity;
-    for (let dy = -12; dy <= 12; dy++) for (let dx = -12; dx <= 12; dx++) {
+    const R = PIN[key] ? 30 : 12;
+    for (let dy = -R; dy <= R; dy++) for (let dx = -R; dx <= R; dx++) {
       const x = cx + dx, y = cy + dy;
       const k = tiles[y]?.[x];
       if ((k !== T.SIDEWALK && k !== T.PLAZA && k !== T.SAND) || blocked[y][x] || spotTaken(x, y)) continue;
+      if (PIN[key] && neighborhoodOfBlock(Math.floor(x / BLOCK_W), Math.floor(y / BLOCK_H)) !== PIN[key]) continue;
       const d = dx * dx + dy * dy + (k === T.SIDEWALK ? 0 : 60); // the boardwalk if there's no sidewalk (Brighton Beach)
       if (d < bd) { bd = d; best = { x: px(x) + 16, y: px(y) + 16 }; }
     }

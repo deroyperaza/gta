@@ -430,14 +430,21 @@ export class WorldScene extends Phaser.Scene {
       const key = `npc-${n.id}`;
       this.anims.create({ key: `${key}-idle`, frames: this.anims.generateFrameNumbers(key, { frames: [0] }), frameRate: 1, repeat: -1 });
       const spr = this.add.sprite(s.x, s.y, key, 0).setOrigin(0.5, 0.5).setDepth(s.y).setRotation(Math.PI);
-      if ((n as any).ghost) { // Green-Wood's famous residents: translucent, cool-toned, drifting
-        spr.setAlpha(0.6).setTint(0xbfd8ff);
-        this.tweens.add({ targets: spr, y: s.y - 6, alpha: 0.4, duration: 1800 + Math.random() * 600, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
+      const ghost = !!(n as any).ghost;
+      if (ghost) { // ghosts: a pulsing pale-blue aura, a wisp where feet would be, a translucent drifting body
+        const glow = this.add.circle(s.x, s.y, 30, 0xcfe8ff, 0.3).setBlendMode(Phaser.BlendModes.ADD).setDepth(s.y - 1);
+        const wisp = this.add.ellipse(s.x, s.y + 20, 30, 10, 0xdff0ff, 0.45).setDepth(s.y - 1);
+        spr.setTint(0xeaf4ff).setAlpha(0.8).setScale(1.12).setBlendMode(Phaser.BlendModes.SCREEN);
+        const t = 1700 + Math.random() * 700;
+        this.tweens.add({ targets: spr, y: s.y - 7, alpha: 0.55, duration: t, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
+        this.tweens.add({ targets: glow, scale: 1.3, alpha: 0.12, y: s.y - 7, duration: t, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
+        this.tweens.add({ targets: wisp, scaleX: 0.6, alpha: 0.15, duration: t, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
+        this.miniIgnore.push(glow, wisp);
       }
       spr.play({ key: `${key}-idle` });
       const blocker = solids.create(s.x, s.y - 8, undefined) as Phaser.Physics.Arcade.Image;
       blocker.setVisible(false); (blocker.body as Phaser.Physics.Arcade.StaticBody).setSize(22, 14);
-      const tag = this.add.text(s.x, s.y - 40, n.short.toUpperCase(), { fontFamily: 'Nunito, "Helvetica Neue", Arial, sans-serif', fontSize: '15px', fontStyle: '900', color: '#16101f', backgroundColor: n.color, padding: { x: 7, y: 3 }, shadow: { offsetX: 2, offsetY: 2, color: '#16101f', blur: 0, fill: false, stroke: false } }).setOrigin(0.5).setDepth(1e5);
+      const tag = this.add.text(s.x, s.y - 40, ghost ? `👻 ${n.short.toUpperCase()}` : n.short.toUpperCase(), { fontFamily: 'Nunito, "Helvetica Neue", Arial, sans-serif', fontSize: '15px', fontStyle: '900', color: ghost ? '#2a3a5a' : '#16101f', backgroundColor: ghost ? '#dfeeff' : n.color, padding: { x: 7, y: 3 }, shadow: { offsetX: 2, offsetY: 2, color: '#16101f', blur: 0, fill: false, stroke: false } }).setOrigin(0.5).setDepth(1e5);
       this.miniIgnore.push(tag, spr);
       this.npcSprites[n.id] = spr;
       this.entityPos[n.id] = s;

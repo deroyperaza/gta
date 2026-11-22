@@ -25,6 +25,13 @@ function mediation(o: {
   offer: string; dialogue: MissionModule['dialogue'];
 }): MissionModule {
   const id = o.id;
+  // Before the first conversation: the method, in case the player hasn't met Nadine yet (Mission 16)
+  const nodes = o.dialogue[o.a]?.nodes, offer = nodes?.[`${id}_offer`];
+  const go = offer?.choices?.find((c) => c.next === `${id}_a0`);
+  if (nodes && go) {
+    go.next = `${id}_tip`;
+    nodes[`${id}_tip`] = { speaker: 'you', text: '*The method, from the volunteer mediators at the Neighbors Center: hear each side alone first. Say back what you heard. Ask what they need, not who they\'re against. Then put them in one room and write it down.*', next: `${id}_a0` };
+  }
   return {
     mission: {
       id, number: 100, title: o.title, district: o.district, giver: o.a, side: true, tagline: o.tagline,

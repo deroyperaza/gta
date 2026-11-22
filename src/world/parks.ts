@@ -154,7 +154,7 @@ export function drawParks(scene: Phaser.Scene, L: WorldLayout, ignore: Phaser.Ga
     const img = scene.add.image(sp.x, sp.y + 20, `lmk-${lm.id}`).setOrigin(0.5, 0.85).setScale(lm.scale ?? 1).setDepth(sp.y + 20);
     ignore.push(img);
     label(sp.x, sp.y - img.displayHeight * 0.85 - 6, lm.name);
-    out.push({ id: `lmk_${lm.id}`, x: sp.x, y: sp.y + 30, r: 110, label: () => `Look at ${lm.name.toLowerCase().replace(/\b\w/g, (m) => m.toUpperCase())}`, act: () => bus.emit('ui:toast', lm.fact) });
+    out.push({ id: `lmk_${lm.id}`, x: sp.x, y: sp.y + 30, r: 110, label: () => `Look at ${lm.name.toLowerCase().replace(/(^|[\s-])\w/g, (m) => m.toUpperCase())}`, act: () => bus.emit('ui:toast', lm.fact) });
   }
 
   // ------------------------------------------------------------------ BROOKLYN COLLEGE: the East Quad, La Guardia Hall's clock tower

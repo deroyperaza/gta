@@ -413,6 +413,7 @@ class UI {
     $('#dlg-name').textContent = name;
     $('#dlg-title').textContent = npc ? npc.title : '';
     $<HTMLElement>('#dlg-name').style.background = npc?.color ?? '#ff4fa3';
+    $('#dlg-portrait').classList.toggle('ghost', !!(npc as any)?.ghost); // ghosts look like ghosts here too
     this.drawPortrait(npc ? `npc-${npc.id}` : d.speaker === 'Doña Rosa' ? 'vendor-rosa' : d.speaker === 'Hamid' ? 'vendor-hamid' : d.owner === 'cat' ? 'cat' : d.owner === 'fridge' ? 'fridge-full' : d.owner === 'gop' ? 'gop0' : 'player');
     const rel = npc ? state.rel(npc.id) : null;
     $('#dlg-rel').innerHTML = rel != null ? `<span>RELATIONSHIP</span><div class="rt"><i style="width:${(rel + 100) / 2}%"></i></div>` : '';

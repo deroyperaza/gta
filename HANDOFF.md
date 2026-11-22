@@ -16,34 +16,39 @@ An open-world satirical organizing game you play in the browser. It has Grand Th
 
 The zip leaves out `node_modules/` and `dist/`. `npm install` and `npm run build` recreate them. It also leaves out `style-study/`, the folder of art-direction mood boards and portrait drafts. Those are in the repo if you want them.
 
-## 2. Where things stand
-**Done and live**
-- **The map is real Brooklyn.**
-  - It's built from NYC's official neighborhood boundaries and has all 58 neighborhoods. Their parks, the East River, Newtown Creek, Jamaica Bay and the ocean are all there.
-  - Manhattan and Queens show as rooftops across the water.
-  - The dense core (Downtown, Fort Greene, Park Slope, Prospect Heights, Crown Heights, Bed-Stuy) uses smaller blocks, so landmarks fit near their real spots.
-  - A banner shows each neighborhood's name as you walk in. The big map (M) labels all of them.
-- **Painted landmarks:** the Brooklyn Bridge tower, BAM, Barclays, Borough Hall, the Williamsburgh Savings Bank, Grand Army Plaza, the Central Library, the Brooklyn Museum, Kings Theatre and the Coney Island Parachute Jump. They were painted with ChatGPT from satellite views and photos, then cut out. They live in `public/sprites/`.
-- **13 missions**, each on a different civic need: mutual aid, organizing, tenants' rights, community boards, re-entry, participatory budgeting, disability access, street safety, gig work, culture, heat waves and block parties. All 13 can be played start to finish.
-- **The cast:** characters based on real friends, each with a portrait, a movie-style title and a civic lesson from their real work. You're in it, as the charity soccer tournament organizer. See [docs/CAST.md](docs/CAST.md).
-- **Living streets:** about 770 buildings, pedestrians, traffic that stays on real streets, bike docks and vendors.
-- **On phones:** a joystick, tap-to-talk, and mission cards that fold away with a tap.
+## 2. Where things stand (Nov 22, 2026)
+**The world**
+- The map is real Brooklyn: all 58 neighborhoods from NYC's official boundaries, the parks, the water, brownstone rows where Brooklyn has brownstones, and crowds of people that gather wherever you are.
+- **Transit:** all 156 subway stations (MTA data) with a route planner, five real bus routes, illegal dollar vans on Flatbush, and parody ride apps (Surge, Shlep, Ever-Ready Car Service) that cost Solidarity.
+- **Traffic** includes police cars and ambulances, some on calls with flashing lights.
+- **Painted landmarks** (ChatGPT, keyed): Barclays, Borough Hall, the Library, the Museum, Grand Army Plaza, BAM, the Savings Bank, the Brooklyn Bridge tower, the Lena Horne Bandshell, Green-Wood's gate, Jane's Carousel, the Botanic Garden conservatory, Brooklyn College, and Coney Island (Cyclone, Luna Park, Wonder Wheel, Maimonides Park, Aquarium). More are being painted.
+- **Fields and courts:** LIU's and Brooklyn College's soccer fields, real basketball court markings.
+
+**What you do**
+- **17 main missions** on real civic needs (mutual aid, tenants, transit, food access, mediation, Brooklyn Org's grantmaking...), plus 4 **mediation calls** you pick up from neighbors.
+- **Difficulty** ramps: Attention is a 0–5 star wanted level; the Free Parking Caucus chases harder, undoes your work from Mission 7, and weak results cost Trust.
+- **Conversations test what you learned:** wrong answers are plausible near-misses, and the **Pocket Civics notebook** (journal) keeps every lesson.
+- **Six villains** with lairs (Baron Von Rent, Captain Red Tape, The Rumor Mill, Count Carbon, The Data Broker, the Ghost of Al Capone): beat them with what you learned.
+- **Ghosts** (translucent, glowing): Green-Wood's residents (Tweed, Greeley, Bernstein, Basquiat, Tiffany, McKinney Steward, Ebbets, Chadwick, Beecher, Clinton, Morse) and Brooklyn's own (Jackie Robinson, Walt Whitman, Shirley Chisholm, Lena Horne, The Notorious B.I.G., Ruth Bader Ginsburg, Adam Yauch).
+- **Living icons as cameos**, facts only: they speak only their own verified, non-lyric words (Spike Lee, Carmelo Anthony, Rosie Perez, Yasiin Bey, Chris Rock, Barbra Streisand, Jay-Z, Bernie Sanders, Mel Brooks).
+- **Naim's dragon:** answer his question right and fly for 30 seconds.
+- **Brooklyn Org** appears as the convener in Mission 17, and every mission's results name the real Brooklyn Org grantees doing that work.
 
 **Known rough spots**
-- Most of the new neighborhoods borrow the look and chatter of the old district they belong to. For example, Bay Ridge looks like Sunset Park, and many neighborhoods have no one-liner in their banner yet.
-- A few labels overlap on the big map in the dense core.
-- It hasn't been tested much on real phones.
+- Not played start to finish by hand; many systems were tested with scripts.
+- Some newer neighborhoods still borrow their district's look and street chatter.
 
 ## 3. What's next (pick any)
-1. **Transit.** Add subway stations you can enter and ride between, buses, and the Flatbush Ave dollar vans ("pirate buses"). Deroy's note: the dollar vans should be the illegal kind, unlicensed and cash only.
-2. **Rides.** Add parody versions of Uber, Lyft and the old-school neighborhood car services, all with funny made-up names. No real company names or logos.
-3. **Neighborhood character, in phases.**
-   1. North Brooklyn: Greenpoint, Williamsburg, DUMBO, Fort Greene.
-   2. Central and East Brooklyn.
-   3. South Brooklyn.
+1. **Three Brooklyn Org missions** in progress: older adults, environmental justice, racial justice.
+2. **More painted landmarks:** the Verrazzano, Dyker Heights lights, Domino, McCarren Pool, Sheepshead Bay, Canarsie Pier, Floyd Bennett Field, the Army Terminal, Weeksville, the Prison Ship Martyrs' Monument, the Navy Yard, Erasmus Hall (references and facts are in `docs/FACTS-landmarks-jackie-whitman.md`).
+3. **An election arc:** a City Council race where everything you've built counts on election day.
+4. **Neighborhood character:** each neighborhood its own buildings, chatter and one-line blurb.
 
-   Each neighborhood needs its own building look, street chatter, a one-line blurb and maybe a landmark.
-4. **Pocket Civics journal.** Lessons pop up as toasts but don't collect anywhere yet. Add a journal page that collects every lesson the player earns.
+## House rules (read before adding content)
+- **Facts are sourced.** Every civic fact in the game has a source in a file's header or in `docs/FACTS-*.md`. Don't add a claim you can't source.
+- **Landmarks are painted in ChatGPT**, never drawn in code (pipeline: satellite + Google 3D + street photo references, magenta background, keyed with a script; check each render against the references).
+- **Real people:** ghosts and cameos say only verified, non-lyric words; no song lyrics anywhere. Living people get no invented opinions.
+- **Parody names for brands.** First names only for real friends in the cast.
 
 ## 4. Code map
 ```
@@ -56,7 +61,11 @@ src/world/    layout.ts (map, blocks, landmarks, avenues), brooklynGrid.ts (GENE
 src/entities/ traffic.ts, pedestrians.ts
 src/scenes/   WorldScene.ts (Phaser world, player, interactions, painted landmarks)
 src/ui/       ui.ts + style.css (HUD, dialogue, journal, map, menus)
-tools/        build-grid.py (rebuilds brooklynGrid.ts from NYC Open Data neighborhood GeoJSON)
+tools/        build-grid.py (rebuilds brooklynGrid.ts from NYC Open Data neighborhood GeoJSON), build-transit.py (subway stations)
+src/data/     neighbors.ts, ghosts.ts, villains.ts, cameos.ts (people on the street), landmarks.ts (painted landmarks by coordinates),
+              lessons.ts (Pocket Civics notebook), grantees.ts (Brooklyn Org grantees per mission)
+src/entities/ transit.ts (subway, buses, vans, ride apps), opposition.ts (the Caucus, wreckers)
+src/world/    parks.ts (parks, fields, placed landmarks)
 ```
 - **Adding a mission:** copy a file in `src/data/mission-modules/` and add it to `index.ts`. A mission is a list of stages. A target written `spot:<name>` means "walk here". Every named building has an `lm_<id>` spot at its front door.
 - **Effects and conditions:** every dialogue choice, pickup and reward goes through `state.apply()`, and content is gated with `state.test()`.
@@ -66,11 +75,6 @@ tools/        build-grid.py (rebuilds brooklynGrid.ts from NYC Open Data neighbo
 ## 5. Publishing
 Pushing to `main` on `deroyperaza/gta` builds and deploys the site automatically in about a minute (`.github/workflows/pages.yml`). Ask Deroy for access to the repo, or send changes as a pull request. To confirm a deploy went through, the `assets/index-*.js` filename on the live site should match the one in your `dist/assets/`.
 
-## 6. House rules
-- Use first names only for real people in the game and the repo.
-- Real people's photos never go in the repo. Only the painted portraits do.
-- Parody names for brands. No real logos.
-
-## 7. Working with Claude Code (optional)
+## 6. Working with Claude Code (optional)
 Open this folder in Claude Code and start with something like:
 > Read HANDOFF.md and docs/CAST.md. Add subway stations on real Brooklyn geography that the player can enter and ride between.
