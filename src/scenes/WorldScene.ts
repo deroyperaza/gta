@@ -83,6 +83,10 @@ export class WorldScene extends Phaser.Scene {
   preload() {
     // Hand-painted likeness portraits (style-study/portraits.html) win over the generated busts.
     for (const id of ['deroy', 'jenna', 'nell', 'bridgette', 'adrian', 'danae', 'jon', 'emily', 'naim', 'luco', 'vega']) this.load.image(`npc-${id}-bust`, `portraits/${id}.jpg`);
+    // Ghosts (in period dress) and famous Brooklynites: painted in ChatGPT, Nov 22 2026
+    for (const id of ['capone', 'tweed', 'greeley', 'bernstein', 'basquiat', 'tiffany', 'jackie', 'whitman', 'mckinney', 'ebbets', 'chadwick', 'beecher', 'clinton', 'morse', 'chisholm', 'lenahorne', 'biggie', 'rbg', 'yauch',
+      'spikelee', 'carmelo', 'rosieperez', 'yasiinbey', 'chrisrock', 'streisand', 'jayz', 'bernie', 'melbrooks']) this.load.image(`npc-${id}-bust`, `portraits/${id}.jpg`);
+    this.load.image('lmk-liu', 'sprites/liu.png'); // LIU Brooklyn: the Paramount corner and the field, painted in ChatGPT
     this.load.image('barclays-sprite', 'sprites/barclays.png');
     this.load.image('bridge-tower-art', 'sprites/bridgetower.png');
     this.load.image('dragon-art', 'sprites/dragon.png'); // Naim's dragon, painted in ChatGPT
@@ -326,7 +330,7 @@ export class WorldScene extends Phaser.Scene {
     }
     this.drawCourts();
     this.drawRunways();
-    this.drawField('liufield', false, 'LIU\'S FIELD BELONGS TO THE UNIVERSITY: ASK LIU. A CITY PARK FIELD? BOOK IT WITH AN NYC PARKS PERMIT, $25 TO PROCESS. (LUCO SAYS HI.)');
+    this.paintedLiu() || this.drawField('liufield', false, 'LIU\'S FIELD BELONGS TO THE UNIVERSITY: ASK LIU. A CITY PARK FIELD? BOOK IT WITH AN NYC PARKS PERMIT, $25 TO PROCESS. (LUCO SAYS HI.)');
     this.drawField('bcfield', true, 'BROOKLYN COLLEGE\'S FIELD: THE COLLEGE BOOKS IT, NOT THE CITY. CITY FIELDS TAKE AN NYC PARKS PERMIT, $25 TO PROCESS.');
     // Grand Army Plaza: the traffic circle and its painted island (arch + Bailey Fountain)
     {
@@ -803,6 +807,16 @@ export class WorldScene extends Phaser.Scene {
     }
     const c = geo(40.5935, -73.8925);
     this.interactables.push({ id: 'floydbennett_rwy', x: c.x * TILE, y: c.y * TILE, r: 160, label: () => 'Look at the runways', act: () => bus.emit('ui:toast', 'FLOYD BENNETT FIELD, NYC\'S FIRST CITY AIRPORT (1931). FOUR OLD RUNWAYS STILL CROSS THE FIELD.') });
+  }
+
+  /** LIU Brooklyn as a painted landmark (campus corner + field), filling the field's lot. Falls back to the drawn field. */
+  private paintedLiu() {
+    const a = this.layout.spots.liufield_tl, b = this.layout.spots.liufield_br, sp = this.layout.spots.liufield;
+    if (!a || !b || !sp || !this.textures.exists('lmk-liu')) return false;
+    const w = b.x - a.x + 40, img = this.add.image((a.x + b.x) / 2, b.y + 10, 'lmk-liu').setOrigin(0.5, 1);
+    img.setDisplaySize(w, (w * img.height) / img.width).setDepth(b.y + 10);
+    this.interactables.push({ id: 'liufield', x: sp.x, y: sp.y - 30, r: 140, label: () => 'Book the field', act: () => bus.emit('ui:toast', 'LIU\'S FIELD BELONGS TO THE UNIVERSITY: ASK LIU. A CITY PARK FIELD? BOOK IT WITH AN NYC PARKS PERMIT, $25 TO PROCESS. (LUCO SAYS HI.)') });
+    return true;
   }
 
   /** A turf soccer field (LIU, Brooklyn College): real markings, goals, an optional running track, and who books it on E. */
