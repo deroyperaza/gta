@@ -408,7 +408,8 @@ class UI {
   // ------------------------------------------------------------------ DIALOGUE
   private showDialogue(d: { owner: string; speaker: string; text: string; choices: { text: string; index: number; tag?: string }[] }) {
     this.dialogueOpen = true;
-    const npc = NPC_BY_ID[d.speaker];
+    // Scene-setting lines (*in italics*) show the person you're talking to, not your own face
+    const npc = NPC_BY_ID[d.speaker] ?? (d.speaker === 'you' && d.text.trim().startsWith('*') ? NPC_BY_ID[d.owner] : undefined);
     const name = npc ? npc.name : d.speaker === 'you' ? 'You' : d.speaker;
     $('#dlg-name').textContent = name;
     $('#dlg-title').textContent = npc ? npc.title : '';
