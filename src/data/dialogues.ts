@@ -494,6 +494,7 @@ export const DIALOGUES: Record<string, Dialogue> = {
       after: {
         speaker: 'naim', text: 'Ask the question. Then ask "okay, but when?" That\'s the whole trick.',
         choices: [
+          { text: 'Naim, ask me a dragon question.', cond: { flag: 'dragon_ready' }, effects: { event: 'dragon:quiz' } },
           { text: 'Tell me about 504 and the elevators.', next: 'adhd', cond: { notFlag: 'naim_504' } },
           { text: 'What are you reading?', next: 'books', cond: { notFlag: 'naim_books' } },
           { text: 'How do I get other people involved?', next: 'bring', cond: { notFlag: 'naim_bring' } },

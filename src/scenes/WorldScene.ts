@@ -6,7 +6,7 @@ import { DIALOGUES } from '../data/dialogues';
 import { FLYER_LINES, NPCS, PED_LINES, PLAYER_LOOK, type NpcDef } from '../data/npcs';
 import { Pedestrians, type Ped } from '../entities/pedestrians';
 import { Traffic } from '../entities/traffic';
-import { Opposition, type OppConfig } from '../entities/opposition';
+import { DEBATES, Opposition, type OppConfig } from '../entities/opposition';
 import { LINE_COLORS, SERVICES, Transit, bullet } from '../entities/transit';
 import { drawParks } from '../world/parks';
 import { dialogue } from '../systems/dialogue';
@@ -35,6 +35,9 @@ export class WorldScene extends Phaser.Scene {
   opp!: Opposition;
   transit!: Transit;
   stunUntil = 0;
+  /** Naim's dragon: 30 seconds of flight over buildings, cars and water */
+  private flyUntil = 0; private flyShadow?: Phaser.GameObjects.Ellipse; private flap?: Phaser.Tweens.Tween;
+  get flying() { return this.flyUntil > 0; }
   /** Difficulty layers (missions 5+): standing at a stop takes time, set by that neighborhood's Trust */
   private hold: { name: string; t: number; need: number } | null = null;
   private holdRing!: Phaser.GameObjects.Graphics;
@@ -73,6 +76,7 @@ export class WorldScene extends Phaser.Scene {
     for (const id of ['deroy', 'jenna', 'nell', 'bridgette', 'adrian', 'danae', 'jon', 'emily', 'naim', 'luco', 'vega']) this.load.image(`npc-${id}-bust`, `portraits/${id}.jpg`);
     this.load.image('barclays-sprite', 'sprites/barclays.png');
     this.load.image('bridge-tower-art', 'sprites/bridgetower.png');
+    this.load.image('dragon-art', 'sprites/dragon.png'); // Naim's dragon, painted in ChatGPT
     this.load.image('gap-island', 'sprites/gap.png'); // Grand Army Plaza's island, painted in ChatGPT, keyed
     for (const id of ['bandshell', 'gwgate', 'carousel', 'conservatory', 'bkcollege']) this.load.image(`park-${id}`, `sprites/${id}.png`); // painted in ChatGPT, keyed
     for (const id of PAINTED_LANDMARKS) this.load.image(`lm-${id}`, `sprites/${id}.png`);
@@ -116,6 +120,9 @@ export class WorldScene extends Phaser.Scene {
     this.transit = new Transit(this, this.layout);
     bus.on('transit:alight', (p: { x: number; y: number }) => { (this.player.body as Phaser.Physics.Arcade.Body).reset(p.x, p.y); this.player.setVisible(true); });
     bus.on('ui:ride', () => this.rideApp());
+    bus.on('event:dragon:quiz', () => this.time.delayedCall(250, () => this.dragonQuiz()));
+    bus.on('event:dragon:ride', () => this.startDragon());
+    bus.on('event:dragon:miss', () => state.setFlag('dragon_next_at', Date.now() + 60_000));
     bus.on('transit:board', (k: string) => state.apply({ flags: { [`rode_${k}`]: true } }, { quiet: true }));
     this.holdRing = this.add.graphics().setDepth(1e6);
     this.miniIgnore.push(this.holdRing);
@@ -821,6 +828,58 @@ export class WorldScene extends Phaser.Scene {
     }
   }
 
+  // ------------------------------------------------------------------ NAIM'S DRAGON
+  /** Naim's question: a myth vs. a real fact you've learned. Right answer: a dragon for 30 seconds. */
+  private dragonQuiz() {
+    const d = Phaser.Utils.Array.GetRandom(DEBATES);
+    const opts = Phaser.Utils.Array.Shuffle([
+      { text: d.right, effects: { event: 'dragon:ride' }, next: 'yes' },
+      { text: d.wrong[0], effects: { event: 'dragon:miss' }, next: 'no' },
+      { text: d.wrong[1], effects: { event: 'dragon:miss' }, next: 'no' },
+    ]);
+    dialogue.start('naim', { entries: [{ node: 'q' }], nodes: {
+      q: { speaker: 'naim', text: `Dragon question! Somebody on my block said: "${d.q}" What's actually true?`, choices: opts },
+      yes: { speaker: 'naim', text: 'CORRECT. *He whistles with two fingers. Something enormous lands in the street.* You have thirty seconds. Don\'t fly over the Caucus. Actually, do.' },
+      no: { speaker: 'naim', text: 'Nope. Dragons only listen to facts. Ask somebody, check your notebook, come back in a minute.' },
+    } });
+  }
+
+  private startDragon() {
+    if (this.transit.riding) return;
+    if (this.onBike) this.toggleBike(false, true);
+    const body = this.player.body as Phaser.Physics.Arcade.Body;
+    this.flyUntil = performance.now() + 30_000;
+    state.setFlag('dragon_ready', false); state.setFlag('dragon_next_at', Date.now() + 180_000);
+    body.checkCollision.none = true; this.player.anims.stop();
+    if (this.textures.exists('dragon-art')) this.player.setTexture('dragon-art').setScale(0.62);
+    else this.player.setTint(0x7fd4c8).setScale(2.2);
+    this.flyShadow = this.add.ellipse(this.player.x, this.player.y, 90, 50, 0x000000, 0.25).setDepth(5e4);
+    this.minimap.ignore(this.flyShadow);
+    this.flap = this.tweens.add({ targets: this.player, scaleX: this.player.scaleX * 0.9, duration: 220, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
+    bus.emit('ui:toast', '🐉 DRAGON! 30 SECONDS. OVER THE BUILDINGS, OVER THE CARS, OVER THE CAUCUS.');
+  }
+
+  private endDragon() {
+    this.flyUntil = 0; this.flap?.stop(); this.flyShadow?.destroy(); this.flyShadow = undefined;
+    const body = this.player.body as Phaser.Physics.Arcade.Body;
+    this.player.clearTint().setScale(1).setTexture(this.onBike ? 'player-bike' : 'player', 0);
+    this.setPlayerBody(); body.checkCollision.none = false;
+    const land = this.transit.nearestSidewalk(this.player.x, this.player.y, 30); // never land on a roof or in the river
+    if (land) body.reset(land.x, land.y);
+    bus.emit('ui:toast', 'THE DRAGON SETS YOU DOWN GENTLY AND FLIES BACK TO NAIM. (BACK IN 3 MINUTES.)');
+  }
+
+  /** Flight timer, and whether Naim can offer a ride right now */
+  private dragonTick() {
+    if (this.flying) {
+      this.player.setDepth(1e5);
+      this.flyShadow?.setPosition(this.player.x + 26, this.player.y + 40);
+      if (performance.now() >= this.flyUntil) this.endDragon();
+    }
+    const ready = !!state.flag('met_naim') && !this.flying && Date.now() >= (Number(state.flag('dragon_next_at')) || 0);
+    if (ready !== !!state.flag('dragon_ready')) state.setFlag('dragon_ready', ready);
+  }
+
   /** Where the mission wants you (the nearest target), for "closest stop to your objective" */
   private objectivePos() {
     const ts = missions.targets().map((id) => this.entityPos[id]).filter(Boolean) as { x: number; y: number }[];
@@ -1009,7 +1068,7 @@ export class WorldScene extends Phaser.Scene {
       }
       const len = Math.hypot(vx, vy);
       const sprint = this.keys.SHIFT.isDown;
-      const speed = this.onBike ? (sprint ? BIKE_RUN : BIKE) : sprint ? RUN : WALK;
+      const speed = this.flying ? 600 : this.onBike ? (sprint ? BIKE_RUN : BIKE) : sprint ? RUN : WALK;
       if (performance.now() < this.stunUntil) { vx = 0; vy = 0; }
       if (len > 0.1 && performance.now() >= this.stunUntil) {
         vx /= Math.max(1, len); vy /= Math.max(1, len);
@@ -1035,13 +1094,14 @@ export class WorldScene extends Phaser.Scene {
     {
       const am = missions.active, st = am ? state.mission(am.id).stage : 0;
       const tp = missions.targets().map((id) => this.entityPos[id]).find(Boolean) ?? null;
-      const fast = this.onBike || this.keys.SHIFT.isDown;
+      const fast = this.onBike || this.keys.SHIFT.isDown || this.flying;
       this.opp.update(dt, this.player, fast, !!am && !am.side && st >= 1 && !blocking && !rideAt, tp, this.peds.followers().length, this.oppConfig());
     }
     if (!blocking && !rideAt) { this.marchTriggers(); this.spotArrivals(dt); }
     else this.holdRing.clear();
     if (!blocking && this.mode === 'play') this.attentionTick(dt);
-    this.traffic.update(dt, this.player, (dx, dy) => { if (this.mode === 'play') { this.player.x += dx; this.player.y += dy; } });
+    this.traffic.update(dt, this.player, (dx, dy) => { if (this.mode === 'play' && !this.flying) { this.player.x += dx; this.player.y += dy; } });
+    this.dragonTick();
 
     // Prompt
     if (!blocking) {
@@ -1053,6 +1113,7 @@ export class WorldScene extends Phaser.Scene {
       const van = !sq && !it && !stn && !stop && !R && !tr.hasPending && tr.onFlatbush(this.player.x, this.player.y) != null;
       const ped = !it && !sq && !stn && !stop && !R ? this.nearPed() : null;
       const parts: string[] = [];
+      if (this.flying) parts.push(`<span class="pa">🐉 DRAGON · ${Math.max(0, Math.ceil((this.flyUntil - performance.now()) / 1000))}s</span>`);
       if (R) parts.push(`<span class="pa" data-act="interact"><b>E</b> ${R.kind === 'bus' ? (R.request ? 'Stop requested' : 'Request the next stop') : R.kind === 'van' ? 'Get off here' : 'Get out here'}</span>`);
       if (stn) parts.push(`<span class="pa" data-act="interact"><b>E</b> Subway: ${stn.st.name} ${stn.st.routes.map(bullet).join('')}</span>`);
       if (stop) parts.push(`<span class="pa" data-act="interact"><b>E</b> ${tr.waiting?.stop === stop.stop ? 'Waiting for the' : 'Wait for the'} ${stop.route.id}</span>`);

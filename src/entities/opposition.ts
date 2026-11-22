@@ -28,7 +28,7 @@ const DEFAULT_CFG: OppConfig = { limit: 3, chase: 170, wreck: 110, respawn: 35 }
 const PATROL = 45, SEE = 300, GIVE_UP = 440, CATCH = 30;
 
 /** Talking points, each answered by something the cast actually teaches. */
-const DEBATES: { q: string; right: string; wrong: [string, string] }[] = [
+export const DEBATES: { q: string; right: string; wrong: [string, string] }[] = [
   { q: 'You can\'t protest without a permit, sweetheart. I checked. On Facebook.', right: 'On the sidewalk we can, as long as people can still get by.', wrong: ['In the street we can, as long as it stays peaceful.', 'With a megaphone we can, as long as we stay on the sidewalk.'] },
   { q: 'Free lawyers for tenants? In THIS economy?', right: 'NYC\'s Right to Counsel covers eviction cases for tenants who qualify.', wrong: ['NYC\'s Right to Counsel covers every tenant, any income, in any kind of case.', 'NYC\'s Right to Counsel kicks in after you lose your first Housing Court date.'] },
   { q: 'People with records can\'t vote. Everybody knows that.', right: 'In New York, your vote comes back the day you leave prison.', wrong: ['In New York, your vote comes back once you finish parole.', 'In New York, your vote comes back on its own. No need to register again.'] },
