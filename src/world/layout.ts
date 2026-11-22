@@ -718,7 +718,7 @@ export function generateLayout(): WorldLayout {
     const org = buildings.find((b) => b.id === 'bkorg');
     const x0 = org ? Math.ceil((org.x + org.w) / TILE) + 1 : ix + 1, x1 = ix + iw - 2, y0 = iy + 1, y1 = iy + ih - 2;
     if (x1 - x0 >= 5) {
-      for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) set(x, y, T.GRASS);
+      for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) { set(x, y, T.GRASS); blocked[y][x] = true; } // the painted LIU landmark stands here: solid, like a building
       for (let i = props.length - 1; i >= 0; i--) { const tx = Math.floor(props[i].x / TILE), ty = Math.floor(props[i].y / TILE); if (tx >= x0 - 1 && tx <= x1 + 1 && ty >= y0 - 1 && ty <= y1 + 1) props.splice(i, 1); }
       spots.liufield_tl = { x: px(x0), y: px(y0) }; spots.liufield_br = { x: px(x1 + 1), y: px(y1 + 1) };
       spots.liufield = { x: px((x0 + x1 + 1) / 2), y: px(y1 + 1) + 8 };

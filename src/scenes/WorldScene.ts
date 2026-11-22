@@ -125,6 +125,7 @@ export class WorldScene extends Phaser.Scene {
     this.setPlayerBody();
     this.physics.add.collider(this.player, solids);
     this.physics.add.collider(this.player, this.groundLayer);
+    if (this.liuWall) this.physics.add.collider(this.player, this.liuWall);
 
     this.buildNpcs(solids);
     this.setupMarch();
@@ -819,11 +820,14 @@ export class WorldScene extends Phaser.Scene {
   }
 
   /** LIU Brooklyn as a painted landmark (campus corner + field), filling the field's lot. Falls back to the drawn field. */
+  private liuWall?: Phaser.GameObjects.Zone;
   private paintedLiu() {
     const a = this.layout.spots.liufield_tl, b = this.layout.spots.liufield_br, sp = this.layout.spots.liufield;
     if (!a || !b || !sp || !this.textures.exists('lmk-liu')) return false;
     const w = b.x - a.x + 40, img = this.add.image((a.x + b.x) / 2, b.y + 10, 'lmk-liu').setOrigin(0.5, 1);
-    img.setDisplaySize(w, (w * img.height) / img.width).setDepth(b.y + 10);
+    img.setDisplaySize(w, (w * img.height) / img.width).setDepth(b.y); // anyone on the sidewalk below draws in front
+    const wall = this.add.zone((a.x + b.x) / 2, (a.y + b.y) / 2, b.x - a.x, b.y - a.y); // solid, like any building
+    this.physics.add.existing(wall, true); this.liuWall = wall; // collider added once the player exists
     this.interactables.push({ id: 'liufield', x: sp.x, y: sp.y - 30, r: 140, label: () => 'Book the field', act: () => bus.emit('ui:toast', 'LIU\'S FIELD BELONGS TO THE UNIVERSITY: ASK LIU. A CITY PARK FIELD? BOOK IT WITH AN NYC PARKS PERMIT, $25 TO PROCESS. (LUCO SAYS HI.)') });
     return true;
   }
