@@ -101,3 +101,20 @@ The cleanest seven are Carmelo, Rosie, Spike, Yasiin Bey, Mel Brooks, Chris Rock
 - **Facts:** First Latino Brooklyn Borough President; born and raised in Los Sures (Williamsburg's Southside) to parents from the Dominican Republic; two terms on the City Council (District 34).
 - **Quote:** "All roads lead to Brooklyn, and even when others try to turn us against each other, Brooklyn chooses belonging." (2026 State of the Borough, April 2026)
 - https://www.brooklynbp.nyc.gov/brooklyn-borough-president-antonio-reynoso-celebrates-brooklyn-at-2026-state-of-the-borough-address/ · https://www.brooklynbp.nyc.gov/brooklyn-borough-president-antonio-reynoso-celebrates-inauguration-in-public-ceremony/
+
+### Mamdani, expanded (Deroy, Nov 22 2026: "more of his personality and passion")
+His conversation is now a pick-a-topic menu. Every quoted line is his own words; the rest is narration.
+- **Promises (narration):** freeze the rent on stabilized apartments, fast and free buses, free child care from 6 weeks to 5 years, city-owned grocery stores (one per borough). CNN, Dec 30 2025: https://www.cnn.com/2025/12/30/politics/zohran-mamdani-nyc-mayor-policy-proposals
+- **Quote:** "I'm absolutely committed to making buses fast and free." Politico interview, Apr 7 2026. In the same interview he said free buses wouldn't happen in 2026. I saw it only as quoted by other outlets: https://www.washingtontimes.com/news/2026/apr/9/zohran-mamdani-concedes-free-bus-pledge-wont-fulfilled-year/
+- **Quotes:** "I tore my Achilles. I did not stretch." and "And I scored a goal soon after getting on the pitch, and I forgot that I was 35." News conference, Nov 20 2026, after the Nov 19 game against the press corps.
+  - The game was seven a side. He said City Hall won 10-5; some reporters had it 8-4 or 8-5.
+  - He'll be in a boot for 6 to 8 weeks. He captained his high school team at Bronx Science.
+  - https://www.cbsnews.com/newyork/news/nyc-mayor-zohran-mamdani-tears-his-achilles/ · https://gothamist.com/news/mamdani-tears-achilles-soccer-game
+- **Quote:** "...to make halal eight bucks again." From his January 2025 "Halalflation" video at a halal cart; his TikTok caption reads "It's time to make halal eight bucks again."
+  - In the video, cart owners say they'd charge $7 or $8 if they had their own permit.
+  - https://newrepublic.com/article/197359/zohran-mamdani-food-campaign-success · https://www.tiktok.com/@zohran_k_mamdani/video/7459448107672112415
+- **Quote:** "New Yorkers need to see their mayor, talk to their mayor, ask their mayor questions." Hell Gate, Jun 22 2025, on his overnight walk from Inwood Hill to the Battery: over twelve miles, finished at 2:15 a.m. https://hellgatenyc.com/zohran-mamdani-goes-the-distance/
+- **Quote:** "Why argue with an Arsenal fan when you can just wait?" His X post in May 2026, after Arsenal won the Premier League. https://x.com/ZohranKMamdani/status/2060543819263688811
+  - He has been a fan since age nine, through an uncle.
+  - Kanu was his favorite player because he "had been born in Africa but now lived somewhere else, just like me." That's from an NYT interview, which I saw only as quoted by others.
+- Left out on purpose: his "114" post about Manchester City's verdict. The legal details were secondhand.

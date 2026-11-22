@@ -78,8 +78,41 @@ export const CAMEOS: Cameo[] = [
   {
     id: 'mamdani', name: 'Mayor Zohran Mamdani', short: 'Mayor Mamdani', title: 'Mayor of New York City', district: 'downtown', spot: 'cm_mamdani', at: [40.6901, -73.9819], color: '#4f8cff',
     look: { skin: '#b07a52', hair: '#1a1010', style: 'short', shirt: '#1f2a44', pants: '#1f2a44', shoes: '#111' },
-    bio: 'Took office as Mayor of New York City on January 1, 2026. In November 2026 the city finished 1.9 miles of protected, center-running bus lanes on Flatbush Avenue, with six concrete boarding islands.',
-    dialogue: cameo('mamdani', '*By one of the new concrete bus islands on Flatbush Avenue, a man in a dark suit watches a B41 pull in. Zohran Mamdani became mayor of New York City on January 1, 2026.*', 'Flatbush Avenue is the foundation for the future of bus service in New York City.', 'Mayor Zohran Mamdani, NYC Mayor\'s Office, November 17, 2026', '*This month the city finished 1.9 miles of protected center-running bus lanes here, with six boarding islands. Buses on this stretch used to average about 4 mph, and about 120,000 riders use the corridor every day. The plan is full bus rapid transit on Flatbush by 2030.*'),
+    bio: 'Took office as Mayor of New York City on January 1, 2026. Ran on freezing the rent, fast and free buses, free child care and city-owned grocery stores. Launched his campaign at a halal cart. Lifelong Arsenal fan; tore his Achilles in November 2026 playing soccer against the City Hall press corps.',
+    // Deroy (Nov 22 2026): more of his personality: the promises, the humor, street food, talking to people, soccer.
+    // Every line in quotes is his own, sourced in docs/FACTS-cameos.md; everything else is narration of public facts.
+    dialogue: {
+      entries: [{ cond: { flag: 'met_mamdani' }, node: 'mam_again' }, { node: 'mam_0' }],
+      nodes: {
+        mam_0: { speaker: 'you', text: '*By one of the new concrete bus islands on Flatbush Avenue, a man on crutches, one foot in a walking boot, watches a B41 pull in like it\'s a goal replay. Zohran Mamdani became mayor of New York City on January 1, 2026.*', next: 'mam_q' },
+        mam_q: { speaker: 'mamdani', text: '"Flatbush Avenue is the foundation for the future of bus service in New York City."', next: 'mam_q2' },
+        mam_q2: { speaker: 'you', text: '*(NYC Mayor\'s Office, November 17, 2026.) This month the city finished 1.9 miles of protected center bus lanes here, with six boarding islands. Buses on this stretch used to crawl at about 4 mph, and 120,000 riders use it every day.*', next: 'mam_menu' },
+        mam_menu: {
+          speaker: 'you', text: '*He\'s already turned to talk to you. He talks to everyone.*',
+          choices: [
+            { text: 'What did you promise?', next: 'mam_promise' },
+            { text: 'What\'s with the crutches?', next: 'mam_soccer' },
+            { text: 'Best halal cart in the city?', next: 'mam_halal' },
+            { text: 'Why do you talk to everybody?', next: 'mam_walk' },
+            { text: 'Arsenal, huh?', next: 'mam_arsenal' },
+            { text: '(Wave. Let him catch his bus.)', effects: { solidarity: 3, flags: { met_mamdani: true } } },
+          ],
+        },
+        mam_promise: { speaker: 'you', text: '*He ran on four big promises: freeze the rent on rent-stabilized apartments, make buses fast and free, free child care from six weeks old to five, and city-owned grocery stores, one in every borough.*', next: 'mam_promise_q' },
+        mam_promise_q: { speaker: 'mamdani', text: '"I\'m absolutely committed to making buses fast and free."', next: 'mam_promise_src' },
+        mam_promise_src: { speaker: 'you', text: '*(Mayor Mamdani to Politico, April 2026.) In the same interview he said free buses wouldn\'t happen this year: Albany hasn\'t paid for them yet. The fast part is here on Flatbush. The free part is still a fight.*', next: 'mam_menu' },
+        mam_soccer: { speaker: 'mamdani', text: '"I tore my Achilles. I did not stretch."', next: 'mam_soccer2' },
+        mam_soccer2: { speaker: 'mamdani', text: '"And I scored a goal soon after getting on the pitch, and I forgot that I was 35."', next: 'mam_soccer_src' },
+        mam_soccer_src: { speaker: 'you', text: '*(News conference, November 20, 2026.) The night before, City Hall played the press corps, seven a side. He captained his high school team at Bronx Science. City Hall won 10-5, by his count; some reporters remember it closer. Six to eight weeks in a boot.*', next: 'mam_menu' },
+        mam_halal: { speaker: 'mamdani', text: '"...to make halal eight bucks again."', next: 'mam_halal_src' },
+        mam_halal_src: { speaker: 'you', text: '*(His first campaign video, January 2025, shot at a halal cart.) Chicken over rice had climbed to $10. He blamed the permit system: too few vendor permits, so vendors rent them from middlemen. He asked cart owners what they\'d charge with their own permit. They said seven or eight.*', next: 'mam_menu' },
+        mam_walk: { speaker: 'mamdani', text: '"New Yorkers need to see their mayor, talk to their mayor, ask their mayor questions."', next: 'mam_walk_src' },
+        mam_walk_src: { speaker: 'you', text: '*(Hell Gate, June 2025.) He said it on a Friday night he spent walking the length of Manhattan, Inwood Hill to the Battery: over twelve miles, done at 2:15 a.m., stopping for anyone who wanted to talk.*', next: 'mam_menu' },
+        mam_arsenal: { speaker: 'mamdani', text: '"Why argue with an Arsenal fan when you can just wait?"', next: 'mam_arsenal_src' },
+        mam_arsenal_src: { speaker: 'you', text: '*(His post in May 2026, after Arsenal won the Premier League.) He\'s been a fan since he was nine, thanks to an uncle. His favorite player growing up was Kanu, who, like him, was born in Africa and lived somewhere else.*', next: 'mam_menu' },
+        mam_again: { speaker: 'you', text: '*The mayor spots you from the bus island and waves a crutch. He has time. He always seems to.*', next: 'mam_menu' },
+      },
+    },
   },
   {
     id: 'reynoso', name: 'Antonio Reynoso', short: 'BP Reynoso', title: 'Brooklyn Borough President', district: 'downtown', spot: 'cm_reynoso', at: [40.6925, -73.9897], color: '#ffb23f',
