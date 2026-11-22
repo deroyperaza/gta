@@ -142,7 +142,8 @@ const BLOCKS: Record<string, BlockSpec> = {
   '13,8': { kind: 'park', name: 'Brower-ish Park' },
   '13,9': { kind: 'row', landmarks: [
     { id: 'chchurch', type: 'church', w: 5, name: 'GREATER HOPE & HOUSING CHURCH' },
-    { id: 'chtenants', type: 'tenant', w: 7, name: 'CROWN HEIGHTS TENANT UNION' } ] },
+    { id: 'chtenants', type: 'tenant', w: 7, name: 'CROWN HEIGHTS TENANT UNION' },
+    { id: 'kyrclinic', type: 'government', w: 6, name: 'BERGEN ST KNOW YOUR RIGHTS CLINIC' } ] },
   '14,9': { kind: 'court', name: 'Eastern Parkway Courts' },
   // ---------- PROSPECT LEFFERTS GARDENS ----------
   '10,10': { kind: 'row', landmarks: [
@@ -189,13 +190,14 @@ const BLOCKS: Record<string, BlockSpec> = {
     { id: 'fbtenants', type: 'tenant', w: 6, name: 'FLATBUSH TENANTS COALITION' } ] },
   '11,14': { kind: 'row', landmarks: [{ id: 'dollarvan', type: 'sales', w: 5, name: 'DOLLAR VAN DISPATCH' }] },
   '9,15': { kind: 'park', name: 'Parade Grounds' },
-  '11,15': { kind: 'row', landmarks: [{ id: 'fbchurch', type: 'church', w: 5, name: 'CHURCH OF THE TUESDAY MEETING' }] },
+  '11,15': { kind: 'row', landmarks: [{ id: 'fbchurch', type: 'church', w: 5, name: 'CHURCH OF THE TUESDAY MEETING' }, { id: 'oacenter', type: 'community', w: 7, name: 'FLATBUSH OLDER ADULT CENTER' }] },
   '11,16': { kind: 'park', name: 'Brooklyn College' }, // Midwood: the quad (painted sprite) and the athletic field inside its track
   // ---------- SUNSET PARK ----------
   '4,13': { kind: 'park', name: 'Sunset Park (The Actual Park)' },
   '3,13': { kind: 'row', landmarks: [
     { id: 'taqueria', type: 'bakery', w: 5, name: 'FIFTH AVE TAQUERIA' },
-    { id: 'dimsum', type: 'bakery', w: 6, name: 'EIGHTH AVE DIM SUM PALACE' } ] },
+    { id: 'dimsum', type: 'bakery', w: 6, name: 'EIGHTH AVE DIM SUM PALACE' },
+    { id: 'climatehq', type: 'nonprofit', w: 6, name: 'SUNSET PARK CLIMATE COLLECTIVE' } ] },
   '3,12': { kind: 'lot', landmarks: [{ id: 'induscity', type: 'warehouse', w: 9, name: 'INDUSTRY-ISH CITY' }] },
   '4,14': { kind: 'row', landmarks: [{ id: 'spcb', type: 'government', w: 6, name: 'COMMUNITY BOARD 7-ISH' }] },
 };

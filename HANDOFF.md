@@ -25,24 +25,23 @@ The zip leaves out `node_modules/` and `dist/`. `npm install` and `npm run build
 - **Fields and courts:** LIU's and Brooklyn College's soccer fields, real basketball court markings.
 
 **What you do**
-- **17 main missions** on real civic needs (mutual aid, tenants, transit, food access, mediation, Brooklyn Org's grantmaking...), plus 4 **mediation calls** you pick up from neighbors.
+- **20 main missions** on real civic needs (mutual aid, tenants, transit, food access, mediation, Brooklyn Org's grantmaking, older adults, environmental justice, racial justice...), plus 4 **mediation calls** you pick up from neighbors.
 - **Difficulty** ramps: Attention is a 0–5 star wanted level; the Free Parking Caucus chases harder, undoes your work from Mission 7, and weak results cost Trust.
 - **Conversations test what you learned:** wrong answers are plausible near-misses, and the **Pocket Civics notebook** (journal) keeps every lesson.
 - **Six villains** with lairs (Baron Von Rent, Captain Red Tape, The Rumor Mill, Count Carbon, The Data Broker, the Ghost of Al Capone): beat them with what you learned.
 - **Ghosts** (translucent, glowing): Green-Wood's residents (Tweed, Greeley, Bernstein, Basquiat, Tiffany, McKinney Steward, Ebbets, Chadwick, Beecher, Clinton, Morse) and Brooklyn's own (Jackie Robinson, Walt Whitman, Shirley Chisholm, Lena Horne, The Notorious B.I.G., Ruth Bader Ginsburg, Adam Yauch).
 - **Living icons as cameos**, facts only: they speak only their own verified, non-lyric words (Spike Lee, Carmelo Anthony, Rosie Perez, Yasiin Bey, Chris Rock, Barbra Streisand, Jay-Z, Bernie Sanders, Mel Brooks).
 - **Naim's dragon:** answer his question right and fly for 30 seconds.
-- **Brooklyn Org** appears as the convener in Mission 17, and every mission's results name the real Brooklyn Org grantees doing that work.
+- **Brooklyn Org** appears as the convener in Missions 17–20 (participatory grantmaking, then older adults, environmental justice and the Spark Prize), and every mission's results name the real Brooklyn Org grantees doing that work.
 
 **Known rough spots**
 - Not played start to finish by hand; many systems were tested with scripts.
 - Some newer neighborhoods still borrow their district's look and street chatter.
 
 ## 3. What's next (pick any)
-1. **Three Brooklyn Org missions** in progress: older adults, environmental justice, racial justice.
-2. **More painted landmarks:** the Verrazzano, Dyker Heights lights, Domino, McCarren Pool, Sheepshead Bay, Canarsie Pier, Floyd Bennett Field, the Army Terminal, Weeksville, the Prison Ship Martyrs' Monument, the Navy Yard, Erasmus Hall (references and facts are in `docs/FACTS-landmarks-jackie-whitman.md`).
-3. **An election arc:** a City Council race where everything you've built counts on election day.
-4. **Neighborhood character:** each neighborhood its own buildings, chatter and one-line blurb.
+1. **More painted landmarks:** the Verrazzano, Dyker Heights lights, Domino, McCarren Pool, Sheepshead Bay, Canarsie Pier, Floyd Bennett Field, the Army Terminal, Weeksville, the Prison Ship Martyrs' Monument, the Navy Yard, Erasmus Hall (references and facts are in `docs/FACTS-landmarks-jackie-whitman.md`).
+2. **An election arc:** a City Council race where everything you've built counts on election day.
+3. **Neighborhood character:** each neighborhood its own buildings, chatter and one-line blurb.
 
 ## House rules (read before adding content)
 - **Facts are sourced.** Every civic fact in the game has a source in a file's header or in `docs/FACTS-*.md`. Don't add a claim you can't source.
@@ -54,7 +53,7 @@ The zip leaves out `node_modules/` and `dist/`. `npm install` and `npm run build
 ```
 src/core/     state.ts (all game state, save/load, effects and conditions), bus.ts (events), types.ts
 src/data/     npcs.ts, dialogues.ts, missions.ts, items.ts   ← most content lives here
-src/data/mission-modules/   one file per mission (missions 4–13): {mission, dialogue, npcs}
+src/data/mission-modules/   one file per mission (missions 4–20, plus the mediation calls): {mission, dialogue, npcs}
 src/systems/  dialogue.ts (branching dialogue), missions.ts (stages, timers, bonus objectives)
 src/world/    layout.ts (map, blocks, landmarks, avenues), brooklynGrid.ts (GENERATED real-geography grid),
               golden.ts + textures.ts (procedural art)

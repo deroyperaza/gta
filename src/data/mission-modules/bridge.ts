@@ -56,6 +56,7 @@ export const bridge: MissionModule = {
     },
     failText: 'The tour ran late and Sloane\'s sitter had to leave. She texts: "Next week? I\'ll clear the whole day." Try again.',
     onFail: () => { state.clearFlagsWithPrefix('bridge_'); for (const k of Object.keys(RESET)) delete state.d.flags[k]; },
+    next: 'elders',
   },
 
   dialogue: {
