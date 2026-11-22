@@ -771,8 +771,10 @@ export function generateLayout(): WorldLayout {
     let best: Spot | null = null, bd = Infinity;
     for (let dy = -28; dy <= 28; dy++) for (let dx = -28; dx <= 28; dx++) {
       const x = cx + dx, y = cy + dy, k = tiles[y]?.[x];
-      if (k === undefined || !OPEN.has(k) || blocked[y][x]) continue;
-      if (lmDef?.onWater && ![1, 2, 3, 4, 5, 6].some((o) => tiles[y + o]?.[x] === T.WATER || tiles[y]?.[x + o] === T.WATER || tiles[y]?.[x - o] === T.WATER)) continue; // at the shore
+      if (k === undefined || blocked[y][x]) continue;
+      if (lmDef?.onWater) { // a bridge or pier stands out over the water, its landward end at the shore
+        if (k !== T.WATER || ![1, 2, 3].some((o) => [[0, -o], [o, 0], [-o, 0], [0, o]].some(([ox, oy]) => { const t = tiles[y + oy]?.[x + ox]; return t !== undefined && t !== T.WATER && t !== T.OFFMAP; }))) continue;
+      } else if (!OPEN.has(k)) continue;
       // On Coney's amusement blocks the rides stand north of the boardwalk: on the ride strip, feet near its south edge
       { const bc = Math.floor(x / BLOCK_W), br = Math.floor(y / BLOCK_H); if (isAmus(bc, br) && (k !== T.LOT || y - (br * BLOCK_H + ROAD) < 5)) continue; }
       let crowd = 0;
@@ -830,6 +832,7 @@ export function generateLayout(): WorldLayout {
       for (let y = y0; y < y0 + BLOCK_H - ROAD; y++) for (let x = x0; x < x0 + BLOCK_W - ROAD; x++) {
         const k = tiles[y]?.[x];
         if (k === undefined || !OK.has(k) || blocked[y][x] || near(x, y)) continue;
+        if (['liufield', 'bcfield'].some((fd) => { const a = spots[`${fd}_tl`], b = spots[`${fd}_br`]; return !!a && !!b && px(x) >= a.x && px(x) < b.x && px(y) >= a.y && px(y) < b.y; })) continue; // not on a sports field
         const d = open ? Math.hypot(x - tx0, y - (y0 + 7)) : Math.hypot(x - tx0, y - ty0) + (k === T.SIDEWALK ? 0 : 15);
         if (d < bd) { bd = d; best = { x: px(x) + 16, y: px(y) + 16 }; }
       }

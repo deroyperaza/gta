@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 import { bus } from '../core/bus';
 import { state } from '../core/state';
 import { ADA_STATS, LINES, STATIONS, type Station } from '../world/transitData';
-import { GAP_CIRCLE, T, TILE, WALKABLE, geo, neighborhoodAt, type WorldLayout } from '../world/layout';
+import { BLOCK_H, BLOCK_W, GAP_CIRCLE, T, TILE, WALKABLE, geo, neighborhoodAt, type WorldLayout } from '../world/layout';
 
 /**
  * Getting around Brooklyn the way Brooklyn does.
@@ -79,6 +79,8 @@ export class Transit {
   byId: Record<string, Placed> = {};
   routes: BusRoute[] = [];
   buses: Bus[] = [];
+  /** Cars on the road (from traffic.ts), so buses never drive through them */
+  cars: () => { x: number; y: number }[] = () => [];
   flatbush!: Path;
   riding: Riding | null = null;
   waiting: { route: BusRoute; stop: Stop } | null = null;
@@ -436,13 +438,15 @@ export class Transit {
       const riding = this.riding?.kind === 'bus' && this.riding.bus === b;
       // Keep a bus length behind any bus ahead in the same lane (no driving through each other)
       const hx = Math.cos(b.sprite.rotation - Math.PI / 2), hy = Math.sin(b.sprite.rotation - Math.PI / 2); // the sprite faces where it's going
+      // a car just in front of the bumper, from any direction: the bus waits for it to clear
+      const carAhead = !riding && b.dwell <= 0 && this.cars().some((c) => Math.hypot(c.x - (b.sprite.x + hx * 90), c.y - (b.sprite.y + hy * 90)) < 36);
       const blockedAhead = !riding && b.dwell <= 0 && this.buses.some((o) => {
         if (o === b) return false;
         const ox = o.sprite.x - b.sprite.x, oy = o.sprite.y - b.sprite.y, d = Math.hypot(ox, oy);
         if (d > 145 || d < 1) return false; // a bus is 120px long
         const ohx = Math.cos(o.sprite.rotation - Math.PI / 2), ohy = Math.sin(o.sprite.rotation - Math.PI / 2);
         return (ox * hx + oy * hy) / d > 0.8 && ohx * hx + ohy * hy > 0.5; // ahead of us, heading the same way
-      });
+      }) || carAhead;
       if (b.dwell > 0) { b.dwell -= dt; }
       else if (blockedAhead) { /* wait for the bus ahead to pull away */ }
       else {
@@ -457,9 +461,14 @@ export class Transit {
           b.next = Math.max(0, Math.min(b.route.stops.length - 1, b.next + b.dir));
         } else b.s += Math.sign(target - b.s) * step;
       }
-      // Drive on the right: each direction gets its own lane
-      const p = at(b.route.path, b.s), lane = 20 * b.dir;
-      b.sprite.setPosition(p.x - Math.sin(p.ang) * lane, p.y + Math.cos(p.ang) * lane).setRotation(p.ang + Math.PI / 2 + (b.dir < 0 ? Math.PI : 0)).setDepth(p.y + 60);
+      // Drive on the right, in the same lanes the cars use: on a grid street, southbound/westbound take the lane 24px in
+      // from the street's edge line, northbound/eastbound the one at 72px (traffic.ts). Diagonals keep a plain offset.
+      const p = at(b.route.path, b.s), lane = 20 * b.dir, gx = Math.cos(p.ang) * b.dir, gy = Math.sin(p.ang) * b.dir;
+      let bx = p.x - Math.sin(p.ang) * lane, by = p.y + Math.cos(p.ang) * lane;
+      const SW = BLOCK_W * TILE, SH = BLOCK_H * TILE;
+      if (Math.abs(gy) > 0.9) { const k = Math.round((p.x - 48) / SW); bx = k * SW + (gy > 0 ? 24 : 72); }
+      else if (Math.abs(gx) > 0.9) { const k = Math.round((p.y - 48) / SH); by = k * SH + (gx < 0 ? 24 : 72); }
+      b.sprite.setPosition(bx, by).setRotation(p.ang + Math.PI / 2 + (b.dir < 0 ? Math.PI : 0)).setDepth(p.y + 60);
     }
     if (this.waiting && Math.hypot(player.x - this.waiting.stop.px, player.y - this.waiting.stop.py) > 160) this.waiting = null;
 

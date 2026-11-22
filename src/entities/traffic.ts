@@ -79,7 +79,10 @@ export class Traffic {
     if (lights) this.lightSprites.push(lights);
   }
 
+  /** Buses (from transit.ts): cars stop behind them like they stop behind each other */
+  buses: () => { x: number; y: number; rotation: number }[] = () => [];
   update(dt: number, player: { x: number; y: number }, pushPlayer: (dx: number, dy: number) => void) {
+    const buses = this.buses();
     this.honkCooldown -= dt;
     const byLane = new Map<string, Vehicle[]>(); // only cars in the same lane can block each other
     for (const v of this.vehicles) { const k = v.axis + v.lane; let a = byLane.get(k); if (!a) byLane.set(k, (a = [])); a.push(v); }
@@ -95,6 +98,14 @@ export class Traffic {
         if (o === v) continue;
         const d = ((o.axis === 'y' ? o.sprite.y : o.sprite.x) - pos) * v.dir;
         if (d > 0 && d < (v.len + o.len) / 2 + 22) { blocked = true; break; }
+      }
+      if (!blocked) { // a bus in the way, in this lane or crossing ahead: the spot just in front of this car is inside the bus
+        const ahead = v.len / 2 + 26, px = v.axis === 'y' ? v.lane : s.x + v.dir * ahead, py = v.axis === 'y' ? s.y + v.dir * ahead : v.lane;
+        for (const b of buses) {
+          const hx = Math.sin(b.rotation), hy = -Math.cos(b.rotation), ox = px - b.x, oy = py - b.y;
+          const inFrontOfBus = Math.hypot(s.x - (b.x + hx * 90), s.y - (b.y + hy * 90)) < 36; // that bus is waiting on this car: keep going, clear the way
+          if (!inFrontOfBus && Math.abs(ox * hx + oy * hy) < 60 + 14 && Math.abs(-ox * hy + oy * hx) < 16 + 14) { blocked = true; break; }
+        }
       }
       const target = blocked ? 0 : v.speed;
       v.cur += (target - v.cur) * Math.min(1, dt * (blocked ? 8 : 2));

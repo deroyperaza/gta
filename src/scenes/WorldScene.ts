@@ -146,6 +146,9 @@ export class WorldScene extends Phaser.Scene {
     bus.on('opposition:caught', () => this.heldUp());
     bus.on('opposition:outnumbered', () => state.apply({ solidarity: 8 }, { quiet: true }));
     this.traffic = new Traffic(this, (x, y) => this.floatText(x, y - 30, Phaser.Utils.Array.GetRandom(['HONK!', 'BEEP!', 'MOVE!', 'YO!']), '#ffd23f'));
+    // Buses and cars see each other: nobody drives through anybody
+    this.traffic.buses = () => this.transit.buses.map((b) => b.sprite);
+    this.transit.cars = () => this.traffic.vehicles.map((v) => v.sprite);
 
     // Waypoint arrow
     this.arrow = this.add.image(0, 0, 'arrow').setDepth(1e6).setVisible(false);
@@ -450,6 +453,11 @@ export class WorldScene extends Phaser.Scene {
       const blocker = solids.create(s.x, s.y - 8, undefined) as Phaser.Physics.Arcade.Image;
       blocker.setVisible(false); (blocker.body as Phaser.Physics.Arcade.StaticBody).setSize(22, 14);
       const tag = this.add.text(s.x, s.y - 40, ghost ? `👻 ${n.short.toUpperCase()}` : n.short.toUpperCase(), { fontFamily: 'Nunito, "Helvetica Neue", Arial, sans-serif', fontSize: '15px', fontStyle: '900', color: ghost ? '#2a3a5a' : '#16101f', backgroundColor: ghost ? '#dfeeff' : n.color, padding: { x: 7, y: 3 }, shadow: { offsetX: 2, offsetY: 2, color: '#16101f', blur: 0, fill: false, stroke: false } }).setOrigin(0.5).setDepth(1e5);
+      // A name tag never covers a building (its storefront sign): if it would, it hangs below the person instead
+      {
+        const hits = () => { const tb = tag.getBounds(); return this.layout.buildings.some((b) => tb.right > b.x && tb.x < b.x + b.w && tb.bottom > b.y && tb.y < b.y + b.h); };
+        for (const [dx, dy] of [[0, -40], [0, 34], [-70, 34], [70, 34], [-70, -40], [70, -40], [0, 60]]) { tag.setPosition(s.x + dx, s.y + dy); if (!hits()) break; }
+      }
       this.miniIgnore.push(tag, spr);
       this.npcSprites[n.id] = spr;
       this.entityPos[n.id] = s;
