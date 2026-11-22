@@ -145,6 +145,8 @@ import { MODULE_NPCS } from './mission-modules';
 NPCS.push(...MODULE_NPCS);
 import { NEIGHBORS } from './neighbors';
 NPCS.push(...NEIGHBORS);
+import { GHOSTS } from './ghosts';
+NPCS.push(...GHOSTS);
 
 export const NPC_BY_ID = Object.fromEntries(NPCS.map((n) => [n.id, n])) as Record<string, NpcDef>;
 

@@ -721,7 +721,8 @@ for (const mod of MODULES) for (const [npc, d] of Object.entries(mod.dialogue)) 
 
 // Neighbors (src/data/neighbors.ts): each brings their own conversation. Shuffle any choice with a best answer.
 import { NEIGHBORS } from './neighbors';
-for (const nb of NEIGHBORS) {
+import { GHOSTS } from './ghosts';
+for (const nb of [...NEIGHBORS, ...GHOSTS]) {
   for (const n of Object.values(nb.dialogue.nodes)) { const cs = n.choices ?? []; if (cs.length > 1 && cs.some((c) => c.tag) && cs.some((c) => !c.tag)) n.shuffle = true; }
   const base = DIALOGUES[nb.id];
   if (!base) { DIALOGUES[nb.id] = nb.dialogue; continue; }

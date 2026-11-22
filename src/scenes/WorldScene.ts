@@ -420,6 +420,10 @@ export class WorldScene extends Phaser.Scene {
       const key = `npc-${n.id}`;
       this.anims.create({ key: `${key}-idle`, frames: this.anims.generateFrameNumbers(key, { frames: [0] }), frameRate: 1, repeat: -1 });
       const spr = this.add.sprite(s.x, s.y, key, 0).setOrigin(0.5, 0.5).setDepth(s.y).setRotation(Math.PI);
+      if ((n as any).ghost) { // Green-Wood's famous residents: translucent, cool-toned, drifting
+        spr.setAlpha(0.6).setTint(0xbfd8ff);
+        this.tweens.add({ targets: spr, y: s.y - 6, alpha: 0.4, duration: 1800 + Math.random() * 600, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
+      }
       spr.play({ key: `${key}-idle` });
       const blocker = solids.create(s.x, s.y - 8, undefined) as Phaser.Physics.Arcade.Image;
       blocker.setVisible(false); (blocker.body as Phaser.Physics.Arcade.StaticBody).setSize(22, 14);

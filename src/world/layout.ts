@@ -1,5 +1,6 @@
 import type { District } from '../core/types';
 import { NEIGHBOR_AT } from '../data/neighbors';
+import { GHOST_AT } from '../data/ghosts';
 import { CELLS, GRID, KINDS, LAT_EDGES, LNG_EDGES, NEIGHBORHOODS, PARKNAMES } from './brooklynGrid';
 
 /**
@@ -646,6 +647,17 @@ export function generateLayout(): WorldLayout {
     }
     if (built) { labels.push({ text: name, x: px(xs - 6), y: px(y0 + 2) + 16 }); spots[`pier${i + 1}`] = { x: px(xs - 6), y: px(y0 + 2) + 16 }; }
   });
+  // Green-Wood's ghosts (src/data/ghosts.ts) drift on the cemetery's grass and paths, never out on the sidewalk
+  for (const [key, [la, ln]] of Object.entries(GHOST_AT)) {
+    const g = geo(la, ln), cx = Math.floor(g.x), cy = Math.floor(g.y);
+    let best: Spot | null = null, bd = Infinity;
+    for (let dy = -10; dy <= 10; dy++) for (let dx = -10; dx <= 10; dx++) {
+      const x = cx + dx, y = cy + dy, k = tiles[y]?.[x];
+      if ((k !== T.GRASS && k !== T.PLAZA) || blocked[y][x] || !neighborhoodOfBlock(Math.floor(x / BLOCK_W), Math.floor(y / BLOCK_H))?.startsWith('Green-Wood')) continue;
+      const d = dx * dx + dy * dy; if (d < bd) { bd = d; best = { x: px(x) + 16, y: px(y) + 16 }; }
+    }
+    if (best) spots[key] = best;
+  }
   // Neighbors (src/data/neighbors.ts) stand on the nearest open sidewalk to where they really live
   for (const [key, [la, ln]] of Object.entries(NEIGHBOR_AT)) {
     const g = geo(la, ln), cx = Math.floor(g.x), cy = Math.floor(g.y);
