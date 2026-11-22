@@ -633,8 +633,8 @@ export class WorldScene extends Phaser.Scene {
   // ------------------------------------------------------------------ MISSION 3 · THE PEOPLE VS. THE POWER
   /** Caught by the Free Parking Caucus: a hold-up, and they take something. */
   private heldUp() {
-    const tough = (missions.active?.number ?? 0) >= 5;
-    this.stunUntil = performance.now() + 1800 + (tough ? state.stars() * 300 : 0);
+    const n = missions.active?.number ?? 0, perStar = n >= 5 ? 300 : n >= 3 ? 200 : 0;
+    this.stunUntil = performance.now() + 1800 + state.stars() * perStar;
     if (this.hold) { this.hold = null; bus.emit('ui:toast', 'THEY TALKED OVER YOU. START AGAIN.'); }
     this.cameras.main.shake(200, 0.004);
     const losses: string[] = [];
@@ -678,7 +678,7 @@ export class WorldScene extends Phaser.Scene {
       const name = id.slice(5), p = this.layout.spots[name];
       if (!p || state.flag(`at_${name}`) || Math.hypot(p.x - this.player.x, p.y - this.player.y) >= 90) continue;
       inside = name;
-      const need = n >= 5 ? this.holdTime(p) : 0;
+      const need = n >= 5 ? this.holdTime(p) : n >= 3 ? this.holdTime(p) * 0.6 : 0; // 3–4: a shorter pitch
       if (need > 0) {
         if (this.hold?.name !== name) this.hold = { name, t: 0, need };
         this.hold.t += dt;
@@ -732,10 +732,12 @@ export class WorldScene extends Phaser.Scene {
     this.cameras.main.shake(250, 0.004);
   }
 
-  /** Difficulty for the Caucus right now: later missions and more stars mean more of them, faster, sooner. */
+  /** Difficulty for the Caucus right now: later missions and more stars mean more of them, faster, sooner.
+   *  Tiers: 1–2 learning · 3–4 stars start to matter · 5+ full pressure · 7+ wreckers · 10+ one more, faster. */
   private oppConfig(): OppConfig {
     const n = missions.active?.number ?? 0, st = state.stars();
-    if (n < 5) return { limit: 3, chase: 170, wreck: 110, respawn: 35 };
+    if (n < 3) return { limit: 3, chase: 170, wreck: 110, respawn: 35 };
+    if (n < 5) return { limit: 3 + (st >= 4 ? 1 : 0), chase: 170 + st * 5, wreck: 110, respawn: Math.max(20, 35 - st * 3) }; // 3–4: stars start to matter
     return {
       limit: Math.min(6, 3 + (n >= 10 ? 1 : 0) + (st >= 3 ? 1 : 0) + (st >= 5 ? 1 : 0)),
       chase: 170 + st * 9 + (n >= 10 ? 8 : 0), // tops out at 223: a sprint (245) still gets away

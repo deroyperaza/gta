@@ -88,11 +88,13 @@ class MissionSystem {
     const bonus = (def.optional ?? []).filter((o) => m.optionalDone[o.id]).length;
     if (def.optional?.length) lines.push(`BONUS OBJECTIVES ${bonus}/${def.optional.length}`);
     state.apply(reward, { quiet: true });
-    // Missions 5+: a weak result costs you. The neighborhood trusts you less (so its stops take longer next time),
+    // Missions 3+: a weak result costs you. The neighborhood trusts you less (so its stops take longer next time),
     // and the person who brought you in is a little let down.
-    if (def.number >= 5 && state.flag(`${def.id}_result`) === 'weak') {
-      state.apply({ trust: { [def.district]: -8 }, rel: { [def.giver]: -4 } }, { quiet: true });
-      lines.push(`${DISTRICTS[def.district].name.toUpperCase()} TRUST -8 · THE BLOCK REMEMBERS`);
+    const resultKey = def.id === 'march' ? 'pvp_result' : `${def.id}_result`; // Mission 3 predates the naming
+    if (def.number >= 3 && state.flag(resultKey) === 'weak') {
+      const hit = def.number >= 5 ? 8 : 5; // 3–4 sting a little; 5+ sting more
+      state.apply({ trust: { [def.district]: -hit }, rel: { [def.giver]: def.number >= 5 ? -4 : -2 } }, { quiet: true });
+      lines.push(`${DISTRICTS[def.district].name.toUpperCase()} TRUST -${hit} · THE BLOCK REMEMBERS`);
     }
     bus.emit('mission:passed', { def, lines, toast: reward.toast });
     if (def.next) {
