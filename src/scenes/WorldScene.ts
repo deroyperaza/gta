@@ -668,7 +668,7 @@ export class WorldScene extends Phaser.Scene {
     const ped = this.nearPed();
     if (ped) {
       ped.pause = 2.5; ped.sprite.setFlipX(this.player.x < ped.sprite.x);
-      this.bubble(ped.sprite, streetLine(ped.district));
+      this.bubble(ped.sprite, streetLine(ped.district, neighborhoodAt(ped.sprite.x, ped.sprite.y)));
     }
   }
 

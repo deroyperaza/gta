@@ -380,6 +380,60 @@ const GENERAL = [
   'If you need anything on this block, ask for Junior. Everybody is Junior. Ask anyway.',
 ];
 
+/**
+ * Neighborhood by neighborhood, from Hoodmaps' crowd-sourced stereotypes (read Nov 22 2026; the ugly tags were dropped:
+ * nothing about race, religion, poverty or crime). Lifestyle and vibe only, punching up or with affection.
+ * Real businesses get parody names; no real people.
+ */
+const HOOD: Record<string, string[]> = {
+  'Greenpoint': ['My monstera has its own LLC.', 'The G train came. Twice. I\'m telling my therapist.', 'New tower on the water. The lobby has a sourdough concierge.', 'Freelancers with houseplants: that\'s our census category.', 'The Polish bakery has been here longer than the word "artisanal."'],
+  'Williamsburg': ['My rent is a cry for help. My tote bag is a lifestyle.', 'His thrift-store flannel cost $340. Distressed by hand, in Tribeca.', 'The domino table on this corner has outlasted three landlords.', 'Tech workers pretending not to be tech workers: it\'s a whole look.', 'Tiny dogs, big rents, rooftop everything.'],
+  'South Williamsburg': ['Under the bridge, three designers argue about kerning.', 'The condo brochure calls this block "storied." The block calls the brochure "new."'],
+  'East Williamsburg': ['I feel terrible about gentrifying. Anyway, my loft has a hammock.', 'The graffiti tour stopped to photograph a mural about landlords. Ironic? Rent\'s due either way.', 'The "protected" bike lane is protected by one traffic cone. We call him Gary.', 'Worst apartment, best roommates.'],
+  'Bushwick': ['The warehouse rave ends at 6am. The co-op meeting starts at 7.', 'Commie Corridor: we share everything except the bathroom schedule.', 'Third-generation Bushwick meets a yoga teacher from Ohio. They agree: the landlord is the problem.', 'Where the cool kids live. The cool kids are 38.', 'Free food somewhere on this block every night. You just have to know the group chat.'],
+  'DUMBO': ['Twelve brides, one cobblestone, zero parking.', 'Our startup disrupts sitting. Series B closes Tuesday.', 'Does anyone actually live here, or do we just pose?', 'Bikes yelling at walkers, walkers yelling at bikes. The bridge photo comes out great.'],
+  'Brooklyn Heights': ['The Promenade: where old money walks its new dog.', 'A neighbor filed a noise complaint against the sunrise.', 'Fifteen-million-dollar mansion, still fighting over street parking.'],
+  'Downtown Brooklyn': ['Twelve trains, two big-box stores, one rent you can\'t afford.', 'The new tower\'s amenity is a view of the next new tower.', 'Ninety-nine-cent slice and a boutique hotel on the same block. Balance.'],
+  'Boerum Hill': ['Twelve trains, one lovely brownstone, zero chance I\'m buying it.'],
+  'Fort Greene': ['The dad in the baby carrier has opinions about the BAM lineup. So does the baby.', 'RIP to the old deli. Replaced by a deli-themed concept store.', 'Farmers market, tote bags, a dog for every adult. Fort Greene Saturday.', 'Latte-drinking dads, wearing babies, discussing film. Every morning.'],
+  'Clinton Hill': ['Pratt freshman, $90k tuition, sculpting a critique of capitalism.', 'Art kids on every stoop. One is sketching you right now.', 'Vegan bakery, vegan butcher, vegan dog.'],
+  'Brooklyn Navy Yard': ['The jeans come pre-torn. The makers come pre-funded.', 'There\'s a film studio in here somewhere. Nobody will tell me where.'],
+  'Bedford-Stuyvesant': ['Brownstone stoop: still the best seat in Brooklyn, now with a broker\'s fee.', 'A man with a boombox defends the block\'s sound system against a smart speaker.', 'The rent is too damn high. The block association voted: unanimous.', 'This block gave the world more MCs per square foot than anywhere. Ask anyone.'],
+  'Crown Heights': ['Gentrification is "70% complete," says the internet. The other 30% are organizing.', 'Parade route on Labor Day: no developer has ever survived it.'],
+  'Prospect Heights': ['New dad, puffer vest, commute to FiDi: the starter pack.', 'Just had my first kid. I now own three strollers and zero sleep.'],
+  'Park Slope': ['The Stroller Mafia wants a word about your bike lane.', 'Every third brownstone has a novelist. Every fourth has a novel.', 'The co-op shift schedule is the most powerful document in Brooklyn.', 'Private-school kids with violin cases, single file, like ducklings.', 'Most boring neighborhood in Brooklyn, according to people who live in the most interesting one.'],
+  'Gowanus': ['Luxury canal-view condos. The canal is not in the brochure photos.', 'Turned thirty, quit cool, joined a climbing gym. The Gowanus arc.', 'Lavender Lake: named for the color, not the smell.', 'Best tacos in the city, next to the most famous dirty water in the city.'],
+  'Carroll Gardens': ['Nonna\'s been on this stoop since 1962. The startup next door just raised a seed round.', 'Fifty bucks for a dying fern. Artisanal decay.', 'Old Italians, young families, and one dog walker for every block.'],
+  'Cobble Hill': ['Rock climber by day, karaoke power ballads by night.', 'Strollers, dogs, strollers with dogs in them.'],
+  'Red Hook': ['No subway, but the big Swedish furniture store has meatballs and existential dread.', 'Somebody "discovered" the old bar on Conover Street. It\'s been there for generations.', 'They promised a subway. We got a ferry and a nice view of the Statue. She\'s waiting too.', 'Art gala every weekend, bus every half hour.'],
+  'Sunset Park': ['The R train is a state of mind.', 'The old factories became stores selling candles named after factories.', 'Best tortas in New York. The line is democracy in action.', 'Waited so long for the B35 I learned Cantonese. Okay, two words.'],
+  'Windsor Terrace': ['Quietest neighbors in Brooklyn. The ones in Green-Wood never complain.', 'Best little movie theater in the borough, and nobody knows. Keep it that way.'],
+  'Bay Ridge': ['Old men fishing off the pier have outlasted three mayors.', 'Gut renovation complete: the brownstone is now a Florida condo.', 'Street parking here is a blood sport with alternate-side rules.', 'There\'s an army base in Brooklyn? Yes. It\'s been here the whole time.', 'Hookah lounge, Irish pub, Italian bakery. One block. Bay Ridge.'],
+  'Dyker Heights': ['His inflatable Santa uses more electricity than some neighborhoods.', 'Tour buses circle the block all December. The homeowner charges no admission. Just the electric bill.', 'Average age on this block: sixty-seven. Average number of lights: forty thousand.'],
+  'Bensonhurst': ['You want gentrification here? Fuhgeddaboudit.', 'The toy store at the plaza closed years ago. We still give directions by it.', 'The Brooklyn accent isn\'t dying. It moved here and bought a two-family.'],
+  'Borough Park': ['There\'s no park in Borough Park. Don\'t ask. Nobody knows.', 'Minivans, minivans, a double-parked minivan, minivans.'],
+  'Kensington': ['Best samosa and best slice on the same block. Kensington wins the tasting menu.', 'Wait, this is Brooklyn? Yes. Quiet, isn\'t it.'],
+  'Ditmas Park': ['A Victorian mansion with a wraparound porch. In Brooklyn. The broker is crying.', '"Next Williamsburg," they said. The porch swings said no.', 'How did I get to the suburbs? I took the Q.'],
+  'Flatbush': ['Still Brooklyn cool. The roti shop has a longer lease than the coffee chain.', 'Suburban dream homes on one side of the tracks, the real Flatbush on the other. Both have opinions.'],
+  'Prospect Lefferts Gardens': ['Called PLG because the broker needed three letters.', 'Cheap rent here was a thing. Ask your older cousin.'],
+  'East Flatbush': ['Jerk chicken smoke on Church Ave is the neighborhood\'s official perfume.'],
+  'Midwood': ['The pizza line is longer than the B41 wait, and better for you.', 'Too rich to gentrify, too Brooklyn to notice.', 'Random huge houses, then a tiny bakery, then another random huge house.'],
+  'Sheepshead Bay': ['Fresh fish off the boats, sushi on every corner. The bay feeds us.', 'Firefighters, cops, nurses, retirees. The bay is a small town.'],
+  'Manhattan Beach': ['The college here is the only campus where the quad is a beach.', 'Big houses, quiet streets, everyone watering their lawn at the same time.'],
+  'Brighton Beach': ['The boardwalk babushkas have seen empires fall. Your rezoning plan does not impress them.', 'Plov for three is plov for eight.', 'You come to Brighton to show off your new car. And to eat. Mostly to eat.'],
+  'Coney Island': ['The Cyclone is ninety-nine years old and still gets fewer complaints than your landlord.', 'Sea Gate: a gated community whose gate faces the Mermaid Parade.', 'The developer promised luxury. The hot dog promised nothing and delivered.', 'The opposite of a gated community. Come on in.'],
+  'Gravesend': ['The square slice down the street is the only thing in Brooklyn that\'s still fairly priced.', 'Best Russian restaurant and best pizza on the same block. Gravesend is a food court.'],
+  'Marine Park': ['No subway, two cars, one driveway, infinite opinions.', 'Old-school Brooklyn: the accent, the barbecue, the lawn chair on the sidewalk.'],
+  'Gerritsen Beach': ['No subway, no hurry, no problem.', 'Old-school Brooklyn by the water. Everybody knows your boat.'],
+  'Mill Basin': ['Middle of nowhere, five minutes from Kings Plaza.', 'Sick skate park. Nobody knows. Shh.'],
+  'Bergen Beach': ['Chill. That\'s the whole review.'],
+  'Canarsie': ['The L ends here. So do the luxury condo ads, for now.', 'Baby, welcome to the party. Canarsie knows how to throw one.'],
+  'Brownsville': ['"Gentrification soon," said a sign in 2014. The block remains unimpressed.', 'Never ran, never will. The developers\' lawyers are learning that.', 'Ungentrified, real New York, and proud of it.'],
+  'East New York': ['The rezoning brought bike-share docks and a brochure. The rent brought itself.', '"Gentrification coming soon." We\'ll see who\'s still here.'],
+  'Cypress Hills': ['More hawks than brokers here. Let\'s keep it that way.', 'Best bird-watching in Brooklyn, between two cemeteries. The neighbors are very quiet.'],
+  'Floyd Bennett Field': ['Old planes come here to retire with dignity.'],
+};
+
 const MORE_FLYERS = [
   'A flyer with actual information on it? Revolutionary.',
   'I\'ll put it on the fridge. The real fridge. With a magnet shaped like a mango.',
@@ -424,8 +478,10 @@ export function pickLine(key: string, lines: string[]): string {
   return lines[i];
 }
 
-/** What a random person says when you chat: mostly their neighborhood, sometimes the whole borough. */
-export function streetLine(district: District): string {
+/** What a random person says when you chat: their own neighborhood's lines first, then their district's, sometimes the borough's. */
+export function streetLine(district: District, hood?: string | null): string {
+  const mine = hood ? HOOD[hood] : undefined;
+  if (mine && (state.d.heard?.[`h:${hood}`]?.length ?? 0) < mine.length && Math.random() < 0.5) return pickLine(`h:${hood}`, mine);
   const local = STREET_LINES[district] ?? GENERAL;
   const heard = state.d.heard ?? {};
   const localLeft = local.length - (heard[`d:${district}`]?.length ?? 0), allLeft = GENERAL.length - (heard.all?.length ?? 0);
