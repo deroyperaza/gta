@@ -1175,12 +1175,12 @@ export class WorldScene extends Phaser.Scene {
         if (Math.abs(vx) > 0.1) this.facing = vx < 0 ? -1 : 1;
         this.player.setRotation(Math.atan2(vy, vx) + Math.PI / 2);
         const anim = this.onBike ? 'bike-roll' : 'player-walk';
-        if (this.player.anims.currentAnim?.key !== anim || !this.player.anims.isPlaying) this.player.play(anim);
+        if (!this.flying && (this.player.anims.currentAnim?.key !== anim || !this.player.anims.isPlaying)) this.player.play(anim); // the walk cycle would swap the dragon back to you
         this.player.anims.timeScale = sprint ? 1.6 : 1;
-      } else { body.setVelocity(0, 0); this.player.anims.stop(); this.player.setFrame(0); }
+      } else { body.setVelocity(0, 0); this.player.anims.stop(); if (!this.flying) this.player.setFrame(0); }
 
     }
-    this.player.setDepth(this.player.y);
+    this.player.setDepth(this.flying ? 6e4 : this.player.y); // the dragon flies over the buildings
     this.playerRing.setPosition(this.player.x, this.player.y).setDepth(this.player.y - 1).setVisible(this.mode === 'play' && !rideAt);
     { const a = this.player.rotation - Math.PI / 2, d = this.onBike ? 34 : 28; this.playerChevron.setPosition(this.player.x + Math.cos(a) * d, this.player.y + Math.sin(a) * d).setRotation(this.player.rotation).setDepth(this.player.y + 1).setVisible(this.mode === 'play' && !rideAt); }
     state.d.player.x = this.player.x; state.d.player.y = this.player.y;
