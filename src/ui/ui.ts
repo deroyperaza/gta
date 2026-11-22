@@ -427,6 +427,9 @@ class UI {
     // map visible order -> index
     choicesEl.dataset.map = JSON.stringify(d.choices.map((c) => c.index));
     $('#dlg-more').style.visibility = d.choices.length ? 'hidden' : 'visible';
+    // Say plainly that there's more: a real button, "keep going" when another line follows, "done" on the last one
+    const more = !!(dialogue as any).node?.next;
+    $('#dlg-more').innerHTML = `<button type="button" class="dlg-go">${more ? 'KEEP GOING ▶' : 'DONE ✓'}<kbd>E</kbd></button>`;
     // typewriter
     if (this.typing) clearInterval(this.typing.timer);
     const textEl = $('#dlg-text'); textEl.textContent = '';

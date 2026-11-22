@@ -125,7 +125,9 @@ body.touch #touch-btns { display: flex; gap: 14px; position: absolute; right: 30
 #dlg-choices button b { display: inline-block; width: 22px; height: 22px; border-radius: 6px; background: var(--purple); color: #fff; text-align: center; font: 15px/22px var(--display); margin-right: 6px; }
 #dlg-choices button.tag { border-color: var(--ink); background: #e6ffe0; }
 #dlg-choices button em { font: 12px var(--display); color: #2a9a3a; letter-spacing: 1px; font-style: normal; }
-#dlg-more { text-align: right; font: 13px var(--display); letter-spacing: 1px; color: var(--purple); animation: bob .6s infinite alternate; }
+#dlg-more { text-align: right; }
+.dlg-go { font: 16px var(--display); letter-spacing: 1px; color: #fff; background: var(--purple); border: 3px solid var(--ink); border-radius: 12px; padding: 6px 14px; box-shadow: 0 3px 0 var(--ink); cursor: pointer; animation: bob .6s infinite alternate; }
+.dlg-go kbd { font: 11px var(--display); margin-left: 8px; padding: 1px 5px; border-radius: 4px; background: rgba(255,255,255,.25); }
 @keyframes bob { to { transform: translateY(3px); } }
 
 /* ---------------------------------------------------------------- OVERLAYS */
@@ -281,8 +283,7 @@ html, body { overscroll-behavior: none; touch-action: none; }
 }
 /* Touch devices: hide keyboard hints */
 body.touch #hud-buttons kbd, body.touch .keys { display: none; }
-body.touch #dlg-more { font-size: 0; }
-body.touch #dlg-more::after { content: '▼ TAP TO CONTINUE'; font-size: 12px; }
+body.touch .dlg-go kbd { display: none; }
 /* Scrollable panels still scroll by touch */
 .panel-body, .map-wrap, .dlg-box, .help-card, .pause-card { touch-action: pan-y; }
 @media (max-width: 600px) { #minimap-frame { border-width: 3px; border-radius: 10px; box-shadow: 0 0 0 2px var(--pink), 3px 3px 0 2px var(--ink); } }

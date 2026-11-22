@@ -109,6 +109,10 @@ export function makeTiles(scene: Phaser.Scene) {
 
 // ------------------------------------------------------------------ BUILDINGS
 const BASE: Record<BuildingType, string[]> = {
+  victorian: ['#d9c48a', '#a8b98e', '#c9a7c4', '#9bb8cc'],
+  rowhouse: ['#b0805a', '#8f5a42', '#c9b08a', '#a06a4a'],
+  twofamily: ['#c4a27a', '#9a6a50', '#d8ccb4', '#8a7a6a'],
+  walkup: ['#8b4a38', '#9a5a44', '#7a4a3a', '#a2684e'],
   brownstone: ['#a0583b', '#8a4b3a', '#b46a45', '#7d4d6b'],
   coffee: ['#2fd1c5', '#ff8a3d', '#ffd23f', '#ff4fa3'],
   boutique: ['#ff9ad1', '#c7a6ff', '#ffe1a8', '#9be7ff'],

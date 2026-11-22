@@ -2,7 +2,7 @@ import type { District } from '../core/types';
 import { NEIGHBOR_AT } from '../data/neighbors';
 import { GHOST_AT, STREET_GHOST_AT } from '../data/ghosts';
 import { VILLAIN_AT } from '../data/villains';
-import { PAINTED_AT } from '../data/landmarks';
+import { PAINTED, PAINTED_AT } from '../data/landmarks';
 import { CAMEO_AT } from '../data/cameos';
 import { CELLS, GRID, KINDS, LAT_EDGES, LNG_EDGES, NEIGHBORHOODS, PARKNAMES } from './brooklynGrid';
 
@@ -38,7 +38,8 @@ export type BuildingType =
   | 'brownstone' | 'coffee' | 'boutique' | 'nonprofit' | 'coop' | 'bodega' | 'mural' | 'tenant'
   | 'community' | 'studio' | 'warehouse' | 'gallery' | 'government' | 'courthouse' | 'police'
   | 'tower' | 'apartment' | 'laundromat' | 'church' | 'shed' | 'bakery' | 'sales'
-  | 'arena' | 'library' | 'arch' | 'supertall' | 'clocktower';
+  | 'arena' | 'library' | 'arch' | 'supertall' | 'clocktower'
+  | 'victorian' | 'rowhouse' | 'twofamily' | 'walkup';
 
 export interface BuildingDef {
   id: string; type: BuildingType; name?: string; district: District;
@@ -97,6 +98,7 @@ const BLOCKS: Record<string, BlockSpec> = {
     { id: 'atlterm', type: 'boutique', w: 8, name: 'ATLANTIC TERMINAL-ISH MALL' } ] },
   // ---------- FORT GREENE ----------
   '8,5': { kind: 'row', landmarks: [{ id: 'bkorg', type: 'nonprofit', w: 7, name: 'BROOKLYN ORG' }] }, // the community foundation, by Hanson Place
+  '9,5': { kind: 'park', name: 'Fort Greene Park' }, // the real park sits half a block west, where LIU and Brooklyn Org already are; this keeps it in Fort Greene, home of the Prison Ship Martyrs' Monument
   '8,6': { kind: 'row', landmarks: [ // just east of Flatbush, like the real Savings Bank and BAM
     { id: 'church', type: 'church', w: 5, name: 'FIRST CHURCH OF THE BLOCK PARTY', spot: 'deroy' },
     { id: 'savingsbank', type: 'clocktower', w: 5, name: 'WILLIAMSBURGH SAVINGS BANK' },
@@ -258,12 +260,63 @@ const FILLER: Record<District, BuildingType[]> = {
 const BROWNSTONE_HOODS = new Set(['Brooklyn Heights', 'Cobble Hill', 'Boerum Hill', 'Carroll Gardens', 'Fort Greene', 'Clinton Hill',
   'Prospect Heights', 'Park Slope', 'Bedford-Stuyvesant', 'Crown Heights', 'Prospect Lefferts Gardens', 'Ocean Hill', 'Weeksville']);
 const BROWNSTONE_ROW: BuildingType[] = ['brownstone', 'brownstone', 'brownstone', 'brownstone', 'coffee', 'bodega'];
+/**
+ * What the houses look like, neighborhood by neighborhood (Deroy, Nov 22 2026: "Ditmas Park should have Victorian houses.
+ * Park Slope should have brownstones."). Victorians: the freestanding wood houses of Ditmas Park, Prospect Park South,
+ * Dyker Heights and Manhattan Beach. Row houses: the attached two-story brick and limestone rows of Bay Ridge, Sunset Park,
+ * Greenpoint, East Flatbush. Two-family: the semi-detached brick houses with driveways of Canarsie, Marine Park, Bensonhurst.
+ * Walk-ups: the brick tenements with fire escapes of Bushwick and Williamsburg. Brownstone Brooklyn is BROWNSTONE_HOODS.
+ */
+const HOOD_ROW: Record<string, BuildingType[]> = {
+  'Ditmas Park': ['victorian', 'victorian', 'victorian', 'victorian', 'victorian', 'coffee'],
+  'Flatbush': ['victorian', 'victorian', 'apartment', 'walkup', 'bodega', 'laundromat', 'bakery', 'church'],
+  'Midwood': ['victorian', 'twofamily', 'twofamily', 'apartment', 'bakery', 'bodega'],
+  'Kensington': ['walkup', 'apartment', 'rowhouse', 'victorian', 'bodega', 'bakery'],
+  'Windsor Terrace': ['rowhouse', 'rowhouse', 'rowhouse', 'walkup', 'coffee', 'bodega'],
+  'South Slope': ['rowhouse', 'walkup', 'brownstone', 'coffee', 'laundromat'],
+  'Gowanus': ['warehouse', 'walkup', 'studio', 'coffee'],
+  'Greenpoint': ['rowhouse', 'rowhouse', 'walkup', 'bakery', 'coffee', 'laundromat'],
+  'Williamsburg': ['walkup', 'walkup', 'warehouse', 'coffee', 'boutique', 'bakery'],
+  'South Williamsburg': ['walkup', 'apartment', 'rowhouse', 'bakery', 'bodega'],
+  'East Williamsburg': ['walkup', 'warehouse', 'studio', 'bodega'],
+  'Bushwick': ['walkup', 'walkup', 'warehouse', 'studio', 'bodega', 'laundromat'],
+  'Cypress Hills': ['rowhouse', 'twofamily', 'walkup', 'bodega'],
+  'East New York': ['rowhouse', 'twofamily', 'apartment', 'bodega', 'laundromat', 'church'],
+  'Brownsville': ['apartment', 'apartment', 'apartment', 'rowhouse', 'bodega', 'church'],
+  'Starrett City': ['apartment', 'apartment', 'apartment', 'apartment'],
+  'City Line': ['twofamily', 'rowhouse', 'bodega'],
+  'Canarsie': ['twofamily', 'twofamily', 'twofamily', 'rowhouse', 'bakery', 'bodega'],
+  'Flatlands': ['twofamily', 'twofamily', 'rowhouse', 'bodega'],
+  'Marine Park': ['twofamily', 'twofamily', 'twofamily', 'rowhouse', 'bodega'],
+  'Mill Basin': ['victorian', 'twofamily', 'twofamily', 'twofamily'],
+  'Bergen Beach': ['twofamily', 'twofamily', 'victorian', 'twofamily'],
+  'Madison': ['twofamily', 'twofamily', 'rowhouse', 'bakery'],
+  'Gerritsen Beach': ['twofamily', 'twofamily', 'twofamily', 'bodega'],
+  'East Flatbush': ['rowhouse', 'rowhouse', 'twofamily', 'apartment', 'bakery', 'bodega', 'church'],
+  'Sunset Park': ['rowhouse', 'rowhouse', 'walkup', 'bakery', 'bodega', 'laundromat'],
+  'Borough Park': ['walkup', 'apartment', 'twofamily', 'bakery', 'bakery'],
+  'Bay Ridge': ['rowhouse', 'rowhouse', 'twofamily', 'apartment', 'victorian', 'bakery', 'coffee'],
+  'Fort Hamilton': ['rowhouse', 'apartment', 'twofamily'],
+  'Dyker Heights': ['victorian', 'victorian', 'twofamily', 'twofamily', 'rowhouse'],
+  'Bensonhurst': ['twofamily', 'rowhouse', 'rowhouse', 'apartment', 'bakery', 'bodega'],
+  'Bath Beach': ['twofamily', 'rowhouse', 'apartment', 'bakery'],
+  'Gravesend': ['twofamily', 'rowhouse', 'apartment', 'bakery'],
+  'Homecrest': ['twofamily', 'apartment', 'rowhouse', 'bakery'],
+  'Sheepshead Bay': ['apartment', 'twofamily', 'rowhouse', 'bakery'],
+  'Manhattan Beach': ['victorian', 'victorian', 'victorian', 'twofamily'],
+  'Sea Gate': ['victorian', 'victorian', 'twofamily'],
+  'Brighton Beach': ['apartment', 'apartment', 'walkup', 'bakery', 'bodega'],
+  'Coney Island': ['apartment', 'apartment', 'walkup', 'bodega'],
+};
+/** Freestanding houses get a side yard between them. */
+const DETACHED = new Set<BuildingType>(['victorian', 'twofamily']);
 const HEIGHT: Record<BuildingType, [number, number]> = {
   brownstone: [6, 7], coffee: [5, 5], boutique: [5, 6], nonprofit: [7, 7], coop: [6, 6], bodega: [5, 5],
   mural: [7, 7], tenant: [7, 7], community: [7, 7], studio: [7, 8], warehouse: [7, 8], gallery: [6, 7],
   government: [9, 9], courthouse: [10, 10], police: [8, 8], tower: [11, 11], apartment: [8, 9],
   laundromat: [5, 5], church: [9, 9], shed: [3, 3], bakery: [6, 6], sales: [7, 7],
   arena: [6, 6], library: [7, 7], arch: [4, 4], supertall: [12, 12], clocktower: [12, 12],
+  victorian: [6, 6], rowhouse: [5, 5], twofamily: [5, 5], walkup: [7, 8],
 };
 
 function rng(seed: number) {
@@ -534,9 +587,9 @@ export function generateLayout(): WorldLayout {
       let type: BuildingType, w: number;
       if (lm) { type = lm.type; w = Math.min(lm.w, end - cursor); }
       else {
-        const pool = brownstones ? BROWNSTONE_ROW : FILLER[dist];
+        const pool = HOOD_ROW[neighborhoodOfBlock(c, r) ?? ''] ?? (brownstones ? BROWNSTONE_ROW : FILLER[dist]);
         type = pool[Math.floor(rand() * pool.length)];
-        w = Math.min(type === 'brownstone' ? 3 : 3 + Math.floor(rand() * 3), end - cursor);
+        w = Math.min(type === 'brownstone' || type === 'rowhouse' || type === 'twofamily' ? 3 : type === 'victorian' ? 4 : 3 + Math.floor(rand() * 3), end - cursor);
         if (end - cursor - w < 3) w = end - cursor; // avoid slivers
         if (w < 3) break;
       }
@@ -556,7 +609,7 @@ export function generateLayout(): WorldLayout {
       if (lm?.id === 'mural') spots.fridge = { x: x + (w * TILE) / 2 - 40, y: bottom + 6 };
       if (lm?.id === 'bodega') spots.cat = { x: x + w * TILE + 30, y: bottom + 20 };
       if (lm?.id === 'commcenter') { spots.marcus = { x: x + 60, y: bottom + 34 }; spots.priya = { x: x + w * TILE - 60, y: bottom + 34 }; }
-      cursor += w; idx++;
+      cursor += w + (!lm && DETACHED.has(type) ? 1 : 0); idx++; // a side yard next to a freestanding house
     }
     if (queue.length) console.warn('Avenue left no room for', queue.map((q) => q.id));
     // Backyard trees & stuff in the strip above the buildings
@@ -700,6 +753,18 @@ export function generateLayout(): WorldLayout {
   const placedLm: { x: number; y: number }[] = []; // keep painted landmarks apart (Coney's five share a couple of blocks)
   for (const [key, [la, ln]] of Object.entries(PAINTED_AT)) {
     const g = geo(la, ln), cx = Math.floor(g.x), cy = Math.floor(g.y);
+    // The painting's footprint on the ground (drawn with its feet at the spot): it shouldn't cover streets or buildings
+    const lmDef = PAINTED.find((p) => `lmk_${p.id}` === key), sc = lmDef?.scale ?? 1;
+    const fw = Math.ceil(((lmDef?.size?.[0] ?? 160) * sc) / TILE), fh = Math.ceil(((lmDef?.size?.[1] ?? 160) * sc) / TILE);
+    const ROADISH = new Set<number>([T.ASPHALT, T.LANE_V, T.LANE_H, T.INTERSECTION, T.CROSS_V, T.CROSS_H, T.WATER, T.OFFMAP]);
+    const onField = (tx: number, ty: number) => ['liufield', 'bcfield'].some((f) => { const a = spots[`${f}_tl`], b = spots[`${f}_br`]; return !!a && !!b && tx * TILE >= a.x && tx * TILE < b.x && ty * TILE >= a.y && ty * TILE < b.y; });
+    const footBad = (x: number, y: number) => {
+      let bad = 0;
+      for (let ty = Math.round(y - fh * 0.8); ty <= Math.round(y + fh * 0.15); ty++) for (let tx = Math.round(x - fw * 0.45); tx <= Math.round(x + fw * 0.45); tx++) {
+        const t = tiles[ty]?.[tx]; if (t === undefined || ROADISH.has(t) || blocked[ty][tx] || onField(tx, ty)) bad++;
+      }
+      return bad;
+    };
     const OPEN = new Set<number>([T.GRASS, T.PLAZA, T.YARD, T.LOT, T.SAND, T.SIDEWALK, T.CURB, T.COURT]);
     let best: Spot | null = null, bd = Infinity;
     for (let dy = -28; dy <= 28; dy++) for (let dx = -28; dx <= 28; dx++) {
@@ -710,10 +775,16 @@ export function generateLayout(): WorldLayout {
       let crowd = 0;
       for (let oy = -3; oy <= 3; oy++) for (let ox = -3; ox <= 3; ox++) if (blocked[y + oy]?.[x + ox]) crowd++;
       if (placedLm.some((p) => Math.hypot(p.x - x, p.y - y) < 9)) continue;
-      const d = Math.hypot(dx, dy) + crowd * 2 + (spotTaken(x, y) ? 50 : 0);
+      const d = Math.hypot(dx, dy) + crowd * 2 + (spotTaken(x, y) ? 50 : 0) + footBad(x, y) * 3;
       if (d < bd) { bd = d; best = { x: px(x) + 16, y: px(y) + 16 }; }
     }
     if (best) { spots[key] = best; placedLm.push({ x: Math.floor(best.x / TILE), y: Math.floor(best.y / TILE) }); }
+  }
+  // Coney's rides keep their real west-to-east order along the boardwalk
+  {
+    const coney = Object.keys(PAINTED_AT).filter((k) => spots[k] && isAmus(Math.floor(spots[k].x / TILE / BLOCK_W), Math.floor(spots[k].y / TILE / BLOCK_H)));
+    const xs = coney.map((k) => spots[k]).sort((a, b) => a.x - b.x);
+    coney.sort((a, b) => PAINTED_AT[a][1] - PAINTED_AT[b][1]).forEach((k, i) => { spots[k] = xs[i]; });
   }
   // Green-Wood's ghosts (src/data/ghosts.ts) drift on the cemetery's grass and paths, never out on the sidewalk
   for (const [key, [la, ln]] of Object.entries(GHOST_AT)) {

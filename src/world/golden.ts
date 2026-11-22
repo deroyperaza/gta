@@ -115,6 +115,10 @@ export function makeTiles(scene: Phaser.Scene) {
 
 // ------------------------------------------------------------------ BUILDINGS
 const WALL: Record<BuildingType, string[]> = {
+  victorian: ['#d9c48a', '#a8b98e', '#c9a7c4', '#9bb8cc'], // butter, sage, lavender, sky: painted clapboard
+  rowhouse: ['#b0805a', '#8f5a42', '#c9b08a', '#a06a4a'], // tan brick, red brick, limestone, brown brick
+  twofamily: ['#c4a27a', '#9a6a50', '#d8ccb4', '#8a7a6a'],
+  walkup: ['#8b4a38', '#9a5a44', '#7a4a3a', '#a2684e'],
   brownstone: ['#6b4436', '#734a3a', '#7f5440', '#5e3e33'],
   coffee: ['#5a3a2e', '#3e4246', '#7a5a44', '#34403a'],
   boutique: ['#b8a796', '#8a6f62', '#c9b9a4', '#6f5a50'],
@@ -288,6 +292,69 @@ function drawBuilding(c: Ctx, b: BuildingDef) {
       if (b.name) { c.fillStyle = 'rgba(250,245,235,.85)'; c.fillRect(6, rh + 8, w - 12, 11); sign(c, b.name, w / 2, rh + 13.5, w - 14, 7, '#3a2a1a', 700); }
       break;
     }
+    case 'victorian': {
+      // Freestanding wood house: clapboard, a front gable, white trim, a deep porch with posts
+      c.strokeStyle = 'rgba(0,0,0,.13)'; c.lineWidth = 1; for (let y = rh + 6; y < h; y += 4) line(c, 0, y, w, y);
+      const porchY = h - fh * 0.34;
+      // gable over the front: a white-trimmed triangle with a round attic window
+      c.fillStyle = col(wall, 1, 1.06); c.beginPath(); c.moveTo(w * 0.18, rh + 2); c.lineTo(w * 0.5, rh - Math.min(16, rh * 0.5)); c.lineTo(w * 0.82, rh + 2); c.closePath(); c.fill();
+      c.strokeStyle = '#f4efe6'; c.lineWidth = 2.2; c.stroke();
+      c.fillStyle = '#2a2f38'; ell(c, w * 0.5, rh - 2, 3.2, 3.2); c.fill();
+      // upstairs windows with white frames and shutters
+      const cols = w > 140 ? 3 : 2;
+      for (let k = 0; k < cols; k++) {
+        const x = (w / cols) * (k + 0.5) - 7, y = rh + 9;
+        c.fillStyle = '#f4efe6'; c.fillRect(x - 2, y - 2, 18, Math.min(20, porchY - y - 6) + 4);
+        c.fillStyle = rnd() < 0.4 ? '#f7b26a' : '#2a323c'; c.fillRect(x, y, 14, Math.min(20, porchY - y - 6));
+        c.fillStyle = col(wall, 1, 0.6); c.fillRect(x - 6, y, 3, Math.min(20, porchY - y - 6)); c.fillRect(x + 17, y, 3, Math.min(20, porchY - y - 6));
+      }
+      // porch: roof band, shadow, posts and railing, steps in the middle
+      c.fillStyle = '#f4efe6'; c.fillRect(0, porchY - 5, w, 5);
+      c.fillStyle = 'rgba(20,14,24,.45)'; c.fillRect(2, porchY, w - 4, h - porchY);
+      c.fillStyle = col(wall, 1, 0.8); c.fillRect(2, porchY, w - 4, h - porchY - 3);
+      c.fillStyle = 'rgba(0,0,0,.28)'; c.fillRect(2, porchY, w - 4, 5);
+      for (let x = 4; x < w - 2; x += Math.max(14, w / 6)) { c.fillStyle = '#f4efe6'; c.fillRect(x, porchY, 3, h - porchY); }
+      c.fillStyle = '#f4efe6'; c.fillRect(2, h - 9, w - 4, 2);
+      c.fillStyle = '#3a2418'; c.fillRect(w / 2 - 7, porchY + 4, 14, h - porchY - 10);
+      for (let i = 0; i < 3; i++) { c.fillStyle = col('#b8ab98', 1, 0.9 + i * 0.05); c.fillRect(w / 2 - 12 - i * 2, h - 6 + i * 2, 24 + i * 4, 2); }
+      break;
+    }
+    case 'rowhouse': case 'twofamily': {
+      // Two-story brick or limestone house: a bay window upstairs, a metal awning over a low stoop
+      const two = type === 'twofamily';
+      if (!two) { c.strokeStyle = 'rgba(0,0,0,.09)'; c.lineWidth = 0.7; for (let y = rh + 5; y < h; y += 3) line(c, 0, y, w, y); }
+      else { c.strokeStyle = 'rgba(255,255,255,.12)'; c.lineWidth = 0.8; for (let y = rh + 5; y < h - 20; y += 4) line(c, 0, y, w, y); }
+      const bayW = w * 0.5, bx = two ? w * 0.08 : (w - bayW) / 2, by = rh + 7, bh2 = Math.max(12, (h - rh) * 0.38);
+      c.fillStyle = col(wall, 1, 1.1); c.fillRect(bx, by, bayW, bh2);
+      c.fillStyle = 'rgba(0,0,0,.25)'; c.fillRect(bx, by + bh2, bayW, 2);
+      for (let k = 0; k < 3; k++) { c.fillStyle = rnd() < 0.3 ? '#f7b26a' : '#26303a'; c.fillRect(bx + 3 + k * (bayW - 6) / 3, by + 3, (bayW - 6) / 3 - 3, bh2 - 6); }
+      c.fillStyle = col(wall, 1, 0.7); c.fillRect(0, rh + 4, w, 2);
+      // ground floor: window, door under an aluminum awning (striped on two-family houses)
+      const dy = h - 16, dx = two ? w * 0.62 : w * 0.6;
+      c.fillStyle = '#26303a'; c.fillRect(w * 0.1, dy - 4, w * 0.3, 11);
+      c.fillStyle = '#3a2418'; c.fillRect(dx, dy - 6, 12, 15);
+      const aw = two ? ['#2f6a4a', '#f2efe6'] : ['#5a5f66', '#8a9098'];
+      for (let i = 0; i < 5; i++) { c.fillStyle = aw[i % 2]; c.fillRect(dx - 6 + i * 5, dy - 11, 5, 5); }
+      c.fillStyle = 'rgba(0,0,0,.25)'; c.fillRect(dx - 6, dy - 6, 25, 2);
+      for (let i = 0; i < 2; i++) { c.fillStyle = col('#a8a092', 1, 0.95 + i * 0.05); c.fillRect(dx - 3 - i * 2, h - 5 + i * 2.5, 18 + i * 4, 2.5); }
+      if (two) { c.fillStyle = '#7a7a7e'; c.fillRect(w - 10, rh + 6, 3, h - rh - 6); } // downspout by the driveway
+      break;
+    }
+    case 'walkup': {
+      // Brick tenement: rows of windows and black zigzag fire escapes
+      const floors = Math.max(3, Math.round((winBot - winTop) / 22)), cols = Math.max(3, Math.floor(w / 22));
+      windows(cols, floors, 0.3);
+      const fl = (winBot - winTop) / floors, fx0 = w * 0.18, fx1 = w * 0.62;
+      c.strokeStyle = '#141214'; c.lineWidth = 1.6;
+      for (let f = 0; f < floors; f++) {
+        const y = winTop + (f + 1) * fl - 3; line(c, fx0, y, fx1, y);
+        c.lineWidth = 0.8; for (let x = fx0; x <= fx1; x += 3) line(c, x, y, x, y - 5); c.lineWidth = 1.6;
+        line(c, f % 2 ? fx0 + 4 : fx1 - 4, y, f % 2 ? fx1 - 12 : fx0 + 12, y - fl + 2);
+      }
+      c.fillStyle = '#2a1a14'; c.fillRect(w * 0.78, h - 18, 13, 18);
+      c.fillStyle = col(wall, 1, 0.55); c.fillRect(0, rh + 4, w, 4);
+      break;
+    }
     default: {
       const floors = Math.max(1, Math.round((winBot - winTop) / 28));
       const cols = Math.max(2, Math.floor(w / (type === 'brownstone' ? 22 : 26)));
@@ -313,10 +380,26 @@ function drawBuilding(c: Ctx, b: BuildingDef) {
   for (let k = 0; k < w * rh / 26; k++) { c.fillStyle = rnd() < 0.5 ? 'rgba(0,0,0,.14)' : 'rgba(255,255,255,.08)'; c.fillRect(R(0, w), R(0, rh), R(1, 3), R(1, 2)); }
   if (['#b7babd', '#c2c4c4', '#a9adb1'].includes(roof)) { c.strokeStyle = 'rgba(0,0,0,.1)'; c.lineWidth = 0.8; for (let x = 9; x < w; x += 9) line(c, x, 0, x, rh); }
   c.fillStyle = lg(c, 0, 0, w, rh, [[0, 'rgba(255,190,120,.2)'], [1, 'rgba(0,0,0,.18)']]); c.fillRect(0, 0, w, rh);
-  roofDetails(c, b, w, rh);
+  if (type !== 'victorian' && type !== 'twofamily') roofDetails(c, b, w, rh);
   c.restore();
-  c.strokeStyle = col(roof, 1, 1.25); c.lineWidth = 3; c.strokeRect(1.5, 1.5, w - 3, rh - 3);
-  c.strokeStyle = 'rgba(0,0,0,.3)'; c.lineWidth = 1; c.strokeRect(3.5, 3.5, w - 7, rh - 7);
+  if (type === 'victorian' || type === 'twofamily') {
+    // Pitched shingle roof: the ridge runs east-west, the south slope catches the light, a chimney, sometimes a turret
+    const sh = pick(type === 'victorian' ? ['#5a4a52', '#6a3a32', '#4a5058', '#7a5a3a'] : ['#6a5048', '#5a5a5e', '#7a4a3a']), ridge = rh * 0.45;
+    c.fillStyle = col(sh, 1, 0.8); c.fillRect(0, 0, w, ridge);
+    c.fillStyle = lg(c, 0, ridge, 0, rh, [[0, col(sh, 1, 1.25)], [1, col(sh, 1, 1.05)]]); c.fillRect(0, ridge, w, rh - ridge);
+    c.strokeStyle = 'rgba(0,0,0,.16)'; c.lineWidth = 0.8; for (let y = 3; y < rh; y += 4) line(c, 0, y, w, y);
+    c.fillStyle = col(sh, 1, 1.5); c.fillRect(0, ridge - 1.5, w, 3);
+    c.fillStyle = col('#8a4a38'); c.fillRect(w * 0.72, ridge - 10, 9, 9); c.fillStyle = 'rgba(0,0,0,.35)'; c.fillRect(w * 0.72 + 9, ridge - 8, 4, 9);
+    if (type === 'victorian' && b.variant % 2 === 0) { // round corner turret with a conical roof
+      const tx = w * 0.16, ty = rh * 0.62, tr = Math.min(16, w * 0.13);
+      c.fillStyle = 'rgba(0,0,0,.3)'; ell(c, tx + 4, ty + 4, tr, tr); c.fill();
+      c.fillStyle = lg(c, tx - tr, ty - tr, tx + tr, ty + tr, [[0, col(sh, 1, 1.5)], [1, col(sh, 1, 0.75)]]); ell(c, tx, ty, tr, tr); c.fill();
+      c.fillStyle = '#c9a43a'; ell(c, tx, ty, 2.2, 2.2); c.fill();
+    }
+  } else {
+    c.strokeStyle = col(roof, 1, 1.25); c.lineWidth = 3; c.strokeRect(1.5, 1.5, w - 3, rh - 3);
+    c.strokeStyle = 'rgba(0,0,0,.3)'; c.lineWidth = 1; c.strokeRect(3.5, 3.5, w - 7, rh - 7);
+  }
   // west face catches the low sun
   c.fillStyle = 'rgba(255,170,90,.32)'; c.fillRect(0, 0, 2.5, h);
   // party walls between row buildings
