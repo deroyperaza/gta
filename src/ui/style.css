@@ -448,3 +448,6 @@ body:has(#mission-intro.show) #district { visibility: hidden; }
 .lesson b { font: 900 13px Nunito, Arial, sans-serif; letter-spacing: .5px; color: var(--pink); }
 .lesson em { font: 600 12px Nunito, Arial, sans-serif; color: #7a6a8c; margin-left: 6px; font-style: normal; }
 .lesson p { font: 600 14px/1.4 Nunito, Arial, sans-serif; margin: 4px 0 0; }
+
+/* No double-tap zoom on anything you tap (iOS Safari); taps stay instant */
+button, a, .pa, .ch-item, #touch-btns button, #hud-buttons button { touch-action: manipulation; }

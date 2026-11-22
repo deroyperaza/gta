@@ -3,6 +3,9 @@ import './ui/style.css';
 import { WorldScene } from './scenes/WorldScene';
 import { missions } from './systems/missions';
 import { ui } from './ui/ui';
+import { lockPageZoom } from './ui/nozoom';
+
+lockPageZoom(); // phones: the page never zooms; the game camera does
 
 async function boot() {
   // Textures are drawn with canvas text, so wait (briefly) for the comic fonts.
