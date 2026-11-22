@@ -481,3 +481,5 @@ button, a, .pa, .ch-item, #touch-btns button, #hud-buttons button { touch-action
 .map-key span { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
 .map-key svg { width: 16px; height: 16px; flex: none; }
 @media (max-width: 600px) { .map-key { font-size: 12px; gap: 4px 10px; } }
+/* How It Works: the LET'S ORGANIZE button stays pinned at the bottom of the card, so you can close it without scrolling */
+.help-card #help-close { position: sticky; bottom: -22px; z-index: 1; width: calc(100% + 56px); margin: 14px -28px -22px; padding: 14px; background: var(--yellow); border: 0; border-top: 3px solid var(--ink); border-radius: 0; box-shadow: 0 -10px 14px -6px rgba(255,246,228,.9); }

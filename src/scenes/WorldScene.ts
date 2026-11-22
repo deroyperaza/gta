@@ -72,6 +72,7 @@ export class WorldScene extends Phaser.Scene {
   onBike = false;
   playerRing!: Phaser.GameObjects.Image;
   playerChevron!: Phaser.GameObjects.Image;
+  playerPin!: Phaser.GameObjects.Image;
   district: District | null = null;
   hood: string | null = null;
   lastDialogueEnd = 0;
@@ -121,7 +122,8 @@ export class WorldScene extends Phaser.Scene {
     makePlayerMarker(this);
     this.playerRing = this.add.image(start.x, start.y, 'player-ring');
     this.playerChevron = this.add.image(start.x, start.y, 'player-chevron');
-    this.miniIgnore.push(this.playerRing, this.playerChevron);
+    this.playerPin = this.add.image(start.x, start.y, 'player-pin').setOrigin(0.5, 1).setDepth(1e6 - 1);
+    this.miniIgnore.push(this.playerRing, this.playerChevron, this.playerPin);
     this.tweens.add({ targets: this.playerRing, scale: { from: 0.9, to: 1.12 }, alpha: { from: 1, to: 0.65 }, duration: 900, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
     this.setPlayerBody();
     this.physics.add.collider(this.player, solids);
@@ -1223,6 +1225,7 @@ export class WorldScene extends Phaser.Scene {
     }
     this.player.setDepth(this.flying ? 6e4 : this.player.y); // the dragon flies over the buildings
     this.playerRing.setPosition(this.player.x, this.player.y).setDepth(this.player.y - 1).setVisible(this.mode === 'play' && !rideAt);
+    this.playerPin.setPosition(this.player.x, this.player.y - (this.onBike ? 50 : 42) - Math.abs(Math.sin(this.time.now / 260)) * 6).setVisible(this.mode === 'play' && !rideAt && !this.flying);
     { const a = this.player.rotation - Math.PI / 2, d = this.onBike ? 34 : 28; this.playerChevron.setPosition(this.player.x + Math.cos(a) * d, this.player.y + Math.sin(a) * d).setRotation(this.player.rotation).setDepth(this.player.y + 1).setVisible(this.mode === 'play' && !rideAt); }
     state.d.player.x = this.player.x; state.d.player.y = this.player.y;
 

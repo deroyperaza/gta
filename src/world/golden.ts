@@ -602,15 +602,24 @@ function drawBike(c: Ctx, frameColor: string, f: number, L = 40) {
 
 /** Ground marker that makes the player's character unmistakable (GTA-style). */
 export function makePlayerMarker(scene: Phaser.Scene) {
-  canvas(scene, 'player-ring', 72, 72, (c) => {
-    const cx = 36, cy = 36;
-    c.fillStyle = rg(c, cx, cy, 8, 34, [[0, 'rgba(255,210,63,.0)'], [0.55, 'rgba(255,210,63,.28)'], [0.8, 'rgba(255,210,63,.12)'], [1, 'rgba(255,210,63,0)']]); ell(c, cx, cy, 34, 34); c.fill();
-    c.strokeStyle = 'rgba(255,224,110,.95)'; c.lineWidth = 2.5; ell(c, cx, cy, 22, 22); c.stroke();
-    c.strokeStyle = 'rgba(20,10,4,.35)'; c.lineWidth = 1; ell(c, cx, cy, 24, 24); c.stroke();
+  // Hot pink, the "You" color on the map key: nothing else on the street is this color, so you pop out of a crowd
+  canvas(scene, 'player-ring', 84, 84, (c) => {
+    const cx = 42, cy = 42;
+    c.fillStyle = rg(c, cx, cy, 10, 40, [[0, 'rgba(255,79,163,.0)'], [0.55, 'rgba(255,79,163,.38)'], [0.8, 'rgba(255,79,163,.16)'], [1, 'rgba(255,79,163,0)']]); ell(c, cx, cy, 40, 40); c.fill();
+    c.strokeStyle = 'rgba(22,16,31,.85)'; c.lineWidth = 7; ell(c, cx, cy, 26, 26); c.stroke();
+    c.strokeStyle = '#ff4fa3'; c.lineWidth = 4; ell(c, cx, cy, 26, 26); c.stroke();
   });
-  canvas(scene, 'player-chevron', 24, 16, (c) => {
-    c.fillStyle = '#ffe06e'; c.strokeStyle = 'rgba(20,10,4,.6)'; c.lineWidth = 1.5;
-    c.beginPath(); c.moveTo(12, 1); c.lineTo(22, 14); c.lineTo(12, 10); c.lineTo(2, 14); c.closePath(); c.fill(); c.stroke();
+  canvas(scene, 'player-chevron', 28, 20, (c) => {
+    c.fillStyle = '#ff4fa3'; c.strokeStyle = '#16101f'; c.lineWidth = 2.5; c.lineJoin = 'round';
+    c.beginPath(); c.moveTo(14, 2); c.lineTo(26, 17); c.lineTo(14, 12); c.lineTo(2, 17); c.closePath(); c.fill(); c.stroke();
+  });
+  // A "YOU" tag floating over your head, drawn above trees and crowds
+  canvas(scene, 'player-pin', 56, 44, (c) => {
+    c.fillStyle = '#ff4fa3'; c.strokeStyle = '#16101f'; c.lineWidth = 3; c.lineJoin = 'round';
+    const r = 9, L = 3, R = 53, T = 3, B = 29;
+    c.beginPath(); c.moveTo(L + r, T); c.arcTo(R, T, R, B, r); c.arcTo(R, B, L, B, r); c.lineTo(35, B); c.lineTo(28, 40); c.lineTo(21, B); c.arcTo(L, B, L, T, r); c.arcTo(L, T, R, T, r); c.closePath();
+    c.fill(); c.stroke();
+    c.font = '20px Bangers, Impact, sans-serif'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillStyle = '#fff'; c.fillText('YOU', 28, 17);
   });
 }
 
