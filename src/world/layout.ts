@@ -615,6 +615,14 @@ export function generateLayout(): WorldLayout {
     ['dock-crownheights', 12, 9, 15], ['dock-redhook', 3, 8, 15], ['dock-coney', 7, 19, 15], ['dock-flatbush', 10, 13, 3], ['dock-sunsetpark', 3, 13, 15],
     ['dock-plg', 10, 10, 15], ['dock-waterfront', 9, 2, 15], ['dock-greenpoint', 11, 0, 3], ['dock-bayridge', 1, 15, 3], ['dock-canarsie', 16, 13, 3],
     ['dock-eny', 17, 9, 3], ['dock-midwood', 8, 16, 3], ['dock-sheepshead', 11, 19, 3]] as [string, number, number, number][]) if (isLand(c, r)) dock(name, c, r, dx);
+  // ...and one on every other block, like a real bike-share map (checkerboard; none on the beach or where an avenue cuts the sidewalk)
+  const hasDock = new Set(Object.keys(spots).filter((k) => k.startsWith('dock-')).map((k) => `${Math.floor(spots[k].x / TILE / BLOCK_W)},${Math.floor(spots[k].y / TILE / BLOCK_H)}`));
+  for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) {
+    if ((c + r) % 2 || !isLand(c, r) || isBeach(c, r) || hasDock.has(`${c},${r}`)) continue;
+    const dx = (c * 7 + r * 3) % 2 ? 3 : 15, tx = c * BLOCK_W + ROAD + dx, ty = (r + 1) * BLOCK_H - 2;
+    const ok = [-1, 0, 1, 2].every((o) => tiles[ty]?.[tx + o] === T.SIDEWALK && !blocked[ty][tx + o]);
+    if (ok) dock(`dock-${c}-${r}`, c, r, dx);
+  }
   // Vendors
   spots.churro = { x: (3 * BLOCK_W + ROAD + 8) * TILE, y: (9 * BLOCK_H + ROAD - 1) * TILE + 20 }; // Red Hook, by the ballfields
   spots.halal = { x: spots.plazaSpawn.x - 90, y: spots.plazaSpawn.y + 70 }; // west side of the plaza, clear of Flatbush

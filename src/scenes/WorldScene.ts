@@ -37,6 +37,7 @@ export class WorldScene extends Phaser.Scene {
   opp!: Opposition;
   transit!: Transit;
   stunUntil = 0;
+  dragonSign?: Phaser.GameObjects.Text; dragonMM?: Phaser.GameObjects.Text;
   /** Naim's dragon: 30 seconds of flight over buildings, cars and water */
   private flyUntil = 0; private flyShadow?: Phaser.GameObjects.Ellipse; private flap?: Phaser.Tweens.Tween;
   get flying() { return this.flyUntil > 0; }
@@ -125,7 +126,7 @@ export class WorldScene extends Phaser.Scene {
     bus.on('ui:ride', () => this.rideApp());
     bus.on('event:dragon:quiz', () => this.time.delayedCall(250, () => this.dragonQuiz()));
     bus.on('event:dragon:ride', () => this.startDragon());
-    bus.on('event:dragon:miss', () => state.setFlag('dragon_next_at', Date.now() + 60_000));
+    bus.on('event:dragon:miss', () => state.setFlag('dragon_next_at', Date.now() + 20_000));
     bus.on('transit:board', (k: string) => state.apply({ flags: { [`rode_${k}`]: true } }, { quiet: true }));
     this.holdRing = this.add.graphics().setDepth(1e6);
     this.miniIgnore.push(this.holdRing);
@@ -866,7 +867,7 @@ export class WorldScene extends Phaser.Scene {
     dialogue.start('naim', { entries: [{ node: 'q' }], nodes: {
       q: { speaker: 'naim', text: `Dragon question! Somebody on my block said: "${d.q}" What's actually true?`, choices: opts },
       yes: { speaker: 'naim', text: 'CORRECT. *He whistles with two fingers. Something enormous lands in the street.* You have thirty seconds. Don\'t fly over the Caucus. Actually, do.' },
-      no: { speaker: 'naim', text: 'Nope. Dragons only listen to facts. Ask somebody, check your notebook, come back in a minute.' },
+      no: { speaker: 'naim', text: 'Nope. Dragons only listen to facts. Check your notebook and ask me again in a few seconds.' },
     } });
   }
 
@@ -875,7 +876,7 @@ export class WorldScene extends Phaser.Scene {
     if (this.onBike) this.toggleBike(false, true);
     const body = this.player.body as Phaser.Physics.Arcade.Body;
     this.flyUntil = performance.now() + 30_000;
-    state.setFlag('dragon_ready', false); state.setFlag('dragon_next_at', Date.now() + 180_000);
+    state.setFlag('dragon_ready', false); state.setFlag('dragon_next_at', Date.now() + 90_000);
     body.checkCollision.none = true; this.player.anims.stop();
     if (this.textures.exists('dragon-art')) this.player.setTexture('dragon-art').setScale(0.62);
     else this.player.setTint(0x7fd4c8).setScale(2.2);
@@ -892,7 +893,7 @@ export class WorldScene extends Phaser.Scene {
     this.setPlayerBody(); body.checkCollision.none = false;
     const land = this.transit.nearestSidewalk(this.player.x, this.player.y, 30); // never land on a roof or in the river
     if (land) body.reset(land.x, land.y);
-    bus.emit('ui:toast', 'THE DRAGON SETS YOU DOWN GENTLY AND FLIES BACK TO NAIM. (BACK IN 3 MINUTES.)');
+    bus.emit('ui:toast', 'THE DRAGON SETS YOU DOWN GENTLY AND FLIES BACK TO NAIM. (BACK IN 90 SECONDS.)');
   }
 
   /** Flight timer, and whether Naim can offer a ride right now */
@@ -904,6 +905,16 @@ export class WorldScene extends Phaser.Scene {
     }
     const ready = !!state.flag('met_naim') && !this.flying && Date.now() >= (Number(state.flag('dragon_next_at')) || 0);
     if (ready !== !!state.flag('dragon_ready')) state.setFlag('dragon_ready', ready);
+    // Easy to find: a sign over Naim and a dragon on the minimap whenever a ride is waiting (even before you've met him)
+    const show = !this.flying && Date.now() >= (Number(state.flag('dragon_next_at')) || 0), np = this.entityPos.naim;
+    if (show && np && !this.dragonSign) {
+      this.dragonSign = this.add.text(np.x, np.y - 70, state.flag('met_naim') ? '🐉 DRAGON RIDE' : '🐉 ASK NAIM ABOUT HIS DRAGON', { fontFamily: 'Bangers, Impact, sans-serif', fontSize: '26px', color: '#ffe36b', stroke: '#2a1440', strokeThickness: 5 }).setOrigin(0.5, 1).setDepth(1e6);
+      this.tweens.add({ targets: this.dragonSign, y: np.y - 84, duration: 600, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
+      this.dragonMM = this.add.text(np.x, np.y, '🐉', { fontSize: '260px' }).setOrigin(0.5).setDepth(2e6);
+      this.minimap?.ignore(this.dragonSign); this.cameras.main.ignore(this.dragonMM);
+      if (!state.flag('dragon_hint')) { state.setFlag('dragon_hint', true); bus.emit('ui:toast', 'NAIM HAS A DRAGON. FIND HIM BY THE CENTRAL LIBRARY (🐉 ON YOUR MINIMAP).'); }
+    } else if (!show && this.dragonSign) { this.dragonSign.destroy(); this.dragonMM?.destroy(); this.dragonSign = undefined; this.dragonMM = undefined; }
+    if (this.dragonSign && np && state.flag('met_naim') && this.dragonSign.text !== '🐉 DRAGON RIDE') this.dragonSign.setText('🐉 DRAGON RIDE');
   }
 
   /** Where the mission wants you (the nearest target), for "closest stop to your objective" */

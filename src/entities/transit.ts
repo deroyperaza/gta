@@ -434,7 +434,17 @@ export class Transit {
     // Buses: drive, dwell at stops, turn around at the ends
     for (const b of this.buses) {
       const riding = this.riding?.kind === 'bus' && this.riding.bus === b;
+      // Keep a bus length behind any bus ahead in the same lane (no driving through each other)
+      const hx = Math.cos(b.sprite.rotation - Math.PI / 2), hy = Math.sin(b.sprite.rotation - Math.PI / 2); // the sprite faces where it's going
+      const blockedAhead = !riding && b.dwell <= 0 && this.buses.some((o) => {
+        if (o === b) return false;
+        const ox = o.sprite.x - b.sprite.x, oy = o.sprite.y - b.sprite.y, d = Math.hypot(ox, oy);
+        if (d > 145 || d < 1) return false; // a bus is 120px long
+        const ohx = Math.cos(o.sprite.rotation - Math.PI / 2), ohy = Math.sin(o.sprite.rotation - Math.PI / 2);
+        return (ox * hx + oy * hy) / d > 0.8 && ohx * hx + ohy * hy > 0.5; // ahead of us, heading the same way
+      });
       if (b.dwell > 0) { b.dwell -= dt; }
+      else if (blockedAhead) { /* wait for the bus ahead to pull away */ }
       else {
         const stop = b.route.stops[b.next], target = stop?.s ?? (b.dir > 0 ? b.route.path.len : 0);
         const step = BUS_SPEED * dt;
@@ -447,8 +457,9 @@ export class Transit {
           b.next = Math.max(0, Math.min(b.route.stops.length - 1, b.next + b.dir));
         } else b.s += Math.sign(target - b.s) * step;
       }
-      const p = at(b.route.path, b.s);
-      b.sprite.setPosition(p.x, p.y).setRotation(p.ang + Math.PI / 2 + (b.dir < 0 ? 0 : 0)).setDepth(p.y + 60);
+      // Drive on the right: each direction gets its own lane
+      const p = at(b.route.path, b.s), lane = 20 * b.dir;
+      b.sprite.setPosition(p.x - Math.sin(p.ang) * lane, p.y + Math.cos(p.ang) * lane).setRotation(p.ang + Math.PI / 2 + (b.dir < 0 ? Math.PI : 0)).setDepth(p.y + 60);
     }
     if (this.waiting && Math.hypot(player.x - this.waiting.stop.px, player.y - this.waiting.stop.py) > 160) this.waiting = null;
 
