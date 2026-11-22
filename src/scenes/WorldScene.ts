@@ -824,8 +824,10 @@ export class WorldScene extends Phaser.Scene {
   private paintedLiu() {
     const a = this.layout.spots.liufield_tl, b = this.layout.spots.liufield_br, sp = this.layout.spots.liufield;
     if (!a || !b || !sp || !this.textures.exists('lmk-liu')) return false;
-    const w = b.x - a.x + 40, img = this.add.image((a.x + b.x) / 2, b.y + 10, 'lmk-liu').setOrigin(0.5, 1);
-    img.setDisplaySize(w, (w * img.height) / img.width).setDepth(b.y); // anyone on the sidewalk below draws in front
+    // Turned 90° counterclockwise (Deroy): the field runs north, the Paramount corner sits south, filling the tall lot
+    const img = this.add.image(0, 0, 'lmk-liu').setAngle(-90);
+    const k = Math.min((b.x - a.x + 24) / img.height, (b.y - a.y + 10) / img.width); // rotated: width = image height
+    img.setScale(k).setPosition((a.x + b.x) / 2, b.y + 10 - (img.width * k) / 2).setDepth(b.y); // anyone on the sidewalk below draws in front
     const wall = this.add.zone((a.x + b.x) / 2, (a.y + b.y) / 2, b.x - a.x, b.y - a.y); // solid, like any building
     this.physics.add.existing(wall, true); this.liuWall = wall; // collider added once the player exists
     this.interactables.push({ id: 'liufield', x: sp.x, y: sp.y - 30, r: 140, label: () => 'Book the field', act: () => bus.emit('ui:toast', 'LIU\'S FIELD BELONGS TO THE UNIVERSITY: ASK LIU. A CITY PARK FIELD? BOOK IT WITH AN NYC PARKS PERMIT, $25 TO PROCESS. (LUCO SAYS HI.)') });
