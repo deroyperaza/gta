@@ -21,7 +21,7 @@ The zip leaves out `node_modules/` and `dist/`. `npm install` and `npm run build
 - The map is real Brooklyn: all 58 neighborhoods from NYC's official boundaries, the parks, the water, brownstone rows where Brooklyn has brownstones, and crowds of people that gather wherever you are.
 - **Transit:** all 156 subway stations (MTA data) with a route planner, five real bus routes, illegal dollar vans on Flatbush, and parody ride apps (Surge, Shlep, Ever-Ready Car Service) that cost Solidarity.
 - **Traffic** includes police cars and ambulances, some on calls with flashing lights.
-- **Painted landmarks** (ChatGPT, keyed): Barclays, Borough Hall, the Library, the Museum, Grand Army Plaza, BAM, the Savings Bank, the Brooklyn Bridge tower, the Lena Horne Bandshell, Green-Wood's gate, Jane's Carousel, the Botanic Garden conservatory, Brooklyn College, and Coney Island (Cyclone, Luna Park, Wonder Wheel, Maimonides Park, Aquarium). More are being painted.
+- **Painted landmarks** (ChatGPT, keyed): Barclays, Borough Hall, the Library, the Museum, Grand Army Plaza, BAM, the Savings Bank, the Brooklyn Bridge tower, the Lena Horne Bandshell, Green-Wood's gate, Jane's Carousel, the Botanic Garden conservatory, Brooklyn College, Coney Island (Cyclone, Luna Park, Wonder Wheel, Maimonides Park, Aquarium), the Verrazzano's Brooklyn tower, the Dyker Heights lights, Domino, McCarren Pool, the Sheepshead Bay footbridge, Canarsie Pier, Floyd Bennett Field and the Army Terminal. Four history landmarks are being painted.
 - **Fields and courts:** LIU's and Brooklyn College's soccer fields, real basketball court markings.
 
 **What you do**
@@ -39,7 +39,7 @@ The zip leaves out `node_modules/` and `dist/`. `npm install` and `npm run build
 - Some newer neighborhoods still borrow their district's look and street chatter.
 
 ## 3. What's next (pick any)
-1. **More painted landmarks:** the Verrazzano, Dyker Heights lights, Domino, McCarren Pool, Sheepshead Bay, Canarsie Pier, Floyd Bennett Field, the Army Terminal, Weeksville, the Prison Ship Martyrs' Monument, the Navy Yard, Erasmus Hall (references and facts are in `docs/FACTS-landmarks-jackie-whitman.md`).
+1. **More painted landmarks:** Weeksville, the Prison Ship Martyrs' Monument, the Navy Yard, Erasmus Hall (references and facts are in `docs/FACTS-landmarks-jackie-whitman.md`).
 2. **An election arc:** a City Council race where everything you've built counts on election day.
 3. **Neighborhood character:** each neighborhood its own buildings, chatter and one-line blurb.
 
