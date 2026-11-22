@@ -732,9 +732,10 @@ export class WorldScene extends Phaser.Scene {
     this.tweens.add({ targets: t, y: y - 40, alpha: 0, duration: 1000, ease: 'Cubic.out', onComplete: () => t.destroy() });
   }
   bubble(target: Phaser.GameObjects.Sprite, text: string) {
+    const k = this.scale.width < 900 ? 16 / 14 / this.cameras.main.zoom : 1; // phones: about 16px on screen, not 12
     const t = this.add.text(target.x, target.y - 66, text, {
-      fontFamily: 'Nunito, Arial', fontSize: '14px', fontStyle: 'bold', color: '#16101f', backgroundColor: '#ffffff',
-      padding: { x: 8, y: 5 }, wordWrap: { width: 220 }, align: 'center',
+      fontFamily: 'Nunito, Arial', fontSize: `${Math.round(14 * k)}px`, fontStyle: 'bold', color: '#16101f', backgroundColor: '#ffffff',
+      padding: { x: Math.round(8 * k), y: Math.round(5 * k) }, wordWrap: { width: Math.round(220 * k) }, align: 'center',
     }).setOrigin(0.5, 1).setDepth(1e6);
     this.minimap.ignore(t);
     this.tweens.add({ targets: t, alpha: 0, delay: 2600, duration: 400, onComplete: () => t.destroy() });
