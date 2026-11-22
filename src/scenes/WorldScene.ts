@@ -7,10 +7,11 @@ import { FLYER_LINES, NPCS, PED_LINES, PLAYER_LOOK, type NpcDef } from '../data/
 import { Pedestrians, type Ped } from '../entities/pedestrians';
 import { Traffic } from '../entities/traffic';
 import { Opposition, type OppConfig } from '../entities/opposition';
+import { LINE_COLORS, SERVICES, Transit, bullet } from '../entities/transit';
 import { dialogue } from '../systems/dialogue';
 import { missions } from '../systems/missions';
 import { ui } from '../ui/ui';
-import { BLOCK_H, BLOCK_W, GAP_CIRCLE, gapOutline, ROAD, T, TILE, WORLD_H, WORLD_W, districtAt, generateLayout, neighborhoodAt, type BuildingDef, type WorldLayout } from '../world/layout';
+import { BLOCK_H, BLOCK_W, COLS, ROWS, neighborhoodOfBlock, GAP_CIRCLE, gapOutline, ROAD, T, TILE, WORLD_H, WORLD_W, districtAt, generateLayout, neighborhoodAt, type BuildingDef, type WorldLayout } from '../world/layout';
 import { makeProps } from '../world/textures';
 import { buildingKey, makeBikeRider, makeBridgeTower, makeBuilding, makeCharacter, makePlayerMarker, makeStreetProps, makeTiles, makeVehicles, shadowKey, shadowOffset, SHADOW_PAD } from '../world/golden';
 
@@ -31,6 +32,7 @@ export class WorldScene extends Phaser.Scene {
   cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
   dragSteer = false;
   opp!: Opposition;
+  transit!: Transit;
   stunUntil = 0;
   /** Difficulty layers (missions 5+): standing at a stop takes time, set by that neighborhood's Trust */
   private hold: { name: string; t: number; need: number } | null = null;
@@ -108,6 +110,9 @@ export class WorldScene extends Phaser.Scene {
     this.setupMarch();
     this.peds = new Pedestrians(this, this.layout, 170);
     this.opp = new Opposition(this, this.layout, 6);
+    this.transit = new Transit(this, this.layout);
+    bus.on('transit:alight', (p: { x: number; y: number }) => { (this.player.body as Phaser.Physics.Arcade.Body).reset(p.x, p.y); this.player.setVisible(true); });
+    bus.on('ui:ride', () => this.rideApp());
     this.holdRing = this.add.graphics().setDepth(1e6);
     this.miniIgnore.push(this.holdRing);
     bus.on('mission:stage', () => { this.stageSpots = []; this.hold = null; });
@@ -557,10 +562,21 @@ export class WorldScene extends Phaser.Scene {
 
   private tryInteract() {
     if (this.mode !== 'play' || ui.blocking() || performance.now() - this.lastDialogueEnd < 250) return;
+    const tr = this.transit;
+    if (tr.riding) { if (tr.riding.kind === 'bus') tr.requestStop(); else tr.alight(); return; }
     const sq = this.opp.nearest(this.player.x, this.player.y, 72);
     if (sq) { dialogue.start('gop', this.opp.debate(sq)); return; }
     const it = this.nearestInteractable();
     if (it) { it.act(); return; }
+    const stn = tr.stationNear(this.player.x, this.player.y);
+    if (stn) { this.takeSubway(stn); return; }
+    const stop = tr.stopNear(this.player.x, this.player.y);
+    if (stop) { tr.wait(stop.route, stop.stop); return; }
+    if (tr.onFlatbush(this.player.x, this.player.y) != null && !tr.hasPending) {
+      ui.choose({ title: 'Dollar van', sub: 'Flatbush Ave · $2 cash · hop off anywhere. Most of these vans aren\'t licensed by the TLC.', items: [
+        { value: '-1', label: 'Toward Downtown Brooklyn' }, { value: '1', label: 'Toward Kings Plaza' }] }, (v) => tr.hailVan(this.player.x, this.player.y, Number(v) as 1 | -1));
+      return;
+    }
     const ped = this.nearPed();
     if (ped) {
       ped.pause = 2.5; ped.sprite.setFlipX(this.player.x < ped.sprite.x);
@@ -667,6 +683,60 @@ export class WorldScene extends Phaser.Scene {
     if (!id || !dlg) return;
     const p = this.entityPos[id];
     if (p && Math.hypot(p.x - this.player.x, p.y - this.player.y) < 80) dialogue.start(owner, DIALOGUES[dlg]);
+  }
+
+  /** Where the mission wants you (the nearest target), for "closest stop to your objective" */
+  private objectivePos() {
+    const ts = missions.targets().map((id) => this.entityPos[id]).filter(Boolean) as { x: number; y: number }[];
+    let best: { x: number; y: number } | null = null, bd = Infinity;
+    for (const t of ts) { const d = Math.hypot(t.x - this.player.x, t.y - this.player.y); if (d < bd) { bd = d; best = t; } }
+    return best;
+  }
+
+  private takeSubway(from: { st: { id: string; name: string; routes: string[]; ada: number }; x: number; y: number }) {
+    const tr = this.transit, obj = this.objectivePos(), near = obj ? tr.nearestStation(obj.x, obj.y)?.p : null;
+    const items = tr.stations.filter((p) => p.st.id !== from.st.id).sort((a, b) => a.st.name.localeCompare(b.st.name)).map((p) => {
+      const pl = tr.plan(from.st.id, p.st.id);
+      return { value: p.st.id, label: p.st.name, html: `${p.st.routes.map(bullet).join('')} ${p.st.name}${p.st.ada === 1 ? ' ♿' : ''}`,
+        sub: pl ? `${pl.stops} stops${pl.transfers ? ` · ${pl.transfers} transfer${pl.transfers > 1 ? 's' : ''}` : ''} · ${neighborhoodAt(p.x, p.y) ?? ''}` : 'No route', group: 'All Brooklyn stations' };
+    });
+    if (near && near.st.id !== from.st.id) { const it = items.find((i) => i.value === near.st.id); if (it) items.unshift({ ...it, group: 'Closest to your objective' }); }
+    const ada = from.st.ada === 1 ? '♿ Elevator access.' : from.st.ada === 2 ? '♿ Partly accessible (one direction only).' : '<b>Stairs only.</b> ' + Transit.adaLine();
+    ui.choose({ title: from.st.name, sub: `${from.st.routes.map(bullet).join('')} Tap in: $3 (Fair Fares: $1.50). ${ada}`, items, search: true }, (id) => {
+      const pl = tr.plan(from.st.id, id), dest = tr.byId[id];
+      if (!pl || !dest) { bus.emit('ui:toast', 'NO TRAINS. (PLANNED WORK.)'); return; }
+      const name = (sid: string) => tr.byId[sid]?.st.name ?? sid;
+      ui.rideSubway(pl.legs.map((l) => ({ route: l.route, color: LINE_COLORS[l.route] ?? '#888', dark: 'NQRW'.includes(l.route), stops: l.stops.map(name) })), () => {
+        (this.player.body as Phaser.Physics.Arcade.Body).reset(dest.x, dest.y + 40);
+        bus.emit('ui:toast', `YOU COME UP AT ${dest.st.name.toUpperCase()}`);
+        if (dest.st.ada !== 1 && !state.flag('seen_ada')) { state.setFlag('seen_ada', true); setTimeout(() => bus.emit('ui:toast', Transit.adaLine().toUpperCase()), 900); }
+      });
+    });
+  }
+
+  /** Ride apps and the car service: from anywhere. They cost Solidarity. */
+  private rideApp() {
+    if (this.mode !== 'play' || ui.blocking()) return;
+    const tr = this.transit;
+    if (tr.riding) { bus.emit('ui:toast', 'YOU\'RE ALREADY IN A VEHICLE.'); return; }
+    if (tr.hasPending) { tr.cancelPending(); bus.emit('ui:toast', 'RIDE CANCELED. THE DRIVER RATES YOU ONE STAR.'); return; }
+    ui.choose({ title: 'Get a ride', sub: 'Faster than the bus. Costs Solidarity: your comrades are watching.', items: SERVICES.map((s) => ({ value: s.id, label: s.name, sub: s.tag })) }, (svc) => {
+      const obj = this.objectivePos();
+      const acc: Record<string, [number, number, number]> = {};
+      for (let r = 0; r < ROWS; r++) for (let k = 0; k < COLS; k++) {
+        const nm = neighborhoodOfBlock(k, r); if (!nm) continue;
+        const a = (acc[nm] ??= [0, 0, 0]); a[0] += (k * BLOCK_W + ROAD + (BLOCK_W - ROAD) / 2) * TILE; a[1] += (r * BLOCK_H + ROAD + (BLOCK_H - ROAD) / 2) * TILE; a[2]++;
+      }
+      const dests = Object.entries(acc).map(([nm, [x, y, n]]) => ({ name: nm, x: x / n, y: y / n })).sort((a, b) => a.name.localeCompare(b.name));
+      const items = [
+        ...(obj ? [{ value: 'obj', label: 'Your objective', sub: neighborhoodAt(obj.x, obj.y) ?? '', group: 'Mission' }] : []),
+        ...dests.map((d, i) => ({ value: String(i), label: d.name, group: 'Neighborhoods' })),
+      ];
+      ui.choose({ title: SERVICES.find((s) => s.id === svc)!.name, sub: 'Where to?', items, search: true }, (v) => {
+        const dest = v === 'obj' && obj ? { x: obj.x, y: obj.y, name: 'your objective' } : { ...dests[Number(v)] };
+        tr.callRide(svc, this.player, dest);
+      });
+    });
   }
 
   /** Mission stages can target a place (`spot:<name>`): getting there sets the flag `at_<name>`. */
@@ -779,10 +849,12 @@ export class WorldScene extends Phaser.Scene {
       cam.centerOn(WORLD_W / 2 + Math.cos(this.titlePan) * WORLD_W * 0.33, WORLD_H / 2 + Math.sin(this.titlePan * 1.3) * WORLD_H * 0.3);
     }
 
-    missions.paused = blocking;
+    missions.paused = blocking && !ui.timerRuns();
     missions.update(dt);
 
-    if (blocking) {
+    const rideAt = this.mode === 'play' ? this.transit.update(dt, this.player) : null;
+    if (rideAt) { body.reset(rideAt.x, rideAt.y); this.player.setVisible(false); }
+    if (blocking || rideAt) {
       body.setVelocity(0, 0);
       this.player.anims.stop();
     } else {
@@ -814,8 +886,8 @@ export class WorldScene extends Phaser.Scene {
 
     }
     this.player.setDepth(this.player.y);
-    this.playerRing.setPosition(this.player.x, this.player.y).setDepth(this.player.y - 1).setVisible(this.mode === 'play');
-    { const a = this.player.rotation - Math.PI / 2, d = this.onBike ? 34 : 28; this.playerChevron.setPosition(this.player.x + Math.cos(a) * d, this.player.y + Math.sin(a) * d).setRotation(this.player.rotation).setDepth(this.player.y + 1).setVisible(this.mode === 'play'); }
+    this.playerRing.setPosition(this.player.x, this.player.y).setDepth(this.player.y - 1).setVisible(this.mode === 'play' && !rideAt);
+    { const a = this.player.rotation - Math.PI / 2, d = this.onBike ? 34 : 28; this.playerChevron.setPosition(this.player.x + Math.cos(a) * d, this.player.y + Math.sin(a) * d).setRotation(this.player.rotation).setDepth(this.player.y + 1).setVisible(this.mode === 'play' && !rideAt); }
     state.d.player.x = this.player.x; state.d.player.y = this.player.y;
 
     // World sim
@@ -827,19 +899,27 @@ export class WorldScene extends Phaser.Scene {
       const am = missions.active, st = am ? state.mission(am.id).stage : 0;
       const tp = missions.targets().map((id) => this.entityPos[id]).find(Boolean) ?? null;
       const fast = this.onBike || this.keys.SHIFT.isDown;
-      this.opp.update(dt, this.player, fast, !!am && st >= 1 && !blocking, tp, this.peds.followers().length, this.oppConfig());
+      this.opp.update(dt, this.player, fast, !!am && st >= 1 && !blocking && !rideAt, tp, this.peds.followers().length, this.oppConfig());
     }
-    if (!blocking) { this.marchTriggers(); this.spotArrivals(dt); }
+    if (!blocking && !rideAt) { this.marchTriggers(); this.spotArrivals(dt); }
     else this.holdRing.clear();
     if (!blocking && this.mode === 'play') this.attentionTick(dt);
     this.traffic.update(dt, this.player, (dx, dy) => { if (this.mode === 'play') { this.player.x += dx; this.player.y += dy; } });
 
     // Prompt
     if (!blocking) {
-      const sq = this.opp.nearest(this.player.x, this.player.y, 72);
-      const it = sq ? null : this.nearestInteractable();
-      const ped = !it && !sq ? this.nearPed() : null;
+      const tr = this.transit, R = tr.riding;
+      const sq = R ? null : this.opp.nearest(this.player.x, this.player.y, 72);
+      const it = sq || R ? null : this.nearestInteractable();
+      const stn = !sq && !it && !R ? tr.stationNear(this.player.x, this.player.y) : null;
+      const stop = !sq && !it && !stn && !R ? tr.stopNear(this.player.x, this.player.y) : null;
+      const van = !sq && !it && !stn && !stop && !R && !tr.hasPending && tr.onFlatbush(this.player.x, this.player.y) != null;
+      const ped = !it && !sq && !stn && !stop && !R ? this.nearPed() : null;
       const parts: string[] = [];
+      if (R) parts.push(`<span class="pa" data-act="interact"><b>E</b> ${R.kind === 'bus' ? (R.request ? 'Stop requested' : 'Request the next stop') : R.kind === 'van' ? 'Get off here' : 'Get out here'}</span>`);
+      if (stn) parts.push(`<span class="pa" data-act="interact"><b>E</b> Subway: ${stn.st.name} ${stn.st.routes.map(bullet).join('')}</span>`);
+      if (stop) parts.push(`<span class="pa" data-act="interact"><b>E</b> ${tr.waiting?.stop === stop.stop ? 'Waiting for the' : 'Wait for the'} ${stop.route.id}</span>`);
+      if (van) parts.push('<span class="pa" data-act="interact"><b>E</b> Hail a dollar van</span>');
       if (this.hold) parts.push(`<span class="pa">Winning them over… ${Math.max(0, this.hold.need - this.hold.t).toFixed(1)}s · stay close</span>`);
       if (sq) parts.push('<span class="pa" data-act="interact"><b>E</b> Debate the Caucus</span>');
       if (it) parts.push(`<span class="pa" data-act="interact"><b>E</b> ${it.label()}</span>`);
@@ -850,7 +930,7 @@ export class WorldScene extends Phaser.Scene {
       ui.setPrompt(parts.join('&nbsp;&nbsp;·&nbsp;&nbsp;'));
       // Touch buttons say what they'll do right now, and dim when there's nothing to do.
       const verb = (l: string) => { const w = l.split(' ')[0].toUpperCase(); return w === 'GRAB' ? 'BIKE' : w === 'TALK' ? 'TALK' : w; };
-      const eL = sq ? 'DEBATE' : it ? verb(it.label() ?? '') : ped ? 'CHAT' : null;
+      const eL = R ? (R.kind === 'bus' ? 'STOP' : 'OFF') : sq ? 'DEBATE' : it ? verb(it.label() ?? '') : stn ? 'SUBWAY' : stop ? 'WAIT' : van ? 'HAIL' : ped ? 'CHAT' : null;
       const sL = fped && state.count('flyers') > 0 ? 'FLYER' : this.nearWall() && state.count('posters') > 0 ? 'POSTER' : this.onBike ? 'HOP OFF' : null;
       ui.setTouchLabels(eL, sL);
     } else { ui.setPrompt(''); ui.setTouchLabels(null, null); }

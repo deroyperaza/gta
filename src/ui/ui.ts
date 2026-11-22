@@ -14,9 +14,11 @@ import { BLOCK_H, BLOCK_W, COLS, MAP_H, MAP_W, ROAD, ROWS, T, TILE, districtOfBl
  * Pure HTML/CSS so it stays crisp at any resolution and can later grow
  * touch controls.
  */
-type Panel = 'title' | 'pause' | 'journal' | 'map' | 'passed' | 'help' | null;
+type Panel = 'title' | 'pause' | 'journal' | 'map' | 'passed' | 'help' | 'chooser' | 'ride' | null;
+export interface ChoiceItem { value: string; label: string; sub?: string; html?: string; group?: string }
 
 const $ = <T extends HTMLElement = HTMLElement>(sel: string) => document.querySelector(sel) as T;
+const Phaser_rand = <T,>(a: T[]) => a[Math.floor(Math.random() * a.length)];
 
 class UI {
   private world: (Phaser.Scene & { layout: WorldLayout; player: Phaser.GameObjects.Sprite; mode: string; textures: Phaser.Textures.TextureManager }) | null = null;
@@ -31,6 +33,8 @@ class UI {
   private lastTick = 0;
   private touch = { x: 0, y: 0 };
   private passedAt = 0;
+  private onChoose: ((v: string) => void) | null = null;
+  private chooseItems: ChoiceItem[] = [];
 
   init() {
     bus.on('state:changed', () => this.renderHud());
@@ -76,6 +80,9 @@ class UI {
   // ------------------------------------------------------------------ KEYS
   private onKey(e: KeyboardEvent) {
     const k = e.key.toLowerCase();
+    if ((e.target as HTMLElement)?.tagName === 'INPUT' && k !== 'escape' && k !== 'enter') return; // typing in a search box
+    if (this.panel === 'ride') return; // underground: nothing to do but ride
+    if (this.panel === 'chooser' && k === 'enter') { const first = $('#ch-list .ch-item') as HTMLElement | null; first?.click(); e.preventDefault(); return; }
     if (this.dialogueOpen) {
       if (/^[1-4]$/.test(k) && Number(k) <= this.choiceCount) { this.pickVisible(Number(k) - 1); e.preventDefault(); return; }
       if (k === 'e' || k === ' ' || k === 'enter') { this.advanceDialogue(); e.preventDefault(); }
@@ -91,6 +98,50 @@ class UI {
     if (k === 'e') bus.emit('ui:interact');
     else if (k === ' ') { e.preventDefault(); bus.emit('ui:action'); }
     else if (k === 'b') bus.emit('ui:bike');
+    else if (k === 'r') bus.emit('ui:ride');
+  }
+
+  /** Mission timers keep running while you ride the train (it takes time) */
+  timerRuns() { return this.panel === 'ride'; }
+
+  /** A searchable list to pick from: subway stops, ride apps, destinations. */
+  choose(o: { title: string; sub?: string; items: ChoiceItem[]; search?: boolean }, onPick: (v: string) => void) {
+    this.openPanel('chooser');
+    this.onChoose = onPick; this.chooseItems = o.items;
+    $('#ch-title').textContent = o.title;
+    $('#ch-sub').innerHTML = o.sub ?? '';
+    const inp = $<HTMLInputElement>('#ch-search');
+    inp.hidden = !o.search; inp.value = '';
+    this.renderChoices('');
+    if (o.search && !matchMedia('(pointer: coarse)').matches) setTimeout(() => inp.focus(), 30);
+  }
+  private renderChoices(q: string) {
+    const ql = q.trim().toLowerCase();
+    let lastGroup = '';
+    $('#ch-list').innerHTML = this.chooseItems.filter((i) => !ql || i.label.toLowerCase().includes(ql) || (i.sub ?? '').toLowerCase().includes(ql)).map((i) => {
+      const head = i.group && i.group !== lastGroup ? `<div class="ch-group">${(lastGroup = i.group)}</div>` : '';
+      return `${head}<button class="ch-item" data-v="${i.value}"><b>${i.html ?? i.label}</b>${i.sub ? `<span>${i.sub}</span>` : ''}</button>`;
+    }).join('') || '<p class="sub">Nothing by that name.</p>';
+  }
+
+  /** Riding the subway: a car interior, the line bullets, the stops ticking by. */
+  rideSubway(legs: { route: string; color: string; dark: boolean; stops: string[] }[], onDone: () => void) {
+    this.openPanel('ride');
+    const card = $('#ride-card');
+    const seq: { route: string; color: string; dark: boolean; name: string; transfer: boolean }[] = [];
+    legs.forEach((l, li) => l.stops.slice(1).forEach((n, i) => seq.push({ route: l.route, color: l.color, dark: l.dark, name: n, transfer: li > 0 && i === 0 })));
+    let i = 0;
+    const lines = ['STAND CLEAR OF THE CLOSING DOORS, PLEASE.', 'WE ARE BEING HELD MOMENTARILY BY THE TRAIN DISPATCHER.', 'SHOWTIME! (A MAN SWINGS FROM THE POLE.)', 'IF YOU SEE SOMETHING, SAY SOMETHING.', 'THE NEXT STOP IS…', 'SOMEONE IS EATING A WHOLE ROTISSERIE CHICKEN.'];
+    const show = () => {
+      const st = seq[i];
+      if (!st) { this.closePanel(); onDone(); return; }
+      card.innerHTML = `<div class="ride-line"><i class="bullet big" style="background:${st.color};color:${st.dark ? '#111' : '#fff'}">${st.route}</i>${st.transfer ? '<em>TRANSFER</em>' : ''}</div>
+        <div class="ride-next">${i === seq.length - 1 ? 'LAST STOP FOR YOU' : 'NEXT STOP'}</div><div class="ride-stop">${st.name}</div>
+        <div class="ride-bar"><i style="width:${((i + 1) / seq.length) * 100}%"></i></div>
+        <div class="ride-pa">${Phaser_rand(lines)}</div>`;
+      i++; setTimeout(show, st.transfer ? 1400 : 750);
+    };
+    show();
   }
 
   // ------------------------------------------------------------------ PANELS
@@ -141,6 +192,14 @@ class UI {
       if (a === 'help') $('#help').classList.add('open');
       if (a === 'title') { state.save(); this.showTitle(); }
     });
+    $('#chooser').addEventListener('click', (e) => {
+      const t = e.target as HTMLElement;
+      if (t.matches('.close, .panel-bg')) { this.closePanel(); return; }
+      const it = t.closest('.ch-item') as HTMLElement | null;
+      if (it) { const cb = this.onChoose; this.onChoose = null; this.closePanel(); cb?.(it.dataset.v!); }
+    });
+    $('#ch-search').addEventListener('input', (e) => this.renderChoices((e.target as HTMLInputElement).value));
+    $('#hud-ride').onclick = () => bus.emit('ui:ride');
     for (const id of ['journal', 'map']) $(`#${id}`).addEventListener('click', (e) => { if ((e.target as HTMLElement).matches('.close, .panel-bg')) this.closePanel(); });
     $('#passed').addEventListener('click', () => { if (performance.now() - this.passedAt > 600) this.closePanel(); });
     $('#hud-journal').onclick = () => this.openPanel('journal');
@@ -502,6 +561,16 @@ class UI {
       c.lineWidth = 9; c.strokeStyle = '#16101f'; c.strokeText(t, sx / n, sy / n); c.fillStyle = color; c.fillText(t, sx / n, sy / n);
     }
     const w = this.world as any;
+    // The subway: every Brooklyn line, station to station (southeast Brooklyn's empty space is the transit desert)
+    if (w.transit) {
+      c.lineCap = 'round';
+      for (const ln of w.transit.linePolylines()) {
+        if (ln.pts.length < 2) continue;
+        c.beginPath(); ln.pts.forEach((p: any, i: number) => (i ? c.lineTo : c.moveTo).call(c, (p.x / TILE) * s, (p.y / TILE) * s));
+        c.lineWidth = 16; c.strokeStyle = '#16101f'; c.stroke(); c.lineWidth = 10; c.strokeStyle = ln.color; c.stroke();
+      }
+      for (const p of w.transit.stations) { c.beginPath(); c.arc((p.x / TILE) * s, (p.y / TILE) * s, 9, 0, 7); c.fillStyle = '#fff'; c.fill(); c.lineWidth = 4; c.strokeStyle = '#16101f'; c.stroke(); }
+    }
     const targets = new Set(missions.targets());
     c.font = 'bold 13px Nunito, Arial';
     for (const n of NPCS) {
