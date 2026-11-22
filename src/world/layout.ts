@@ -154,6 +154,18 @@ const BLOCKS: Record<string, BlockSpec> = {
     { id: 'rhhouses', type: 'apartment', w: 6, name: 'RED HOOK HOUSES' } ] },
   '4,9': { kind: 'waterfront', name: 'Red Hook Piers' },
   // ---------- CONEY ISLAND (Surf Ave above the beach blocks) ----------
+  // ---------- MISSIONS 14–16: Marine Park (no subway), Brownsville + East New York (food access), central Crown Heights ----------
+  '14,17': { kind: 'row', landmarks: [{ id: 'mpnails', type: 'boutique', w: 6, name: 'AVENUE U NAILS·TAX·NOTARY' }] },
+  '15,11': { kind: 'row', landmarks: [
+    { id: 'bxdeli', type: 'bodega', w: 4, name: 'BEST DELI & GROCERY & ALSO DELI' },
+    { id: 'bxcenter', type: 'community', w: 7, name: 'BROWNSVILLE TENANTS & EATERS ASSN' },
+    { id: 'bxdollar', type: 'bodega', w: 4, name: '99¢ & UP & UP & UP' } ] },
+  '16,11': { kind: 'row', landmarks: [{ id: 'bxchicken', type: 'bakery', w: 5, name: 'KINGS COUNTY FRIED EVERYTHING' }] },
+  '17,11': { kind: 'row', landmarks: [{ id: 'enyfarm', type: 'shed', w: 6, name: 'NEW LOTS FARM STAND · SNAP OK' }] },
+  '13,10': { kind: 'row', landmarks: [
+    { id: 'chcenter', type: 'community', w: 7, name: 'EASTERN PKWY NEIGHBORS CENTER' },
+    { id: 'kingstonhw', type: 'bodega', w: 5, name: 'KINGSTON AVE HARDWARE' },
+    { id: 'blockassn', type: 'brownstone', w: 5, name: 'MONTGOMERY ST BLOCK ASSN' } ] },
   '7,19': { kind: 'row', landmarks: [
     { id: 'arcade', type: 'boutique', w: 6, name: 'SKEE-BALL & SOLIDARITY ARCADE' },
     { id: 'hotdog', type: 'bakery', w: 5, name: 'HOT DOG HALL OF FAME' } ] },

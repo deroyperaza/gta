@@ -113,6 +113,7 @@ export class WorldScene extends Phaser.Scene {
     this.transit = new Transit(this, this.layout);
     bus.on('transit:alight', (p: { x: number; y: number }) => { (this.player.body as Phaser.Physics.Arcade.Body).reset(p.x, p.y); this.player.setVisible(true); });
     bus.on('ui:ride', () => this.rideApp());
+    bus.on('transit:board', (k: string) => state.apply({ flags: { [`rode_${k}`]: true } }, { quiet: true }));
     this.holdRing = this.add.graphics().setDepth(1e6);
     this.miniIgnore.push(this.holdRing);
     bus.on('mission:stage', () => { this.stageSpots = []; this.hold = null; });
@@ -708,6 +709,7 @@ export class WorldScene extends Phaser.Scene {
       const name = (sid: string) => tr.byId[sid]?.st.name ?? sid;
       ui.rideSubway(pl.legs.map((l) => ({ route: l.route, color: LINE_COLORS[l.route] ?? '#888', dark: 'NQRW'.includes(l.route), stops: l.stops.map(name) })), () => {
         (this.player.body as Phaser.Physics.Arcade.Body).reset(dest.x, dest.y + 40);
+        state.apply({ flags: { rode_subway: true } }, { quiet: true });
         bus.emit('ui:toast', `YOU COME UP AT ${dest.st.name.toUpperCase()}`);
         if (dest.st.ada !== 1 && !state.flag('seen_ada')) { state.setFlag('seen_ada', true); setTimeout(() => bus.emit('ui:toast', Transit.adaLine().toUpperCase()), 900); }
       });

@@ -95,6 +95,7 @@ export const blockparty: MissionModule = {
     failText: 'Noon came and the tables didn\'t. Emily is holding a five-tier cake in direct sunlight. It\'s fine. It\'s FINE. Your guests are still coming. Set up again.',
     // Guests, the permit and Jon's show survive a failed setup; only the setup errands restart
     onFail: () => { for (const [s] of SETUP) delete state.d.flags[`at_${s}`]; },
+    next: 'fares',
   },
 
   dialogue: {

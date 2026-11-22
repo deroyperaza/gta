@@ -9,8 +9,11 @@ import { robot } from './robot';
 import { culture } from './culture';
 import { heat } from './heat';
 import { blockparty } from './blockparty';
+import { fares } from './fares';
+import { food } from './food';
+import { common } from './common';
 
 /** Missions 4+ — one file each, in play order. */
-export const MODULES: MissionModule[] = [rent, board, reentry, pbudget, access, streets, robot, culture, heat, blockparty];
+export const MODULES: MissionModule[] = [rent, board, reentry, pbudget, access, streets, robot, culture, heat, blockparty, fares, food, common];
 
 export const MODULE_NPCS = MODULES.flatMap((m) => m.npcs ?? []);
