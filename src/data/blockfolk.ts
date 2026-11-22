@@ -30,6 +30,8 @@ const NAMES: Record<string, string[]> = {
   italian: ['Mrs. Russo', 'Mr. Esposito', 'Nonna Angela', 'Vinnie', 'Mrs. Romano', 'Sal', 'Theresa', 'Mr. Bruno'],
   irish: ["Mrs. O'Brien", 'Mr. Murphy', 'Kathleen', 'Mickey', 'Mrs. Doyle', 'Father Tom'],
   polish: ['Mrs. Nowak', 'Mr. Kowalski', 'Basia', 'Tomek', 'Pani Zofia'],
+  hipster: ['Jasper', 'Juniper', 'Wren', 'Atlas', 'Sage', 'Milo', 'Harper', 'Finn', 'Odessa', 'Silas', 'Clementine', 'Rhys', 'Indigo', 'Beckett', 'Marlowe', 'Fern'],
+  yuppie: ['Tucker', 'Madison', 'Chase', 'Blake', 'Kendall', 'Brooks', 'Logan', 'Parker', 'Hunter', 'Reese', 'Spencer', 'Avery'],
   mixed: ['Jordan', 'Sam', 'Ms. Rivera', 'Mr. Okafor', 'Alex', 'Kayla', 'Mr. Park', 'Robin', 'Ms. Diallo', 'Mateo', 'Grace', 'Mr. Silva', 'Noor', 'Jamie', 'Ms. Adeyemi', 'Theo'],
 };
 const HOOD_NAMES: Record<string, string[]> = {
@@ -87,6 +89,25 @@ const TRANS = [
   'My abuela corrects people on my pronouns now. She\'s faster than me.',
 ];
 
+// Bushwick's hipsters and Williamsburg's yuppie hipsters: satire of a type, in the game's voice (like Park Slope's lines)
+const HIP_JOBS: typeof JOBS = [
+  { title: 'Ceramicist', look: { acc: 'beret' }, lines: ['I make mugs that are slightly too heavy on purpose.', 'My studio is a former tire shop. The vibe is "former tire shop."', 'Wheel-thrown, kiln-fired, sold out. Restock never.'] },
+  { title: 'DJ (Also a Barista)', look: { acc: 'headphones' }, lines: ['My set starts at 3am. Nobody\'s there yet. That\'s the point.', 'I don\'t play songs. I play textures.', 'Oat flat white, extra foam, and a demo on cassette. That\'s my pitch.'] },
+  { title: 'Tattoo Artist', look: { acc: 'bandana' }, lines: ['Fine-line botanicals, three-month waitlist.', 'Your grandma\'s handwriting, on your forearm. Hundred percent of my clients cry.', 'No, I won\'t do your ex\'s name. I\'m protecting you.'] },
+  { title: 'Vintage Seller', look: { acc: 'tote' }, lines: ['This jacket was worn by a man named Gus in 1974. You can feel it.', 'I find it on the curb. I sell it on the internet. Circle of life.', 'Everything\'s "deadstock" if you believe hard enough.'] },
+  { title: 'Zine Maker', look: { acc: 'glasses' }, lines: ['Issue 12 is about the J train. It\'s mostly feelings.', 'Photocopier at the library is my printing press. Free speech, ten cents a page.', 'I staple everything by hand. It\'s a statement. Also I lost the stapler.'] },
+  { title: 'Natural Wine Bartender', look: { acc: 'apron' }, lines: ['It tastes like a barn. In a good way. Trust me.', 'This one\'s "funky." That one\'s "very funky." Pick your funk.', 'Orange wine is not made of oranges. Every night, I explain this.'] },
+  { title: 'Bassist in Four Bands', look: { style: 'long', acc: 'headphones' }, lines: ['We\'re playing a basement Thursday. The basement is in a laundromat.', 'Our band name is a font. You wouldn\'t know it.', 'Three of my bands broke up this month. The fourth is "on hiatus."'] },
+];
+const YUP_JOBS: typeof JOBS = [
+  { title: 'Startup Founder', look: { acc: 'phone' }, lines: ['We\'re building an app for... I can\'t say yet. NDA.', 'Our office has a slide. We\'ve never used the slide.', 'Series A just closed. My rent is still a crime.'] },
+  { title: 'Brand Strategist', look: { acc: 'glasses' }, lines: ['Your block has great brand equity. Have you considered a tagline?', 'Authenticity is our core value. We workshopped it for six weeks.', 'This neighborhood used to be "gritty." Now it\'s "gritty-adjacent."'] },
+  { title: 'Influencer', look: { acc: 'ringlight' }, lines: ['Can you move? You\'re in my shot. Actually stay, you look local.', 'Sponsored by a seltzer I don\'t like. Living the dream.', 'Golden hour is in eleven minutes. I need everyone to be quiet.'] },
+  { title: 'Podcast Host', look: { acc: 'headphones' }, lines: ['Episode 214: Is Brunch a Social Movement? (Two-hour special.)', 'Would you come on the show? We\'ve got four listeners and they\'re loyal.', 'I\'ve interviewed everyone on this block. Except the people who\'ve lived here longest. Working on it.'] },
+  { title: 'Rooftop Bar Regular', look: { acc: 'tote' }, lines: ['The cocktail is $22 and comes with a sprig of something.', 'I moved here for the waterfront. Then I moved to a different part of the waterfront.', 'The view is incredible. The view is Manhattan. Ironic, I know.'] },
+  { title: 'Remote Worker', look: { acc: 'phone' }, lines: ['I work from a café that charges by the hour. It\'s called renting a chair.', 'My Zoom background is a Brooklyn brownstone. I live in a glass tower.', 'Standup at 9, pilates at 10, "deep work" at never.'] },
+];
+
 const SKIN = ['#2e1a12', '#3e2418', '#4a2c1c', '#5a3624', '#6b4430', '#7a4a30', '#8d5a3a', '#a8714a', '#b98058', '#c58a5c', '#d9a679', '#e2b08a', '#e8c0a0', '#f2d2b8', '#f6dcc6'];
 const HAIR = ['#1a1010', '#1a1010', '#2a1c14', '#3a2418', '#4a2a1a', '#6a4a2a', '#7a5a3a', '#a8743a', '#c9a25a', '#e0c070', '#8a3a2a', '#b84a2a', '#d8d4dc', '#e8e4f0', '#9a9aa8', '#ff4fa3', '#7b3fe4', '#2fd1c5'];
 const SHIRT = ['#ff4fa3', '#2fd1c5', '#ffd23f', '#7b3fe4', '#ff8a3d', '#6fcf5e', '#1b4fa0', '#c83a4a', '#e8e4dc', '#3a3a4a', '#9b59d0', '#ff6b6b', '#2f6a4a', '#8a5a3a', '#f2efe6', '#4a6a8a', '#c9a43a', '#5a3a6a', '#e86a9a', '#3a8ad4', '#a8b98e', '#d4a24a', '#1a1a20', '#b85a3a'];
@@ -104,9 +125,11 @@ function folkFor(c: number, r: number): BlockFolk | null {
   const h = hash(`folk:${c},${r}`), at = (n: number, s: number) => (h >>> s) % n;
   const isBeach = district === 'coneyisland' && CELLS[r + 1]?.[c] === -1 && k !== 'p';
   const where = isBeach ? 'beach' : k === 'p' ? 'park' : undefined;
-  const pool = JOBS.filter((j) => (where ? j.where === where : !j.where));
+  const hip = hood === 'Bushwick' || hood === 'East Williamsburg', yup = hood === 'Williamsburg';
+  const scene = !where && (hip || yup) && hash(`folk:${c},${r}:scene`) % 5 < 3; // most blocks there; not all (the old-timers are still here)
+  const pool = scene ? (hip ? HIP_JOBS : YUP_JOBS) : JOBS.filter((j) => (where ? j.where === where : !j.where));
   const job = pool[at(pool.length, 3)];
-  const groups = HOOD_NAMES[hood] ?? ['mixed', 'mixed', 'black', 'latino', 'caribbean'];
+  const groups = scene ? [hip ? 'hipster' : 'yuppie'] : HOOD_NAMES[hood] ?? ['mixed', 'mixed', 'black', 'latino', 'caribbean'];
   const names = NAMES[groups[at(groups.length, 7)]];
   let name = names[at(names.length, 11)];
   for (let i = 1; USED.has(name) && i < names.length; i++) name = names[(at(names.length, 11) + i) % names.length];
