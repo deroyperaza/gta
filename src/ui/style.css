@@ -344,6 +344,7 @@ body.touch .dlg-go kbd { display: none; }
   body.touch #inventory { top: 108px; }
 }
 @media (max-width: 600px), (max-height: 500px) and (orientation: landscape) { .dlg-head { padding-right: 46px; } }
+@media (max-width: 600px) { #dlg-rel { flex-basis: 100%; margin-left: 0; } #dlg-rel .rt { width: 120px; } } /* phones: the bar sits on its own row under the role, left-aligned */
 
 /* Bigger maps on phones: larger mini-map you can tap; full map fills the screen and pans */
 #minimap-frame { pointer-events: auto; cursor: pointer; }
