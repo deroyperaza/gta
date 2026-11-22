@@ -1,5 +1,6 @@
 import type { District } from '../core/types';
 import { NEIGHBOR_AT } from '../data/neighbors';
+import { BLOCK_FOLK } from '../data/blockfolk';
 import { GHOST_AT, STREET_GHOST_AT } from '../data/ghosts';
 import { VILLAIN_AT } from '../data/villains';
 import { PAINTED, PAINTED_AT } from '../data/landmarks';
@@ -815,6 +816,25 @@ export function generateLayout(): WorldLayout {
       if (d < bd) { bd = d; best = { x: px(x) + 16, y: px(y) + 16 }; }
     }
     if (best) spots[key] = best;
+  }
+  // A named neighbor on every block (src/data/blockfolk.ts): on the block's front sidewalk, or out in its park or on its beach
+  {
+    const occ = new Set<string>();
+    for (const p of Object.values(spots)) occ.add(`${Math.floor(p.x / TILE)},${Math.floor(p.y / TILE)}`);
+    const near = (x: number, y: number) => { for (let oy = -3; oy <= 3; oy++) for (let ox = -6; ox <= 6; ox++) if (occ.has(`${x + ox},${y + oy}`)) return true; return false; }; // name tags are wide
+    const OK = new Set<number>([T.SIDEWALK, T.PLAZA, T.SAND, T.GRASS]);
+    for (const f of BLOCK_FOLK) {
+      const [c, r] = f.block, x0 = c * BLOCK_W + ROAD, y0 = r * BLOCK_H + ROAD, tx0 = x0 + Math.floor((BLOCK_W - ROAD) / 2), ty0 = (r + 1) * BLOCK_H - 2;
+      const open = KINDS[r]?.[c] === 'p' || isBeach(c, r);
+      let best: Spot | null = null, bd = Infinity;
+      for (let y = y0; y < y0 + BLOCK_H - ROAD; y++) for (let x = x0; x < x0 + BLOCK_W - ROAD; x++) {
+        const k = tiles[y]?.[x];
+        if (k === undefined || !OK.has(k) || blocked[y][x] || near(x, y)) continue;
+        const d = open ? Math.hypot(x - tx0, y - (y0 + 7)) : Math.hypot(x - tx0, y - ty0) + (k === T.SIDEWALK ? 0 : 15);
+        if (d < bd) { bd = d; best = { x: px(x) + 16, y: px(y) + 16 }; }
+      }
+      if (best) { spots[f.spot] = best; occ.add(`${Math.floor(best.x / TILE)},${Math.floor(best.y / TILE)}`); }
+    }
   }
   // Floyd Bennett's runways are open concrete: no trees, lamps or benches on them
   const onRunway = (x: number, y: number) => RUNWAYS.some(([, , A, B]) => {

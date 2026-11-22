@@ -579,9 +579,9 @@ function drawWalker(c: Ctx, L: Look, f: number, scale = PS) {
 }
 
 /** Top-down walker (2 stride frames, facing up) plus a front-facing portrait under `${key}-front`. */
-export function makeCharacter(scene: Phaser.Scene, key: string, look: Look) {
+export function makeCharacter(scene: Phaser.Scene, key: string, look: Look, bust = true) {
   makeFrontCharacter(scene, `${key}-front`, look);
-  if (!key.startsWith('ped')) makeBust(scene, key, look);
+  if (bust && !key.startsWith('ped')) makeBust(scene, key, look); // block neighbors get theirs when you first talk to them
   if (scene.textures.exists(key)) return;
   const tex = scene.textures.createCanvas(key, PED * 2, PED)!;
   const c = tex.getContext();

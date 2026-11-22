@@ -4,7 +4,9 @@ import { state } from '../core/state';
 import { DISTRICTS, type District } from '../core/types';
 import { DIALOGUES } from '../data/dialogues';
 import { NPCS, PLAYER_LOOK, type NpcDef } from '../data/npcs';
-import { flyerLine, streetLine } from '../data/chatter';
+import { flyerLine, pickLine, STREET_LINES, streetLine } from '../data/chatter';
+import { LESSONS } from '../data/lessons';
+import { makeBust } from '../world/portraits';
 import { Pedestrians, type Ped } from '../entities/pedestrians';
 import { Traffic } from '../entities/traffic';
 import { DEBATES, Opposition, type OppConfig } from '../entities/opposition';
@@ -40,6 +42,7 @@ export class WorldScene extends Phaser.Scene {
   transit!: Transit;
   stunUntil = 0;
   storeNames = new Set<string>(); // every shop's name, kept unique
+  storeKinds: string[] = [];
   dragonSign?: Phaser.GameObjects.Text; dragonMM?: Phaser.GameObjects.Text;
   /** Naim's dragon: 30 seconds of flight over buildings, cars and water */
   private flyUntil = 0; private flyShadow?: Phaser.GameObjects.Ellipse; private flap?: Phaser.Tweens.Tween;
@@ -94,7 +97,7 @@ export class WorldScene extends Phaser.Scene {
     makeTiles(this); makeVehicles(this); makeStreetProps(this); makeProps(this);
     makeCharacter(this, 'player', PLAYER_LOOK);
     makeBikeRider(this, 'player-bike', PLAYER_LOOK);
-    for (const n of NPCS) makeCharacter(this, `npc-${n.id}`, n.look);
+    for (const n of NPCS) makeCharacter(this, `npc-${n.id}`, n.look, !(n as any).blockFolk);
     makeCharacter(this, 'vendor-rosa', { skin: '#c58a5c', hair: '#3a2a1a', style: 'bun', shirt: '#ff8a3d', pants: '#3a2a5a', acc: 'apron', dress: true });
     makeCharacter(this, 'vendor-hamid', { skin: '#a8714a', hair: '#1a1010', style: 'cap', hatColor: '#ff4b4b', shirt: '#fff', pants: '#2b3a6b', acc: 'apron' });
 
@@ -214,7 +217,7 @@ export class WorldScene extends Phaser.Scene {
         const bg = Phaser.Display.Color.HexStringToColor(st.sign[0]).color;
         const sb = this.add.rectangle(band.x, band.y, band.w, band.h, bg).setOrigin(0).setDepth(b.y + b.h + 0.1);
         const t = this.add.text(band.x + band.w / 2, band.y + band.h / 2 + 0.5, st.name, { fontFamily: 'Nunito, Arial, sans-serif', fontStyle: '900', fontSize: '24px', color: st.sign[1] }).setOrigin(0.5).setDepth(b.y + b.h + 0.2);
-        t.setScale(Math.min(8 / 24, (band.w - 6) / t.width)); this.miniIgnore.push(sb, t);
+        t.setScale(Math.min(8 / 24, (band.w - 6) / t.width)); this.miniIgnore.push(sb, t); this.storeKinds.push(st.kind);
       }
       // Slightly inset collision so the player can hug facades
       (img.body as Phaser.Physics.Arcade.StaticBody).setSize(b.w - 4, b.h - 6).setOffset(2, 0);
@@ -571,9 +574,29 @@ export class WorldScene extends Phaser.Scene {
     const spr = this.npcSprites[n.id];
     spr.setFlipX(this.player.x < spr.x);
     const d = DIALOGUES[n.id];
-    if (d) dialogue.start(n.id, d);
-    else dialogue.say(n.id, n.id, Phaser.Utils.Array.GetRandom(n.idle ?? ['...']));
+    if (!(d && dialogue.start(n.id, d))) this.chatWith(n);
     state.addRel(n.id, 0);
+  }
+
+  /**
+   * Chatting with someone who has nothing mission-related to say. The first time, they pass on one Pocket Civics lesson
+   * (a small Solidarity and relationship bump too); after that they never repeat a line until they've said them all.
+   */
+  private chatWith(n: NpcDef) {
+    if (!this.textures.exists(`npc-${n.id}-bust`)) makeBust(this, `npc-${n.id}`, n.look);
+    const lines = [...(n.idle ?? []), ...(STREET_LINES[n.district] ?? [])];
+    const line = pickLine(`npc:${n.id}`, lines.length ? lines : ['...']);
+    if (state.flag(`chat_${n.id}`)) { dialogue.say(n.id, n.id, line); return; }
+    const keys = Object.keys(LESSONS), fresh = keys.filter((k) => !state.flag(`lesson_${k}`));
+    const pool = fresh.length ? fresh : keys;
+    const key = pool[[...n.id].reduce((a, ch) => (a * 31 + ch.charCodeAt(0)) >>> 0, 7) % pool.length];
+    dialogue.start(n.id, {
+      entries: [{ node: 'a' }],
+      nodes: {
+        a: { speaker: n.id, text: line, next: 'b' },
+        b: { speaker: n.id, text: `Here's something worth knowing around here. ${LESSONS[key].text}`, choices: [{ text: 'Good to know. Thanks.', effects: { solidarity: 5, rel: { [n.id]: 3 }, flags: { [`chat_${n.id}`]: true }, toast: `POCKET CIVICS · ${key}` } }] },
+      },
+    } as any);
   }
 
   private useFridge() {

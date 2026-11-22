@@ -76,15 +76,15 @@ const HOOD_MIX: Record<string, string[]> = {
 function hash(s: string) { let h = 2166136261; for (let i = 0; i < s.length; i++) h = Math.imul(h ^ s.charCodeAt(i), 16777619); return h >>> 0; }
 
 /** A name and sign colors for an unnamed storefront. */
-export function storefrontFor(buildingId: string, district: string, hood: string | null, used?: Set<string>): { name: string; sign: [string, string] } {
+export function storefrontFor(buildingId: string, district: string, hood: string | null, used?: Set<string>): { name: string; sign: [string, string]; kind: string } {
   const h0 = hash(buildingId);
   const mix = (hood && HOOD_MIX[hood]) || MIX[district] || ALL;
-  let out = { name: '', sign: ['#1c1a18', '#f4efe6'] as [string, string] };
+  let out = { name: '', sign: ['#1c1a18', '#f4efe6'] as [string, string], kind: '' };
   for (let k = 0; k < 40; k++) { // the same name twice on one map feels like a chain: try the next one
     const h = hash(`${buildingId}:${k}`) ^ h0;
-    const kind = STORE_KINDS[mix[(h0 + k) % mix.length]];
+    const kindId = mix[(h0 + k) % mix.length], kind = STORE_KINDS[kindId];
     const tpl = kind.names[(h >>> 8) % kind.names.length];
-    out = { name: tpl.replace('{F}', FIRST[(h >>> 4) % FIRST.length].toUpperCase()).replace('{S}', STREET[(h >>> 12) % STREET.length].toUpperCase()), sign: kind.sign };
+    out = { name: tpl.replace('{F}', FIRST[(h >>> 4) % FIRST.length].toUpperCase()).replace('{S}', STREET[(h >>> 12) % STREET.length].toUpperCase()), sign: kind.sign, kind: kindId };
     if (!used || !used.has(out.name)) break;
   }
   used?.add(out.name);
