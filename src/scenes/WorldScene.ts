@@ -169,6 +169,7 @@ export class WorldScene extends Phaser.Scene {
     cam.startFollow(this.player, true, 0.12, 0.12);
     this.applyZoom();
     this.setupMinimap();
+    this.installCulling();
 
     // Input
     const K = Phaser.Input.Keyboard.KeyCodes;
@@ -509,6 +510,24 @@ export class WorldScene extends Phaser.Scene {
     this.minimap.setViewport(this.scale.width - size - m, m, size, size);
     bus.emit('minimap:layout', { x: this.scale.width - size - m, y: m, size });
   }
+  /**
+   * Phaser draws every object in the world each frame, on-screen or not (~11,000 here, twice: map + minimap).
+   * Skip the ones outside each camera's view, and on the minimap skip small text (a pixel or two at that zoom).
+   */
+  private installCulling() {
+    const CULL = new Set(['Sprite', 'Image', 'Text', 'Arc', 'Rectangle', 'Ellipse']);
+    (this.cameras as any).getVisibleChildren = (children: Phaser.GameObjects.GameObject[], camera: Phaser.Cameras.Scene2D.Camera) => {
+      const v = camera.worldView, mini = camera === this.minimap;
+      return children.filter((c: any) => {
+        if (!c.willRender(camera)) return false;
+        if (!CULL.has(c.type)) return true;
+        if (mini && c.type === 'Text' && c.displayHeight < 100) return false;
+        const r = Math.max(c.displayWidth, c.displayHeight) + 32; // covers any origin or rotation
+        return c.x > v.x - r && c.x < v.right + r && c.y > v.y - r && c.y < v.bottom + r;
+      });
+    };
+  }
+
   private applyZoom() {
     const w = this.scale.width;
     this.cameras.main.setZoom(w > 1500 ? 1.25 : w > 900 ? 1.1 : 0.85);
