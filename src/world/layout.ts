@@ -97,6 +97,7 @@ const BLOCKS: Record<string, BlockSpec> = {
   '9,8': { kind: 'row' }, // Plaza St brownstones, northwest of the circle
   '9,9': { kind: 'park', name: 'Prospect Park' },
   '9,11': { kind: 'pond', name: 'Prospect Park' },
+  '11,10': { kind: 'park', name: 'Brooklyn Botanic Garden' }, // behind the Brooklyn Museum, like the real one
   '6,9': { kind: 'garden', name: 'Fifth Ave Community Garden' },
   '7,10': { kind: 'row', landmarks: [
     { id: 'yoga', type: 'boutique', w: 5, name: 'HOT YOGA FOR CAPITALISTS', spot: 'danae' },
@@ -582,6 +583,29 @@ export function generateLayout(): WorldLayout {
     }
   }
   const avenues = AVENUES.map((a) => ({ name: a.name, hw: a.hw * TILE, pts: a.pts.map((p) => ({ x: p.x * TILE, y: p.y * TILE })) }));
+  // ---------- Parks with character (drawn in src/world/parks.ts) ----------
+  const px = (tx: number) => tx * TILE;
+  const cellPx = (c: number, r: number, fx: number, fy: number) => ({ x: px(c * BLOCK_W + ROAD + fx * (BLOCK_W - ROAD)), y: px(r * BLOCK_H + ROAD + fy * (BLOCK_H - ROAD)) });
+  spots.bandshell = cellPx(8, 11, 0.3, 0.32);  // Lena Horne Bandshell, west side of Prospect Park near Prospect Park West
+  spots.gwgate = cellPx(5, 12, 0.5, 0.06);     // Green-Wood's main gate, at the cemetery's north edge (5th Ave & 25th St)
+  spots.battlehill = cellPx(5, 13, 0.55, 0.45); // Battle Hill: Minerva, saluting the Statue of Liberty
+  spots.carousel = cellPx(6, 3, 0.25, 0.25);   // Jane's Carousel, DUMBO waterfront
+  spots.bbg = cellPx(11, 10, 0.5, 0.5);
+  // Brooklyn Bridge Park's piers, DUMBO down to Atlantic Ave, built out over the East River
+  const PIERS: [string, T][] = [['PIER 1', T.GRASS], ['PIER 2', T.COURT], ['PIER 3', T.GRASS], ['PIER 4', T.SAND], ['PIER 5', T.GRASS], ['PIER 6', T.PLAZA]];
+  PIERS.forEach(([name, surface], i) => {
+    const y0 = 3 * BLOCK_H + 4 + i * 9, mid = y0 + 2;
+    let xs = -1;
+    for (let x = 8 * BLOCK_W; x > 0; x--) if (tiles[mid]?.[x] === T.WATER) { xs = x; break; }
+    if (xs < 0) return;
+    let built = 0;
+    for (let y = y0; y < y0 + 5; y++) for (let x = xs - 12; x <= xs; x++) {
+      if (tiles[y]?.[x] !== T.WATER) continue;
+      const edge = y === y0 || y === y0 + 4 || x === xs - 12;
+      set(x, y, edge ? T.PLAZA : surface); built++;
+    }
+    if (built) { labels.push({ text: name, x: px(xs - 6), y: px(y0 + 2) + 16 }); spots[`pier${i + 1}`] = { x: px(xs - 6), y: px(y0 + 2) + 16 }; }
+  });
   return { tiles, blocked, buildings, props, spots, labels, avenues };
 }
 

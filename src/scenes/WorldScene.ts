@@ -8,6 +8,7 @@ import { Pedestrians, type Ped } from '../entities/pedestrians';
 import { Traffic } from '../entities/traffic';
 import { Opposition, type OppConfig } from '../entities/opposition';
 import { LINE_COLORS, SERVICES, Transit, bullet } from '../entities/transit';
+import { drawParks } from '../world/parks';
 import { dialogue } from '../systems/dialogue';
 import { missions } from '../systems/missions';
 import { ui } from '../ui/ui';
@@ -109,6 +110,7 @@ export class WorldScene extends Phaser.Scene {
     this.buildNpcs(solids);
     this.setupMarch();
     this.peds = new Pedestrians(this, this.layout, 520); // they gather around wherever you are
+    for (const pk of drawParks(this, this.layout, this.miniIgnore)) this.interactables.push(pk); // after the crowd: the Bandshell audience wears their looks
     this.opp = new Opposition(this, this.layout, 6);
     this.transit = new Transit(this, this.layout);
     bus.on('transit:alight', (p: { x: number; y: number }) => { (this.player.body as Phaser.Physics.Arcade.Body).reset(p.x, p.y); this.player.setVisible(true); });
