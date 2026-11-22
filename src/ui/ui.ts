@@ -71,7 +71,10 @@ class UI {
     if (this.pendingStart) { const ev = this.pendingStart; this.pendingStart = null; setTimeout(() => bus.emit(ev), 0); }
   }
   private pendingStart: string | null = null;
-  private begin(ev: 'game:new' | 'game:load') { this.startPlay(); if (this.world) bus.emit(ev); else this.pendingStart = ev; }
+  private begin(ev: 'game:new' | 'game:load') {
+    this.startPlay(); if (this.world) bus.emit(ev); else this.pendingStart = ev;
+    if (ev === 'game:new') setTimeout(() => this.openPanel('help'), 300); // the goal and the meters, before anything else
+  }
 
   blocking() { return this.panel !== null || this.dialogueOpen; }
 
@@ -181,7 +184,8 @@ class UI {
     $('#btn-new').onclick = () => this.begin('game:new');
     $('#btn-continue').onclick = () => this.begin('game:load');
     $('#btn-help').onclick = () => { $('#help').classList.add('open'); };
-    $('#help-close').onclick = () => { $('#help').classList.remove('open'); };
+    $('#help-close').onclick = () => { if (this.panel === 'help') this.closePanel(); $('#help').classList.remove('open'); };
+    $('#hud-help').onclick = () => this.openPanel('help');
     $('#pause').addEventListener('click', (e) => {
       const a = (e.target as HTMLElement).closest('[data-act]')?.getAttribute('data-act');
       if (a === 'resume') this.closePanel();

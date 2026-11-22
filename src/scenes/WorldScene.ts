@@ -108,7 +108,7 @@ export class WorldScene extends Phaser.Scene {
 
     this.buildNpcs(solids);
     this.setupMarch();
-    this.peds = new Pedestrians(this, this.layout, 170);
+    this.peds = new Pedestrians(this, this.layout, 520); // they gather around wherever you are
     this.opp = new Opposition(this, this.layout, 6);
     this.transit = new Transit(this, this.layout);
     bus.on('transit:alight', (p: { x: number; y: number }) => { (this.player.body as Phaser.Physics.Arcade.Body).reset(p.x, p.y); this.player.setVisible(true); });
@@ -270,7 +270,33 @@ export class WorldScene extends Phaser.Scene {
         const dx = b.x - a.x, dy = b.y - a.y, L = Math.hypot(dx, dy), ux = dx / L, uy = dy / L, nx = -uy, ny = ux;
         for (let t = 70; t < L - 70; t += 34) for (const o of [-2.5, 2.5]) ln.lineBetween(a.x + ux * t + nx * o, a.y + uy * t + ny * o, a.x + ux * (t + 20) + nx * o, a.y + uy * (t + 20) + ny * o);
       }
-      this.miniIgnore.push(sm, ln);
+      // Where the avenue crosses a grid street, its sidewalk band stops: the street keeps its asphalt,
+      // with a zebra crosswalk across it at the avenue's edge (no sidewalk running over the cross street)
+      const xw = this.add.graphics().setDepth(-8.5);
+      const ROADT = new Set<number>([T.ASPHALT, T.LANE_V, T.LANE_H, T.INTERSECTION, T.CROSS_V, T.CROSS_H]);
+      const seen = new Set<number>();
+      for (const [a, b] of segs) {
+        const x0 = Math.floor((Math.min(a.x, b.x) - av.hw) / TILE) - 3, x1 = Math.ceil((Math.max(a.x, b.x) + av.hw) / TILE) + 3;
+        const y0 = Math.floor((Math.min(a.y, b.y) - av.hw) / TILE) - 3, y1 = Math.ceil((Math.max(a.y, b.y) + av.hw) / TILE) + 3;
+        const dx = b.x - a.x, dy = b.y - a.y, L2 = dx * dx + dy * dy || 1;
+        for (let ty = y0; ty <= y1; ty++) for (let tx = x0; tx <= x1; tx++) {
+          const key = ty * 100000 + tx; if (seen.has(key)) continue;
+          const kind = this.layout.tiles[ty]?.[tx]; if (kind === undefined || !ROADT.has(kind)) continue;
+          const vert = (tx % BLOCK_W) < ROAD, horiz = (ty % BLOCK_H) < ROAD; if (!vert && !horiz) continue;
+          const px = (tx + 0.5) * TILE, py = (ty + 0.5) * TILE;
+          const t = Math.max(0, Math.min(1, ((px - a.x) * dx + (py - a.y) * dy) / L2));
+          const d = Math.hypot(a.x + dx * t - px, a.y + dy * t - py) - av.hw;
+          if (d <= -2 || d > 1.2 * TILE + 18) continue; // only the sidewalk band (and its soft edge)
+          seen.add(key);
+          xw.fillStyle(0x2b2e31, 1).fillRect(tx * TILE, ty * TILE, TILE, TILE);
+          if (d > 22 && !(vert && horiz)) { // zebra stripes across the cross street, one row at the avenue's outer edge
+            xw.fillStyle(0xe9e4d8, 0.9);
+            if (vert) for (let i = 4; i < TILE; i += 9) xw.fillRect(tx * TILE + i, ty * TILE + 3, 5, TILE - 6);
+            else for (let i = 4; i < TILE; i += 9) xw.fillRect(tx * TILE + 3, ty * TILE + i, TILE - 6, 5);
+          }
+        }
+      }
+      this.miniIgnore.push(sm, ln, xw);
     }
     // Grand Army Plaza: the traffic circle and its painted island (arch + Bailey Fountain)
     {

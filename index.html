@@ -34,7 +34,7 @@
     </div>
 
     <div id="minimap-frame"><div class="mm-n">N</div></div>
-    <div id="hud-buttons"><button id="hud-map" title="Map (M)">MAP <kbd>M</kbd></button><button id="hud-ride" title="Call a ride (R)">RIDE <kbd>R</kbd></button><button id="hud-journal" title="Journal (J)">JOURNAL <kbd>J</kbd></button><button id="hud-full" title="Full screen" hidden>⛶</button><button id="hud-pause" title="Pause (Esc)">❚❚</button></div>
+    <div id="hud-buttons"><button id="hud-map" title="Map (M)">MAP <kbd>M</kbd></button><button id="hud-ride" title="Call a ride (R)">RIDE <kbd>R</kbd></button><button id="hud-journal" title="Journal (J)">JOURNAL <kbd>J</kbd></button><button id="hud-full" title="Full screen" hidden>⛶</button><button id="hud-help" title="How it works">?</button><button id="hud-pause" title="Pause (Esc)">❚❚</button></div>
 
     <div id="objective">
       <div id="obj-title">MISSION</div>
@@ -107,22 +107,28 @@
 
   <div id="help" class="overlay">
     <div class="card help-card">
-      <h2>HOW TO PLAY</h2>
-      <div class="keys">
-        <div><kbd>WASD</kbd>/<kbd>↑↓←→</kbd> Move</div>
-        <div><kbd>SHIFT</kbd> Sprint</div>
-        <div><kbd>E</kbd> Talk / interact</div>
-        <div><kbd>SPACE</kbd> Hand flyer · put up poster</div>
-        <div><kbd>B</kbd> Hop off bike</div>
-        <div><kbd>1-4</kbd> Pick dialogue choice</div>
-        <div><kbd>M</kbd> Map</div>
-        <div><kbd>J</kbd> Mission journal</div>
-        <div><kbd>ESC</kbd> Pause</div>
+      <h2>HOW IT WORKS</h2>
+      <p><b class="hl">The goal:</b> organize Brooklyn. Every mission is a real fight a real neighbor is having: rent, food, buses, a lot, a school elevator. You win the way organizers win: by showing up, knowing the facts, listening, and bringing people with you. Get the facts right and the win is bigger.</p>
+      <div class="meters-explain">
+        <div><b>SOLIDARITY</b> Your standing with the movement. You earn it by helping people, finishing missions and out-arguing the Free Parking Caucus with real facts. You lose some when they catch you, or when you take a Surge instead of the bus. Every 250 is a new level.</div>
+        <div><b>ORGANIZING POWER</b> The wins you've stacked up. It grows when campaigns succeed, and grows most when you get them right.</div>
+        <div><b>NEIGHBORHOOD TRUST</b> How much each neighborhood believes in you, from −100 to +100. With high Trust, people sign on in a second. With low Trust, every stop takes longer. A weak result costs Trust.</div>
+        <div><b>ATTENTION ★</b> How loud you are. Flyers and posters spread the word, but every star brings more of the Free Parking Caucus, and they're faster. Lie low and the stars fade.</div>
+        <div><b>RELATIONSHIPS</b> How each person feels about you (the bar at the top of a conversation). Keep your word and they'll remember. So will the people you let down.</div>
+        <div><b>POCKET CIVICS</b> Every mission teaches one real thing about how Brooklyn works: a program, a right, a place to show up. It's true, and you can use it.</div>
       </div>
-      <p>Follow the <b class="hl">yellow arrow</b> and <b class="hl">!</b> markers to your objective. Grab a BK Spokes bike at a dock to move faster. Hand out flyers and slap up posters to raise <b>Public Attention</b>. Help people to build <b>Solidarity</b> and neighborhood <b>Trust</b>.</p>
+      <div class="keys">
+        <div><kbd>WASD</kbd>/<kbd>↑↓←→</kbd> Move · <kbd>SHIFT</kbd> Sprint</div>
+        <div><kbd>E</kbd> Talk · ride · interact</div>
+        <div><kbd>SPACE</kbd> Hand a flyer · put up a poster</div>
+        <div><kbd>R</kbd> Call a ride · <kbd>B</kbd> Hop off bike</div>
+        <div><kbd>M</kbd> Map · <kbd>J</kbd> Journal · <kbd>ESC</kbd> Pause</div>
+        <div><kbd>1-4</kbd> Pick a dialogue choice</div>
+      </div>
+      <p>Follow the <b class="hl">yellow arrow</b> and the <b class="hl">!</b> markers. Get around on foot, on a BK Spokes bike, by subway (green globes), by bus (blue signs), or by dollar van on Flatbush.</p>
       <p class="touch-only">On a phone: drag on the street or use the joystick to move, and tap people or the <b class="hl">E</b> button to talk.</p>
-      <p class="sub">Your progress auto-saves when you pass a mission. Save anytime from the pause menu.</p>
-      <button id="help-close">GOT IT</button>
+      <p class="sub">Your game saves itself when you pass a mission. Open this again anytime with the <b>?</b> button.</p>
+      <button id="help-close">LET'S ORGANIZE</button>
     </div>
   </div>
 
