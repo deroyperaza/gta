@@ -761,7 +761,8 @@ export function generateLayout(): WorldLayout {
     const footBad = (x: number, y: number) => {
       let bad = 0;
       for (let ty = Math.round(y - fh * 0.8); ty <= Math.round(y + fh * 0.15); ty++) for (let tx = Math.round(x - fw * 0.45); tx <= Math.round(x + fw * 0.45); tx++) {
-        const t = tiles[ty]?.[tx]; if (t === undefined || ROADISH.has(t) || blocked[ty][tx] || onField(tx, ty)) bad++;
+        const t = tiles[ty]?.[tx]; if (t === T.WATER && lmDef?.onWater) continue; // a bridge or pier belongs over the water
+        if (t === undefined || ROADISH.has(t) || blocked[ty][tx] || onField(tx, ty)) bad++;
       }
       return bad;
     };
@@ -770,6 +771,7 @@ export function generateLayout(): WorldLayout {
     for (let dy = -28; dy <= 28; dy++) for (let dx = -28; dx <= 28; dx++) {
       const x = cx + dx, y = cy + dy, k = tiles[y]?.[x];
       if (k === undefined || !OPEN.has(k) || blocked[y][x]) continue;
+      if (lmDef?.onWater && ![1, 2, 3, 4, 5, 6].some((o) => tiles[y + o]?.[x] === T.WATER || tiles[y]?.[x + o] === T.WATER || tiles[y]?.[x - o] === T.WATER)) continue; // at the shore
       // On Coney's amusement blocks the rides stand north of the boardwalk: on the ride strip, feet near its south edge
       { const bc = Math.floor(x / BLOCK_W), br = Math.floor(y / BLOCK_H); if (isAmus(bc, br) && (k !== T.LOT || y - (br * BLOCK_H + ROAD) < 5)) continue; }
       let crowd = 0;

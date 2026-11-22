@@ -9,7 +9,7 @@ import { MISSIONS, type MissionDef } from '../data/missions';
 import { NPCS, NPC_BY_ID } from '../data/npcs';
 import { dialogue } from '../systems/dialogue';
 import { missions } from '../systems/missions';
-import { BLOCK_H, BLOCK_W, COLS, MAP_H, MAP_W, ROAD, ROWS, T, TILE, districtOfBlock, neighborhoodOfBlock, type WorldLayout } from '../world/layout';
+import { BLOCK_H, BLOCK_W, COLS, MAP_H, MAP_W, ROAD, ROWS, T, TILE, WALKABLE, districtOfBlock, neighborhoodOfBlock, type WorldLayout } from '../world/layout';
 
 /**
  * DOM overlay UI: HUD, dialogue, journal, map, pause, title, mission screens.
@@ -603,22 +603,43 @@ class UI {
     const fp = w.entityPos.fridge;
     if (fp) { const x = (fp.x / TILE) * s, y = (fp.y / TILE) * s; c.fillStyle = targets.has('fridge') ? '#ffd23f' : '#fff'; c.fillRect(x - 6, y - 8, 12, 16); c.strokeRect(x - 6, y - 8, 12, 16); }
     const px = (w.player.x / TILE) * s, py = (w.player.y / TILE) * s;
-    // You are here: big enough to spot at a glance (the canvas shows about 4x smaller)
-    c.beginPath(); c.arc(px, py, 70, 0, 7); c.fillStyle = 'rgba(255,79,163,0.22)'; c.fill(); c.lineWidth = 6; c.strokeStyle = '#ff4fa3'; c.stroke();
-    c.beginPath(); c.arc(px, py, 40, 0, 7); c.fillStyle = 'rgba(255,79,163,0.35)'; c.fill();
-    c.beginPath(); c.arc(px, py, 20, 0, 7); c.fillStyle = '#ff4fa3'; c.fill(); c.lineWidth = 7; c.strokeStyle = '#fff'; c.stroke();
-    c.font = '900 56px Nunito, Arial'; c.textAlign = 'center';
-    const lbl = 'YOU ARE HERE', tw = c.measureText(lbl).width, ly = py - 92;
-    c.fillStyle = '#ff4fa3'; c.strokeStyle = '#16101f'; c.lineWidth = 6;
-    c.beginPath(); c.roundRect(px - tw / 2 - 20, ly - 58, tw + 40, 74, 16); c.fill(); c.stroke();
-    c.beginPath(); c.moveTo(px - 16, ly + 16); c.lineTo(px + 16, ly + 16); c.lineTo(px, ly + 36); c.closePath(); c.fill(); c.stroke();
-    c.fillStyle = '#fff'; c.fillText(lbl, px, ly);
+    // You are here: a draggable pin (drop it anywhere to move there)
+    this.mapPin(cv, px, py, s);
     // Phones show the map zoomed in and pannable: start centered on the player.
     requestAnimationFrame(() => {
       const wrap = cv.parentElement!; if (cv.clientWidth <= wrap.clientWidth) return;
       const k = cv.clientWidth / cv.width;
       wrap.scrollLeft = px * k - wrap.clientWidth / 2; wrap.scrollTop = py * k - wrap.clientHeight / 2;
     });
+  }
+
+  /** The YOU ARE HERE pin over the map canvas. Drag it and let go to move to that spot (nearest place you can stand). */
+  private mapPin(cv: HTMLCanvasElement, px: number, py: number, s: number) {
+    const wrap = cv.parentElement as HTMLElement; wrap.style.position = 'relative';
+    let pin = wrap.querySelector<HTMLElement>('.you-pin');
+    if (!pin) { pin = document.createElement('div'); pin.className = 'you-pin'; pin.innerHTML = '<small>drag me to move</small><b>YOU ARE HERE</b><i></i>'; wrap.appendChild(pin); }
+    const place = (x: number, y: number) => { const k = cv.clientWidth / cv.width; pin!.style.left = `${cv.offsetLeft + x * k}px`; pin!.style.top = `${cv.offsetTop + y * k}px`; };
+    requestAnimationFrame(() => place(px, py));
+    let drag: { x: number; y: number } | null = null;
+    const toCanvas = (e: PointerEvent) => { const r = cv.getBoundingClientRect(); return { x: Math.max(0, Math.min(cv.width, ((e.clientX - r.left) / r.width) * cv.width)), y: Math.max(0, Math.min(cv.height, ((e.clientY - r.top) / r.height) * cv.height)) }; };
+    pin.onpointerdown = (e) => { e.preventDefault(); e.stopPropagation(); pin!.setPointerCapture(e.pointerId); drag = toCanvas(e); pin!.classList.add('drag'); };
+    pin.onpointermove = (e) => { if (!drag) return; drag = toCanvas(e); place(drag.x, drag.y); };
+    pin.onpointerup = () => {
+      if (!drag) return; const d = drag; drag = null; pin!.classList.remove('drag');
+      const w = this.world as any, L = w?.layout as WorldLayout; if (!L || w.flying || w.transit?.riding) { place(px, py); return; }
+      const tx0 = Math.floor(d.x / s), ty0 = Math.floor(d.y / s);
+      let best: [number, number] | null = null, bd = Infinity;
+      for (let dy = -14; dy <= 14; dy++) for (let dx = -14; dx <= 14; dx++) {
+        const tx = tx0 + dx, ty = ty0 + dy, t = L.tiles[ty]?.[tx];
+        if (t === undefined || !WALKABLE.has(t) || L.blocked[ty]?.[tx]) continue;
+        const dd = dx * dx + dy * dy + (t === T.SIDEWALK ? 0 : 4); if (dd < bd) { bd = dd; best = [tx, ty]; }
+      }
+      if (!best) { place(px, py); bus.emit('ui:toast', 'NOWHERE TO STAND THERE. TRY LAND.'); return; }
+      w.player.body.reset((best[0] + 0.5) * TILE, (best[1] + 0.5) * TILE);
+      const hood = neighborhoodOfBlock(Math.floor(best[0] / BLOCK_W), Math.floor(best[1] / BLOCK_H));
+      bus.emit('ui:toast', hood ? `WELCOME TO ${hood.toUpperCase()}` : 'MOVED');
+      this.renderMap();
+    };
   }
 
   private renderPause() {
