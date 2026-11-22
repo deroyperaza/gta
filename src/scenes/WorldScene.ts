@@ -315,6 +315,7 @@ export class WorldScene extends Phaser.Scene {
       this.miniIgnore.push(sm, ln, xw);
     }
     this.drawCourts();
+    this.drawField();
     // Grand Army Plaza: the traffic circle and its painted island (arch + Bailey Fountain)
     {
       const g = GAP_CIRCLE, cx = g.x * TILE, cy = g.y * TILE;
@@ -727,6 +728,37 @@ export class WorldScene extends Phaser.Scene {
     if (!id || !dlg) return;
     const p = this.entityPos[id];
     if (p && Math.hypot(p.x - this.player.x, p.y - this.player.y) < 80) dialogue.start(owner, DIALOGUES[dlg]);
+  }
+
+  /** LIU Brooklyn's turf soccer field: real markings, goals, and Luco's lesson on E. */
+  private drawField() {
+    const a = this.layout.spots.liufield_tl, b = this.layout.spots.liufield_br, sp = this.layout.spots.liufield;
+    if (!a || !b || !sp) return;
+    const g = this.add.graphics().setDepth(-8); this.miniIgnore.push(g);
+    const w = b.x - a.x, h = b.y - a.y, vert = h > w; // goals at the short ends
+    for (let i = 0; i < 12; i++) { // turf, mowed in stripes across the pitch
+      g.fillStyle(i % 2 ? 0x3f9a4a : 0x47a653, 1);
+      if (vert) g.fillRect(a.x, a.y + (h / 12) * i, w, h / 12 + 1); else g.fillRect(a.x + (w / 12) * i, a.y, w / 12 + 1, h);
+    }
+    // local frame: u runs goal to goal, v across
+    const m = 10, len = (vert ? h : w) - 2 * m, wid = (vert ? w : h) - 2 * m;
+    const P = (u: number, v: number) => (vert ? { x: a.x + m + v, y: a.y + m + u } : { x: a.x + m + u, y: a.y + m + v });
+    const box = (u0: number, v0: number, u1: number, v1: number) => { const p = P(u0, v0), q = P(u1, v1); g.strokeRect(Math.min(p.x, q.x), Math.min(p.y, q.y), Math.abs(q.x - p.x), Math.abs(q.y - p.y)); };
+    const line = (u0: number, v0: number, u1: number, v1: number) => { const p = P(u0, v0), q = P(u1, v1); g.lineBetween(p.x, p.y, q.x, q.y); };
+    const vm = wid / 2, um = len / 2, cr = wid * 0.17;
+    g.lineStyle(2.5, 0xf4f4ee, 0.95);
+    box(0, 0, len, wid); line(um, 0, um, wid);
+    const c = P(um, vm); g.strokeCircle(c.x, c.y, cr); g.fillStyle(0xf4f4ee, 1).fillCircle(c.x, c.y, 2.5);
+    for (const [u, d] of [[0, 1], [len, -1]] as const) {
+      const pl = len * 0.15, pw = wid * 0.6, gl = len * 0.055, gw = wid * 0.3;
+      box(u, vm - pw / 2, u + d * pl, vm + pw / 2); // penalty box
+      box(u, vm - gw / 2, u + d * gl, vm + gw / 2); // six-yard box
+      const spot = P(u + d * pl * 0.72, vm); g.fillStyle(0xf4f4ee, 1).fillCircle(spot.x, spot.y, 2.5);
+      g.lineStyle(4, 0xffffff, 1); box(u - d * 8, vm - wid * 0.08, u, vm + wid * 0.08); g.lineStyle(2.5, 0xf4f4ee, 0.95); // goal
+    }
+    this.interactables.push({ id: 'liufield', x: sp.x, y: sp.y - 30, r: 120, label: () => 'Book the field', act: () => {
+      bus.emit('ui:toast', 'LIU\'S FIELD BELONGS TO THE UNIVERSITY: ASK LIU. A CITY PARK FIELD? BOOK IT WITH AN NYC PARKS PERMIT, $25 TO PROCESS. (LUCO SAYS HI.)');
+    } });
   }
 
   /**

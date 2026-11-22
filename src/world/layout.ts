@@ -594,6 +594,26 @@ export function generateLayout(): WorldLayout {
   spots.battlehill = cellPx(5, 13, 0.55, 0.45); // Battle Hill: Minerva, saluting the Statue of Liberty
   spots.carousel = cellPx(6, 3, 0.25, 0.25);   // Jane's Carousel, DUMBO waterfront
   spots.bbg = cellPx(11, 10, 0.5, 0.5);
+  // LIU Brooklyn's soccer field (Willoughby St & Ashland Pl): Fort Greene's block keeps only Brooklyn Org and the field.
+  // The row's filler buildings are generated as usual (so the random sequence and the rest of the map don't change)
+  // and then cleared here; the pitch runs north-south in the open ground east of Brooklyn Org.
+  {
+    const ix = 8 * BLOCK_W + ROAD, iy = 5 * BLOCK_H + ROAD, iw = BLOCK_W - ROAD, ih = BLOCK_H - ROAD;
+    for (let i = buildings.length - 1; i >= 0; i--) {
+      const b = buildings[i]; if (b.name || !String(b.id).startsWith('b-8-5-')) continue;
+      for (let ty = Math.floor(b.y / TILE); ty < Math.ceil((b.y + b.h) / TILE); ty++) for (let tx = Math.floor(b.x / TILE); tx < Math.ceil((b.x + b.w) / TILE); tx++) blocked[ty][tx] = false;
+      buildings.splice(i, 1);
+    }
+    const org = buildings.find((b) => b.id === 'bkorg');
+    const x0 = org ? Math.ceil((org.x + org.w) / TILE) + 1 : ix + 1, x1 = ix + iw - 2, y0 = iy + 1, y1 = iy + ih - 2;
+    if (x1 - x0 >= 5) {
+      for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) set(x, y, T.GRASS);
+      for (let i = props.length - 1; i >= 0; i--) { const tx = Math.floor(props[i].x / TILE), ty = Math.floor(props[i].y / TILE); if (tx >= x0 - 1 && tx <= x1 + 1 && ty >= y0 - 1 && ty <= y1 + 1) props.splice(i, 1); }
+      spots.liufield_tl = { x: px(x0), y: px(y0) }; spots.liufield_br = { x: px(x1 + 1), y: px(y1 + 1) };
+      spots.liufield = { x: px((x0 + x1 + 1) / 2), y: px(y1 + 1) + 8 };
+      labels.push({ text: 'LIU BROOKLYN FIELD', x: px((x0 + x1 + 1) / 2), y: px(y0) - 6 });
+    }
+  }
   // Brooklyn Bridge Park's piers, DUMBO down to Atlantic Ave, built out over the East River
   const PIERS: [string, T][] = [['PIER 1', T.GRASS], ['PIER 2', T.COURT], ['PIER 3', T.GRASS], ['PIER 4', T.SAND], ['PIER 5', T.GRASS], ['PIER 6', T.PLAZA]];
   PIERS.forEach(([name, surface], i) => {
