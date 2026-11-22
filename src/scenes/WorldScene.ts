@@ -86,7 +86,7 @@ export class WorldScene extends Phaser.Scene {
     // Ghosts (in period dress) and famous Brooklynites: painted in ChatGPT, Nov 22 2026
     for (const id of ['capone', 'tweed', 'greeley', 'bernstein', 'basquiat', 'tiffany', 'jackie', 'whitman', 'mckinney', 'ebbets', 'chadwick', 'beecher', 'clinton', 'morse', 'chisholm', 'lenahorne', 'biggie', 'rbg', 'yauch',
       'spikelee', 'carmelo', 'rosieperez', 'yasiinbey', 'chrisrock', 'streisand', 'jayz', 'bernie', 'melbrooks', 'mamdani', 'reynoso']) this.load.image(`npc-${id}-bust`, `portraits/${id}.jpg`);
-    this.load.image('lmk-liu', 'sprites/liu.png'); // LIU Brooklyn: the Paramount corner and the field, painted in ChatGPT
+    this.load.image('lmk-liu', 'sprites/liu-north.png'); // LIU Brooklyn, painted in ChatGPT north-up: the field north, the Paramount corner south on DeKalb
     this.load.image('barclays-sprite', 'sprites/barclays.png');
     this.load.image('bridge-tower-art', 'sprites/bridgetower.png');
     this.load.image('dragon-art', 'sprites/dragon.png'); // Naim's dragon, painted in ChatGPT
@@ -824,10 +824,10 @@ export class WorldScene extends Phaser.Scene {
   private paintedLiu() {
     const a = this.layout.spots.liufield_tl, b = this.layout.spots.liufield_br, sp = this.layout.spots.liufield;
     if (!a || !b || !sp || !this.textures.exists('lmk-liu')) return false;
-    // Turned 90° counterclockwise (Deroy): the field runs north, the Paramount corner sits south, filling the tall lot
-    const img = this.add.image(0, 0, 'lmk-liu').setAngle(-90);
-    const k = Math.min((b.x - a.x + 24) / img.height, (b.y - a.y + 10) / img.width); // rotated: width = image height
-    img.setScale(k).setPosition((a.x + b.x) / 2, b.y + 10 - (img.width * k) / 2).setDepth(b.y); // anyone on the sidewalk below draws in front
+    // Painted north-up for the tall lot (Deroy: field north, Paramount south), so no rotation and the light matches its neighbors
+    const img = this.add.image((a.x + b.x) / 2, b.y + 10, 'lmk-liu').setOrigin(0.5, 1);
+    const k = Math.min((b.x - a.x + 24) / img.width, (b.y - a.y + 10) / img.height);
+    img.setScale(k).setDepth(b.y); // anyone on the sidewalk below draws in front
     const wall = this.add.zone((a.x + b.x) / 2, (a.y + b.y) / 2, b.x - a.x, b.y - a.y); // solid, like any building
     this.physics.add.existing(wall, true); this.liuWall = wall; // collider added once the player exists
     this.interactables.push({ id: 'liufield', x: sp.x, y: sp.y - 30, r: 140, label: () => 'Book the field', act: () => bus.emit('ui:toast', 'LIU\'S FIELD BELONGS TO THE UNIVERSITY: ASK LIU. A CITY PARK FIELD? BOOK IT WITH AN NYC PARKS PERMIT, $25 TO PROCESS. (LUCO SAYS HI.)') });
