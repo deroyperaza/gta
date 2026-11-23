@@ -526,3 +526,4 @@ body.touch #touch-pad { background: rgba(255,255,255,.15) no-repeat center / 100
 /* The on-screen goal pointer already says who, how far and which way: the mission box doesn't repeat it */
 #obj-dist { display: none; }
 #obj-text { padding-right: 0; } /* the room it kept for the distance goes back to the text */
+.map-key .mk-bike { font-style: normal; font-size: 14px; line-height: 1; margin-right: 2px; }

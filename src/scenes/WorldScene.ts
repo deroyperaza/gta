@@ -29,6 +29,8 @@ interface Interactable {
 }
 
 const WALK = 150, RUN = 245, BIKE = 330, BIKE_RUN = 410;
+/** Street objects painted in ChatGPT (public/sprites/props/<key>.png): each takes over the code-drawn texture of the same key */
+const PAINTED_PROPS = ['dock', 'truck', 'fridge-empty', 'fridge-full', 'cat', 'grocerybag', 'hoop0', 'hoop1', 'duck0', 'duck1', 'sunflower'];
 
 /** Landmarks painted in ChatGPT (magenta keyed out) at public/sprites/<building id>.png */
 const PAINTED_LANDMARKS = ['savingsbank', 'centrallib', 'boroughhall', 'kingsish', 'bkmuseum', 'parachute', 'bam'];
@@ -93,6 +95,7 @@ export class WorldScene extends Phaser.Scene {
     this.load.image('bridge-tower-art', 'sprites/bridgetower.png');
     this.load.image('dragon-art', 'sprites/dragon.png'); // Naim's dragon, painted in ChatGPT
     this.load.image('cart0-art', 'sprites/cart-halal.png'); this.load.image('cart1-art', 'sprites/cart-churro.png'); // Hamid's and Doña Rosa's carts, painted in ChatGPT
+    for (const k of PAINTED_PROPS) this.load.image(`${k}-art`, `sprites/props/${k}.png`); // street objects painted in ChatGPT, Nov 2026
     for (const p of PAINTED) if (p.ready) this.load.image(`lmk-${p.id}`, `sprites/${p.file}.png`); // landmarks placed by coordinates
     this.load.image('gap-island', 'sprites/gap.png'); // Grand Army Plaza's island, painted in ChatGPT, keyed
     for (const id of ['bandshell', 'gwgate', 'carousel', 'conservatory', 'bkcollege']) this.load.image(`park-${id}`, `sprites/${id}.png`); // painted in ChatGPT, keyed
@@ -103,7 +106,7 @@ export class WorldScene extends Phaser.Scene {
     this.layout = generateLayout();
     makeTiles(this); makeVehicles(this); makeStreetProps(this); makeProps(this);
     // The food carts are painted like the rest of the street: the painted art takes over the drawn cart's key
-    for (const k of ['cart0', 'cart1']) if (this.textures.exists(`${k}-art`)) { this.textures.remove(k); this.textures.renameTexture(`${k}-art`, k); }
+    for (const k of ['cart0', 'cart1', ...PAINTED_PROPS]) if (this.textures.exists(`${k}-art`)) { this.textures.remove(k); this.textures.renameTexture(`${k}-art`, k); }
     makeCharacter(this, 'player', PLAYER_LOOK);
     makeBikeRider(this, 'player-bike', PLAYER_LOOK);
     for (const n of NPCS) makeCharacter(this, `npc-${n.id}`, n.look, !(n as any).blockFolk && !(n as any).npOrg); // neighbors' and staffers' portraits wait for the first chat
@@ -426,7 +429,12 @@ export class WorldScene extends Phaser.Scene {
     for (const [id, s] of Object.entries(this.layout.spots)) {
       if (!id.startsWith('dock-')) continue;
       const img = this.add.image(s.x, s.y, 'dock').setOrigin(0.5, 0.9).setDepth(s.y);
-      this.miniIgnore.push(img);
+      // A label like the name tags, so a dock reads as "bikes here" from across the block
+      const tag = this.add.text(s.x, s.y + 16, '🚲 BIKES', { fontFamily: 'Nunito, "Helvetica Neue", Arial, sans-serif', fontSize: '14px', fontStyle: '900', color: '#16101f', backgroundColor: '#ffffff', padding: { x: 6, y: 3 } }).setOrigin(0.5).setDepth(1e5 + 1); // under the dock, over name tags
+      this.miniIgnore.push(img, tag);
+      // and a bike on the mini-map (only the mini-map sees it)
+      if (!this.textures.exists('mm-bike')) { const t = this.textures.createCanvas('mm-bike', 64, 64)!, cx = t.getContext(); cx.beginPath(); cx.arc(32, 32, 28, 0, 7); cx.fillStyle = '#fff'; cx.fill(); cx.lineWidth = 5; cx.strokeStyle = '#16101f'; cx.stroke(); cx.font = '36px sans-serif'; cx.textAlign = 'center'; cx.textBaseline = 'middle'; cx.fillText('🚲', 32, 35); t.refresh(); }
+      this.cameras.main.ignore(this.add.image(s.x, s.y, 'mm-bike').setScale(3.4).setDepth(2e6 - 1));
       this.interactables.push({ id, x: s.x, y: s.y, r: 70, label: () => (this.onBike ? 'Dock your bike' : 'Grab a BK Spokes bike'), act: () => this.toggleBike(!this.onBike) });
     }
     // Vendors
@@ -492,7 +500,7 @@ export class WorldScene extends Phaser.Scene {
     const cs = this.layout.spots.cat;
     this.cat = this.add.sprite(cs.x, cs.y, 'cat').setDepth(cs.y);
     this.miniIgnore.push(this.cat);
-    this.tweens.add({ targets: this.cat, x: cs.x + 90, duration: 5000, yoyo: true, repeat: -1, ease: 'Sine.inOut', onYoyo: () => this.cat.setFlipX(true), onRepeat: () => this.cat.setFlipX(false) });
+    if (!this.textures.get('cat').getSourceImage().width || this.textures.get('cat').getSourceImage().width < 36) this.tweens.add({ targets: this.cat, x: cs.x + 90, duration: 5000, yoyo: true, repeat: -1, ease: 'Sine.inOut', onYoyo: () => this.cat.setFlipX(true), onRepeat: () => this.cat.setFlipX(false) }); // the drawn cat paces; the painted Commissioner lounges
     this.interactables.push({
       id: 'cat', x: cs.x, y: cs.y, r: 56, label: () => 'Pet Commissioner Whiskers',
       act: () => {

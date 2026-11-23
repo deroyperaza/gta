@@ -656,6 +656,10 @@ class UI {
       }
       for (const p of w.transit.stations) { c.beginPath(); c.arc((p.x / TILE) * s, (p.y / TILE) * s, 9, 0, 7); c.fillStyle = '#fff'; c.fill(); c.lineWidth = 4; c.strokeStyle = '#16101f'; c.stroke(); }
     }
+    // Bike docks: a bike, so you can find the nearest one
+    c.font = '34px sans-serif'; c.textAlign = 'center'; c.textBaseline = 'middle';
+    for (const [id, p] of Object.entries(L.spots)) if (id.startsWith('dock-')) c.fillText('🚲', (p.x / TILE) * s, (p.y / TILE) * s);
+    c.textBaseline = 'alphabetic';
     const targets = new Set(missions.targets());
     c.font = 'bold 13px Nunito, Arial';
     for (const n of NPCS) {
