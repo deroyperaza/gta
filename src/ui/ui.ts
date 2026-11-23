@@ -396,7 +396,7 @@ class UI {
 
   private districtBanner(info: { name: string; color: string; blurb: string }) {
     const el = $('#district');
-    el.innerHTML = `<div class="dname" style="color:${info.color}">${info.name}</div><div class="dblurb">${info.blurb}</div>`;
+    el.innerHTML = `<div class="dname" style="--dc:${info.color}">${info.name}</div><div class="dblurb">${info.blurb}</div>`;
     el.classList.remove('show'); void el.offsetWidth; el.classList.add('show');
   }
 

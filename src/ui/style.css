@@ -539,7 +539,7 @@ body.pl-wait #title.open :is(.logo, .edition, .menu) { animation-play-state: pau
 @media (max-height: 500px) and (orientation: landscape) {
   #stats { box-sizing: border-box; width: 216px; padding: 5px 8px 6px; }
   .logo-mini img { height: 44px; }
-  #hud-buttons { box-sizing: border-box; width: 216px; top: 92px; left: calc(8px + env(safe-area-inset-left, 0px)); right: auto; justify-content: space-between; gap: 3px; }
+  #hud-buttons { box-sizing: border-box; width: 216px; top: 100px; left: calc(8px + env(safe-area-inset-left, 0px)); right: auto; justify-content: space-between; gap: 3px; }
   #hud-buttons button { flex: 1 1 auto; font-size: 11px; padding: 2px 4px; }
   #hud-map { display: none; } /* the labeled mini-map is the map button */
   #minimap-frame::after { content: 'MAP'; position: absolute; bottom: -11px; left: 50%; transform: translateX(-50%); background: #fff; color: var(--ink); font: 12px var(--display); letter-spacing: 1px; padding: 0 7px; border: 2.5px solid var(--ink); border-radius: 8px; }
@@ -569,3 +569,11 @@ body.pl-wait #title.open :is(.logo, .edition, .menu) { animation-play-state: pau
 /* Title tagline: heavy black drop shadow so it reads over the busy map */
 .edition { text-shadow: 4px 4px 0 #000, 2px 2px 0 #000; }
 @media (max-width: 600px), (max-height: 500px) and (orientation: landscape) { .edition { text-shadow: 3px 3px 0 #000, 1.5px 1.5px 0 #000; } }
+/* Neighborhood banner: white letters, a dark outline drawn outside them (a text stroke ate into the thin letters and
+   filled them in), and a drop shadow in the district's color */
+#district .dname { color: #fff !important; -webkit-text-stroke: 0; --o: var(--ink);
+  text-shadow: -3px -3px 0 var(--o), 3px -3px 0 var(--o), -3px 3px 0 var(--o), 3px 3px 0 var(--o), 0 -3px 0 var(--o), 0 3px 0 var(--o), -3px 0 0 var(--o), 3px 0 0 var(--o), 7px 7px 0 var(--dc, var(--ink)); }
+@media (max-width: 960px), (max-height: 500px) and (orientation: landscape) {
+  #district .dname { -webkit-text-stroke: 0; text-shadow: -2px -2px 0 var(--o), 2px -2px 0 var(--o), -2px 2px 0 var(--o), 2px 2px 0 var(--o), 0 -2px 0 var(--o), 0 2px 0 var(--o), -2px 0 0 var(--o), 2px 0 0 var(--o), 4px 4px 0 var(--dc, var(--ink)); }
+}
+#district { z-index: 4; } /* the banner sits over the goal pointer while it shows (it fades out on its own) */
