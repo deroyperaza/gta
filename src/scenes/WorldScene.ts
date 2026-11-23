@@ -462,9 +462,9 @@ export class WorldScene extends Phaser.Scene {
     // Bike docks
     for (const [id, s] of Object.entries(this.layout.spots)) {
       if (!id.startsWith('dock-')) continue;
-      const img = this.add.image(s.x, s.y, 'dock').setOrigin(0.5, 0.9).setDepth(s.y);
+      const img = this.add.image(s.x, s.y + 32, 'dock').setOrigin(0.5, 0.9).setDepth(s.y - 25); // fills the sidewalk from the building line to the curb; low, so people on the sidewalk draw over it
       // A label like the name tags, so a dock reads as "bikes here" from across the block
-      const tag = this.add.text(s.x, s.y + 16, '🚲 BIKES', { fontFamily: 'Nunito, "Helvetica Neue", Arial, sans-serif', fontSize: '14px', fontStyle: '900', color: '#16101f', backgroundColor: '#ffffff', padding: { x: 6, y: 3 } }).setOrigin(0.5).setDepth(1e5 + 1); // under the dock, over name tags
+      const tag = this.add.text(s.x, s.y + 42, '🚲 BIKES', { fontFamily: 'Nunito, "Helvetica Neue", Arial, sans-serif', fontSize: '14px', fontStyle: '900', color: '#16101f', backgroundColor: '#ffffff', padding: { x: 6, y: 3 } }).setOrigin(0.5).setDepth(1e5 + 1); // under the dock, over name tags
       this.fixedLabels.push(tag.getBounds());
       this.miniIgnore.push(img, tag);
       // and a bike on the mini-map (only the mini-map sees it)
@@ -671,6 +671,8 @@ export class WorldScene extends Phaser.Scene {
       if (bev && Math.hypot(bev.x - x, bev.y - y) < 260) continue; // Ms. Bev's curb has its own pile
       const small = (posh || (h >>> 4) % 3 > 0) && this.textures.exists('trashpile-sm');
       const pile = this.add.image(x, y, small ? 'trashpile-sm' : 'trashpile').setOrigin(0.5, 0.8).setDepth(y).setFlipX(!!((h >>> 12) & 1));
+      const shd = this.add.ellipse(x, y + 4, pile.width * 0.85, 14, 0x08050e, 0.28).setDepth(y - 1); // the bags sit right on the sidewalk
+      this.miniIgnore.push(shd);
       const rat = this.add.image(x - 18, y + 10, 'rat').setDepth(9e4 + 2).setVisible(false);
       this.tweens.add({ targets: rat, x: rat.x + 30, duration: 800 + ((h >>> 16) % 500), yoyo: true, repeat: -1, ease: 'Sine.inOut', onYoyo: () => rat.setFlipX(true), onRepeat: () => rat.setFlipX(false) });
       this.curbRats.push(rat); this.miniIgnore.push(pile, rat);

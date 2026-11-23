@@ -46,37 +46,63 @@ export class Traffic {
     const tiles: number[][] = (scene as any).layout.tiles;
     const ROADT = new Set<number>([T.ASPHALT, T.LANE_V, T.LANE_H, T.INTERSECTION, T.CROSS_V, T.CROSS_H]);
     const road = (tx: number, ty: number) => ROADT.has(tiles[ty]?.[tx] ?? -1);
+    // Bike lanes (green, at both curbs) on about one street in four; there the cars move in toward the middle.
+    // Delivery mopeds ride with the cars, and now and then in the bike lane (as they do).
+    // Built from small rectangles and stencil images (skipped when off screen), not one huge redrawn Graphics
+    if (!scene.textures.exists('bike-stencil')) {
+      const g = scene.make.graphics({}, false);
+      g.lineStyle(1.6, 0xf4f4ee, 1).strokeCircle(4, 10, 3.2).strokeCircle(12, 10, 3.2).lineBetween(4, 10, 8, 4).lineBetween(8, 4, 12, 10).lineBetween(8, 4, 10, 3);
+      g.generateTexture('bike-stencil', 16, 14); g.destroy();
+    }
+    const hide: Phaser.GameObjects.GameObject[] = [];
+    const bikeLane = (axis: 'x' | 'y', at: number, from: number, to: number) => {
+      for (const side of [0, ROAD * TILE - 16]) {
+        const x = axis === 'y' ? at + side : from, y = axis === 'y' ? from : at + side, w = axis === 'y' ? 16 : to - from, h = axis === 'y' ? to - from : 16;
+        hide.push(scene.add.rectangle(x, y, w, h, 0x3f9a56, 0.85).setOrigin(0).setDepth(-7));
+        const lx = axis === 'y' ? (side ? x : x + 14.5) : x, ly = axis === 'y' ? y : side ? y : y + 14.5; // the white line on the traffic side
+        hide.push(scene.add.rectangle(lx, ly, axis === 'y' ? 1.5 : w, axis === 'y' ? h : 1.5, 0xf4f4ee, 0.9).setOrigin(0).setDepth(-7));
+        for (let t = 70; t < (to - from) - 40; t += 240) hide.push(scene.add.image(axis === 'y' ? x + 8 : x + t, axis === 'y' ? y + t : y + 8, 'bike-stencil').setDepth(-6.9).setRotation(axis === 'y' ? -Math.PI / 2 : 0).setAlpha(0.9));
+      }
+    };
+    const streets = (axis: 'x' | 'y', k: number, a: number, b: number) => {
+      const at = k * (axis === 'y' ? BLOCK_W : BLOCK_H) * TILE, span = axis === 'y' ? BLOCK_H : BLOCK_W;
+      const min = a * span * TILE + 48, max = b * span * TILE + 48, hasLane = k % 4 === 2;
+      if (hasLane) for (let i = a; i < b; i++) bikeLane(axis, at, i * span * TILE + ROAD * TILE + 6, (i + 1) * span * TILE - 6); // between the intersections
+      // lane offsets from the street's edge: cars at 24/72 (32/64 beside bike lanes), bikes in the bike lanes at 8/88
+      const car = hasLane ? [32, 64] : [24, 72], bike = [8, 88];
+      const dirs = axis === 'y' ? ([[1, 0], [-1, 1]] as const) : ([[-1, 0], [1, 1]] as const);
+      const lanesFor = (o: number[]) => (axis === 'y' ? [at + o[0], at + o[1]] : [at + o[1], at + o[0]]) as [number, number];
+      for (const [dir, side] of dirs) {
+        const n = Math.max(1, Math.round((b - a) * 0.22 + r.frac()));
+        for (let i = 0; i < n; i++) this.spawn(axis, dir, at + car[side], r.between(min, max), i === 0 && r.frac() < 0.35 && !hasLane, min, max, lanesFor(car));
+        if (r.frac() < 0.55) this.spawn(axis, dir, at + car[side], r.between(min, max), false, min, max, lanesFor(car), 'moped');
+        if (hasLane) for (let i = 0; i < 1 + Math.round(r.frac() * (b - a) * 0.15); i++) {
+          const moped = r.frac() < 0.2; // some delivery riders take the bike lane too
+          this.spawn(axis, dir, at + bike[side], r.between(min, max), !moped, min, max, lanesFor(bike), moped ? 'moped' : undefined);
+        }
+      }
+    };
     // Vertical streets: line k runs between block columns k-1 and k, wherever one of them is Brooklyn
-    for (let k = 0; k <= COLS; k++) for (const [a, b] of runs(ROWS, (row) => (isLand(k - 1, row) || isLand(k, row)) && road(k * BLOCK_W + 1, row * BLOCK_H + ROAD + 9))) {
-      const x0 = k * BLOCK_W * TILE, min = a * BLOCK_H * TILE + 48, max = b * BLOCK_H * TILE + 48;
-      for (const [dir, off] of [[1, 24], [-1, 72]] as const) {
-        const n = Math.max(1, Math.round((b - a) * 0.22 + r.frac()));
-        for (let i = 0; i < n; i++) this.spawn('y', dir, x0 + off, r.between(min, max), i === 0 && r.frac() < 0.35, min, max, [x0 + 24, x0 + 72]);
-      }
-    }
+    for (let k = 0; k <= COLS; k++) for (const [a, b] of runs(ROWS, (row) => (isLand(k - 1, row) || isLand(k, row)) && road(k * BLOCK_W + 1, row * BLOCK_H + ROAD + 9))) streets('y', k, a, b);
     // Horizontal streets
-    for (let k = 0; k <= ROWS; k++) for (const [a, b] of runs(COLS, (col) => (isLand(col, k - 1) || isLand(col, k)) && road(col * BLOCK_W + ROAD + 9, k * BLOCK_H + 1))) {
-      const y0 = k * BLOCK_H * TILE, min = a * BLOCK_W * TILE + 48, max = b * BLOCK_W * TILE + 48;
-      for (const [dir, off] of [[-1, 24], [1, 72]] as const) {
-        const n = Math.max(1, Math.round((b - a) * 0.22 + r.frac()));
-        for (let i = 0; i < n; i++) this.spawn('x', dir, y0 + off, r.between(min, max), i === 0 && r.frac() < 0.35, min, max, [y0 + 72, y0 + 24]);
-      }
-    }
+    for (let k = 0; k <= ROWS; k++) for (const [a, b] of runs(COLS, (col) => (isLand(col, k - 1) || isLand(col, k)) && road(col * BLOCK_W + ROAD + 9, k * BLOCK_H + 1))) streets('x', k, a, b);
+    (scene as any).miniIgnore?.push(...hide);
   }
   private onHonk: (x: number, y: number) => void;
 
-  private spawn(axis: 'x' | 'y', dir: 1 | -1, lane: number, pos: number, bike: boolean, min: number, max: number, lanes: [number, number]) {
-    let key = bike ? 'cyclist' : Phaser.Utils.Array.GetRandom(CAR_KEYS);
+  private spawn(axis: 'x' | 'y', dir: 1 | -1, lane: number, pos: number, bike: boolean, min: number, max: number, lanes: [number, number], kind?: 'moped') {
+    let key = kind === 'moped' ? `moped${Phaser.Math.Between(0, 3)}` : bike ? Phaser.Utils.Array.GetRandom(['cyclist', 'cyclist1', 'cyclist2', 'cyclist3']) : Phaser.Utils.Array.GetRandom(CAR_KEYS);
     if (!this.scene.textures.exists(key)) key = 'car1'; // the painted garbage truck didn't load
     const x = axis === 'y' ? lane : pos, y = axis === 'y' ? pos : lane;
     const s = this.scene.add.image(x, y, key);
     s.rotation = axis === 'y' ? (dir === 1 ? Math.PI : 0) : dir === 1 ? Math.PI / 2 : -Math.PI / 2;
     const shadow = this.scene.add.image(x, y, `${key}-shd`).setRotation(s.rotation).setDepth(-4);
-    const speed = bike ? Phaser.Math.Between(80, 110) : key === 'garbage' ? Phaser.Math.Between(70, 100) : Phaser.Math.Between(110, 190); // garbage trucks crawl
+    const speed = bike ? Phaser.Math.Between(80, 110) : kind === 'moped' ? Phaser.Math.Between(140, 180) : key === 'garbage' ? Phaser.Math.Between(70, 100) : Phaser.Math.Between(110, 190); // garbage trucks crawl
     const emergency = key === 'police' || key === 'ambulance';
     const onCall = emergency && Math.random() < 0.5;
     const lights = onCall ? this.scene.add.graphics().setDepth(s.depth + 1) : undefined;
     this.vehicles.push({ sprite: s, shadow, axis, dir, lane, speed: onCall ? speed * 1.35 : speed, cur: onCall ? speed * 1.35 : speed, len: s.height, bike, min, max, lanes, lights, ems: key === 'ambulance' });
+    if (kind === 'moped') this.vehicles[this.vehicles.length - 1].bike = true; // small: no honking, no shoving like a car
     if (lights) this.lightSprites.push(lights);
   }
 

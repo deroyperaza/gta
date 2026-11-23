@@ -683,6 +683,32 @@ export function makeVehicles(scene: Phaser.Scene) {
   }
   canvas(scene, 'cyclist', 22, 44, (c) => { c.translate(11, 22); drawBike(c, '#c8322a', 0, 38); c.translate(0, 3); drawWalker(c, { skin: '#c58a5c', hair: '#1a1010', style: 'cap', hatColor: '#2b3a6b', shirt: '#e8e6df', pants: '#2b3a6b' }, 0, 1.3); });
   canvas(scene, 'cyclist-shd', 34, 56, (c) => { c.filter = 'blur(3px)'; c.fillStyle = 'rgba(8,5,14,.4)'; rr(c, 10, 6, 14, 44, 6); c.fill(); });
+  // More riders: everyday cyclists and BK Spokes share bikes (teal)
+  const riders: [string, Look][] = [
+    ['#2fb5aa', { skin: '#6b4430', hair: '#1a1010', style: 'afro', shirt: '#ffd23f', pants: '#2b2b40' }],
+    ['#1c1a18', { skin: '#f2d2b8', hair: '#a8743a', style: 'bun', shirt: '#7b3fe4', pants: '#1a1a20' }],
+    ['#3a8ad4', { skin: '#a8714a', hair: '#1a1010', style: 'beanie', hatColor: '#ff4fa3', shirt: '#2f6a4a', pants: '#3a2a1a' }],
+  ];
+  riders.forEach(([frame, look], i) => {
+    canvas(scene, `cyclist${i + 1}`, 22, 44, (c) => { c.translate(11, 22); drawBike(c, frame, 0, 38); c.translate(0, 3); drawWalker(c, look, 0, 1.3); });
+    canvas(scene, `cyclist${i + 1}-shd`, 34, 56, (c) => { c.filter = 'blur(3px)'; c.fillStyle = 'rgba(8,5,14,.4)'; rr(c, 10, 6, 14, 44, 6); c.fill(); });
+  });
+  // Delivery mopeds: a rider in a helmet with a big insulated delivery box on the back (Brooklyn's streets, 2026)
+  const boxes = ['#d8342a', '#2fae5a', '#f08a1c', '#1d5fae'], skins = ['#8d5a3a', '#a8714a', '#7a4a30', '#c58a5c'];
+  boxes.forEach((box, i) => {
+    canvas(scene, `moped${i}`, 26, 50, (c) => {
+      c.translate(13, 25);
+      c.fillStyle = '#141416'; rr(c, -3, -24, 6, 9, 3); c.fill(); rr(c, -3, 15, 6, 9, 3); c.fill(); // tires
+      c.fillStyle = '#3a3a40'; rr(c, -5, -17, 10, 34, 4); c.fill(); // frame and battery
+      c.strokeStyle = '#1c1a18'; c.lineWidth = 2.2; line(c, -9, -14, 9, -14); // handlebar
+      c.fillStyle = '#f4efe6'; c.fillRect(-2, -22, 4, 2); // headlight
+      c.save(); c.translate(0, 1); drawWalker(c, { skin: skins[i], hair: '#1a1010', style: 'short', shirt: '#2b2b40', pants: '#1a1a20' }, 0, 1.3); c.restore();
+      c.fillStyle = '#e8e6df'; c.beginPath(); c.arc(0, -2, 5.4, 0, 7); c.fill(); c.strokeStyle = '#1c1a18'; c.lineWidth = 1.2; c.stroke(); // helmet
+      c.fillStyle = box; rr(c, -10, 6, 20, 17, 3); c.fill(); c.strokeStyle = 'rgba(0,0,0,.45)'; c.lineWidth = 1.5; c.stroke(); // the delivery box
+      c.fillStyle = 'rgba(255,255,255,.55)'; c.fillRect(-8, 9, 16, 2.5); c.fillStyle = 'rgba(255,255,255,.25)'; c.fillRect(-8, 18, 16, 2);
+    });
+    canvas(scene, `moped${i}-shd`, 38, 62, (c) => { c.filter = 'blur(3px)'; c.fillStyle = 'rgba(8,5,14,.42)'; rr(c, 10, 6, 18, 50, 7); c.fill(); });
+  });
 }
 
 // ------------------------------------------------------------------ STREET PROPS
