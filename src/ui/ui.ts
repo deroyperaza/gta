@@ -6,6 +6,7 @@ import { ITEMS } from '../data/items';
 import { LESSONS } from '../data/lessons';
 import { GRANTEES } from '../data/grantees';
 import { NONPROFITS, ISSUES } from '../data/nonprofits';
+import { LANGS } from '../data/languages';
 import { MISSIONS, type MissionDef } from '../data/missions';
 import { NPCS, NPC_BY_ID } from '../data/npcs';
 import { dialogue } from '../systems/dialogue';
@@ -643,10 +644,15 @@ class UI {
     const earned = Object.entries(LESSONS).filter(([k]) => state.flag(`lesson_${k}`));
     const lessons = (earned.length ? earned.map(([k, l]) => `<div class="lesson"><b>${k}</b><em>from ${l.who}</em><p>${l.text}</p></div>`).join('') : '<p>Nothing yet. Talk to people. They know things.</p>')
       + `<p class="sub">${earned.length} of ${Object.keys(LESSONS).length} learned.</p>`;
+    const spoken = Object.values(LANGS).map((L) => ({ L, got: L.phrases.filter((_, i) => state.flag(`ph_${L.id}_${i}`)) })).filter((x) => x.got.length);
+    const phrasebook = (spoken.length ? spoken.map(({ L, got }) => `<div class="lesson"><b>${L.name}${state.flag(`lang_${L.id}`) ? ' · YOU SPEAK A LITTLE' : ''}</b><em>${got.length} of ${L.phrases.length} phrases</em>${got.map((p) => `<p><span class="ph">${p.text}</span> ${p.say} · "${p.en}"</p>`).join('')}</div>`).join('')
+      : '<p>Nothing yet. Brooklyn speaks hundreds of languages. Neighbors will teach you a phrase in theirs.</p>')
+      + `<p class="sub">${spoken.length} of ${Object.keys(LANGS).length} languages started.</p>`;
     $('#journal .panel-body').innerHTML = `
       <div class="jcol"><h3>MISSIONS</h3>${mrows}
         <h3>BROOKLYN ORG NETWORK</h3><p class="sub">All 261 Brooklyn nonprofits funded by Brooklyn Org, the borough's community foundation. Each has someone on the map. Learn what they do and they join your network.</p>${network}
-        <h3>POCKET CIVICS</h3><p class="sub">Everything you've learned, in your pocket. Later conversations will test it.</p>${lessons}</div>
+        <h3>POCKET CIVICS</h3><p class="sub">Everything you've learned, in your pocket. Later conversations will test it.</p>${lessons}
+        <h3>PHRASEBOOK</h3><p class="sub">Every phrase a neighbor taught you, in their language.</p>${phrasebook}</div>
       <div class="jcol"><h3>THE MOVEMENT</h3>
         <div class="stats"><div><b>${d.solidarity}</b><span>Solidarity</span></div><div><b>${d.power}</b><span>Organizing Power</span></div><div><b>${d.attention}</b><span>Public Attention</span></div><div><b>${state.num('flyers_given')}</b><span>Flyers Handed</span></div><div><b>${state.num('posters_up')}</b><span>Posters Up</span></div><div><b>${state.num('villains_beaten')} / 6</b><span>Villains Beaten</span></div><div><b>${fmtTime(d.playTime)}</b><span>Time Organizing</span></div></div>
         <h3>COMMUNITY TRUST</h3>${trust}

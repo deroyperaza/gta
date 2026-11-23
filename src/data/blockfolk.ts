@@ -12,8 +12,9 @@ import type { District } from '../core/types';
 import type { Look } from '../world/textures';
 import { CELLS, KINDS, NEIGHBORHOODS } from '../world/brooklynGrid';
 import type { NpcDef } from './npcs';
+import { langForFolk } from './languages';
 
-export interface BlockFolk extends NpcDef { block: [number, number]; blockFolk: true; lesson?: string }
+export interface BlockFolk extends NpcDef { block: [number, number]; blockFolk: true; lesson?: string; /** the language they teach you a phrase of (languages.ts) */ lang?: string }
 
 function hash(s: string) { let h = 2166136261; for (let i = 0; i < s.length; i++) h = Math.imul(h ^ s.charCodeAt(i), 16777619); return h >>> 0; }
 
@@ -154,7 +155,7 @@ function folkFor(c: number, r: number): BlockFolk | null {
   const scene = !where && (hip || yup) && hash(`folk:${c},${r}:scene`) % 5 < 3; // most blocks there; not all (the old-timers are still here)
   const pool = scene ? (hip ? HIP_JOBS : YUP_JOBS) : JOBS.filter((j) => (where ? j.where === where : !j.where));
   const job = pool[at(pool.length, 3)];
-  const crewKeys = JOB_CREWS[job.title], crew = crewKeys ? CREWS[crewKeys[hash(`folk:${c},${r}:crew`) % crewKeys.length]] : null;
+  const crewKeys = JOB_CREWS[job.title], crewKey = crewKeys ? crewKeys[hash(`folk:${c},${r}:crew`) % crewKeys.length] : null, crew = crewKey ? CREWS[crewKey] : null;
   const groups = scene ? [hip ? 'hipster' : 'yuppie'] : HOOD_NAMES[hood] ?? ['mixed', 'mixed', 'black', 'latino', 'caribbean'];
   const names = crew ? crew.names : NAMES[groups[at(groups.length, 7)]];
   let name = names[at(names.length, 11)];
@@ -177,7 +178,7 @@ function folkFor(c: number, r: number): BlockFolk | null {
   };
   return {
     id: `bf_${c}_${r}`, name, short: name, title: `${job.title}, ${hood}`, district, spot: `bf_${c}_${r}`, color: COLORS[at(COLORS.length, 9)],
-    look, lesson: job.lesson, bio: `${job.title} in ${hood}. Has opinions about this block, and about you, which are mostly good.`, block: [c, r], blockFolk: true,
+    look, lesson: job.lesson, lang: langForFolk(crewKey ?? groups[at(groups.length, 7)], name, hood), bio: `${job.title} in ${hood}. Has opinions about this block, and about you, which are mostly good.`, block: [c, r], blockFolk: true,
     idle: (() => { const who = roll('who', 25); return who < 2 ? [QUEER[roll('q', QUEER.length)], ...job.lines] : who === 2 ? [TRANS[roll('t', TRANS.length)], ...job.lines] : job.lines; })(),
   };
 }

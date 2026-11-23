@@ -10,6 +10,7 @@ import { LESSONS } from '../data/lessons';
 import { makeBust } from '../world/portraits';
 import { Pedestrians, type Ped } from '../entities/pedestrians';
 import { BallGames, type Court } from '../entities/ballgames';
+import { HOOD_LANGS, LANGS } from '../data/languages';
 import { CHAR_RES, DPR, PLAYER_RES } from '../core/res';
 import { Traffic } from '../entities/traffic';
 import { DEBATES, Opposition, type OppConfig } from '../entities/opposition';
@@ -839,7 +840,12 @@ export class WorldScene extends Phaser.Scene {
     if (!this.textures.exists(`npc-${n.id}-bust`) && !BUSTS.includes(n.id)) makeBust(this, `npc-${n.id}`, n.look);
     const lines = [...(n.idle ?? []), ...(STREET_LINES[n.district] ?? [])];
     const line = pickLine(`npc:${n.id}`, lines.length ? lines : ['...']);
-    if (state.flag(`chat_${n.id}`)) { dialogue.say(n.id, n.id, line); return; }
+    const lang = this.phraseLesson(n); // a neighbor who speaks a language teaches you one phrase (languages.ts)
+    const L = LANGS[(n as any).lang ?? ''], hi = L && L.phrases.some((_, i) => state.flag(`ph_${L.id}_${i}`)) ? `«${L.phrases[0].text}» ` : '';
+    if (state.flag(`chat_${n.id}`)) {
+      if (lang) { dialogue.start(n.id, { entries: [{ node: 'a' }], nodes: { a: { speaker: n.id, text: hi + line, next: 'lang' }, ...lang } } as any); return; }
+      dialogue.say(n.id, n.id, hi + line); return; // you've learned their language: they greet you in it
+    }
     const keys = Object.keys(LESSONS), fresh = keys.filter((k) => !state.flag(`lesson_${k}`));
     const pool = fresh.length ? fresh : keys;
     const own = (n as any).lesson as string | undefined; // workers teach about their own work (a vendor: vendor permits)
@@ -848,9 +854,30 @@ export class WorldScene extends Phaser.Scene {
       entries: [{ node: 'a' }],
       nodes: {
         a: { speaker: n.id, text: line, next: 'b' },
-        b: { speaker: n.id, text: `Here's something worth knowing around here. ${LESSONS[key].text}`, choices: [{ text: 'Good to know. Thanks.', effects: { solidarity: 5, rel: { [n.id]: 3 }, flags: { [`chat_${n.id}`]: true }, toast: `POCKET CIVICS · ${key}` } }] },
+        b: { speaker: n.id, text: `Here's something worth knowing around here. ${LESSONS[key].text}`, choices: [{ text: 'Good to know. Thanks.', next: lang ? 'lang' : undefined, effects: { solidarity: 5, rel: { [n.id]: 3 }, flags: { [`chat_${n.id}`]: true }, toast: `POCKET CIVICS · ${key}` } }] },
+        ...(lang ?? {}),
       },
     } as any);
+  }
+
+  /**
+   * The next phrase this neighbor teaches you in their language, as dialogue nodes ('lang', 'praise'), or null if
+   * they don't speak one, already taught you, or you know all three phrases. Each phrase: Solidarity, the
+   * neighborhood's trust, the neighbor's friendship. The third phrase in a language: "you speak a little ___".
+   */
+  private phraseLesson(n: NpcDef): Record<string, unknown> | null {
+    const L = LANGS[(n as any).lang ?? '']; if (!L || state.flag(`taught_${n.id}`)) return null;
+    const i = L.phrases.findIndex((_, k) => !state.flag(`ph_${L.id}_${k}`)); if (i < 0) return null;
+    const p = L.phrases[i], known = L.phrases.filter((_, k) => state.flag(`ph_${L.id}_${k}`)).length, done = known + 1 === L.phrases.length;
+    const effects = {
+      solidarity: done ? 38 : 8, trust: { [n.district]: 2 }, rel: { [n.id]: 3 },
+      flags: { [`ph_${L.id}_${i}`]: true, [`taught_${n.id}`]: true, ...(done ? { [`lang_${L.id}`]: true } : {}) },
+      toast: done ? `YOU SPEAK A LITTLE ${L.name.toUpperCase()}` : `PHRASEBOOK · ${L.name.toUpperCase()}`,
+    };
+    return {
+      lang: { speaker: n.id, text: `Learn a little ${L.name}. We say «${p.text}» (${p.say}). It means "${p.en}${/[.!?)]$/.test(p.en) ? '' : '.'}" Say it back.`, choices: [{ text: `«${p.text}»`, tag: L.name.toUpperCase(), effects, next: 'praise' }] },
+      praise: { speaker: n.id, text: L.praise[i % L.praise.length] },
+    };
   }
 
   private useFridge() {
@@ -927,7 +954,11 @@ export class WorldScene extends Phaser.Scene {
     const ped = this.nearPed();
     if (ped) {
       ped.pause = 2.5; ped.sprite.setFlipX(this.player.x < ped.sprite.x);
-      this.bubble(ped.sprite, streetLine(ped.district, neighborhoodAt(ped.sprite.x, ped.sprite.y)));
+      const hood = neighborhoodAt(ped.sprite.x, ped.sprite.y), langs = hood ? HOOD_LANGS[hood] : undefined;
+      if (langs && Math.random() < 0.35) { // the street's own language, now and then: "«Dzień dobry!» Good day!"
+        const L = LANGS[Phaser.Utils.Array.GetRandom(langs)], p = Phaser.Utils.Array.GetRandom(L.phrases.slice(0, 2));
+        this.bubble(ped.sprite, `«${p.text}» ${p.en}`);
+      } else this.bubble(ped.sprite, streetLine(ped.district, hood));
     }
   }
 

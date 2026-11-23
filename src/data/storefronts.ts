@@ -5,6 +5,8 @@
  * neighborhood's character (Caribbean bakeries in Flatbush, taquerias and dim sum in Sunset Park, kosher bakeries in
  * Borough Park, Russian delis in Brighton Beach...). Picked deterministically per building, so a shop keeps its name.
  */
+import { HOOD_LANGS, SIGN_WORDS } from './languages';
+
 export interface StoreKind { sign: [string, string]; names: string[] }
 
 const FIRST = ['Jose', 'Marisol', 'Kwame', 'Mei', 'Ahmed', 'Rosa', 'Tony', 'Yolanda', 'Dmitri', 'Fatima', 'Luis', 'Grace', 'Sam', 'Nadia', 'Andre', 'Lily', 'Rafael', 'Joy', 'Omar', 'Bea'];
@@ -88,5 +90,11 @@ export function storefrontFor(buildingId: string, district: string, hood: string
     if (!used || !used.has(out.name)) break;
   }
   used?.add(out.name);
+  // In neighborhoods with their own languages, most signs are in them (ПЕКАРНЯ, 餅家, PIEKARNIA...).
+  // Generic words like "bakery" repeat on real streets too, so these don't need to be unique.
+  const langs = hood ? HOOD_LANGS[hood] : undefined;
+  if (langs && (h0 >>> 3) % 3 !== 0) { // about two in three
+    for (let k = 0; k < langs.length; k++) { const word = SIGN_WORDS[langs[((h0 >>> 5) + k) % langs.length]]?.[out.kind]; if (word) return { ...out, name: word }; }
+  }
   return out;
 }
