@@ -729,6 +729,7 @@ export function generateLayout(): WorldLayout {
   spots.battlehill = cellPx(5, 13, 0.55, 0.45); // Battle Hill: Minerva, saluting the Statue of Liberty
   spots.carousel = cellPx(6, 3, 0.25, 0.25);   // Jane's Carousel, DUMBO waterfront
   spots.bbg = cellPx(11, 10, 0.5, 0.5);
+  spots.cole = cellPx(9, 15, 0.5, 0.2);        // Cole, the Field Captain: on the Parade Ground's soccer fields, south of Prospect Park
   // LIU Brooklyn's soccer field (Willoughby St & Ashland Pl): Fort Greene's block keeps only Brooklyn Org and the field.
   // The row's filler buildings are generated as usual (so the random sequence and the rest of the map don't change)
   // and then cleared here; the pitch runs north-south in the open ground east of Brooklyn Org.

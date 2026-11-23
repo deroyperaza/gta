@@ -545,6 +545,38 @@ export const DIALOGUES: Record<string, Dialogue> = {
   },
 
   // ============================================================ VEGA · testify at City Council
+  // ============================================================ COLE · the Parade Ground and free city pools
+  cole: {
+    entries: [{ cond: { ...S('march', 1), notFlag: 'pvp_ally_cole' }, node: 'pvp' }, { cond: { notFlag: 'met_cole' }, node: 'intro' }, { node: 'after' }],
+    nodes: {
+      pvp: {
+        speaker: 'cole', text: 'I\'ll bring my whole team. And the team we played on Saturday. We\'re mad about the same thing.',
+        choices: [{ text: 'Both teams. Let\'s go.', effects: { rel: { cole: 4 }, flags: { pvp_ally_cole: true }, inc: { pvp_crowd: 8 }, trust: { flatbush: 3 }, toast: 'COLE IS IN · +8 MARCHERS' } }],
+      },
+      intro: {
+        speaker: 'cole', text: 'I\'m the captain. Of the field. Somebody has to make sure the little kids get a turn.',
+        choices: [
+          { text: 'Captain of a whole field?', next: 'field', effects: { rel: { cole: 5 }, flags: { met_cole: true } } },
+          { text: 'What else do you play?', next: 'pool', effects: { rel: { cole: 5 }, flags: { met_cole: true } } },
+        ],
+      },
+      field: { speaker: 'cole', text: 'The Parade Ground is 40 acres. Soccer, baseball, tennis, football, basketball, volleyball. Grown-ups act like it\'s theirs. It\'s everybody\'s.', next: 'field2' },
+      field2: {
+        speaker: 'cole', text: 'Rule: if your game has more than 20 people, you need a permit. Eleven a side is 22. So we play seven a side.',
+        choices: [{ text: 'Seven a side. Smart.', effects: { rel: { cole: 6 }, solidarity: 8, trust: { flatbush: 3 }, flags: { cole_field: true }, toast: 'POCKET CIVICS · OVER 20 PLAYERS? GET A PERMIT' } }],
+      },
+      pool: { speaker: 'cole', text: 'Soccer. Then gym, tennis, swimming. The city\'s outdoor pools are free all summer. Bring your own padlock or they won\'t let you in.', next: 'pool2' },
+      pool2: {
+        speaker: 'cole', text: 'And only a plain white T-shirt over your suit. Colors? Nope. I learned that the hard way.',
+        choices: [{ text: 'Padlock. White tee. Got it.', effects: { rel: { cole: 6 }, solidarity: 8, trust: { flatbush: 2 }, flags: { cole_pool: true }, toast: 'POCKET CIVICS · CITY POOLS ARE FREE' } }],
+      },
+      after: {
+        speaker: 'cole', text: 'Soccer, then drawing, then dessert. Or soccer, then dessert. Dessert is always in there.',
+        choices: [{ text: 'Tell me about the field.', next: 'field', cond: { notFlag: 'cole_field' } }, { text: 'What else do you play?', next: 'pool', cond: { notFlag: 'cole_pool' } }, { text: 'Later, Captain.' }],
+      },
+    },
+  },
+
   vega: {
     entries: [{ cond: { ...S('march', 1), notFlag: 'pvp_ally_vega' }, node: 'pvp' }, { cond: { notFlag: 'met_vega' }, node: 'intro' }, { node: 'after' }],
     nodes: {

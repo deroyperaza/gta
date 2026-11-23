@@ -134,6 +134,12 @@ export const NPCS: NpcDef[] = [
     idle: ['Follow the money.', 'Book the field before you book the teams.', 'Next tournament: every team is a bagel.'],
   },
   {
+    id: 'cole', name: 'Cole', short: 'Cole', title: 'The Field Captain', district: 'flatbush', spot: 'cole', color: '#ffcf5a',
+    look: { skin: '#f0c8a8', hair: '#a0703f', style: 'long', shirt: '#2747b8', pants: '#8a1f2a', shoes: '#f2f2f2' },
+    bio: 'Ten. Soccer first, then gym, tennis and swimming. Draws everything, everywhere. Makes sure the little kids get a turn on the field, and that dessert happens.',
+    idle: ['Little kids get a turn too.', 'Seven a side. Trust me.', 'Is there dessert after this?'],
+  },
+  {
     id: 'vega', name: 'Vega', short: 'Vega', title: 'The Choreographer', district: 'bushwick', spot: 'vega', color: '#ffa8e0',
     look: { skin: '#f0c8a8', hair: '#8a5a34', style: 'long', shirt: '#141414', pants: '#141414', shoes: '#f2f2f2' },
     bio: 'Nine years old. Dancer, painter, free spirit, and the best hairdos on the block. Will choreograph your protest whether you asked or not.',

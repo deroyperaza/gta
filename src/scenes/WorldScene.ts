@@ -31,7 +31,7 @@ interface Interactable {
 const WALK = 150, RUN = 245, BIKE = 330, BIKE_RUN = 410;
 /** Painted portraits (public/portraits/<id>.jpg). They win over the generated busts. ~3.4MB, so they load after startup.
  *  Hand-painted likenesses (style-study/portraits.html), then ghosts in period dress and famous Brooklynites (ChatGPT, Nov 22 2026). */
-const BUSTS = ['deroy', 'jenna', 'nell', 'bridgette', 'adrian', 'danae', 'jon', 'emily', 'naim', 'luco', 'vega',
+const BUSTS = ['deroy', 'jenna', 'nell', 'bridgette', 'adrian', 'danae', 'jon', 'emily', 'naim', 'luco', 'vega', 'cole',
   'capone', 'tweed', 'greeley', 'bernstein', 'basquiat', 'tiffany', 'jackie', 'whitman', 'mckinney', 'ebbets', 'chadwick', 'beecher', 'clinton', 'morse', 'chisholm', 'lenahorne', 'biggie', 'rbg', 'yauch',
   'spikelee', 'carmelo', 'rosieperez', 'yasiinbey', 'chrisrock', 'streisand', 'jayz', 'bernie', 'melbrooks', 'mamdani', 'reynoso'];
 /** Street objects painted in ChatGPT (public/sprites/props/<key>.png): each takes over the code-drawn texture of the same key */
