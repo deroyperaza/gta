@@ -48,7 +48,7 @@ class UI {
     bus.on('flyer:handed', () => this.showFlyer('mini'));
     // Tap the mission card to fold it to one line (remembered); a new objective opens it for a few seconds
     // Phones start with it folded to one line (more street to see); your own choice is remembered
-    try { const v = localStorage.getItem('gta-obj-min'); if (v === '1' || (v == null && innerWidth <= 600)) $('#objective').classList.add('min'); } catch { /* storage blocked */ }
+    try { const v = localStorage.getItem('gta-obj-min'); if (v === '1' || (v == null && (innerWidth <= 600 || innerHeight <= 500))) $('#objective').classList.add('min'); } catch { /* storage blocked */ }
     $('#objective').addEventListener('click', () => {
       const el = $('#objective'); el.classList.remove('peek');
       const min = el.classList.toggle('min');

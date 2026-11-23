@@ -533,3 +533,22 @@ body.touch #touch-pad { background: rgba(255,255,255,.15) no-repeat center / 100
 @keyframes title-in { from { opacity: 0; transform: scale(.85) translateY(10px); } }
 @keyframes title-up { from { opacity: 0; transform: translateY(14px); } }
 body.pl-wait #title.open :is(.logo, .edition, .menu) { animation-play-state: paused; } /* hold the title's entrance until the preloader fades */
+/* ---------- Phones held sideways, cleaned up (Nov 2026) ----------
+   Top band: scorecard (with the buttons right under it, same width) · one-line mission bar · labeled mini-map.
+   Bottom corners: a smaller joystick, and the action buttons, smaller too. Nothing overlaps. */
+@media (max-height: 500px) and (orientation: landscape) {
+  #stats { box-sizing: border-box; width: 216px; padding: 5px 8px 6px; }
+  .logo-mini img { height: 44px; }
+  #hud-buttons { box-sizing: border-box; width: 216px; top: 92px; left: calc(8px + env(safe-area-inset-left, 0px)); right: auto; justify-content: space-between; gap: 3px; }
+  #hud-buttons button { flex: 1 1 auto; font-size: 11px; padding: 2px 4px; }
+  #hud-map { display: none; } /* the labeled mini-map is the map button */
+  #minimap-frame::after { content: 'MAP'; position: absolute; bottom: -11px; left: 50%; transform: translateX(-50%); background: #fff; color: var(--ink); font: 12px var(--display); letter-spacing: 1px; padding: 0 7px; border: 2.5px solid var(--ink); border-radius: 8px; }
+  #objective { left: calc(8px + env(safe-area-inset-left, 0px) + 216px + 10px); right: calc(140px + env(safe-area-inset-right, 0px)); width: auto; max-width: none; transform: none; top: 8px; }
+  #objective.min:not(.peek) #obj-title { padding-right: 20px; }
+  body.touch #touch-pad { width: 88px; height: 88px; bottom: 10px; }
+  #touch-knob { left: 19px; top: 19px; width: 44px; height: 44px; }
+  body.touch #prompt, body.touch #prompt.show { bottom: 10px; gap: 6px; max-width: 46vw; }
+  body.touch #prompt .pa { font-size: 14px; padding: 8px 12px; border-radius: 14px; box-shadow: 2px 3px 0 var(--ink); }
+  body.touch #prompt .pa::before { font-size: 16px; }
+  #inventory, body.touch #inventory { top: 126px; }
+}
