@@ -47,8 +47,8 @@ const BUS_DEFS: { id: string; to: [string, string]; color: string; pts: [number,
 /** Ride apps. Names are parodies; any resemblance is the point. */
 export const SERVICES = [
   { id: 'surge', name: 'Surge', tag: 'Everyone\'s private driver. Price: whatever we feel like.', base: 26, wait: 4 },
-  { id: 'shlep', name: 'Shlep', tag: 'The pink-ish one. We\'ll get you there. Eventually. With a shortcut.', base: 20, wait: 6 },
-  { id: 'everready', name: 'Ever-Ready Car Service', tag: '718 · Since 1987 · Cash only · "Ten minutes." (It\'s never ten minutes.) The dispatcher knows your mother.', base: 10, wait: 14 },
+  { id: 'shlep', name: 'Pynk', tag: 'The pink-ish one. We\'ll get you there. Eventually. With a shortcut.', base: 20, wait: 6 },
+  { id: 'everready', name: 'Coquí Car Service', tag: '718 · Since 1987 · Cash only · Se habla español · "Ten minutes." (It\'s never ten minutes.) The dispatcher knows your mother.', base: 10, wait: 14 },
 ] as const;
 
 function mkPath(pts: { x: number; y: number }[]): Path {
@@ -432,7 +432,7 @@ export class Transit {
     const surge = svc.id === 'surge' ? 1 + Math.random() * 1.6 + state.stars() * 0.3 : 1;
     (car as any).price = Math.round(svc.base * surge);
     const msg = svc.id === 'surge' ? `SURGE: ${surge.toFixed(1)}x. "HIGH DEMAND." (IT IS ALWAYS HIGH DEMAND.)`
-      : svc.id === 'shlep' ? 'SHLEP: YOUR DRIVER KNOWS A SHORTCUT.' : 'EVER-READY: "TEN MINUTES." CLICK.';
+      : svc.id === 'shlep' ? 'PYNK: YOUR DRIVER KNOWS A SHORTCUT.' : 'COQUÍ: "TEN MINUTES." CLICK.';
     bus.emit('ui:toast', msg);
   }
 

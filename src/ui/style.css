@@ -579,3 +579,8 @@ body.pl-wait #title.open :is(.logo, .edition, .menu) { animation-play-state: pau
 #district { z-index: 4; } /* the banner sits over the goal pointer while it shows (it fades out on its own) */
 /* Home-screen app held upright: fill the whole screen, not the shorter area the phone hands the page (main.ts fitScreen) */
 body.tall #game, body.tall #hud, body.tall .overlay { bottom: auto; height: var(--app-h); }
+/* Desktop: the joystick sits bottom-left (drag it with the mouse); the mission box moves to its right */
+body:not(.touch) #touch-pad { display: block; position: absolute; left: 16px; bottom: 18px; width: 120px; height: 120px; border-radius: 50%; border: 3px solid rgba(255,255,255,.5); pointer-events: auto; cursor: grab; touch-action: none; background: rgba(255,255,255,.15) no-repeat center / 100% 100% url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cg fill='%23fff' fill-opacity='.85'%3E%3Cpath d='M50 6 57 15 43 15Z'/%3E%3Cpath d='M50 94 57 85 43 85Z'/%3E%3Cpath d='M6 50 15 43 15 57Z'/%3E%3Cpath d='M94 50 85 43 85 57Z'/%3E%3C/g%3E%3C/svg%3E"); }
+body:not(.touch) #touch-pad.held { cursor: grabbing; }
+@media (min-width: 601px) and (min-height: 501px) { body:not(.touch) #objective { left: 152px; } }
+#touch-knob { left: calc(50% - 25px); top: calc(50% - 25px); } /* centered in any size of pad */

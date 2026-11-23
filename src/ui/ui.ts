@@ -239,6 +239,23 @@ class UI {
   /** Minimal virtual joystick + buttons for touch devices (foundation for mobile). */
   private bindTouch() {
     const pad = $('#touch-pad'), knob = $('#touch-knob');
+    // Desktop: drag the joystick with the mouse (touch screens use the touch handlers below)
+    {
+      let mid: number | null = null, mx = 0, my = 0;
+      const steer = (x: number, y: number) => {
+        const dx = x - mx, dy = y - my, m = Math.min(1, Math.hypot(dx, dy) / 50), a = Math.atan2(dy, dx);
+        this.touch = { x: Math.cos(a) * m, y: Math.sin(a) * m };
+        knob.style.transform = `translate(${Math.cos(a) * m * 40}px, ${Math.sin(a) * m * 40}px)`;
+      };
+      pad.addEventListener('pointerdown', (e) => {
+        if (e.pointerType === 'touch') return;
+        mid = e.pointerId; pad.setPointerCapture(e.pointerId); pad.classList.add('held');
+        const r = pad.getBoundingClientRect(); mx = r.left + r.width / 2; my = r.top + r.height / 2; steer(e.clientX, e.clientY); e.preventDefault();
+      });
+      pad.addEventListener('pointermove', (e) => { if (e.pointerId === mid) steer(e.clientX, e.clientY); });
+      const stop = (e: PointerEvent) => { if (e.pointerId !== mid) return; mid = null; pad.classList.remove('held'); this.touch = { x: 0, y: 0 }; knob.style.transform = ''; };
+      pad.addEventListener('pointerup', stop); pad.addEventListener('pointercancel', stop);
+    }
     if (!('ontouchstart' in window)) return;
     document.body.classList.add('touch');
     let id: number | null = null; let cx = 0, cy = 0;

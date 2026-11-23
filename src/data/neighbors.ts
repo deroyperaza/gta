@@ -164,7 +164,7 @@ export const NEIGHBORS: Neighbor[] = [
   {
     id: 'farida', name: 'Farida', short: 'Farida', title: 'Driver, Kensington', district: 'flatbush', spot: 'nb_farida', at: [40.6400, -73.9760], color: '#2fd1c5',
     look: { skin: '#a8714a', hair: '#1a1010', style: 'hijab', hatColor: '#7b3fe4', shirt: '#2b2340', pants: '#2b2b40', shoes: '#111', acc: 'phone' },
-    bio: 'Drives for Surge and Shlep, both, twelve hours a day, so her son can go to Brooklyn Tech. Born in Sylhet, grew up on Church Avenue.',
+    bio: 'Drives for Surge and Pynk, both, twelve hours a day, so her son can go to Brooklyn Tech. Born in Sylhet, grew up on Church Avenue.',
     idle: ['Surge says I\'m a "partner." Partners get a vote. I don\'t.', 'My son is at Brooklyn Tech. Engineering. Engineering!', 'Twelve hours. Then dinner. Then I sleep like a stone.'],
     dialogue: talk('farida', {
       farida_0: { speaker: 'farida', text: 'You took a Surge last week, didn\'t you. Don\'t lie. Everybody does. You know how much of that fare I saw? Guess.', choices: [
