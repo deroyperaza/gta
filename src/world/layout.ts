@@ -490,7 +490,7 @@ export function generateLayout(): WorldLayout {
     if (rand() < 0.6) props.push({ kind: 'hydrant', x: px(bx) + 18, y: px(by + bh - 1) + 6 });
     if (rand() < 0.5) props.push({ kind: 'trash', x: px(bx + bw - 1) + 12, y: px(by + 1) + 20 });
 
-    if (spec.name && !named.has(spec.name)) { named.add(spec.name); labels.push({ text: spec.name, x: cxp, y: spec.landmarksSouth ? px(by + 4) : cyp }); } // keep the name on open ground
+    if (spec.name && spec.kind !== 'court' && !named.has(spec.name)) { named.add(spec.name); labels.push({ text: spec.name, x: cxp, y: spec.landmarksSouth ? px(by + 4) : cyp }); } // keep the name on open ground
 
     if (spec.kind === 'park' || spec.kind === 'pond') {
       for (let y = by + 1; y < by + bh - 1; y++) for (let x = bx + 1; x < bx + bw - 1; x++) set(x, y, T.GRASS);
@@ -788,11 +788,11 @@ export function generateLayout(): WorldLayout {
       let bad = 0;
       for (let ty = Math.round(y - fh * 0.8); ty <= Math.round(y + fh * 0.15); ty++) for (let tx = Math.round(x - fw * 0.45); tx <= Math.round(x + fw * 0.45); tx++) {
         const t = tiles[ty]?.[tx]; if (t === T.WATER && lmDef?.onWater) continue; // a bridge or pier belongs over the water
-        if (t === undefined || ROADISH.has(t) || blocked[ty][tx] || onField(tx, ty)) bad++;
+        if (t === undefined || ROADISH.has(t) || t === T.COURT || blocked[ty][tx] || onField(tx, ty)) bad++; // never on a basketball court either
       }
       return bad;
     };
-    const OPEN = new Set<number>([T.GRASS, T.PLAZA, T.YARD, T.LOT, T.SAND, T.SIDEWALK, T.CURB, T.COURT]);
+    const OPEN = new Set<number>([T.GRASS, T.PLAZA, T.YARD, T.LOT, T.SAND, T.SIDEWALK, T.CURB]);
     let best: Spot | null = null, bd = Infinity;
     for (let dy = -28; dy <= 28; dy++) for (let dx = -28; dx <= 28; dx++) {
       const x = cx + dx, y = cy + dy, k = tiles[y]?.[x];
