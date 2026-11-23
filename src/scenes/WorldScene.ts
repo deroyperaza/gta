@@ -600,15 +600,15 @@ export class WorldScene extends Phaser.Scene {
   /** New York puts its trash on the sidewalk: bag piles on residential curbs all over Brooklyn, and a rat at each one at night */
   private buildCurbTrash() {
     if (!this.textures.exists('trashpile')) return;
-    const RES = new Set(['brownstone', 'rowhouse', 'walkup', 'apartment', 'twofamily', 'victorian']);
+    const RES = new Set(['brownstone', 'rowhouse', 'walkup', 'apartment', 'twofamily', 'victorian']), SHOP = new Set(['bodega', 'laundromat', 'coffee', 'bakery', 'boutique']);
     const hash = (s: string) => { let h = 2166136261; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; };
     const taken = Object.values(this.layout.spots);
     const bev = this.layout.spots.lm_bkorg;
     for (const b of this.layout.buildings) {
-      if (b.name || !RES.has(b.type)) continue;
-      const h = hash(b.id); if (h % 3) continue; // about one building in three
+      if (b.name || !(RES.has(b.type) || SHOP.has(b.type))) continue;
+      const h = hash(b.id); if (RES.has(b.type) ? h % 3 === 0 : h % 4) continue; // two homes in three, one shop in four
       const x = b.x + b.w / 2 + ((h >>> 8) % 40) - 20, y = b.y + b.h + 40;
-      if (taken.some((p) => Math.abs(p.x - x) < 70 && Math.abs(p.y - y) < 50)) continue; // never on top of someone
+      if (taken.some((p) => Math.abs(p.x - x) < 50 && Math.abs(p.y - y) < 36)) continue; // never on top of someone
       if (bev && Math.hypot(bev.x - x, bev.y - y) < 260) continue; // Ms. Bev's curb has its own pile
       const small = (h >>> 4) % 3 > 0 && this.textures.exists('trashpile-sm');
       const pile = this.add.image(x, y, small ? 'trashpile-sm' : 'trashpile').setOrigin(0.5, 0.8).setDepth(y).setFlipX(!!((h >>> 12) & 1));
