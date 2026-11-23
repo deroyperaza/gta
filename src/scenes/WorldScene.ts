@@ -35,7 +35,7 @@ const BUSTS = ['deroy', 'jenna', 'nell', 'bridgette', 'adrian', 'danae', 'jon', 
   'capone', 'tweed', 'greeley', 'bernstein', 'basquiat', 'tiffany', 'jackie', 'whitman', 'mckinney', 'ebbets', 'chadwick', 'beecher', 'clinton', 'morse', 'chisholm', 'lenahorne', 'biggie', 'rbg', 'yauch',
   'spikelee', 'carmelo', 'rosieperez', 'yasiinbey', 'chrisrock', 'streisand', 'jayz', 'bernie', 'melbrooks', 'mamdani', 'reynoso'];
 /** Street objects painted in ChatGPT (public/sprites/props/<key>.png): each takes over the code-drawn texture of the same key */
-const PAINTED_PROPS = ['dock', 'truck', 'fridge-empty', 'fridge-full', 'cat', 'grocerybag', 'hoop0', 'hoop1', 'duck0', 'duck1', 'sunflower', 'trashpile', 'rat', 'streetbin'];
+const PAINTED_PROPS = ['dock', 'truck', 'fridge-empty', 'fridge-full', 'cat', 'grocerybag', 'hoop0', 'hoop1', 'duck0', 'duck1', 'sunflower', 'trashpile', 'rat', 'streetbin', 'garbage', 'trashpile-sm'];
 
 /** Landmarks painted in ChatGPT (magenta keyed out) at public/sprites/<building id>.png */
 const PAINTED_LANDMARKS = ['savingsbank', 'centrallib', 'boroughhall', 'kingsish', 'bkmuseum', 'parachute', 'bam'];
@@ -77,6 +77,7 @@ export class WorldScene extends Phaser.Scene {
   nightShade?: Phaser.GameObjects.Rectangle;
   nightGlows: Phaser.GameObjects.Image[] = [];
   rats: Phaser.GameObjects.Image[] = [];
+  curbRats: Phaser.GameObjects.Image[] = [];
   trashPile?: Phaser.GameObjects.Image;
   cat!: Phaser.GameObjects.Sprite;
   posterLayer: Phaser.GameObjects.Image[] = [];
@@ -117,6 +118,10 @@ export class WorldScene extends Phaser.Scene {
     makeTiles(this); makeVehicles(this); makeStreetProps(this); makeProps(this);
     // The food carts are painted like the rest of the street: the painted art takes over the drawn cart's key
     for (const k of ['cart0', 'cart1', ...PAINTED_PROPS]) if (this.textures.exists(`${k}-art`)) { if (this.textures.exists(k)) this.textures.remove(k); this.textures.renameTexture(`${k}-art`, k); }
+    if (this.textures.exists('garbage') && !this.textures.exists('garbage-shd')) { // a soft shadow like the other vehicles
+      const im = this.textures.get('garbage').getSourceImage() as HTMLImageElement, t = this.textures.createCanvas('garbage-shd', im.width + 12, im.height + 12)!, cx = t.getContext();
+      cx.filter = 'blur(4px)'; cx.fillStyle = 'rgba(8,5,14,.55)'; cx.beginPath(); cx.roundRect(6, 6, im.width, im.height, 10); cx.fill(); t.refresh();
+    }
     makeCharacter(this, 'player', PLAYER_LOOK);
     makeBikeRider(this, 'player-bike', PLAYER_LOOK);
     for (const n of NPCS) makeCharacter(this, `npc-${n.id}`, n.look, !(n as any).blockFolk && !(n as any).npOrg && !BUSTS.includes(n.id)); // neighbors' and staffers' portraits wait for the first chat; painted ones load after startup
@@ -148,6 +153,7 @@ export class WorldScene extends Phaser.Scene {
 
     this.buildNpcs(solids);
     this.buildBinsBlock();
+    this.buildCurbTrash();
     this.setupMarch();
     this.peds = new Pedestrians(this, this.layout, 520); // they gather around wherever you are
     for (const pk of drawParks(this, this.layout, this.miniIgnore)) this.interactables.push(pk); // after the crowd: the Bandshell audience wears their looks
@@ -591,7 +597,28 @@ export class WorldScene extends Phaser.Scene {
     }
     this.refreshBinsBlock();
   }
+  /** New York puts its trash on the sidewalk: bag piles on residential curbs all over Brooklyn, and a rat at each one at night */
+  private buildCurbTrash() {
+    if (!this.textures.exists('trashpile')) return;
+    const RES = new Set(['brownstone', 'rowhouse', 'walkup', 'apartment', 'twofamily', 'victorian']);
+    const hash = (s: string) => { let h = 2166136261; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; };
+    const taken = Object.values(this.layout.spots);
+    const bev = this.layout.spots.lm_bkorg;
+    for (const b of this.layout.buildings) {
+      if (b.name || !RES.has(b.type)) continue;
+      const h = hash(b.id); if (h % 3) continue; // about one building in three
+      const x = b.x + b.w / 2 + ((h >>> 8) % 40) - 20, y = b.y + b.h + 40;
+      if (taken.some((p) => Math.abs(p.x - x) < 70 && Math.abs(p.y - y) < 50)) continue; // never on top of someone
+      if (bev && Math.hypot(bev.x - x, bev.y - y) < 260) continue; // Ms. Bev's curb has its own pile
+      const small = (h >>> 4) % 3 > 0 && this.textures.exists('trashpile-sm');
+      const pile = this.add.image(x, y, small ? 'trashpile-sm' : 'trashpile').setOrigin(0.5, 0.8).setDepth(y).setFlipX(!!((h >>> 12) & 1));
+      const rat = this.add.image(x - 18, y + 10, 'rat').setDepth(9e4 + 2).setVisible(false);
+      this.tweens.add({ targets: rat, x: rat.x + 30, duration: 800 + ((h >>> 16) % 500), yoyo: true, repeat: -1, ease: 'Sine.inOut', onYoyo: () => rat.setFlipX(true), onRepeat: () => rat.setFlipX(false) });
+      this.curbRats.push(rat); this.miniIgnore.push(pile, rat);
+    }
+  }
   private refreshBinsBlock() {
+    for (const r of this.curbRats) r.setVisible(this.night);
     if (!this.trashPile) return;
     const won = state.flag('bins_result') === 'good' && this.textures.exists('streetbin');
     this.trashPile.setTexture(won ? 'streetbin' : 'trashpile');
