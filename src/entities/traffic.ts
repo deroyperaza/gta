@@ -30,7 +30,7 @@ interface Vehicle {
   min: number; max: number; lanes: [number, number];
 }
 
-const CAR_KEYS = ['car0', 'car1', 'car2', 'car3', 'car3', 'car4', 'car5', 'van', 'car6', 'police', 'police', 'ambulance', 'ambulance', 'garbage'];
+const CAR_KEYS = ['car0', 'car1', 'car2', 'car3', 'car3', 'car4', 'car5', 'van', 'car6', 'police', 'police', 'ambulance', 'ambulance', 'garbage', 'schoolbus', 'schoolbus'];
 
 /** Lane-following traffic that brakes for the player and for each other. */
 export class Traffic {
@@ -97,7 +97,7 @@ export class Traffic {
     const s = this.scene.add.image(x, y, key);
     s.rotation = axis === 'y' ? (dir === 1 ? Math.PI : 0) : dir === 1 ? Math.PI / 2 : -Math.PI / 2;
     const shadow = this.scene.add.image(x, y, `${key}-shd`).setRotation(s.rotation).setDepth(-4);
-    const speed = bike ? Phaser.Math.Between(80, 110) : kind === 'moped' ? Phaser.Math.Between(140, 180) : key === 'garbage' ? Phaser.Math.Between(70, 100) : Phaser.Math.Between(110, 190); // garbage trucks crawl
+    const speed = bike ? Phaser.Math.Between(80, 110) : kind === 'moped' ? Phaser.Math.Between(140, 180) : key === 'garbage' || key === 'schoolbus' ? Phaser.Math.Between(70, 100) : Phaser.Math.Between(110, 190); // garbage trucks crawl
     const emergency = key === 'police' || key === 'ambulance';
     const onCall = emergency && Math.random() < 0.5;
     const lights = onCall ? this.scene.add.graphics().setDepth(s.depth + 1) : undefined;
