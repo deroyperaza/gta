@@ -85,6 +85,9 @@ export class WorldScene extends Phaser.Scene {
   constructor() { super('world'); }
 
   preload() {
+    // The preloader's bar: the page and fonts are the first 15%, the game's images the rest
+    const pl = (window as any).__pl; pl?.set(0.15);
+    this.load.on('progress', (p: number) => pl?.set(0.15 + p * 0.8));
     // Hand-painted likeness portraits (style-study/portraits.html) win over the generated busts.
     for (const id of ['deroy', 'jenna', 'nell', 'bridgette', 'adrian', 'danae', 'jon', 'emily', 'naim', 'luco', 'vega']) this.load.image(`npc-${id}-bust`, `portraits/${id}.jpg`);
     // Ghosts (in period dress) and famous Brooklynites: painted in ChatGPT, Nov 22 2026
@@ -211,6 +214,7 @@ export class WorldScene extends Phaser.Scene {
 
     ui.attachWorld(this);
     bus.emit('world:ready');
+    (window as any).__pl?.done(); // fade from the preloader into the title screen
     if (import.meta.env.DEV) { (window as any).__world = this; (window as any).__state = state; (window as any).__missions = missions; (window as any).__dialogue = dialogue; (window as any).__DIALOGUES = DIALOGUES; (window as any).__bus = bus; }
   }
 

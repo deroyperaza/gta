@@ -527,3 +527,9 @@ body.touch #touch-pad { background: rgba(255,255,255,.15) no-repeat center / 100
 #obj-dist { display: none; }
 #obj-text { padding-right: 0; } /* the room it kept for the distance goes back to the text */
 .map-key .mk-bike { font-style: normal; font-size: 14px; line-height: 1; margin-right: 2px; }
+/* First reveal of the title, as the preloader fades: the logo drops in, the menu follows */
+#title.open .logo { animation: title-in .8s cubic-bezier(.2,.9,.3,1.2) both; }
+#title.open .edition, #title.open .menu { animation: title-up .7s ease .15s both; }
+@keyframes title-in { from { opacity: 0; transform: scale(.85) translateY(10px); } }
+@keyframes title-up { from { opacity: 0; transform: translateY(14px); } }
+body.pl-wait #title.open :is(.logo, .edition, .menu) { animation-play-state: paused; } /* hold the title's entrance until the preloader fades */

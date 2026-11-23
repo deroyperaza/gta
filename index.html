@@ -24,10 +24,31 @@
   <meta property="og:image:height" content="630" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:image" content="https://deroyperaza.github.io/gta/share.png" />
+  <!-- Preloader: plain HTML and CSS here, so it shows before the game's code has even downloaded -->
+  <link rel="preload" as="image" href="logo-pre.png" />
+  <style>
+    #preloader { position: fixed; inset: 0; z-index: 200; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 22px; background: #1b1230 radial-gradient(ellipse at 50% 120%, rgba(255,138,61,.85), rgba(255,79,163,.55) 35%, rgba(42,20,82,.85) 75%); transition: opacity .7s ease; }
+    #preloader.done { opacity: 0; pointer-events: none; }
+    #preloader img { width: min(52vw, 240px); height: auto; filter: drop-shadow(0 6px 0 rgba(22,16,31,.55)); animation: pl-bob 1.6s ease-in-out infinite; }
+    #preloader .pl-bar { width: min(60vw, 260px); height: 14px; border: 3px solid #16101f; border-radius: 10px; background: rgba(22,16,31,.55); overflow: hidden; box-shadow: 3px 3px 0 #16101f; }
+    #preloader .pl-bar i { display: block; height: 100%; width: 6%; background: #ffd23f; border-radius: 6px; transition: width .35s ease; }
+    #preloader p { margin: 0; font: 20px/1 Bangers, Impact, "Arial Black", sans-serif; letter-spacing: 2px; color: #fff; -webkit-text-stroke: 1px #16101f; text-shadow: 2px 2px 0 #16101f; }
+    @keyframes pl-bob { 50% { transform: translateY(-6px) rotate(-1deg); } }
+  </style>
+  <script>
+    // The game reports its loading progress here (0 to 1), then calls done() to fade into the title screen
+    window.__pl = {
+      set: function (p) { var i = document.querySelector('#preloader .pl-bar i'); if (i) i.style.width = Math.max(6, Math.min(100, p * 100)) + '%'; },
+      done: function () { var el = document.getElementById('preloader'); if (!el) return; this.set(1); setTimeout(function () { el.classList.add('done'); document.body.classList.remove('pl-wait'); setTimeout(function () { el.remove(); }, 800); }, 250); }
+    };
+    // Safety net: never strand anyone on the loading screen
+    setTimeout(function () { window.__pl.done(); }, 45000);
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Nunito:wght@600;800;900&display=swap" rel="stylesheet" />
 </head>
-<body>
+<body class="pl-wait">
+  <div id="preloader"><img src="logo-pre.png" alt="Gather and Take Action" /><div class="pl-bar"><i></i></div><p>LOADING BROOKLYN…</p></div>
   <div id="game"></div>
   <div id="sunset"></div>
   <div id="sunglow"></div>

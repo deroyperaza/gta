@@ -8,6 +8,7 @@ import { lockPageZoom } from './ui/nozoom';
 lockPageZoom(); // phones: the page never zooms; the game camera does
 
 async function boot() {
+  (window as any).__pl?.set(0.1); // the code is here; next, the fonts and images
   // Textures are drawn with canvas text, so wait (briefly) for the comic fonts.
   try {
     await Promise.race([
