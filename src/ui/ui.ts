@@ -272,10 +272,45 @@ class UI {
     const el = $('#prompt');
     if (el.dataset.html !== html) { el.dataset.html = html; el.innerHTML = html; el.classList.toggle('show', !!html); }
   }
-  setDistance(n: number | null) {
+  setDistance(n: string | null, ang?: number) {
     const el = $('#obj-dist');
-    const txt = n == null ? '' : `${n}m`;
+    // Which way, on screen: north is up (8 directions)
+    const dir = ang == null ? '' : [' →E', ' ↘SE', ' ↓S', ' ↙SW', ' ←W', ' ↖NW', ' ↑N', ' ↗NE'][((Math.round(ang / (Math.PI / 4)) % 8) + 8) % 8];
+    const txt = n == null ? '' : `${n}${dir}`;
     if (el.textContent !== txt) el.textContent = txt;
+  }
+
+  /**
+   * The goal pointer: when your target is off screen, a big arrow sits on the edge of the open play area
+   * (below the HUD, above the touch controls), pointing at it, with who and how far.
+   */
+  private goalArea: { l: number; t: number; r: number; b: number; at: number } | null = null;
+  setGoalPointer(g: { fx: number; fy: number; tx: number; ty: number; label: string } | null) {
+    const el = $('#goal-pointer');
+    const W = innerWidth, H = innerHeight;
+    if (!g || this.dialogueOpen) { el.hidden = true; return; }
+    const now = performance.now();
+    if (!this.goalArea || now - this.goalArea.at > 500) { // re-measure the HUD twice a second, not every frame
+      const bottomOf = (sel: string) => { const e = document.querySelector(sel) as HTMLElement | null; if (!e || !e.offsetParent) return 0; return e.getBoundingClientRect().bottom; };
+      const topOf = (sel: string) => { const e = document.querySelector(sel) as HTMLElement | null; if (!e || !e.offsetParent) return H; return e.getBoundingClientRect().top; };
+      const phone = W <= 600;
+      const t = Math.max(phone ? bottomOf('#objective') : 0, bottomOf('#hud-buttons'), phone ? 0 : bottomOf('#stats')) + 44;
+      const b = Math.min(topOf('#touch-pad'), topOf('#touch-btns'), phone ? H : topOf('#objective'), H) - 30;
+      this.goalArea = { l: 48, t, r: W - 48, b: Math.max(t + 80, b), at: now };
+    }
+    const A = this.goalArea;
+    // On screen and in the open area: the person is right there, no pointer needed
+    if (g.tx > A.l && g.tx < A.r && g.ty > A.t && g.ty < A.b) { el.hidden = true; return; }
+    // Aim from you (kept inside the area) toward the target, and stop where that line meets the area's edge
+    const cx = Math.min(A.r - 1, Math.max(A.l + 1, g.fx)), cy = Math.min(A.b - 1, Math.max(A.t + 1, g.fy)), dx = g.tx - cx, dy = g.ty - cy;
+    const kx = dx > 0 ? (A.r - cx) / dx : dx < 0 ? (A.l - cx) / dx : Infinity, ky = dy > 0 ? (A.b - cy) / dy : dy < 0 ? (A.t - cy) / dy : Infinity;
+    const k = Math.min(kx, ky), x = cx + dx * k, y = cy + dy * k, ang = Math.atan2(dy, dx);
+    el.hidden = false;
+    el.style.left = `${x}px`; el.style.top = `${y}px`;
+    ($('#goal-pointer i') as HTMLElement).style.transform = `rotate(${ang}rad)`;
+    const b = $('#goal-pointer b'); if (b.textContent !== g.label) b.textContent = g.label;
+    // keep the label inside the screen: it sits on the inner side of the arrow
+    b.style.transform = `translate(calc(-50% + ${(-Math.cos(ang) * 62).toFixed(1)}px), calc(-50% + ${(-Math.sin(ang) * 44).toFixed(1)}px))`; // on the inner side of the arrow, toward the middle of the screen
   }
 
   tick() {
@@ -660,7 +695,7 @@ class UI {
   private mapPin(cv: HTMLCanvasElement, px: number, py: number, s: number) {
     const wrap = cv.parentElement as HTMLElement; wrap.style.position = 'relative';
     let pin = wrap.querySelector<HTMLElement>('.you-pin');
-    if (!pin) { pin = document.createElement('div'); pin.className = 'you-pin'; pin.innerHTML = '<small>drag me to move</small><b>YOU ARE HERE</b><i></i>'; wrap.appendChild(pin); }
+    if (!pin) { pin = document.createElement('div'); pin.className = 'you-pin'; pin.innerHTML = '<small>tap the map to move</small><b>YOU ARE HERE</b><i></i>'; wrap.appendChild(pin); }
     const place = (x: number, y: number) => { const k = cv.clientWidth / cv.width; pin!.style.left = `${cv.offsetLeft + x * k}px`; pin!.style.top = `${cv.offsetTop + y * k}px`; };
     requestAnimationFrame(() => place(px, py));
     let drag: { x: number; y: number } | null = null;
@@ -669,6 +704,18 @@ class UI {
     pin.onpointermove = (e) => { if (!drag) return; drag = toCanvas(e); place(drag.x, drag.y); };
     pin.onpointerup = () => {
       if (!drag) return; const d = drag; drag = null; pin!.classList.remove('drag');
+      go(d);
+    };
+    // A tap on the map moves you there too (a pan or a long press doesn't)
+    let tap: { x: number; y: number; t: number; sl: number; st: number } | null = null;
+    cv.onpointerdown = (e) => { tap = { x: e.clientX, y: e.clientY, t: performance.now(), sl: wrap.scrollLeft, st: wrap.scrollTop }; };
+    cv.onpointercancel = () => { tap = null; };
+    cv.onpointerup = (e) => {
+      const a = tap; tap = null; if (!a) return;
+      if (Math.hypot(e.clientX - a.x, e.clientY - a.y) > 10 || Math.abs(wrap.scrollLeft - a.sl) + Math.abs(wrap.scrollTop - a.st) > 10 || performance.now() - a.t > 600) return;
+      const d = toCanvas(e); place(d.x, d.y); go(d);
+    };
+    const go = (d: { x: number; y: number }) => {
       const w = this.world as any, L = w?.layout as WorldLayout; if (!L || w.flying || w.transit?.riding) { place(px, py); return; }
       const tx0 = Math.floor(d.x / s), ty0 = Math.floor(d.y / s);
       let best: [number, number] | null = null, bd = Infinity;

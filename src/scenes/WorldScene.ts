@@ -1316,17 +1316,23 @@ export class WorldScene extends Phaser.Scene {
     this.mmPlayer.rotation = Math.atan2(body.velocity.y, body.velocity.x) + Math.PI / 2 || this.mmPlayer.rotation;
 
     // Waypoint arrow toward nearest target
-    const targets = missions.targets().map((id) => this.entityPos[id]).filter(Boolean);
+    const targets = missions.targets().map((id) => ({ id, p: this.entityPos[id] })).filter((t) => t.p) as { id: string; p: { x: number; y: number } }[];
     const wr = this.opp.wrecking();
-    if (wr) targets.push({ x: wr.sprite.x, y: wr.sprite.y });
+    if (wr) targets.push({ id: 'caucus', p: { x: wr.sprite.x, y: wr.sprite.y } });
     if (targets.length && this.mode === 'play' && !blocking) {
       let best = targets[0], bd = Infinity;
-      for (const t of targets) { const dd = Phaser.Math.Distance.Between(this.player.x, this.player.y, t.x, t.y); if (dd < bd) { bd = dd; best = t; } }
-      const ang = Math.atan2(best.y - this.player.y, best.x - this.player.x);
+      for (const t of targets) { const dd = Phaser.Math.Distance.Between(this.player.x, this.player.y, t.p.x, t.p.y); if (dd < bd) { bd = dd; best = t; } }
+      const ang = Math.atan2(best.p.y - this.player.y, best.p.x - this.player.x);
       this.arrow.setVisible(bd > 220);
       this.arrow.setPosition(this.player.x + Math.cos(ang) * 64, this.player.y - 24 + Math.sin(ang) * 64).setRotation(ang);
-      ui.setDistance(Math.round(bd / 32));
-    } else { this.arrow.setVisible(false); ui.setDistance(null); }
+      // Distance in city blocks (a block is 18–22 tiles, road included): how Brooklyn gives directions
+      const blocks = bd / (TILE * ((BLOCK_W + BLOCK_H) / 2)), far = blocks < 0.75 ? '½ BLOCK' : `${Math.round(blocks)} BLOCK${Math.round(blocks) === 1 ? '' : 'S'}`;
+      ui.setDistance(far, ang);
+      // Off screen? A big pointer on the screen's edge says which way, who, and how far
+      const cam = this.cameras.main, sx = (x: number) => (x - cam.worldView.x) * cam.zoom, sy = (y: number) => (y - cam.worldView.y) * cam.zoom;
+      const who = best.id === 'caucus' ? 'CAUCUS' : NPCS.find((n) => n.id === best.id)?.short.toUpperCase() ?? 'GOAL';
+      ui.setGoalPointer({ fx: sx(this.player.x), fy: sy(this.player.y), tx: sx(best.p.x), ty: sy(best.p.y), label: `${who} · ${far}` });
+    } else { this.arrow.setVisible(false); ui.setDistance(null); ui.setGoalPointer(null); }
 
     ui.tick();
   }
