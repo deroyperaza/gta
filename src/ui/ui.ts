@@ -102,6 +102,7 @@ class UI {
     if (k === 'escape') { e.preventDefault(); if (this.panel) this.closePanel(); else this.openPanel('pause'); return; }
     if (k === 'm') { this.panel === 'map' ? this.closePanel() : this.openPanel('map'); return; }
     if (k === 'j') { this.panel === 'journal' ? this.closePanel() : this.openPanel('journal'); return; }
+    if (k === 'i') { this.panel === 'help' ? this.closePanel() : this.openPanel('help'); return; }
     if (this.panel || e.repeat) return;
     if (k === 'e') bus.emit('ui:interact');
     else if (k === ' ') { e.preventDefault(); bus.emit('ui:action'); }

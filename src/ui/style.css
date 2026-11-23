@@ -584,3 +584,5 @@ body:not(.touch) #touch-pad { display: block; position: absolute; left: 16px; bo
 body:not(.touch) #touch-pad.held { cursor: grabbing; }
 @media (min-width: 601px) and (min-height: 501px) { body:not(.touch) #objective { left: 152px; } }
 #touch-knob { left: calc(50% - 25px); top: calc(50% - 25px); } /* centered in any size of pad */
+/* How it works: an "i" key, like FIND F and RIDE R; it's the whole label, so it shows on touch screens too */
+#hud-buttons #hud-help kbd.info-i, body.touch #hud-buttons #hud-help kbd.info-i { display: inline-block; font-weight: 900; }
