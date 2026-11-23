@@ -9,6 +9,7 @@ import { flyerLine, pickLine, STREET_LINES, streetLine } from '../data/chatter';
 import { LESSONS } from '../data/lessons';
 import { makeBust } from '../world/portraits';
 import { Pedestrians, type Ped } from '../entities/pedestrians';
+import { BallGames, type Court } from '../entities/ballgames';
 import { Traffic } from '../entities/traffic';
 import { DEBATES, Opposition, type OppConfig } from '../entities/opposition';
 import { LINE_COLORS, SERVICES, Transit, bullet } from '../entities/transit';
@@ -26,6 +27,8 @@ import { buildingKey, makeBikeRider, makeBridgeTower, makeBuilding, makeCharacte
 interface Interactable {
   id: string; x: number; y: number; r: number;
   label: () => string | null; act: () => void;
+  /** A name tag: standing on it counts as in range, wherever it hangs */
+  tag?: Phaser.GameObjects.Text;
 }
 
 const WALK = 150, RUN = 245, BIKE = 330, BIKE_RUN = 410;
@@ -62,6 +65,7 @@ export class WorldScene extends Phaser.Scene {
   private stageSpots: string[] = [];
   private quietT = 0; private lastAtt = 0; private attDrain = 0; private lastStars = -1;
   peds!: Pedestrians;
+  private ballgames?: BallGames;
   traffic!: Traffic;
   minimap!: Phaser.Cameras.Scene2D.Camera;
   interactables: Interactable[] = [];
@@ -512,7 +516,7 @@ export class WorldScene extends Phaser.Scene {
       this.miniIgnore.push(tag, spr);
       this.npcSprites[n.id] = spr;
       this.entityPos[n.id] = s;
-      this.interactables.push({ id: n.id, x: s.x, y: s.y, r: 64, label: () => `Talk to ${n.short}`, act: () => this.talk(n) });
+      this.interactables.push({ id: n.id, x: s.x, y: s.y, r: 64, tag, label: () => `Talk to ${n.short}`, act: () => this.talk(n) });
       this.makeNpcClickable(n, spr, tag);
     }
     // Commissioner Whiskers
@@ -803,7 +807,11 @@ export class WorldScene extends Phaser.Scene {
     const px = this.player.x, py = this.player.y;
     for (const it of this.interactables) {
       const d = Math.hypot(it.x - px, it.y - py);
-      if (d < it.r && d < bd && it.label()) { bd = d; best = it; }
+      // On the name tag (a little padding) counts too, and wins: tags can hang up to ~80px from the person
+      const tb = it.tag && d < 260 ? it.tag.getBounds() : null;
+      const onTag = !!tb && px > tb.x - 12 && px < tb.right + 12 && py > tb.y - 12 && py < tb.bottom + 12;
+      const score = onTag ? Math.min(d, 1) : d;
+      if ((d < it.r || onTag) && score < bd && it.label()) { bd = score; best = it; }
     }
     return best;
   }
@@ -1032,6 +1040,7 @@ export class WorldScene extends Phaser.Scene {
     const L = this.layout, H = L.tiles.length, W = L.tiles[0].length, seen = new Uint8Array(W * H);
     const g = this.add.graphics().setDepth(-8);
     this.miniIgnore.push(g);
+    const courts: Court[] = [];
     for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
       if (seen[y * W + x] || L.tiles[y][x] !== T.COURT) continue;
       let x1 = x; while (x1 + 1 < W && L.tiles[y][x1 + 1] === T.COURT) x1++;
@@ -1049,6 +1058,15 @@ export class WorldScene extends Phaser.Scene {
         const rect = (ua: number, va: number, ub: number, vb: number) => { const a = P(ua, va), b = P(ub, vb); return [Math.min(a.x, b.x), Math.min(a.y, b.y), Math.abs(b.x - a.x), Math.abs(b.y - a.y)] as const; };
         const um = (u0 + u1) / 2, vm = (v0 + v1) / 2, len = u1 - u0, wid = v1 - v0;
         const keyL = len * 0.2, keyW = wid * 0.32, arcR = wid * 0.44, circR = wid * 0.13;
+        { // a pickup game here: aim at the painted hoops' rims where they stand, else at the drawn rims
+          const [rx, ry, rw, rh] = rect(u0, v0, u1, v1);
+          const rims = [P(u0 + len * 0.06, vm), P(u1 - len * 0.06, vm)].map((r) => {
+            if (!hasHoops) return r;
+            const hp = L.props.filter((p) => p.kind === 'hoop').reduce((a, p) => (Math.hypot(p.x - r.x, p.y - r.y) < Math.hypot(a.x - r.x, a.y - r.y) ? p : a));
+            return Math.hypot(hp.x - r.x, hp.y - r.y) < 120 ? { x: hp.x, y: hp.y - 33 } : r;
+          });
+          courts.push({ x: rx, y: ry, w: rw, h: rh, hoops: [rims[0], rims[1]] });
+        }
         // red painted keys
         g.fillStyle(0xb8432f, 1);
         g.fillRect(...rect(u0, vm - keyW / 2, u0 + keyL, vm + keyW / 2)); g.fillRect(...rect(u1 - keyL, vm - keyW / 2, u1, vm + keyW / 2));
@@ -1071,6 +1089,7 @@ export class WorldScene extends Phaser.Scene {
         }
       }
     }
+    this.ballgames = new BallGames(this, courts, this.miniIgnore);
   }
 
   // ------------------------------------------------------------------ NAIM'S DRAGON
@@ -1380,6 +1399,7 @@ export class WorldScene extends Phaser.Scene {
     const view = new Phaser.Geom.Rectangle(cam.worldView.x - 64, cam.worldView.y - 64, cam.worldView.width + 128, cam.worldView.height + 160);
     this.peds.leader = { x: this.player.x, y: this.player.y };
     this.peds.update(dt, view);
+    this.ballgames?.update(dt, view);
     {
       const am = missions.active, st = am ? state.mission(am.id).stage : 0;
       const tp = missions.targets().map((id) => this.entityPos[id]).find(Boolean) ?? null;

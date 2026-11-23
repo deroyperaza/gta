@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { MAP_H, MAP_W, TILE, WALKABLE, districtAt, type WorldLayout } from '../world/layout';
+import { MAP_H, MAP_W, T, TILE, WALKABLE, districtAt, type WorldLayout } from '../world/layout';
 import { PAL, type Look } from '../world/textures';
 import { makeCharacter } from '../world/golden';
 import type { District } from '../core/types';
@@ -53,7 +53,8 @@ export class Pedestrians {
   walkable(x: number, y: number) {
     const tx = Math.floor(x / TILE), ty = Math.floor(y / TILE);
     if (tx < 0 || ty < 0 || tx >= MAP_W || ty >= MAP_H) return false;
-    return WALKABLE.has(this.layout.tiles[ty][tx]) && !this.layout.blocked[ty][tx];
+    const k = this.layout.tiles[ty][tx];
+    return WALKABLE.has(k) && k !== T.COURT && !this.layout.blocked[ty][tx]; // courts are for the pickup games, not a shortcut
   }
 
   private pickDir(p: Ped) {
