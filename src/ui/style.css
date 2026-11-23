@@ -598,3 +598,9 @@ body:not(.touch) #touch-pad.held { cursor: grabbing; }
 .ch-sec-list { display: flex; flex-direction: column; gap: 6px; padding: 0 10px 10px; }
 .ch-sec-list .ch-item { border-width: 1.5px; }
 .ch-here { background: #fff3c4; border-style: dashed !important; cursor: default; }
+/* Big map zoom buttons */
+.map-panel { position: relative; }
+.map-zoom { position: absolute; right: 26px; top: 84px; z-index: 3; display: flex; flex-direction: column; gap: 6px; }
+.map-zoom button { width: 42px; height: 42px; border-radius: 10px; border: 3px solid var(--ink); background: #fff; color: var(--ink); font: 26px/1 var(--display); box-shadow: 3px 3px 0 var(--ink); cursor: pointer; }
+.map-zoom button:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--ink); }
+.map-wrap { cursor: grab; } .map-wrap:active { cursor: grabbing; }

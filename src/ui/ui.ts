@@ -675,9 +675,52 @@ class UI {
   }
 
   // ------------------------------------------------------------------ MAP
+  // Big-map zoom: 1 = the map's usual size; the spot under the cursor (or between two fingers) stays put
+  private mapZoom = 1; private mapBaseW = 0; private mapRepin: (() => void) | null = null;
+  private setMapZoom(z: number, fx?: number, fy?: number) {
+    const cv = $<HTMLCanvasElement>('#map-canvas'), wrap = cv.parentElement as HTMLElement;
+    const r = cv.getBoundingClientRect(), wr = wrap.getBoundingClientRect();
+    if (!this.mapBaseW) { this.mapBaseW = r.width / this.mapZoom; if (!wrap.style.height) wrap.style.height = `${wr.height}px`; } // freeze the window, zoom inside it
+    const zmin = Math.min(1, (wrap.clientWidth - 16) / this.mapBaseW);
+    z = Math.max(zmin, Math.min(6, z)); if (Math.abs(z - this.mapZoom) < 0.001) return;
+    const px = fx ?? wr.left + wr.width / 2, py = fy ?? wr.top + wr.height / 2, ax = (px - r.left) / r.width, ay = (py - r.top) / r.height;
+    this.mapZoom = z;
+    Object.assign(cv.style, { width: `${this.mapBaseW * z}px`, maxWidth: 'none', maxHeight: 'none', height: 'auto' });
+    const n = cv.getBoundingClientRect();
+    wrap.scrollLeft += n.left + ax * n.width - px; wrap.scrollTop += n.top + ay * n.height - py;
+    this.mapRepin?.();
+  }
+  private bindMapZoom() {
+    const cv = $<HTMLCanvasElement>('#map-canvas'), wrap = cv.parentElement as HTMLElement, panel = wrap.parentElement as HTMLElement;
+    const box = document.createElement('div'); box.className = 'map-zoom';
+    box.innerHTML = '<button data-z="in" title="Zoom in">+</button><button data-z="out" title="Zoom out">−</button>';
+    panel.appendChild(box);
+    box.addEventListener('click', (e) => { const b = (e.target as HTMLElement).closest('button'); if (b) this.setMapZoom(this.mapZoom * (b.dataset.z === 'in' ? 1.5 : 1 / 1.5)); });
+    // Trackpad pinch (ctrl + wheel) and mouse-wheel notches zoom; two-finger trackpad scrolling still pans
+    wrap.addEventListener('wheel', (e) => {
+      const notch = !e.ctrlKey && e.deltaX === 0 && (e.deltaMode !== 0 || Math.abs(e.deltaY) >= 50);
+      if (!e.ctrlKey && !notch) return;
+      e.preventDefault(); this.setMapZoom(this.mapZoom * Math.exp(-e.deltaY * (e.ctrlKey ? 0.012 : 0.0025)), e.clientX, e.clientY);
+    }, { passive: false });
+    // Phones: pinch with two fingers
+    let pinch: { d: number; z: number } | null = null;
+    const two = (t: TouchList) => ({ d: Math.hypot(t[0].clientX - t[1].clientX, t[0].clientY - t[1].clientY), x: (t[0].clientX + t[1].clientX) / 2, y: (t[0].clientY + t[1].clientY) / 2 });
+    wrap.addEventListener('touchstart', (e) => { if (e.touches.length === 2) pinch = { d: two(e.touches).d, z: this.mapZoom }; }, { passive: true });
+    wrap.addEventListener('touchmove', (e) => { if (!pinch || e.touches.length !== 2) return; e.preventDefault(); const t = two(e.touches); this.setMapZoom(pinch.z * (t.d / pinch.d), t.x, t.y); }, { passive: false });
+    wrap.addEventListener('touchend', () => { pinch = null; });
+    // Desktop: drag the map with the mouse to pan
+    let pan: { x: number; y: number; sl: number; st: number } | null = null;
+    wrap.addEventListener('pointerdown', (e) => { if (e.pointerType === 'mouse' && !(e.target as HTMLElement).closest('.you-pin')) pan = { x: e.clientX, y: e.clientY, sl: wrap.scrollLeft, st: wrap.scrollTop }; });
+    window.addEventListener('pointermove', (e) => { if (pan) { wrap.scrollLeft = pan.sl - (e.clientX - pan.x); wrap.scrollTop = pan.st - (e.clientY - pan.y); } });
+    window.addEventListener('pointerup', () => { pan = null; });
+  }
+
   private renderMap() {
     const L = this.world?.layout; if (!L) return;
     const cv = $<HTMLCanvasElement>('#map-canvas');
+    if (!document.querySelector('.map-zoom')) this.bindMapZoom();
+    // Each opening starts at the usual size
+    this.mapZoom = 1; this.mapBaseW = 0; Object.assign(cv.style, { width: '', maxWidth: '', maxHeight: '', height: '' }); { const wrap = cv.parentElement as HTMLElement; wrap.style.height = ''; wrap.scrollLeft = 0; wrap.scrollTop = 0; }
     const s = 6; cv.width = MAP_W * s; cv.height = MAP_H * s;
     const c = cv.getContext('2d')!;
     c.lineJoin = 'round'; c.miterLimit = 2; // no spiky miters on outlined type
@@ -765,6 +808,7 @@ class UI {
     if (!pin) { pin = document.createElement('div'); pin.className = 'you-pin'; pin.innerHTML = '<small>tap the map to move</small><b>YOU ARE HERE</b><i></i>'; wrap.appendChild(pin); }
     const place = (x: number, y: number) => { const k = cv.clientWidth / cv.width; pin!.style.left = `${cv.offsetLeft + x * k}px`; pin!.style.top = `${cv.offsetTop + y * k}px`; };
     requestAnimationFrame(() => place(px, py));
+    this.mapRepin = () => place(px, py); // zooming moves the pin with the map
     let drag: { x: number; y: number } | null = null;
     const toCanvas = (e: PointerEvent) => { const r = cv.getBoundingClientRect(); return { x: Math.max(0, Math.min(cv.width, ((e.clientX - r.left) / r.width) * cv.width)), y: Math.max(0, Math.min(cv.height, ((e.clientY - r.top) / r.height) * cv.height)) }; };
     pin.onpointerdown = (e) => { e.preventDefault(); e.stopPropagation(); pin!.setPointerCapture(e.pointerId); drag = toCanvas(e); pin!.classList.add('drag'); };
