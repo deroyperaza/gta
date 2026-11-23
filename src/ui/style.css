@@ -517,11 +517,11 @@ body.touch #prompt .pa::before { content: attr(data-ico); font-size: 20px; }
   #hud-buttons { box-sizing: border-box; width: min(240px, calc(100vw - 150px)); top: calc(112px + env(safe-area-inset-top, 0px)); left: calc(8px + env(safe-area-inset-left, 0px)); right: auto; justify-content: space-between; }
   #hud-buttons button { flex: 1 1 auto; }
   #objective { top: calc(150px + env(safe-area-inset-top, 0px)); }
-  #objective.min:not(.peek) #obj-dist { top: 50%; transform: translateY(-50%); }
-  #objective.min:not(.peek) #obj-title { padding-right: 118px; }
   #minimap-frame::after { content: 'MAP'; position: absolute; bottom: -12px; left: 50%; transform: translateX(-50%); background: #fff; color: var(--ink); font: 13px var(--display); letter-spacing: 1px; padding: 0 8px; border: 2.5px solid var(--ink); border-radius: 8px; }
 }
 body.touch #inventory.empty { display: none; } /* phones: no "tote bag: empty" line */
 @media (max-width: 600px) and (display-mode: standalone) { #hud-buttons { left: calc(10px + env(safe-area-inset-left, 0px)); } }
 /* The joystick says it's a joystick: four arrows around the ring */
 body.touch #touch-pad { background: rgba(255,255,255,.15) no-repeat center / 100% 100% url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cg fill='%23fff' fill-opacity='.85'%3E%3Cpath d='M50 6 57 15 43 15Z'/%3E%3Cpath d='M50 94 57 85 43 85Z'/%3E%3Cpath d='M6 50 15 43 15 57Z'/%3E%3Cpath d='M94 50 85 43 85 57Z'/%3E%3C/g%3E%3C/svg%3E"); }
+/* The on-screen goal pointer already says who, how far and which way: the mission box doesn't repeat it */
+#obj-dist { display: none; }
