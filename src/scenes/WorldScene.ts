@@ -600,17 +600,20 @@ export class WorldScene extends Phaser.Scene {
   /** New York puts its trash on the sidewalk: bag piles on residential curbs all over Brooklyn, and a rat at each one at night */
   private buildCurbTrash() {
     if (!this.textures.exists('trashpile')) return;
+    const POSH = new Set(['Park Slope', 'Brooklyn Heights', 'Cobble Hill', 'Carroll Gardens', 'Boerum Hill', 'DUMBO', 'Fort Greene', 'Clinton Hill', 'Prospect Heights', 'Williamsburg', 'Greenpoint', 'Windsor Terrace', 'Ditmas Park']);
     const RES = new Set(['brownstone', 'rowhouse', 'walkup', 'apartment', 'twofamily', 'victorian']), SHOP = new Set(['bodega', 'laundromat', 'coffee', 'bakery', 'boutique']);
     const hash = (s: string) => { let h = 2166136261; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; };
     const taken = Object.values(this.layout.spots);
     const bev = this.layout.spots.lm_bkorg;
     for (const b of this.layout.buildings) {
       if (b.name || !(RES.has(b.type) || SHOP.has(b.type))) continue;
-      const h = hash(b.id); if (RES.has(b.type) ? h % 3 === 0 : h % 4) continue; // two homes in three, one shop in four
+      // Fewer, smaller piles where the brownstones got expensive; more where buildings are bigger and pickup is thinner
+      const posh = POSH.has(neighborhoodAt(b.x + b.w / 2, b.y + b.h + 20) ?? '');
+      const h = hash(b.id); if (posh ? h % 5 : RES.has(b.type) ? h % 2 : h % 5) continue; // posh: one in five · elsewhere: half the homes, one shop in five
       const x = b.x + b.w / 2 + ((h >>> 8) % 40) - 20, y = b.y + b.h + 40;
       if (taken.some((p) => Math.abs(p.x - x) < 50 && Math.abs(p.y - y) < 36)) continue; // never on top of someone
       if (bev && Math.hypot(bev.x - x, bev.y - y) < 260) continue; // Ms. Bev's curb has its own pile
-      const small = (h >>> 4) % 3 > 0 && this.textures.exists('trashpile-sm');
+      const small = (posh || (h >>> 4) % 3 > 0) && this.textures.exists('trashpile-sm');
       const pile = this.add.image(x, y, small ? 'trashpile-sm' : 'trashpile').setOrigin(0.5, 0.8).setDepth(y).setFlipX(!!((h >>> 12) & 1));
       const rat = this.add.image(x - 18, y + 10, 'rat').setDepth(9e4 + 2).setVisible(false);
       this.tweens.add({ targets: rat, x: rat.x + 30, duration: 800 + ((h >>> 16) % 500), yoyo: true, repeat: -1, ease: 'Sine.inOut', onYoyo: () => rat.setFlipX(true), onRepeat: () => rat.setFlipX(false) });
