@@ -525,3 +525,4 @@ body.touch #inventory.empty { display: none; } /* phones: no "tote bag: empty" l
 body.touch #touch-pad { background: rgba(255,255,255,.15) no-repeat center / 100% 100% url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cg fill='%23fff' fill-opacity='.85'%3E%3Cpath d='M50 6 57 15 43 15Z'/%3E%3Cpath d='M50 94 57 85 43 85Z'/%3E%3Cpath d='M6 50 15 43 15 57Z'/%3E%3Cpath d='M94 50 85 43 85 57Z'/%3E%3C/g%3E%3C/svg%3E"); }
 /* The on-screen goal pointer already says who, how far and which way: the mission box doesn't repeat it */
 #obj-dist { display: none; }
+#obj-text { padding-right: 0; } /* the room it kept for the distance goes back to the text */

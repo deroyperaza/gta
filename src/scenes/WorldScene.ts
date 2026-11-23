@@ -92,6 +92,7 @@ export class WorldScene extends Phaser.Scene {
     this.load.image('barclays-sprite', 'sprites/barclays.png');
     this.load.image('bridge-tower-art', 'sprites/bridgetower.png');
     this.load.image('dragon-art', 'sprites/dragon.png'); // Naim's dragon, painted in ChatGPT
+    this.load.image('cart0-art', 'sprites/cart-halal.png'); this.load.image('cart1-art', 'sprites/cart-churro.png'); // Hamid's and Doña Rosa's carts, painted in ChatGPT
     for (const p of PAINTED) if (p.ready) this.load.image(`lmk-${p.id}`, `sprites/${p.file}.png`); // landmarks placed by coordinates
     this.load.image('gap-island', 'sprites/gap.png'); // Grand Army Plaza's island, painted in ChatGPT, keyed
     for (const id of ['bandshell', 'gwgate', 'carousel', 'conservatory', 'bkcollege']) this.load.image(`park-${id}`, `sprites/${id}.png`); // painted in ChatGPT, keyed
@@ -101,6 +102,8 @@ export class WorldScene extends Phaser.Scene {
   create() {
     this.layout = generateLayout();
     makeTiles(this); makeVehicles(this); makeStreetProps(this); makeProps(this);
+    // The food carts are painted like the rest of the street: the painted art takes over the drawn cart's key
+    for (const k of ['cart0', 'cart1']) if (this.textures.exists(`${k}-art`)) { this.textures.remove(k); this.textures.renameTexture(`${k}-art`, k); }
     makeCharacter(this, 'player', PLAYER_LOOK);
     makeBikeRider(this, 'player-bike', PLAYER_LOOK);
     for (const n of NPCS) makeCharacter(this, `npc-${n.id}`, n.look, !(n as any).blockFolk && !(n as any).npOrg); // neighbors' and staffers' portraits wait for the first chat
