@@ -25,6 +25,8 @@ export interface MissionDef {
   failText?: string;
   /** A side mission (mediation calls): pauses the main mission and hands it back when done */
   side?: boolean;
+  /** What a side mission is called on screen (default MEDIATION) */
+  kind?: string;
 }
 
 const f = (k: string) => !!state.flag(k);

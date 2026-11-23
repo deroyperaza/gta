@@ -138,6 +138,7 @@ export class WorldScene extends Phaser.Scene {
     this.transit = new Transit(this, this.layout);
     bus.on('transit:alight', (p: { x: number; y: number }) => { (this.player.body as Phaser.Physics.Arcade.Body).reset(p.x, p.y); this.player.setVisible(true); });
     bus.on('ui:ride', () => this.rideApp());
+    bus.on('ui:find', () => this.findPerson());
     bus.on('event:dragon:quiz', () => this.time.delayedCall(250, () => this.dragonQuiz()));
     bus.on('event:dragon:ride', () => this.startDragon());
     bus.on('event:network', () => { // a Brooklyn Org grantee joins your network
@@ -1074,6 +1075,31 @@ export class WorldScene extends Phaser.Scene {
         const dest = v === 'obj' && obj ? { x: obj.x, y: obj.y, name: 'your objective' } : { ...dests[Number(v)] };
         tr.callRide(svc, this.player, dest);
       });
+    });
+  }
+
+  /** Search everyone on the map by name, role or neighborhood, and jump to them */
+  private findPerson() {
+    if (this.mode !== 'play' || ui.blocking()) return;
+    if (this.transit.riding) { bus.emit('ui:toast', 'HOP OFF FIRST.'); return; }
+    const kind = (n: NpcDef) => (n as any).ghost ? 'Ghosts of Brooklyn' : (n as any).npOrg ? 'Nonprofit people' : (n as any).blockFolk ? 'Neighbors' : 'Characters';
+    const order = ['Characters', 'Neighbors', 'Nonprofit people', 'Ghosts of Brooklyn'];
+    const people = NPCS.filter((n) => this.entityPos[n.id]).map((n) => {
+      const p = this.entityPos[n.id]!;
+      const hood = neighborhoodAt(p.x, p.y);
+      return { n, g: kind(n), sub: hood && !n.title.includes(hood) ? `${n.title} · ${hood}` : n.title };
+    }).sort((a, b) => order.indexOf(a.g) - order.indexOf(b.g) || a.n.name.localeCompare(b.n.name));
+    ui.choose({ title: 'Find someone', sub: 'Search by name, role or neighborhood. Pick one to jump there.', search: true,
+      items: people.map(({ n, g, sub }) => ({ value: n.id, label: n.name, sub, group: g })) }, (id) => {
+      const p = this.entityPos[id]; if (!p) return;
+      // Land right beside them (in talking range), on open ground: not inside a building, not in the water
+      const clear = (x: number, y: number) => { const tile = this.layout.tiles[Math.floor(y / TILE)]?.[Math.floor(x / TILE)]; return tile != null && tile !== T.WATER && tile !== T.OFFMAP && !this.layout.buildings.some((b) => x > b.x - 12 && x < b.x + b.w + 12 && y > b.y - 12 && y < b.y + b.h + 12); };
+      const spots = [[0, 42], [0, -42], [42, 0], [-42, 0], [30, 30], [-30, 30], [30, -30], [-30, -30]].map(([dx, dy]) => ({ x: p.x + dx, y: p.y + dy })).filter((c) => clear(c.x, c.y));
+      const theirs = (c: { x: number; y: number }) => !this.interactables.some((it) => it.id !== id && Math.hypot(it.x - c.x, it.y - c.y) < 42); // E talks to them, not a neighbor
+      const t = spots.find(theirs) ?? spots[0] ?? { x: p.x, y: p.y + 42 };
+      (this.player.body as Phaser.Physics.Arcade.Body).reset(t.x, t.y);
+      this.cameras.main.flash(250, 255, 79, 163);
+      bus.emit('ui:toast', `THERE'S ${(NPCS.find((n) => n.id === id)?.short ?? '').toUpperCase()}`);
     });
   }
 

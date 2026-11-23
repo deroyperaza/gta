@@ -21,7 +21,7 @@ type Panel = 'title' | 'pause' | 'journal' | 'map' | 'passed' | 'help' | 'choose
 export interface ChoiceItem { value: string; label: string; sub?: string; html?: string; group?: string }
 
 const $ = <T extends HTMLElement = HTMLElement>(sel: string) => document.querySelector(sel) as T;
-const mlabel = (def: MissionDef) => (def.side ? 'MEDIATION' : `MISSION ${def.number}`);
+const mlabel = (def: MissionDef) => (def.side ? def.kind ?? 'MEDIATION' : `MISSION ${def.number}`);
 const Phaser_rand = <T,>(a: T[]) => a[Math.floor(Math.random() * a.length)];
 
 class UI {
@@ -106,6 +106,7 @@ class UI {
     else if (k === ' ') { e.preventDefault(); bus.emit('ui:action'); }
     else if (k === 'b') bus.emit('ui:bike');
     else if (k === 'r') bus.emit('ui:ride');
+    else if (k === 'f') bus.emit('ui:find');
   }
 
   /** Mission timers keep running while you ride the train (it takes time) */
@@ -208,6 +209,10 @@ class UI {
     });
     $('#ch-search').addEventListener('input', (e) => this.renderChoices((e.target as HTMLInputElement).value));
     $('#hud-ride').onclick = () => bus.emit('ui:ride');
+    $('#hud-find').onclick = () => bus.emit('ui:find');
+    // Tap a face in a conversation to see the portrait big; tap anywhere to close
+    $('#dlg-portrait').addEventListener('click', (e) => { e.stopPropagation(); this.zoomPortrait(); });
+    $('#portrait-zoom').addEventListener('click', (e) => { e.stopPropagation(); $('#portrait-zoom').hidden = true; });
     for (const id of ['journal', 'map']) $(`#${id}`).addEventListener('click', (e) => { if ((e.target as HTMLElement).matches('.close, .panel-bg')) this.closePanel(); });
     $('#passed').addEventListener('click', () => { if (performance.now() - this.passedAt > 600) this.closePanel(); });
     $('#hud-journal').onclick = () => this.openPanel('journal');
@@ -471,8 +476,24 @@ class UI {
     this.dialogueOpen = false;
     if (this.typing) { clearInterval(this.typing.timer); this.typing = null; }
     $('#dialogue').classList.remove('open');
+    $('#portrait-zoom').hidden = true;
+  }
+  private portraitKey = '';
+  private zoomPortrait() {
+    const w = this.world; if (!w) return;
+    const k = this.portraitKey, bust = w.textures.exists(`${k}-bust`) ? `${k}-bust` : '';
+    const z = $('#portrait-zoom'), img = z.querySelector('img') as HTMLImageElement;
+    const src = bust ? (w.textures.get(bust).getSourceImage() as HTMLImageElement | HTMLCanvasElement) : null;
+    // Photos and painted busts show at full size; anything else, the portrait as drawn
+    // Phaser frees its image URLs after loading, so copy the pixels instead of reusing the source URL
+    let url = $<HTMLCanvasElement>('#dlg-portrait').toDataURL();
+    if (src && (src as HTMLImageElement).width) { const c = document.createElement('canvas'); c.width = src.width; c.height = src.height; c.getContext('2d')!.drawImage(src, 0, 0); url = c.toDataURL('image/jpeg', 0.92); }
+    img.src = url;
+    z.querySelector('figcaption')!.innerHTML = `<b>${esc($('#dlg-name').textContent ?? '')}</b>${$('#dlg-title').textContent ? `<span>${esc($('#dlg-title').textContent!)}</span>` : ''}`;
+    z.hidden = false;
   }
   private drawPortrait(key: string) {
+    this.portraitKey = key;
     const cv = $<HTMLCanvasElement>('#dlg-portrait');
     const ctx = cv.getContext('2d')!;
     ctx.clearRect(0, 0, cv.width, cv.height);
@@ -527,7 +548,7 @@ class UI {
         body += '<ol>' + def.stages.map((s, i) => `<li class="${i < m.stage ? 'done' : i === m.stage ? 'cur' : ''}">${i <= m.stage ? s.text() : '???'}</li>`).join('') + '</ol>';
         if (def.optional) body += '<ul class="opt">' + def.optional.map((o) => `<li class="${m.optionalDone[o.id] ? 'done' : ''}">${m.optionalDone[o.id] ? '★' : '☆'} ${o.text}</li>`).join('') + '</ul>';
       }
-      return `<div class="jm ${cls}"><div class="jm-h"><span>${def.side ? 'MEDIATION ·' : '#' + def.number} ${def.title}</span><em>${status}</em></div>${body}</div>`;
+      return `<div class="jm ${cls}"><div class="jm-h"><span>${def.side ? `${def.kind ?? 'MEDIATION'} ·` : '#' + def.number} ${def.title}</span><em>${status}</em></div>${body}</div>`;
     }).join('');
     const trust = (Object.keys(DISTRICTS) as District[]).map((k) => `<div class="bar"><label style="color:${DISTRICTS[k].color}">${DISTRICTS[k].name}</label><div class="track"><i style="width:${(d.trust[k] + 100) / 2}%;background:${DISTRICTS[k].color}"></i></div><b>${d.trust[k]}</b></div>`).join('');
     const people = NPCS.filter((n) => !(n as any).npOrg).map((n) => { // staffers live in the network section
