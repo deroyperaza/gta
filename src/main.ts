@@ -29,7 +29,31 @@ async function boot() {
     render: { antialias: true, roundPixels: false },
     scene: [WorldScene],
   });
+  keepGameSized(game);
   screenReadout(game);
+}
+
+/**
+ * The game always matches its container (#game, fixed to the screen). Launched from the iPhone home screen, the
+ * page can report a stale height at startup (874x812 on an 874x402 screen); Phaser sized itself from that and,
+ * since its container never changed size afterwards, never corrected it, so the camera centered you off the
+ * bottom of the screen. Re-check on every resize or rotation, and twice a second as a safety net.
+ */
+function keepGameSized(game: Phaser.Game) {
+  const el = document.getElementById('game')!;
+  const sync = () => {
+    const r = el.getBoundingClientRect(), w = Math.round(r.width), h = Math.round(r.height);
+    if (w > 0 && h > 0 && (game.scale.width !== w || game.scale.height !== h)) {
+      game.scale.parentSize.setSize(w, h); // RESIZE mode sizes from its remembered parent size: update it, then re-lay out
+      game.scale.refresh();
+    }
+  };
+  game.events.once('ready', sync);
+  window.addEventListener('resize', sync);
+  window.addEventListener('orientationchange', () => { sync(); setTimeout(sync, 300); setTimeout(sync, 1000); });
+  window.visualViewport?.addEventListener('resize', sync);
+  window.addEventListener('pageshow', sync);
+  setInterval(sync, 500);
 }
 
 /** TEMPORARY (Nov 23 2026): in the home-screen app only, show what the phone reports about the screen,
