@@ -640,7 +640,7 @@ class UI {
       c.globalAlpha = 1; c.strokeStyle = '#16101f'; c.lineWidth = 2; c.strokeRect((b.x / TILE) * s, (b.y / TILE) * s, (b.w / TILE) * s, (b.h / TILE) * s);
     }
     c.font = '900 40px Nunito, Arial'; c.textAlign = 'center'; // the canvas is shown about 4x smaller
-    // Neighborhood names at the center of each neighborhood's blocks, in its district's color
+    // Neighborhood names at the center of each neighborhood's blocks: white, outlined in the district's color
     const acc: Record<string, [number, number, number, District]> = {};
     for (let r = 0; r < ROWS; r++) for (let k = 0; k < COLS; k++) {
       const name = neighborhoodOfBlock(k, r); if (!name) continue;
@@ -692,7 +692,7 @@ class UI {
       c.fillStyle = 'rgba(22,16,31,0.88)'; c.beginPath();
       if (c.roundRect) c.roundRect(x - tw / 2, y - th / 2, tw, th, 14); else c.rect(x - tw / 2, y - th / 2, tw, th);
       c.fill(); c.lineWidth = 3; c.strokeStyle = DISTRICTS[d].color; c.stroke();
-      c.fillStyle = DISTRICTS[d].color; c.fillText(t, x, y + 2);
+      c.fillStyle = '#fff'; c.fillText(t, x, y + 2); // white names; the outline keeps the district color
     }
     c.textBaseline = 'alphabetic';
     const px = (w.player.x / TILE) * s, py = (w.player.y / TILE) * s;
