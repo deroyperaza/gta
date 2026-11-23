@@ -3,6 +3,7 @@ import './ui/style.css';
 import { WorldScene } from './scenes/WorldScene';
 import { missions } from './systems/missions';
 import { ui } from './ui/ui';
+import { state } from './core/state';
 import { lockPageZoom } from './ui/nozoom';
 
 declare const __BUILD__: string;
@@ -33,6 +34,35 @@ async function boot() {
   });
   keepGameSized(game);
   screenReadout(game);
+  autoUpdate(game);
+}
+
+/**
+ * A home-screen app resumes its old page instead of reloading, so phones kept running week-old code. On launch and
+ * whenever the app comes back to the front, ask the site which build is current; if it's newer, save (only mid-game,
+ * never from the title screen) and reload into it, with a fresh URL so no cache can hand back the old page.
+ */
+function autoUpdate(game: Phaser.Game) {
+  if (import.meta.env.DEV) return;
+  const mine = [...document.scripts].map((s) => s.src).find((s) => /assets\/index-[^/]+\.js/.test(s));
+  if (!mine) return;
+  let busy = false;
+  const check = async () => {
+    if (busy || document.visibilityState !== 'visible') return;
+    busy = true;
+    try {
+      const html = await (await fetch(`${location.pathname}?check=${Date.now()}`, { cache: 'no-store' })).text();
+      const latest = html.match(/assets\/index-[^"']+\.js/)?.[0];
+      if (latest && !mine.endsWith(latest)) {
+        if ((game.scene.scenes[0] as any)?.mode === 'play') state.save();
+        location.replace(`${location.pathname}?v=${encodeURIComponent(latest.slice(13, 21))}`);
+      }
+    } catch { /* offline: keep playing this version */ }
+    busy = false;
+  };
+  check();
+  document.addEventListener('visibilitychange', check);
+  window.addEventListener('pageshow', check);
 }
 
 /**
