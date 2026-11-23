@@ -19,7 +19,9 @@ import { BLOCK_H, BLOCK_W, COLS, MAP_H, MAP_W, ROAD, ROWS, T, TILE, WALKABLE, di
  * touch controls.
  */
 type Panel = 'title' | 'pause' | 'journal' | 'map' | 'passed' | 'help' | 'chooser' | 'ride' | null;
-export interface ChoiceItem { value: string; label: string; sub?: string; html?: string; group?: string }
+export interface ChoiceItem { value: string; label: string; sub?: string; html?: string; group?: string;
+  /** A collapsible section (a dropdown) this item belongs to, with its header; `here` rows are markers, not buttons */
+  section?: string; sectionHtml?: string; here?: boolean }
 
 const $ = <T extends HTMLElement = HTMLElement>(sel: string) => document.querySelector(sel) as T;
 const mlabel = (def: MissionDef) => (def.side ? def.kind ?? 'MEDIATION' : `MISSION ${def.number}`);
@@ -129,10 +131,22 @@ class UI {
   private renderChoices(q: string) {
     const ql = q.trim().toLowerCase();
     let lastGroup = '';
-    $('#ch-list').innerHTML = this.chooseItems.filter((i) => !ql || i.label.toLowerCase().includes(ql) || (i.sub ?? '').toLowerCase().includes(ql)).map((i) => {
+    const hit = (i: ChoiceItem) => !ql || i.label.toLowerCase().includes(ql) || (i.sub ?? '').toLowerCase().includes(ql);
+    const row = (i: ChoiceItem) => i.here ? `<div class="ch-item ch-here"><b>${i.html ?? i.label}</b>${i.sub ? `<span>${i.sub}</span>` : ''}</div>`
+      : `<button class="ch-item" data-v="${i.value}"><b>${i.html ?? i.label}</b>${i.sub ? `<span>${i.sub}</span>` : ''}</button>`;
+    const flat = this.chooseItems.filter((i) => !i.section && hit(i)).map((i) => {
       const head = i.group && i.group !== lastGroup ? `<div class="ch-group">${(lastGroup = i.group)}</div>` : '';
-      return `${head}<button class="ch-item" data-v="${i.value}"><b>${i.html ?? i.label}</b>${i.sub ? `<span>${i.sub}</span>` : ''}</button>`;
-    }).join('') || '<p class="sub">Nothing by that name.</p>';
+      return head + row(i);
+    }).join('');
+    // Sections are dropdowns; searching opens them so the matches show
+    const secs: string[] = [], bySec = new Map<string, ChoiceItem[]>();
+    for (const i of this.chooseItems) if (i.section) { if (!bySec.has(i.section)) { bySec.set(i.section, []); secs.push(i.section); } bySec.get(i.section)!.push(i); }
+    const sections = secs.map((k) => {
+      const all = bySec.get(k)!, shown = all.filter((i) => i.here || hit(i));
+      if (ql && !shown.some((i) => !i.here)) return '';
+      return `<details class="ch-sec"${ql || secs.length === 1 ? ' open' : ''}><summary>${all[0].sectionHtml ?? k}</summary><div class="ch-sec-list">${shown.map(row).join('')}</div></details>`;
+    }).join('');
+    $('#ch-list').innerHTML = (flat + sections) || '<p class="sub">Nothing by that name.</p>';
   }
 
   /** Riding the subway: a car interior, the line bullets, the stops ticking by. */

@@ -11,6 +11,7 @@ import { makeBust } from '../world/portraits';
 import { Pedestrians, type Ped } from '../entities/pedestrians';
 import { BallGames, type Court } from '../entities/ballgames';
 import { HOOD_LANGS, LANGS } from '../data/languages';
+import { LINES } from '../world/transitData';
 import { driverFor } from '../data/drivers';
 import { CHAR_RES, DPR, PLAYER_RES } from '../core/res';
 import { Traffic } from '../entities/traffic';
@@ -20,7 +21,7 @@ import { drawParks } from '../world/parks';
 import { PAINTED } from '../data/landmarks';
 import { dialogue } from '../systems/dialogue';
 import { missions } from '../systems/missions';
-import { ui } from '../ui/ui';
+import { ui, type ChoiceItem } from '../ui/ui';
 import { BLOCK_H, BLOCK_W, COLS, ROWS, RUNWAYS, RUNWAY_W, geo, neighborhoodOfBlock, GAP_CIRCLE, gapOutline, ROAD, T, TILE, WORLD_H, WORLD_W, districtAt, generateLayout, neighborhoodAt, type BuildingDef, type WorldLayout } from '../world/layout';
 import { makeProps } from '../world/textures';
 import { signBand } from '../world/golden';
@@ -1298,9 +1299,23 @@ export class WorldScene extends Phaser.Scene {
       return { value: p.st.id, label: p.st.name, html: `${p.st.routes.map(bullet).join('')} ${p.st.name}${p.st.ada === 1 ? ' ♿' : ''}`,
         sub: `<span class="dir">${this.compass(from.x, from.y, p.x, p.y).join(' ')}</span> ` + (pl ? `${pl.stops} stops${pl.transfers ? ` · ${pl.transfers} transfer${pl.transfers > 1 ? 's' : ''}` : ''} · ${neighborhoodAt(p.x, p.y) ?? ''}` : 'No route'), group: 'All Brooklyn stations' };
     });
-    if (near && near.st.id !== from.st.id) { const it = items.find((i) => i.value === near.st.id); if (it) items.unshift({ ...it, group: 'Closest to your objective' }); }
+    // One dropdown per line that stops here, its Brooklyn stops in order, this station marked where it falls
+    const byId = new Map(items.map((i) => [i.value, i]));
+    const lineItems = from.st.routes.flatMap((r) => {
+      const ids = LINES[r] ?? [], at = ids.indexOf(from.st.id);
+      const head = `${bullet(r)} <span>${r} train · ${ids.length} stops in Brooklyn</span>`;
+      return ids.map((sid, k) => {
+        const p = tr.byId[sid]; if (!p) return null;
+        if (sid === from.st.id) return { value: sid, label: p.st.name, here: true, html: `● ${p.st.name}`, sub: 'You are here', section: r, sectionHtml: head };
+        const n = Math.abs(k - at), xfer = p.st.routes.filter((x) => x !== r);
+        return { ...byId.get(sid)!, html: `${p.st.name}${p.st.ada === 1 ? ' ♿' : ''}${xfer.length ? ` <small class="xfer">${xfer.map(bullet).join('')}</small>` : ''}`,
+          sub: `<span class="dir">${this.compass(from.x, from.y, p.x, p.y).join(' ')}</span> ${n} stop${n === 1 ? '' : 's'} on the ${r} · ${neighborhoodAt(p.x, p.y) ?? ''}`, section: r, sectionHtml: head, group: undefined };
+      }).filter(Boolean) as ChoiceItem[];
+    });
+    const menu: ChoiceItem[] = lineItems;
+    if (near && near.st.id !== from.st.id) { const it = byId.get(near.st.id); if (it) menu.unshift({ ...it, group: 'Closest to your objective' }); }
     const ada = from.st.ada === 1 ? '♿ Elevator access.' : from.st.ada === 2 ? '♿ Partly accessible (one direction only).' : '<b>Stairs only.</b> ' + Transit.adaLine();
-    ui.choose({ title: from.st.name, sub: `${from.st.routes.map(bullet).join('')} Tap in: $3 (Fair Fares: $1.50). ${ada}`, items, search: true }, (id) => {
+    ui.choose({ title: from.st.name, sub: `${from.st.routes.map(bullet).join('')} Tap in: $3 (Fair Fares: $1.50). ${ada}`, items: menu, search: true }, (id) => {
       const pl = tr.plan(from.st.id, id), dest = tr.byId[id];
       if (!pl || !dest) { bus.emit('ui:toast', 'NO TRAINS. (PLANNED WORK.)'); return; }
       const name = (sid: string) => tr.byId[sid]?.st.name ?? sid;
