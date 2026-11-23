@@ -17,6 +17,7 @@ export const LESSONS: Record<string, { who: string; text: string }> = {
   'BOOKS UNBANNED': { who: 'Naim', text: 'Brooklyn Public Library\'s Books Unbanned: any teen 13 to 21 in the US can get a free eCard. In NYC, teens can just get a regular card.' },
   "WHO WATCHES THE CITY'S MONEY": { who: 'Luco', text: 'The City Comptroller audits city agencies and manages the pension funds. The funds vote as shareholders, and every vote is posted on NYC Open Data.' },
   'BOOK THE FIELD': { who: 'Luco', text: 'Showing up first doesn\'t make the field yours. Book it with an NYC Parks permit; a special event permit costs $25 to process.' },
+  'PLYLER V. DOE': { who: 'Scott', text: 'Plyler v. Doe (1982): the Supreme Court ruled that states can\'t deny children a free public K-12 education because of their immigration status.' },
   'BINS, NOT BAGS': { who: 'Ms. Bev', text: 'Since Nov 2024, NYC buildings with 1 to 9 apartments must put trash in lidded bins, not bags. Shared street bins cut rat sightings 73% in Hamilton Heights; locked "Empire Bins" are rolling out in Brooklyn\'s District 2.' },
   'SOUND DEVICE PERMITS': { who: 'Marcus', text: 'Speakers or a megaphone outside need an NYPD Sound Device Permit: file in person at that precinct at least five days ahead, $45 by money order or certified check.' },
   'REC CENTERS ARE FREE UNDER 25': { who: 'Vega', text: 'NYC Parks recreation centers are free for anyone under 25, and $25 a year for seniors 62 and up, veterans and people with disabilities.' },

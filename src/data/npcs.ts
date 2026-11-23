@@ -140,6 +140,12 @@ export const NPCS: NpcDef[] = [
     idle: ['Little kids get a turn too.', 'Seven a side. Trust me.', 'Is there dessert after this?'],
   },
   {
+    id: 'scott', name: 'Scott', short: 'Scott', title: 'The Strategist', district: 'downtown', spot: 'lm_courthouse', offset: { dx: 120, dy: 6 }, color: '#9fd0ff',
+    look: { skin: '#f0c8a8', hair: '#8a5a3a', style: 'cap', hatColor: '#8a8f99', shirt: '#4a6a9a', pants: '#2b3a6b', acc: 'glasses', shoes: '#111' },
+    bio: 'Lawyer and advocate. Years of criminal justice and immigration reform work, now strategy for campaigns and the people trying to fix the city. The cap stays on.',
+    idle: ['Every kid gets a seat in a classroom. That\'s the law.', 'Policy is just organizing with footnotes.', 'Read the report. Then read the footnotes.'],
+  },
+  {
     id: 'vega', name: 'Vega', short: 'Vega', title: 'The Choreographer', district: 'bushwick', spot: 'vega', color: '#ffa8e0',
     look: { skin: '#f0c8a8', hair: '#8a5a34', style: 'long', shirt: '#141414', pants: '#141414', shoes: '#f2f2f2' },
     bio: 'Nine years old. Dancer, painter, free spirit, and the best hairdos on the block. Will choreograph your protest whether you asked or not.',

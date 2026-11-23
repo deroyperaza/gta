@@ -545,6 +545,29 @@ export const DIALOGUES: Record<string, Dialogue> = {
   },
 
   // ============================================================ VEGA · testify at City Council
+  // ============================================================ SCOTT · Plyler v. Doe (every child's right to public school)
+  scott: {
+    entries: [{ cond: { notFlag: 'met_scott' }, node: 'intro' }, { node: 'after' }],
+    nodes: {
+      intro: {
+        speaker: 'scott', text: 'Scott. Lawyer, advocate, strategist. Criminal justice and immigration, mostly. The binder is light reading.',
+        choices: [
+          { text: 'What\'s in the binder?', next: 'plyler', effects: { rel: { scott: 5 }, flags: { met_scott: true } } },
+          { text: 'Light reading?', next: 'plyler', effects: { flags: { met_scott: true } } },
+        ],
+      },
+      plyler: { speaker: 'scott', text: 'A case most people have never heard of: Plyler v. Doe, 1982. The Supreme Court said a state can\'t shut kids out of free public school because of their immigration status.', next: 'plyler2' },
+      plyler2: {
+        speaker: 'scott', text: 'Every kid, K through 12, gets a seat in a classroom. Forty-plus years of kids who grew up to work, pay taxes, raise families here. Make sure your neighbors know it\'s their right.',
+        choices: [{ text: 'Every kid. Got it.', effects: { rel: { scott: 6 }, solidarity: 10, trust: { downtown: 3 }, toast: 'POCKET CIVICS · PLYLER V. DOE' } }],
+      },
+      after: {
+        speaker: 'scott', text: 'Policy is just organizing with footnotes. Go knock on doors. I\'ll bring the footnotes.',
+        choices: [{ text: 'Tell me about Plyler again.', next: 'plyler' }, { text: 'Later, Scott.' }],
+      },
+    },
+  },
+
   // ============================================================ COLE · the Parade Ground and free city pools
   cole: {
     entries: [{ cond: { ...S('march', 1), notFlag: 'pvp_ally_cole' }, node: 'pvp' }, { cond: { notFlag: 'met_cole' }, node: 'intro' }, { node: 'after' }],
