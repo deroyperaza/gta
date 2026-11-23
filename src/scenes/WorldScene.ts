@@ -11,6 +11,7 @@ import { makeBust } from '../world/portraits';
 import { Pedestrians, type Ped } from '../entities/pedestrians';
 import { BallGames, type Court } from '../entities/ballgames';
 import { HOOD_LANGS, LANGS } from '../data/languages';
+import { driverFor } from '../data/drivers';
 import { CHAR_RES, DPR, PLAYER_RES } from '../core/res';
 import { Traffic } from '../entities/traffic';
 import { DEBATES, Opposition, type OppConfig } from '../entities/opposition';
@@ -964,6 +965,11 @@ export class WorldScene extends Phaser.Scene {
 
   private tryAction() {
     if (this.mode !== 'play' || ui.blocking() || performance.now() - this.lastDialogueEnd < 250) return;
+    const R = this.transit.riding;
+    if (R) { // riding: your driver has opinions (drivers.ts)
+      const { key, d } = driverFor(R.kind, R.kind === 'car' ? R.service : undefined);
+      dialogue.say('driver', d.name, pickLine(`driver:${key}`, d.lines)); return;
+    }
     const ped = this.peds.nearest(this.player.x, this.player.y, 60, (p) => !p.gotFlyer);
     if (ped && state.count('flyers') > 0) {
       ped.gotFlyer = true; ped.pause = 2.5;
@@ -1539,7 +1545,7 @@ export class WorldScene extends Phaser.Scene {
       const ped = !it && !sq && !stn && !stop && !R ? this.nearPed() : null;
       const parts: string[] = [];
       if (this.flying) parts.push(`<span class="pa">🐉 DRAGON · ${Math.max(0, Math.ceil((this.flyUntil - performance.now()) / 1000))}s</span>`);
-      if (R) parts.push(`<span class="pa" data-act="interact"><b>E</b> ${R.kind === 'bus' ? (R.request ? 'Stop requested' : 'Request the next stop') : R.kind === 'van' ? 'Get off here' : 'Get out here'}</span>`);
+      if (R) parts.push(`<span class="pa" data-act="interact"><b>E</b> ${R.kind === 'bus' ? (R.request ? 'Stop requested' : 'Request the next stop') : R.kind === 'van' ? 'Get off here' : 'Get out here'}</span>`, '<span class="pa" data-act="action"><b>SPACE</b> Talk to the driver</span>');
       if (stn) parts.push(`<span class="pa" data-act="interact"><b>E</b> Subway: ${stn.st.name} ${stn.st.routes.map(bullet).join('')}</span>`);
       if (stop) parts.push(`<span class="pa" data-act="interact"><b>E</b> ${tr.waiting?.stop === stop.stop ? 'Waiting for the' : 'Wait for the'} ${stop.route.id}</span>`);
       if (van) parts.push('<span class="pa" data-act="interact"><b>E</b> Hail a dollar van</span>');
@@ -1555,7 +1561,7 @@ export class WorldScene extends Phaser.Scene {
       // Touch buttons say what they'll do right now, and dim when there's nothing to do.
       const verb = (l: string) => { const w = l.split(' ')[0].toUpperCase(); return w === 'GRAB' ? 'BIKE' : w === 'TALK' ? 'TALK' : w; };
       const eL = R ? (R.kind === 'bus' ? 'STOP' : 'OFF') : sq ? 'DEBATE' : it ? verb(it.label() ?? '') : stn ? 'SUBWAY' : stop ? 'WAIT' : van ? 'HAIL' : ped ? 'CHAT' : null;
-      const sL = fped && state.count('flyers') > 0 ? 'FLYER' : this.nearWall() && state.count('posters') > 0 ? 'POSTER' : this.onBike ? 'HOP OFF' : null;
+      const sL = R ? 'TALK' : fped && state.count('flyers') > 0 ? 'FLYER' : this.nearWall() && state.count('posters') > 0 ? 'POSTER' : this.onBike ? 'HOP OFF' : null;
       ui.setTouchLabels(eL, sL);
     } else { ui.setPrompt(''); ui.setTouchLabels(null, null); }
 
