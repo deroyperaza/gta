@@ -498,3 +498,30 @@ button, a, .pa, .ch-item, #touch-btns button, #hud-buttons button { touch-action
 #goal-pointer i { position: absolute; left: -26px; top: -26px; width: 52px; height: 52px; background: no-repeat center / contain url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 52 52'%3E%3Cpath d='M48 26 10 6 18 26 10 46Z' fill='%23ffd23f' stroke='%2316101f' stroke-width='4' stroke-linejoin='round'/%3E%3C/svg%3E"); filter: drop-shadow(0 3px 0 rgba(22,16,31,.6)); animation: goal-pulse 1s ease-in-out infinite; }
 #goal-pointer b { position: absolute; left: 0; top: 0; white-space: nowrap; font: 15px/1 var(--display); letter-spacing: 1px; color: var(--ink); background: var(--yellow); border: 2.5px solid var(--ink); border-radius: 9px; padding: 4px 8px 3px; box-shadow: 2px 2px 0 var(--ink); }
 @keyframes goal-pulse { 50% { scale: 1.15; } }
+/* ---------- Phone controls, cleaned up (Nov 2026) ----------
+   One big action button (the E and space buttons said the same thing as the prompt), a smaller labeled mini-map
+   that doubles as the MAP button, a one-line mission bar, no "tote bag: empty" line. */
+body.touch #touch-btns { display: none; }
+body.touch #prompt, body.touch #prompt.show { left: auto; right: calc(16px + env(safe-area-inset-right, 0px)); bottom: calc(30px + env(safe-area-inset-bottom, 0px)); transform: none; background: none; border: 0; padding: 0; font-size: 0; max-width: 62vw; white-space: normal; display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
+body.touch #prompt:not(.show) { opacity: 0; pointer-events: none; }
+body.touch #prompt .pa { font: 900 17px/1.15 var(--body); color: var(--ink); background: var(--yellow); border: 3px solid var(--ink); border-radius: 18px; padding: 13px 17px; margin: 0; box-shadow: 3px 4px 0 var(--ink); display: flex; align-items: center; gap: 8px; text-align: left; }
+body.touch #prompt .pa[data-act="action"] { background: #fff; }
+body.touch #prompt .pa:not([data-act]) { background: rgba(22,16,31,.9); color: #fff; border-color: var(--yellow); box-shadow: none; }
+body.touch #prompt .pa:active { transform: translate(2px, 2px); box-shadow: 1px 2px 0 var(--ink); }
+body.touch #prompt .pa b { display: none; }
+body.touch #prompt .pa::before { content: attr(data-ico); font-size: 20px; }
+@media (max-width: 600px) {
+  #hud-map { display: none; } /* the labeled mini-map is the map button */
+  /* scorecard and button row share one width; the map fills the rest of the row (sized in WorldScene.layoutMinimap) */
+  #stats { box-sizing: border-box; width: min(240px, calc(100vw - 150px)); max-width: none; }
+  #hud-buttons { box-sizing: border-box; width: min(240px, calc(100vw - 150px)); top: calc(112px + env(safe-area-inset-top, 0px)); left: calc(8px + env(safe-area-inset-left, 0px)); right: auto; justify-content: space-between; }
+  #hud-buttons button { flex: 1 1 auto; }
+  #objective { top: calc(150px + env(safe-area-inset-top, 0px)); }
+  #objective.min:not(.peek) #obj-dist { top: 50%; transform: translateY(-50%); }
+  #objective.min:not(.peek) #obj-title { padding-right: 118px; }
+  #minimap-frame::after { content: 'MAP'; position: absolute; bottom: -12px; left: 50%; transform: translateX(-50%); background: #fff; color: var(--ink); font: 13px var(--display); letter-spacing: 1px; padding: 0 8px; border: 2.5px solid var(--ink); border-radius: 8px; }
+}
+body.touch #inventory.empty { display: none; } /* phones: no "tote bag: empty" line */
+@media (max-width: 600px) and (display-mode: standalone) { #hud-buttons { left: calc(10px + env(safe-area-inset-left, 0px)); } }
+/* The joystick says it's a joystick: four arrows around the ring */
+body.touch #touch-pad { background: rgba(255,255,255,.15) no-repeat center / 100% 100% url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cg fill='%23fff' fill-opacity='.85'%3E%3Cpath d='M50 6 57 15 43 15Z'/%3E%3Cpath d='M50 94 57 85 43 85Z'/%3E%3Cpath d='M6 50 15 43 15 57Z'/%3E%3Cpath d='M94 50 85 43 85 57Z'/%3E%3C/g%3E%3C/svg%3E"); }

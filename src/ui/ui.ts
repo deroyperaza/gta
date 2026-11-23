@@ -47,7 +47,8 @@ class UI {
     bus.on('flyers:gained', (n: number) => this.showFlyer('big', n));
     bus.on('flyer:handed', () => this.showFlyer('mini'));
     // Tap the mission card to fold it to one line (remembered); a new objective opens it for a few seconds
-    try { if (localStorage.getItem('gta-obj-min') === '1') $('#objective').classList.add('min'); } catch { /* storage blocked */ }
+    // Phones start with it folded to one line (more street to see); your own choice is remembered
+    try { const v = localStorage.getItem('gta-obj-min'); if (v === '1' || (v == null && innerWidth <= 600)) $('#objective').classList.add('min'); } catch { /* storage blocked */ }
     $('#objective').addEventListener('click', () => {
       const el = $('#objective'); el.classList.remove('peek');
       const min = el.classList.toggle('min');
@@ -60,8 +61,8 @@ class UI {
     bus.on('mission:failed', (p: any) => this.showFailed(p.def, p.text));
     bus.on('mission:started', (def: MissionDef) => this.missionIntro(def));
     bus.on('world:district', (_d: District, info: { name: string; color: string; blurb: string }) => this.districtBanner(info));
-    bus.on('minimap:layout', (r: { x: number; y: number; size: number }) => {
-      const f = $('#minimap-frame'); f.style.right = `${Math.max(0, window.innerWidth - r.x - r.size)}px`; f.style.top = `${r.y}px`; f.style.width = `${r.size}px`; f.style.height = `${r.size}px`;
+    bus.on('minimap:layout', (r: { x: number; y: number; size: number; h?: number }) => {
+      const f = $('#minimap-frame'); f.style.right = `${Math.max(0, window.innerWidth - r.x - r.size)}px`; f.style.top = `${r.y}px`; f.style.width = `${r.size}px`; f.style.height = `${r.h ?? r.size}px`;
     });
     window.addEventListener('keydown', (e) => this.onKey(e));
     this.bindButtons();
@@ -270,7 +271,14 @@ class UI {
 
   setPrompt(html: string) {
     const el = $('#prompt');
-    if (el.dataset.html !== html) { el.dataset.html = html; el.innerHTML = html; el.classList.toggle('show', !!html); }
+    if (el.dataset.html !== html) {
+      el.dataset.html = html; el.innerHTML = html; el.classList.toggle('show', !!html);
+      // Phones show each action as a big button; an icon says what kind
+      el.querySelectorAll<HTMLElement>('.pa').forEach((a) => {
+        const t = a.textContent?.toLowerCase() ?? '';
+        a.dataset.ico = /talk|chat/.test(t) ? '👋' : /subway/.test(t) ? '🚇' : /wait|stop|bus/.test(t) ? '🚌' : /van/.test(t) ? '🚐' : /bike/.test(t) ? '🚲' : /debate/.test(t) ? '📣' : /flyer/.test(t) ? '📄' : /poster/.test(t) ? '📌' : /dragon/.test(t) ? '🐉' : '▶';
+      });
+    }
   }
   setDistance(n: string | null, ang?: number) {
     const el = $('#obj-dist');
@@ -352,6 +360,7 @@ class UI {
     $('#inventory').innerHTML = inv.length
       ? inv.map((k) => `<div class="inv${k === 'flyers' ? ' inv-flyers' : ''}" title="${ITEMS[k].name}: ${ITEMS[k].desc}${k === 'flyers' ? ' (tap to see it)' : ''}">${ITEMS[k].icon}<span>${d.inventory[k]}</span></div>`).join('')
       : '<div class="inv-empty">Tote bag: empty (emotionally full)</div>';
+    $('#inventory').classList.toggle('empty', !inv.length);
     this.renderObjective();
   }
 

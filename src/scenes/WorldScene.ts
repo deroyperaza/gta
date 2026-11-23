@@ -186,6 +186,10 @@ export class WorldScene extends Phaser.Scene {
     window.addEventListener('pointerup', stopDrag); window.addEventListener('mouseup', stopDrag); window.addEventListener('blur', stopDrag);
     this.keys = this.input.keyboard!.addKeys({ W: K.W, A: K.A, S: K.S, D: K.D, E: K.E, SPACE: K.SPACE, SHIFT: K.SHIFT, B: K.B }) as Record<string, Phaser.Input.Keyboard.Key>;
     this.input.keyboard!.addCapture([K.SPACE, K.UP, K.DOWN, K.LEFT, K.RIGHT]);
+    // Typing in a search box: the game lets go of the keyboard (otherwise W A S D E B and space never reach the box)
+    const typing = (t: EventTarget | null) => !!t && ['INPUT', 'TEXTAREA'].includes((t as HTMLElement).tagName);
+    document.addEventListener('focusin', (e) => { if (!typing(e.target)) return; const kb = this.input.keyboard!; kb.disableGlobalCapture(); kb.enabled = false; kb.resetKeys(); });
+    document.addEventListener('focusout', (e) => { if (!typing(e.target)) return; const kb = this.input.keyboard!; kb.enableGlobalCapture(); kb.enabled = true; kb.resetKeys(); });
 
     this.scale.on('resize', () => { this.applyZoom(); this.layoutMinimap(); });
     bus.on('dialogue:end', () => { this.lastDialogueEnd = performance.now(); });
@@ -508,8 +512,16 @@ export class WorldScene extends Phaser.Scene {
   }
   private layoutMinimap() {
     if (!this.minimap) return;
+    // Phones held upright: the map fills the space beside the scorecard and button row (same top, same bottom)
+    if (this.scale.width <= 600) {
+      const st = document.getElementById('stats')?.getBoundingClientRect(), hb = document.getElementById('hud-buttons')?.getBoundingClientRect();
+      if (st && hb && st.width > 0 && hb.height > 0) {
+        const x = Math.round(st.right + 10), y = Math.round(st.top), w = Math.round(this.scale.width - x - 8), h = Math.round(hb.bottom - st.top);
+        if (w > 60) { this.minimap.setViewport(x, y, w, h); bus.emit('minimap:layout', { x, y, size: w, h }); return; }
+      }
+    }
     const phone = this.scale.width <= 600 || this.scale.height <= 500, m = phone ? 8 : 18;
-    const size = phone ? (this.scale.width <= 600 ? 136 : Math.min(120, Math.floor(this.scale.height * 0.3))) : Math.min(200, Math.floor(this.scale.width * 0.28));
+    const size = phone ? (this.scale.width <= 600 ? 100 : Math.min(120, Math.floor(this.scale.height * 0.3))) : Math.min(200, Math.floor(this.scale.width * 0.28));
     this.minimap.setViewport(this.scale.width - size - m, m, size, size);
     bus.emit('minimap:layout', { x: this.scale.width - size - m, y: m, size });
   }
@@ -538,6 +550,7 @@ export class WorldScene extends Phaser.Scene {
 
   // ------------------------------------------------------------------ GAME FLOW
   private newGame() {
+    setTimeout(() => this.layoutMinimap(), 60); // once the HUD is showing, so it can be measured
     state.reset();
     this.posterLayer.forEach((p) => p.destroy()); this.posterLayer = [];
     this.toggleBike(false, true);
@@ -552,6 +565,7 @@ export class WorldScene extends Phaser.Scene {
   }
 
   private loadGame() {
+    setTimeout(() => this.layoutMinimap(), 60); // once the HUD is showing, so it can be measured
     if (!state.load()) return;
     this.posterLayer.forEach((p) => p.destroy()); this.posterLayer = [];
     for (const p of state.d.posters) this.addPosterSprite(p.x, p.y, p.v);
@@ -671,7 +685,7 @@ export class WorldScene extends Phaser.Scene {
     state.d.player.onBike = on;
     this.player.setTexture(on ? 'player-bike' : 'player', 0);
     this.setPlayerBody();
-    if (on && !silent) { state.apply({ flags: { rode_bike: true } }, { quiet: true }); bus.emit('ui:toast', 'BIKE UNLOCKED · [B] TO HOP OFF'); }
+    if (on && !silent) { state.apply({ flags: { rode_bike: true } }, { quiet: true }); bus.emit('ui:toast', document.body.classList.contains('touch') ? 'BIKE UNLOCKED · TAP HOP OFF WHEN DONE' : 'BIKE UNLOCKED · [B] TO HOP OFF'); }
   }
   private setPlayerBody() {
     const body = this.player.body as Phaser.Physics.Arcade.Body;
@@ -1294,6 +1308,7 @@ export class WorldScene extends Phaser.Scene {
       const fped = this.peds.nearest(this.player.x, this.player.y, 60, (p) => !p.gotFlyer);
       if (fped && state.count('flyers') > 0) parts.push('<span class="pa" data-act="action"><b>SPACE</b> Hand flyer</span>');
       else if (this.nearWall() && state.count('posters') > 0) parts.push('<span class="pa" data-act="action"><b>SPACE</b> Put up poster</span>');
+      else if (this.onBike && document.body.classList.contains('touch')) parts.push('<span class="pa" data-act="action"><b>SPACE</b> Hop off the bike</span>'); // phones have no B key
       ui.setPrompt(parts.join('&nbsp;&nbsp;·&nbsp;&nbsp;'));
       // Touch buttons say what they'll do right now, and dim when there's nothing to do.
       const verb = (l: string) => { const w = l.split(' ')[0].toUpperCase(); return w === 'GRAB' ? 'BIKE' : w === 'TALK' ? 'TALK' : w; };
