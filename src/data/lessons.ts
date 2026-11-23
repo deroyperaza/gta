@@ -17,6 +17,7 @@ export const LESSONS: Record<string, { who: string; text: string }> = {
   'BOOKS UNBANNED': { who: 'Naim', text: 'Brooklyn Public Library\'s Books Unbanned: any teen 13 to 21 in the US can get a free eCard. In NYC, teens can just get a regular card.' },
   "WHO WATCHES THE CITY'S MONEY": { who: 'Luco', text: 'The City Comptroller audits city agencies and manages the pension funds. The funds vote as shareholders, and every vote is posted on NYC Open Data.' },
   'BOOK THE FIELD': { who: 'Luco', text: 'Showing up first doesn\'t make the field yours. Book it with an NYC Parks permit; a special event permit costs $25 to process.' },
+  'BINS, NOT BAGS': { who: 'Ms. Bev', text: 'Since Nov 2024, NYC buildings with 1 to 9 apartments must put trash in lidded bins, not bags. Shared street bins cut rat sightings 73% in Hamilton Heights; locked "Empire Bins" are rolling out in Brooklyn\'s District 2.' },
   'TESTIFY AT CITY COUNCIL': { who: 'Vega', text: 'Anyone who lives in New York City can sign up to testify at a City Council hearing, in person or in writing.' },
   'BLOCK PARTY PERMITS': { who: 'Emily', text: 'Apply online for a block party permit at least 60 days ahead. $25. Your block signs on, your community board weighs in. Nothing for sale.' },
   'PUBLIC ACCESS TV': { who: 'Jon', text: 'BRIC runs Brooklyn\'s public access channels. Residents can take media classes, borrow gear and get community shows on the air.' },

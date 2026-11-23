@@ -30,7 +30,7 @@ interface Interactable {
 
 const WALK = 150, RUN = 245, BIKE = 330, BIKE_RUN = 410;
 /** Street objects painted in ChatGPT (public/sprites/props/<key>.png): each takes over the code-drawn texture of the same key */
-const PAINTED_PROPS = ['dock', 'truck', 'fridge-empty', 'fridge-full', 'cat', 'grocerybag', 'hoop0', 'hoop1', 'duck0', 'duck1', 'sunflower'];
+const PAINTED_PROPS = ['dock', 'truck', 'fridge-empty', 'fridge-full', 'cat', 'grocerybag', 'hoop0', 'hoop1', 'duck0', 'duck1', 'sunflower', 'trashpile', 'rat', 'streetbin'];
 
 /** Landmarks painted in ChatGPT (magenta keyed out) at public/sprites/<building id>.png */
 const PAINTED_LANDMARKS = ['savingsbank', 'centrallib', 'boroughhall', 'kingsish', 'bkmuseum', 'parachute', 'bam'];
@@ -67,6 +67,12 @@ export class WorldScene extends Phaser.Scene {
   mmPlayer!: Phaser.GameObjects.Image;
   arrow!: Phaser.GameObjects.Image;
   fridge!: Phaser.GameObjects.Image;
+  /** Night: a dark-blue wash over the street, glowing streetlights, rats at the trash */
+  night = false;
+  nightShade?: Phaser.GameObjects.Rectangle;
+  nightGlows: Phaser.GameObjects.Image[] = [];
+  rats: Phaser.GameObjects.Image[] = [];
+  trashPile?: Phaser.GameObjects.Image;
   cat!: Phaser.GameObjects.Sprite;
   posterLayer: Phaser.GameObjects.Image[] = [];
   miniIgnore: Phaser.GameObjects.GameObject[] = [];
@@ -109,7 +115,7 @@ export class WorldScene extends Phaser.Scene {
     this.layout = generateLayout();
     makeTiles(this); makeVehicles(this); makeStreetProps(this); makeProps(this);
     // The food carts are painted like the rest of the street: the painted art takes over the drawn cart's key
-    for (const k of ['cart0', 'cart1', ...PAINTED_PROPS]) if (this.textures.exists(`${k}-art`)) { this.textures.remove(k); this.textures.renameTexture(`${k}-art`, k); }
+    for (const k of ['cart0', 'cart1', ...PAINTED_PROPS]) if (this.textures.exists(`${k}-art`)) { if (this.textures.exists(k)) this.textures.remove(k); this.textures.renameTexture(`${k}-art`, k); }
     makeCharacter(this, 'player', PLAYER_LOOK);
     makeBikeRider(this, 'player-bike', PLAYER_LOOK);
     for (const n of NPCS) makeCharacter(this, `npc-${n.id}`, n.look, !(n as any).blockFolk && !(n as any).npOrg); // neighbors' and staffers' portraits wait for the first chat
@@ -140,6 +146,7 @@ export class WorldScene extends Phaser.Scene {
     if (this.liuWall) this.physics.add.collider(this.player, this.liuWall);
 
     this.buildNpcs(solids);
+    this.buildBinsBlock();
     this.setupMarch();
     this.peds = new Pedestrians(this, this.layout, 520); // they gather around wherever you are
     for (const pk of drawParks(this, this.layout, this.miniIgnore)) this.interactables.push(pk); // after the crowd: the Bandshell audience wears their looks
@@ -205,7 +212,7 @@ export class WorldScene extends Phaser.Scene {
     bus.on('game:new', () => this.newGame());
     bus.on('game:load', () => this.loadGame());
     bus.on('game:title', () => { this.mode = 'title'; });
-    bus.on('state:changed', () => this.refreshWorldState());
+    bus.on('state:changed', () => { this.refreshWorldState(); this.refreshBinsBlock(); });
     bus.on('mission:failed', () => this.cameras.main.shake(300, 0.006));
     bus.on('mission:passed', (p: any) => { this.celebrate(this.player.x, this.player.y); if (p?.def?.id === 'march') this.peds.release(); });
     bus.on('ui:interact', () => this.tryInteract());
@@ -551,11 +558,52 @@ export class WorldScene extends Phaser.Scene {
       return children.filter((c: any) => {
         if (!c.willRender(camera)) return false;
         if (!CULL.has(c.type)) return true;
+        if (c.scrollFactorX !== 1) return true; // fixed to the screen (the night wash): always in view
         if (mini && c.type === 'Text' && c.displayHeight < 100) return false;
         const r = Math.max(c.displayWidth, c.displayHeight) + 32; // covers any origin or rotation
         return c.x > v.x - r && c.x < v.right + r && c.y > v.y - r && c.y < v.bottom + r;
       });
     };
+  }
+
+  /** Ms. Bev's curb in Fort Greene: a pile of bags (a street bin once the block wins), rats that come out at night */
+  private buildBinsBlock() {
+    const b = this.layout.spots.lm_bkorg; if (!b || !this.textures.exists('trashpile')) return;
+    const x = b.x - 70, y = b.y + 38; // between Ms. Bev and the Brooklyn Org door, clear of the name tags
+    this.trashPile = this.add.image(x, y, 'trashpile').setOrigin(0.5, 0.8).setDepth(y);
+    this.miniIgnore.push(this.trashPile);
+    for (let i = 0; i < 3; i++) {
+      const r = this.add.image(x - 40 + i * 34, y + 8 + (i % 2) * 10, 'rat').setDepth(9e4 + 2).setVisible(false); // over the night wash: you see them
+      this.tweens.add({ targets: r, x: r.x + 26 + i * 6, duration: 700 + i * 260, yoyo: true, repeat: -1, ease: 'Sine.inOut', onYoyo: () => r.setFlipX(true), onRepeat: () => r.setFlipX(false) });
+      this.rats.push(r); this.miniIgnore.push(r);
+    }
+    this.refreshBinsBlock();
+  }
+  private refreshBinsBlock() {
+    if (!this.trashPile) return;
+    const won = state.flag('bins_result') === 'good' && this.textures.exists('streetbin');
+    this.trashPile.setTexture(won ? 'streetbin' : 'trashpile');
+    for (const r of this.rats) r.setVisible(this.night && !won);
+  }
+
+  /** Night falls (or lifts) over a second and a half: the street goes dark blue, the streetlights glow */
+  private setNight(on: boolean) {
+    this.night = on;
+    if (!this.nightShade) {
+      const W = this.scale.width, H = this.scale.height;
+      // fixed to the screen and oversized, so camera zoom never shows an edge
+      this.nightShade = this.add.rectangle(W / 2, H / 2, W * 4, H * 4, 0x081236).setScrollFactor(0).setDepth(9e4).setAlpha(0);
+      if (!this.textures.exists('glow')) {
+        const t = this.textures.createCanvas('glow', 128, 128)!, c = t.getContext(), g = c.createRadialGradient(64, 64, 0, 64, 64, 64);
+        g.addColorStop(0, 'rgba(255,214,140,.95)'); g.addColorStop(0.35, 'rgba(255,190,110,.45)'); g.addColorStop(1, 'rgba(255,170,90,0)');
+        c.fillStyle = g; c.fillRect(0, 0, 128, 128); t.refresh();
+      }
+      for (const p of this.layout.props) if (p.kind === 'lamp') this.nightGlows.push(this.add.image(p.x, p.y - 34, 'glow').setScale(1.6).setBlendMode(Phaser.BlendModes.ADD).setDepth(9e4 + 1).setAlpha(0));
+      this.minimap?.ignore([this.nightShade, ...this.nightGlows]);
+    }
+    this.tweens.add({ targets: this.nightShade, alpha: on ? 0.62 : 0, duration: 1500, ease: 'Sine.inOut' });
+    this.tweens.add({ targets: this.nightGlows, alpha: on ? 0.9 : 0, duration: 1500, ease: 'Sine.inOut' });
+    this.refreshBinsBlock();
   }
 
   private applyZoom() {
@@ -1230,6 +1278,7 @@ export class WorldScene extends Phaser.Scene {
 
   // ------------------------------------------------------------------ LOOP
   update(_t: number, deltaMs: number) {
+    { const want = this.mode === 'play' && !!missions.active?.night; if (want !== this.night) this.setNight(want); } // night missions
     const dt = Math.min(deltaMs, 50) / 1000;
     const blocking = ui.blocking() || this.mode !== 'play';
     const body = this.player.body as Phaser.Physics.Arcade.Body;

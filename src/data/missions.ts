@@ -27,6 +27,8 @@ export interface MissionDef {
   side?: boolean;
   /** What a side mission is called on screen (default MEDIATION) */
   kind?: string;
+  /** Takes place at night: the world goes dark (streetlights on) while it's active */
+  night?: boolean;
 }
 
 const f = (k: string) => !!state.flag(k);
