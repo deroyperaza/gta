@@ -69,6 +69,8 @@ export class WorldScene extends Phaser.Scene {
   private stageSpots: string[] = [];
   private quietT = 0; private lastAtt = 0; private attDrain = 0; private lastStars = -1;
   peds!: Pedestrians;
+  private groundNames: Phaser.GameObjects.Text[] = [];
+  private groundName(x: number, y: number, text: string, style: Phaser.Types.GameObjects.Text.TextStyle) { const t = this.add.text(x, y, text, style); this.groundNames.push(t); return t; }
   private nameTags: { tag: Phaser.GameObjects.Text; x: number; y: number }[] = [];
   private fixedLabels: Phaser.Geom.Rectangle[] = [];
   private ballgames?: BallGames;
@@ -169,6 +171,10 @@ export class WorldScene extends Phaser.Scene {
     for (const pk of drawParks(this, this.layout, this.miniIgnore)) this.interactables.push(pk); // after the crowd: the Bandshell audience wears their looks
     this.opp = new Opposition(this, this.layout, 6);
     this.transit = new Transit(this, this.layout);
+    // Last check, now every tree and prop is placed (some, like Eastern Parkway's, come from other code): a ground name
+    // still under one draws above it
+    const tall = this.children.list.filter((o: any) => /^(fountain|tree\d|hoop\d)$/.test(o.texture?.key ?? '')) as Phaser.GameObjects.Image[];
+    for (const t of this.groundNames) { const b = t.getBounds(); if (tall.some((o) => o.depth > t.depth && Phaser.Geom.Rectangle.Overlaps(b, o.getBounds()))) t.setDepth(8.9e4); }
     for (const stn of this.transit.stations) if (stn.sign) this.clickToGo(stn.sign, stn.x, stn.y, () => this.takeSubway(stn));
     this.placeNameTags();
     bus.on('transit:alight', (p: { x: number; y: number }) => { (this.player.body as Phaser.Physics.Arcade.Body).reset(p.x, p.y); this.player.setVisible(true); });
@@ -423,11 +429,23 @@ export class WorldScene extends Phaser.Scene {
       } else { ring.fillStyle(0x58b956, 1); band(ring, 0); }
     }
     for (const l of this.layout.labels) {
-      const t = this.add.text(l.x, l.y - 40, l.text.toUpperCase().split('').join(' '), { fontFamily: '"Helvetica Neue", Inter, Arial, sans-serif', fontSize: '22px', fontStyle: '300', color: '#f4ece0', shadow: { offsetX: 0, offsetY: 2, color: 'rgba(0,0,0,.6)', blur: 6, fill: true } }).setOrigin(0.5).setDepth(5).setAlpha(0.8).setRotation(l.angle ?? 0);
+      const t = this.groundName(l.x, l.y - 40, l.text.toUpperCase().split('').join(' '), { fontFamily: '"Helvetica Neue", Inter, Arial, sans-serif', fontSize: '22px', fontStyle: '300', color: '#f4ece0', shadow: { offsetX: 0, offsetY: 2, color: 'rgba(0,0,0,.6)', blur: 6, fill: true } }).setOrigin(0.5).setDepth(5).setAlpha(0.8).setRotation(l.angle ?? 0);
       this.miniIgnore.push(t);
       // A street name painted on the road gets a block of road color behind it, so the yellow center line doesn't run through the letters
       const tile = this.layout.tiles[Math.floor((l.y - 40) / TILE)]?.[Math.floor(l.x / TILE)];
       const onRoad = l.angle !== undefined || [T.ASPHALT, T.LANE_V, T.LANE_H, T.INTERSECTION].includes(tile as T);
+      if (!onRoad) { // a name on the ground never hides under a fountain, a tree or a building: slide it to the nearest clear spot
+        const under = (r: Phaser.Geom.Rectangle) => this.layout.props.some((pr) => {
+          if (!['fountain', 'tree', 'hoop'].includes(pr.kind)) return false;
+          const src = this.textures.exists(pr.kind === 'fountain' ? 'fountain' : `${pr.kind}${pr.variant ?? 0}`) ? this.textures.get(pr.kind === 'fountain' ? 'fountain' : `${pr.kind}${pr.variant ?? 0}`).getSourceImage() : null;
+          const w = src?.width ?? 60, h = src?.height ?? 60; // props stand with their feet at (x, y): origin (0.5, 0.92)
+          return Phaser.Geom.Rectangle.Overlaps(r, new Phaser.Geom.Rectangle(pr.x - w / 2, pr.y - h * 0.92, w, h));
+        }) || this.layout.buildings.some((b) => Phaser.Geom.Rectangle.Overlaps(r, new Phaser.Geom.Rectangle(b.x, b.y, b.w, b.h)));
+        const y0 = t.y;
+        let clear = false;
+        for (const dy of [0, 70, -70, 110, -110, 150, -150]) { t.setY(y0 + dy); if (!under(t.getBounds())) { clear = true; break; } }
+        if (!clear) t.setY(y0).setDepth(8.9e4); // a wooded park with no clear spot: the name reads over the trees, not under them
+      }
       if (onRoad) this.miniIgnore.push(this.add.rectangle(l.x, l.y - 40, t.width + 28, t.height + 8, 0x34363a, 1).setRotation(l.angle ?? 0).setDepth(4.9));
     }
   }
