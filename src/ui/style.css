@@ -566,3 +566,6 @@ body.pl-wait #title.open :is(.logo, .edition, .menu) { animation-play-state: pau
   #hud-buttons button { font-size: 12px; padding: 3px 5px; }
   #hud-buttons kbd { display: none; }
 }
+/* Title tagline: heavy black drop shadow so it reads over the busy map */
+.edition { text-shadow: 4px 4px 0 #000, 2px 2px 0 #000; }
+@media (max-width: 600px), (max-height: 500px) and (orientation: landscape) { .edition { text-shadow: 3px 3px 0 #000, 1.5px 1.5px 0 #000; } }
