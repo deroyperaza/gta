@@ -523,6 +523,8 @@ class UI {
     $('#portrait-zoom').hidden = true;
   }
   private portraitKey = '';
+  /** A painted portrait just finished loading: if that person is talking right now, show it */
+  portraitArrived(key: string) { if (this.dialogueOpen && this.portraitKey === key) this.drawPortrait(key); }
   private zoomPortrait() {
     const w = this.world; if (!w) return;
     const k = this.portraitKey, bust = w.textures.exists(`${k}-bust`) ? `${k}-bust` : '';

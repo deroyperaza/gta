@@ -29,6 +29,11 @@ interface Interactable {
 }
 
 const WALK = 150, RUN = 245, BIKE = 330, BIKE_RUN = 410;
+/** Painted portraits (public/portraits/<id>.jpg). They win over the generated busts. ~3.4MB, so they load after startup.
+ *  Hand-painted likenesses (style-study/portraits.html), then ghosts in period dress and famous Brooklynites (ChatGPT, Nov 22 2026). */
+const BUSTS = ['deroy', 'jenna', 'nell', 'bridgette', 'adrian', 'danae', 'jon', 'emily', 'naim', 'luco', 'vega',
+  'capone', 'tweed', 'greeley', 'bernstein', 'basquiat', 'tiffany', 'jackie', 'whitman', 'mckinney', 'ebbets', 'chadwick', 'beecher', 'clinton', 'morse', 'chisholm', 'lenahorne', 'biggie', 'rbg', 'yauch',
+  'spikelee', 'carmelo', 'rosieperez', 'yasiinbey', 'chrisrock', 'streisand', 'jayz', 'bernie', 'melbrooks', 'mamdani', 'reynoso'];
 /** Street objects painted in ChatGPT (public/sprites/props/<key>.png): each takes over the code-drawn texture of the same key */
 const PAINTED_PROPS = ['dock', 'truck', 'fridge-empty', 'fridge-full', 'cat', 'grocerybag', 'hoop0', 'hoop1', 'duck0', 'duck1', 'sunflower', 'trashpile', 'rat', 'streetbin'];
 
@@ -94,11 +99,7 @@ export class WorldScene extends Phaser.Scene {
     // The preloader's bar: the page and fonts are the first 15%, the game's images the rest
     const pl = (window as any).__pl; pl?.set(0.15);
     this.load.on('progress', (p: number) => pl?.set(0.15 + p * 0.8));
-    // Hand-painted likeness portraits (style-study/portraits.html) win over the generated busts.
-    for (const id of ['deroy', 'jenna', 'nell', 'bridgette', 'adrian', 'danae', 'jon', 'emily', 'naim', 'luco', 'vega']) this.load.image(`npc-${id}-bust`, `portraits/${id}.jpg`);
-    // Ghosts (in period dress) and famous Brooklynites: painted in ChatGPT, Nov 22 2026
-    for (const id of ['capone', 'tweed', 'greeley', 'bernstein', 'basquiat', 'tiffany', 'jackie', 'whitman', 'mckinney', 'ebbets', 'chadwick', 'beecher', 'clinton', 'morse', 'chisholm', 'lenahorne', 'biggie', 'rbg', 'yauch',
-      'spikelee', 'carmelo', 'rosieperez', 'yasiinbey', 'chrisrock', 'streisand', 'jayz', 'bernie', 'melbrooks', 'mamdani', 'reynoso']) this.load.image(`npc-${id}-bust`, `portraits/${id}.jpg`);
+    // Painted portraits (BUSTS) load in the background once you're playing: see loadPortraitsLater()
     this.load.image('lmk-liu', 'sprites/liu-north.png'); // LIU Brooklyn, painted in ChatGPT north-up: the field north, the Paramount corner south on DeKalb
     this.load.image('barclays-sprite', 'sprites/barclays.png');
     this.load.image('bridge-tower-art', 'sprites/bridgetower.png');
@@ -118,7 +119,7 @@ export class WorldScene extends Phaser.Scene {
     for (const k of ['cart0', 'cart1', ...PAINTED_PROPS]) if (this.textures.exists(`${k}-art`)) { if (this.textures.exists(k)) this.textures.remove(k); this.textures.renameTexture(`${k}-art`, k); }
     makeCharacter(this, 'player', PLAYER_LOOK);
     makeBikeRider(this, 'player-bike', PLAYER_LOOK);
-    for (const n of NPCS) makeCharacter(this, `npc-${n.id}`, n.look, !(n as any).blockFolk && !(n as any).npOrg); // neighbors' and staffers' portraits wait for the first chat
+    for (const n of NPCS) makeCharacter(this, `npc-${n.id}`, n.look, !(n as any).blockFolk && !(n as any).npOrg && !BUSTS.includes(n.id)); // neighbors' and staffers' portraits wait for the first chat; painted ones load after startup
     makeCharacter(this, 'vendor-rosa', { skin: '#c58a5c', hair: '#3a2a1a', style: 'bun', shirt: '#ff8a3d', pants: '#3a2a5a', acc: 'apron', dress: true });
     makeCharacter(this, 'vendor-hamid', { skin: '#a8714a', hair: '#1a1010', style: 'cap', hatColor: '#ff4b4b', shirt: '#fff', pants: '#2b3a6b', acc: 'apron' });
 
@@ -222,6 +223,7 @@ export class WorldScene extends Phaser.Scene {
     ui.attachWorld(this);
     bus.emit('world:ready');
     (window as any).__pl?.done(); // fade from the preloader into the title screen
+    this.loadPortraitsLater();
     if (import.meta.env.DEV) { (window as any).__world = this; (window as any).__state = state; (window as any).__missions = missions; (window as any).__dialogue = dialogue; (window as any).__DIALOGUES = DIALOGUES; (window as any).__bus = bus; }
   }
 
@@ -566,6 +568,16 @@ export class WorldScene extends Phaser.Scene {
     };
   }
 
+  /** The painted portraits load in the background after startup (they're ~3.4MB). A conversation that opens before
+   *  its portrait arrives shows the character sprite, then swaps in the painting the moment it lands. */
+  private loadPortraitsLater() {
+    this.time.delayedCall(800, () => {
+      for (const id of BUSTS) if (!this.textures.exists(`npc-${id}-bust`)) this.load.image(`npc-${id}-bust`, `portraits/${id}.jpg`);
+      this.load.on('filecomplete', (key: string) => { if (key.endsWith('-bust')) ui.portraitArrived(key.slice(0, -5)); });
+      this.load.start();
+    });
+  }
+
   /** Ms. Bev's curb in Fort Greene: a pile of bags (a street bin once the block wins), rats that come out at night */
   private buildBinsBlock() {
     const b = this.layout.spots.lm_bkorg; if (!b || !this.textures.exists('trashpile')) return;
@@ -695,7 +707,7 @@ export class WorldScene extends Phaser.Scene {
 
   // ------------------------------------------------------------------ INTERACTIONS
   private talk(n: NpcDef) {
-    if (!this.textures.exists(`npc-${n.id}-bust`)) makeBust(this, `npc-${n.id}`, n.look); // drawn on first chat
+    if (!this.textures.exists(`npc-${n.id}-bust`) && !BUSTS.includes(n.id)) makeBust(this, `npc-${n.id}`, n.look); // drawn on first chat
     const spr = this.npcSprites[n.id];
     spr.setFlipX(this.player.x < spr.x);
     const d = DIALOGUES[n.id];
@@ -708,7 +720,7 @@ export class WorldScene extends Phaser.Scene {
    * (a small Solidarity and relationship bump too); after that they never repeat a line until they've said them all.
    */
   private chatWith(n: NpcDef) {
-    if (!this.textures.exists(`npc-${n.id}-bust`)) makeBust(this, `npc-${n.id}`, n.look);
+    if (!this.textures.exists(`npc-${n.id}-bust`) && !BUSTS.includes(n.id)) makeBust(this, `npc-${n.id}`, n.look);
     const lines = [...(n.idle ?? []), ...(STREET_LINES[n.district] ?? [])];
     const line = pickLine(`npc:${n.id}`, lines.length ? lines : ['...']);
     if (state.flag(`chat_${n.id}`)) { dialogue.say(n.id, n.id, line); return; }
