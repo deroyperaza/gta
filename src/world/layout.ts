@@ -870,7 +870,8 @@ export function generateLayout(): WorldLayout {
     const occ = new Set<string>();
     for (const p of Object.values(spots)) occ.add(`${Math.floor(p.x / TILE)},${Math.floor(p.y / TILE)}`);
     const near = (x: number, y: number) => { for (let oy = -2; oy <= 2; oy++) for (let ox = -4; ox <= 4; ox++) if (occ.has(`${x + ox},${y + oy}`)) return true; return false; };
-    const ok = (x: number, y: number) => { const k = tiles[y]?.[x]; return (k === T.SIDEWALK || k === T.PLAZA) && !blocked[y][x] && !near(x, y); };
+    const cemetery = (x: number, y: number) => KINDS[Math.floor(y / BLOCK_H)]?.[Math.floor(x / BLOCK_W)] === 'c'; // the ghosts' ground, not a staffer's
+    const ok = (x: number, y: number) => { const k = tiles[y]?.[x]; return (k === T.SIDEWALK || k === T.PLAZA) && !blocked[y][x] && !near(x, y) && !cemetery(x, y); };
     const hoodBlocks: Record<string, [number, number][]> = {};
     for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) { const h = neighborhoodOfBlock(c, r); if (h) (hoodBlocks[h] ??= []).push([c, r]); }
     const nearest = (cx: number, cy: number, R: number, hood?: string) => {
