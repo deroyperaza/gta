@@ -76,6 +76,8 @@ function project(p: Path, x: number, y: number) {
 
 export class Transit {
   stations: Placed[] = [];
+  /** Each station's sign: its name plate plus the row of route bullets above it. Name tags keep clear of these. */
+  signRects: Phaser.Geom.Rectangle[] = [];
   byId: Record<string, Placed> = {};
   routes: BusRoute[] = [];
   buses: Bus[] = [];
@@ -192,6 +194,7 @@ export class Transit {
       this.scene.add.image(p.x, p.y, 'subway-entrance').setDepth(p.y - 30);
       const label = this.scene.add.text(p.x, p.y - 40, st.name, { fontFamily: 'Nunito, Arial, sans-serif', fontSize: '16px', fontStyle: '900', color: '#ffffff', backgroundColor: '#1d1d1f', padding: { x: 6, y: 3 } }).setOrigin(0.5, 1).setDepth(p.y + 40);
       // Route bullets are small baked circles (one texture per line), not a Graphics per station: ~190 Graphics cost real frame time on phones
+      { const lb = label.getBounds(), bw = st.routes.length * 23, top = p.y - 40 - label.height - 24; this.signRects.push(new Phaser.Geom.Rectangle(Math.min(lb.x, p.x - bw / 2), top, Math.max(lb.width, bw), lb.bottom - top)); }
       st.routes.forEach((r, i) => {
         const bx = p!.x - (st.routes.length - 1) * 11.5 + i * 23, by = p!.y - 40 - label.height - 13, key = `bullet-${r}`;
         if (!this.scene.textures.exists(key)) {

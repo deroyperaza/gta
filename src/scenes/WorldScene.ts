@@ -65,6 +65,8 @@ export class WorldScene extends Phaser.Scene {
   private stageSpots: string[] = [];
   private quietT = 0; private lastAtt = 0; private attDrain = 0; private lastStars = -1;
   peds!: Pedestrians;
+  private nameTags: { tag: Phaser.GameObjects.Text; x: number; y: number }[] = [];
+  private fixedLabels: Phaser.Geom.Rectangle[] = [];
   private ballgames?: BallGames;
   traffic!: Traffic;
   minimap!: Phaser.Cameras.Scene2D.Camera;
@@ -163,6 +165,7 @@ export class WorldScene extends Phaser.Scene {
     for (const pk of drawParks(this, this.layout, this.miniIgnore)) this.interactables.push(pk); // after the crowd: the Bandshell audience wears their looks
     this.opp = new Opposition(this, this.layout, 6);
     this.transit = new Transit(this, this.layout);
+    this.placeNameTags();
     bus.on('transit:alight', (p: { x: number; y: number }) => { (this.player.body as Phaser.Physics.Arcade.Body).reset(p.x, p.y); this.player.setVisible(true); });
     bus.on('ui:ride', () => this.rideApp());
     bus.on('ui:find', () => this.findPerson());
@@ -304,8 +307,9 @@ export class WorldScene extends Phaser.Scene {
       if (o) {
         const sm = this.add.graphics().setDepth(-9), atY = (y: number) => o.x + ((y - o.y) * bwp) / bhp;
         const y0 = o.y - 1.6 * TILE, y1 = o.y + bhp + 1.6 * TILE;
-        const band = (hw: number, color: number, ya: number, yb: number) => { sm.fillStyle(color, 1); sm.fillPoints([{ x: atY(ya) - hw, y: ya }, { x: atY(ya) + hw, y: ya }, { x: atY(yb) + hw, y: yb }, { x: atY(yb) - hw, y: yb }], true); };
-        band(2.9 * TILE, 0xa39c90, o.y, o.y + bhp); band(1.75 * TILE, 0x24272a, y0, y1);
+        const band = (hw: number, color: number, ya: number, yb: number, gr = sm) => { gr.fillStyle(color, 1); gr.fillPoints([{ x: atY(ya) - hw, y: ya }, { x: atY(ya) + hw, y: ya }, { x: atY(yb) + hw, y: yb }, { x: atY(yb) - hw, y: yb }], true); };
+        band(2.9 * TILE, 0xa39c90, o.y, o.y + bhp);
+        { const hw = 1.75 * TILE; this.pave((gr) => band(hw, 0xffffff, y0, y1, gr), -8.9, { x0: Math.min(atY(y0), atY(y1)) - hw, y0, x1: Math.max(atY(y0), atY(y1)) + hw, y1 }); }
         this.miniIgnore.push(sm);
       }
       const g = this.add.graphics().setDepth(-6), dx = fb.x - fa.x, dy = fb.y - fa.y, L = Math.hypot(dx, dy), ux = dx / L, uy = dy / L, nx = -uy, ny = ux;
@@ -338,15 +342,18 @@ export class WorldScene extends Phaser.Scene {
     // Diagonal avenues: smooth sidewalk and roadway over the stair-stepped tiles, plus a double yellow line
     for (const av of this.layout.avenues) {
       const sm = this.add.graphics().setDepth(-9), ln = this.add.graphics().setDepth(-6);
-      const quad = (a: { x: number; y: number }, b: { x: number; y: number }, hw: number, trimA: number, trimB = trimA) => {
+      const quad = (a: { x: number; y: number }, b: { x: number; y: number }, hw: number, trimA: number, trimB = trimA, gr = sm) => {
         const dx = b.x - a.x, dy = b.y - a.y, L = Math.hypot(dx, dy), ux = dx / L, uy = dy / L, nx = -uy * hw, ny = ux * hw;
         const ax = a.x + ux * trimA, ay = a.y + uy * trimA, bx = b.x - ux * trimB, by = b.y - uy * trimB;
-        sm.fillPoints([{ x: ax + nx, y: ay + ny }, { x: bx + nx, y: by + ny }, { x: bx - nx, y: by - ny }, { x: ax - nx, y: ay - ny }], true);
+        gr.fillPoints([{ x: ax + nx, y: ay + ny }, { x: bx + nx, y: by + ny }, { x: bx - nx, y: by - ny }, { x: ax - nx, y: ay - ny }], true);
       };
       const segs = av.pts.slice(1).map((q, i) => [av.pts[i], q] as const);
       // sidewalks stop short of the cross streets at every intersection the avenue meets
       sm.fillStyle(0xa39c90, 1); segs.forEach(([a, b]) => quad(a, b, av.hw + 1.2 * TILE, 2.2 * TILE));
-      sm.fillStyle(0x24272a, 1); segs.forEach(([a, b]) => quad(a, b, av.hw, 0)); av.pts.slice(1, -1).forEach((p) => sm.fillCircle(p.x, p.y, av.hw));
+      // The roadway is paved with the same asphalt tile as the grid streets, lined up with their grid, so where a street's
+      // tiles are laid back over the avenue the two surfaces meet seamlessly (a flat fill left blocky patches there)
+      this.pave((gr) => { gr.fillStyle(0xffffff, 1); segs.forEach(([a, b]) => quad(a, b, av.hw, 0, 0, gr)); av.pts.slice(1, -1).forEach((p) => gr.fillCircle(p.x, p.y, av.hw)); }, -8.9,
+        { x0: Math.min(...av.pts.map((p) => p.x)) - av.hw, y0: Math.min(...av.pts.map((p) => p.y)) - av.hw, x1: Math.max(...av.pts.map((p) => p.x)) + av.hw, y1: Math.max(...av.pts.map((p) => p.y)) + av.hw });
       ln.lineStyle(2.5, 0xf2c23a, 0.9);
       for (const [a, b] of segs) {
         const dx = b.x - a.x, dy = b.y - a.y, L = Math.hypot(dx, dy), ux = dx / L, uy = dy / L, nx = -uy, ny = ux;
@@ -416,7 +423,7 @@ export class WorldScene extends Phaser.Scene {
       // A street name painted on the road gets a block of road color behind it, so the yellow center line doesn't run through the letters
       const tile = this.layout.tiles[Math.floor((l.y - 40) / TILE)]?.[Math.floor(l.x / TILE)];
       const onRoad = l.angle !== undefined || [T.ASPHALT, T.LANE_V, T.LANE_H, T.INTERSECTION].includes(tile as T);
-      if (onRoad) this.miniIgnore.push(this.add.rectangle(l.x, l.y - 40, t.width + 28, t.height + 8, l.angle !== undefined ? 0x24272a : 0x34363a, 1).setRotation(l.angle ?? 0).setDepth(4.9));
+      if (onRoad) this.miniIgnore.push(this.add.rectangle(l.x, l.y - 40, t.width + 28, t.height + 8, 0x34363a, 1).setRotation(l.angle ?? 0).setDepth(4.9));
     }
   }
 
@@ -454,6 +461,7 @@ export class WorldScene extends Phaser.Scene {
       const img = this.add.image(s.x, s.y, 'dock').setOrigin(0.5, 0.9).setDepth(s.y);
       // A label like the name tags, so a dock reads as "bikes here" from across the block
       const tag = this.add.text(s.x, s.y + 16, '🚲 BIKES', { fontFamily: 'Nunito, "Helvetica Neue", Arial, sans-serif', fontSize: '14px', fontStyle: '900', color: '#16101f', backgroundColor: '#ffffff', padding: { x: 6, y: 3 } }).setOrigin(0.5).setDepth(1e5 + 1); // under the dock, over name tags
+      this.fixedLabels.push(tag.getBounds());
       this.miniIgnore.push(img, tag);
       // and a bike on the mini-map (only the mini-map sees it)
       if (!this.textures.exists('mm-bike')) { const t = this.textures.createCanvas('mm-bike', 64, 64)!, cx = t.getContext(); cx.beginPath(); cx.arc(32, 32, 28, 0, 7); cx.fillStyle = '#fff'; cx.fill(); cx.lineWidth = 5; cx.strokeStyle = '#16101f'; cx.stroke(); cx.font = '36px sans-serif'; cx.textAlign = 'center'; cx.textBaseline = 'middle'; cx.fillText('🚲', 32, 35); t.refresh(); }
@@ -485,6 +493,32 @@ export class WorldScene extends Phaser.Scene {
     ], 'FREE CHICKEN OVER RICE');
   }
 
+  /**
+   * Name tags go where nothing else is: never over a building (its storefront sign), a subway station's sign, a bike
+   * dock's tag or another name tag. Each tries spots around its person, nearest first; signs are placed first and win.
+   */
+  private placeNameTags() {
+    const CELL = 256, grid = new Map<string, Phaser.Geom.Rectangle[]>();
+    const cells = (r: Phaser.Geom.Rectangle) => { const out: string[] = []; for (let x = Math.floor(r.x / CELL); x <= Math.floor(r.right / CELL); x++) for (let y = Math.floor(r.y / CELL); y <= Math.floor(r.bottom / CELL); y++) out.push(`${x},${y}`); return out; };
+    const add = (r: Phaser.Geom.Rectangle) => { const p = Phaser.Geom.Rectangle.Inflate(Phaser.Geom.Rectangle.Clone(r), 3, 3); for (const c of cells(p)) (grid.get(c) ?? grid.set(c, []).get(c)!).push(p); };
+    const clashes = (r: Phaser.Geom.Rectangle) => cells(r).some((c) => grid.get(c)?.some((o) => Phaser.Geom.Rectangle.Overlaps(o, r)));
+    const onBuilding = (r: Phaser.Geom.Rectangle) => this.layout.buildings.some((b) => r.right > b.x && r.x < b.x + b.w && r.bottom > b.y && r.y < b.y + b.h);
+    for (const r of [...this.transit.signRects, ...this.fixedLabels]) add(r);
+    const spots = [[0, -40], [0, 34], [-70, 34], [70, 34], [-70, -40], [70, -40], [0, 60], [0, -66], [-110, 0], [110, 0], [-100, 60], [100, 60], [-100, -66], [100, -66], [0, 86], [0, -92]];
+    for (const { tag, x, y } of this.nameTags) {
+      let best: number[] | null = null, fallback: number[] | null = null;
+      for (const sp of spots) {
+        tag.setPosition(x + sp[0], y + sp[1]);
+        const r = tag.getBounds(); if (clashes(r)) continue;
+        if (!onBuilding(r)) { best = sp; break; }
+        fallback ??= sp; // over a building beats over another label
+      }
+      const sp = best ?? fallback ?? spots[0];
+      tag.setPosition(x + sp[0], y + sp[1]);
+      add(tag.getBounds());
+    }
+  }
+
   private buildNpcs(solids: Phaser.Physics.Arcade.StaticGroup) {
     for (const n of NPCS) {
       const base = this.layout.spots[n.spot];
@@ -508,11 +542,7 @@ export class WorldScene extends Phaser.Scene {
       const blocker = solids.create(s.x, s.y - 8, undefined) as Phaser.Physics.Arcade.Image;
       blocker.setVisible(false); (blocker.body as Phaser.Physics.Arcade.StaticBody).setSize(22, 14);
       const tag = this.add.text(s.x, s.y - 40, ghost ? `👻 ${n.short.toUpperCase()}` : n.short.toUpperCase(), { fontFamily: 'Nunito, "Helvetica Neue", Arial, sans-serif', fontSize: '15px', fontStyle: '900', color: ghost ? '#2a3a5a' : '#16101f', backgroundColor: ghost ? '#dfeeff' : n.color, padding: { x: 7, y: 3 }, shadow: { offsetX: 2, offsetY: 2, color: '#16101f', blur: 0, fill: false, stroke: false } }).setOrigin(0.5).setDepth(1e5);
-      // A name tag never covers a building (its storefront sign): if it would, it hangs below the person instead
-      {
-        const hits = () => { const tb = tag.getBounds(); return this.layout.buildings.some((b) => tb.right > b.x && tb.x < b.x + b.w && tb.bottom > b.y && tb.y < b.y + b.h); };
-        for (const [dx, dy] of [[0, -40], [0, 34], [-70, 34], [70, 34], [-70, -40], [70, -40], [0, 60]]) { tag.setPosition(s.x + dx, s.y + dy); if (!hits()) break; }
-      }
+      this.nameTags.push({ tag, x: s.x, y: s.y }); // placed once the station signs exist (placeNameTags)
       this.miniIgnore.push(tag, spr);
       this.npcSprites[n.id] = spr;
       this.entityPos[n.id] = s;
@@ -563,6 +593,21 @@ export class WorldScene extends Phaser.Scene {
    * Phaser draws every object in the world each frame, on-screen or not (~11,000 here, twice: map + minimap).
    * Skip the ones outside each camera's view, and on the minimap skip small text (a pixel or two at that zoom).
    */
+  /**
+   * Pave a drawn shape with the grid streets' own asphalt tile, lined up with their grid, so a diagonal road meets the
+   * streets it crosses without a seam (a flat fill left blocky patches where the grid's tiles are laid back over it).
+   * area: the shape's bounds in world pixels.
+   */
+  private pave(draw: (g: Phaser.GameObjects.Graphics) => void, depth: number, area: { x0: number; y0: number; x1: number; y1: number }) {
+    const shape = this.make.graphics({}, false); draw(shape);
+    const tilesTex = this.textures.get('tiles'), fr = `t${T.ASPHALT}`;
+    if (!tilesTex.has(fr)) tilesTex.add(fr, 0, T.ASPHALT * TILE, 0, TILE, TILE);
+    const x0 = Math.floor(area.x0 / TILE) * TILE, y0 = Math.floor(area.y0 / TILE) * TILE;
+    const road = this.add.tileSprite(x0, y0, Math.ceil(area.x1 / TILE) * TILE - x0, Math.ceil(area.y1 / TILE) * TILE - y0, 'tiles', fr).setOrigin(0).setDepth(depth);
+    road.setMask(shape.createGeometryMask());
+    this.miniIgnore.push(road);
+  }
+
   private installCulling() {
     const CULL = new Set(['Sprite', 'Image', 'Text', 'Arc', 'Rectangle', 'Ellipse']);
     (this.cameras as any).getVisibleChildren = (children: Phaser.GameObjects.GameObject[], camera: Phaser.Cameras.Scene2D.Camera) => {
