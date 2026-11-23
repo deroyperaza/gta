@@ -157,6 +157,11 @@ export function drawParks(scene: Phaser.Scene, L: WorldLayout, ignore: Phaser.Ga
   }
   // ------------------------------------------------------------------ LANDMARKS PLACED BY COORDINATES (painted in ChatGPT)
   for (const lm of PAINTED) {
+    if (lm.drawn) { // drawn in code (the footbridge), not painted
+      const sp = L.spots[`lmk_${lm.id}`], fb = sp && drawFootbridge(scene, L, sp, ignore);
+      if (fb) { label(fb.x, fb.top - 18, lm.name); out.push({ id: `lmk_${lm.id}`, x: fb.x, y: fb.top - 24, r: 120, label: () => 'Look at the footbridge', act: () => bus.emit('ui:toast', lm.fact) }); }
+      continue;
+    }
     const sp = L.spots[`lmk_${lm.id}`]; if (!lm.ready || !sp || !scene.textures.exists(`lmk-${lm.id}`)) continue;
     const img = scene.add.image(sp.x, sp.y + 20, `lmk-${lm.id}`).setOrigin(0.5, 0.85).setScale(lm.scale ?? 1).setDepth(sp.y + 20);
     ignore.push(img);
@@ -172,4 +177,62 @@ export function drawParks(scene: Phaser.Scene, L: WorldLayout, ignore: Phaser.Ga
     out.push({ id: 'bkcollege', x: bc.x, y: bc.y + 130, r: 120, label: () => 'Walk the quad', act: () => bus.emit('ui:toast', 'BROOKLYN COLLEGE: CUNY. THE 2 AND 5 STOP RIGHT OUTSIDE.') });
   }
   return out;
+}
+
+/**
+ * The Sheepshead Bay footbridge, drawn in the game's own style: a plank deck with railings and lamps spanning the bay
+ * where it's narrowest near the real bridge, and fishing boats tied up at piers along the north shore.
+ */
+function drawFootbridge(scene: Phaser.Scene, L: WorldLayout, sp: { x: number; y: number }, ignore: Phaser.GameObjects.GameObject[]) {
+  const W = (x: number, y: number) => L.tiles[y]?.[x] === T.WATER, land = (x: number, y: number) => { const t = L.tiles[y]?.[x]; return t !== undefined && t !== T.WATER && t !== T.OFFMAP; };
+  const sx = Math.floor(sp.x / TILE), sy = Math.floor(sp.y / TILE);
+  let best: { x: number; y0: number; y1: number; score: number } | null = null;
+  for (let x = sx - 30; x <= sx + 30; x++) for (let y = sy - 30; y <= sy + 30; y++) {
+    if (!W(x, y) || W(x, y - 1)) continue; // the top of a run of water
+    let y1 = y; while (W(x, y1 + 1) && y1 - y < 40) y1++;
+    if (!land(x, y - 1) || !land(x, y1 + 1) || y1 - y < 2) continue; // land on both banks
+    const score = Math.abs(x - sx) + Math.abs((y + y1) / 2 - sy) * 0.5 + (y1 - y) * 0.6;
+    if (!best || score < best.score) best = { x, y0: y, y1, score };
+  }
+  // This map has the shore but not the far bank of the bay: the bridge then runs out from the water's edge over the water
+  let landing = false;
+  if (!best) for (let d = 0; d <= 30 && !best; d++) for (const x of [sx - d, sx + d]) {
+    for (let y = sy - 30; y <= sy + 30; y++) if (W(x, y) && land(x, y - 1) && W(x, y + 9)) { best = { x, y0: y, y1: y + 9, score: 0 }; landing = true; break; }
+    if (best) break;
+  }
+  if (!best) return null;
+  const cx = best.x * TILE + TILE / 2, top = best.y0 * TILE - (landing ? 2 : 18), bot = (best.y1 + 1) * TILE + (landing ? 0 : 18), hw = 22;
+  const g = scene.add.graphics().setDepth(top - 2); ignore.push(g);
+  g.fillStyle(0x0a1a2a, 0.35).fillRect(cx - hw + 7, top + 10, hw * 2, bot - top); // shadow on the water
+  g.fillStyle(0x8a6a48, 1).fillRect(cx - hw, top, hw * 2, bot - top); // the deck
+  g.lineStyle(1, 0x6e5238, 1); for (let y = top + 6; y < bot; y += 7) g.lineBetween(cx - hw + 2, y, cx + hw - 2, y); // planks
+  g.fillStyle(0x2b2b30, 1).fillRect(cx - hw - 2, top, 4, bot - top).fillRect(cx + hw - 2, top, 4, bot - top); // railings
+  for (let y = top + 4; y < bot; y += 22) g.fillRect(cx - hw - 3, y, 6, 6).fillRect(cx + hw - 3, y, 6, 6); // posts
+  if (landing) { // a railed landing at the far end, over the water
+    const lw = 46, ly = bot - 6;
+    g.fillStyle(0x0a1a2a, 0.35).fillRect(cx - lw + 7, ly + 10, lw * 2, 44);
+    g.fillStyle(0x8a6a48, 1).fillRect(cx - lw, ly, lw * 2, 44);
+    g.lineStyle(1, 0x6e5238, 1); for (let y = ly + 6; y < ly + 44; y += 7) g.lineBetween(cx - lw + 2, y, cx + lw - 2, y);
+    g.fillStyle(0x2b2b30, 1).fillRect(cx - lw - 2, ly, 4, 44).fillRect(cx + lw - 2, ly, 4, 44).fillRect(cx - lw - 2, ly + 42, lw * 2 + 4, 4);
+    g.fillRect(cx - lw - 2, ly, lw - hw + 2, 4).fillRect(cx + hw, ly, lw - hw + 2, 4);
+  }
+  // Lamps along the railings
+  for (let y = top + 40, i = 0; y < bot - 20; y += 96, i++) { const l = scene.add.image(cx + (i % 2 ? hw : -hw), y, 'lamp').setOrigin(0.5, 0.92).setScale(0.8).setDepth(y + 1); ignore.push(l); }
+  // Piers along the north shore, a fishing boat tied up at each
+  if (!scene.textures.exists('fishboat0')) ['#f2f2ee', '#e8d9b8', '#d9e8f2'].forEach((hull, i) => {
+    const t = scene.textures.createCanvas(`fishboat${i}`, 30, 70)!, c = t.getContext();
+    c.fillStyle = 'rgba(10,26,42,.35)'; c.beginPath(); c.ellipse(18, 40, 12, 28, 0, 0, 7); c.fill(); // shadow
+    c.fillStyle = hull; c.strokeStyle = '#1c1a18'; c.lineWidth = 2; c.beginPath(); c.moveTo(15, 3); c.quadraticCurveTo(27, 22, 26, 60); c.lineTo(4, 60); c.quadraticCurveTo(3, 22, 15, 3); c.closePath(); c.fill(); c.stroke();
+    c.fillStyle = ['#1d5fae', '#c8322a', '#2f7a3a'][i]; c.fillRect(5, 56, 20, 4); // stripe at the stern
+    c.fillStyle = '#c9d6de'; c.fillRect(8, 26, 14, 16); c.strokeRect(8, 26, 14, 16); // the cabin
+    c.fillStyle = '#5a4a3a'; c.fillRect(13, 44, 4, 10); t.refresh(); // the deck box
+  });
+  [-1, 1].forEach((side) => [130, 250].forEach((off, k) => {
+    const px = cx + side * off, tx = Math.floor(px / TILE);
+    if (!W(tx, best!.y0) || !W(tx, best!.y0 + 2)) return; // only where the water is
+    const p = scene.add.rectangle(px, best!.y0 * TILE - 6, 14, 84, 0x7a5a3c).setOrigin(0.5, 0).setDepth(top - 1).setStrokeStyle(2, 0x3a2a1c); ignore.push(p);
+    const b = scene.add.image(px + 20, best!.y0 * TILE + 44, `fishboat${(k + (side > 0 ? 1 : 0)) % 3}`).setDepth(best!.y0 * TILE + 40); ignore.push(b);
+    scene.tweens.add({ targets: b, y: b.y + 2.5, angle: 1.5, duration: 1600 + k * 300, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
+  }));
+  return { x: cx, top, bot };
 }

@@ -3,7 +3,8 @@
  * for every fact and coordinate). A landmark shows up only once its sprite is `ready` (the render passed QC).
  * Layout finds open ground near the real spot (layout.ts → spots `lmk_<id>`); parks.ts draws it with a label and an E fact.
  */
-export interface PaintedLandmark { id: string; name: string; at: [number, number]; file: string; scale?: number; fact: string; ready: boolean; size?: [number, number]; onWater?: boolean }
+export interface PaintedLandmark { id: string; name: string; at: [number, number]; file: string; scale?: number; fact: string; ready: boolean; size?: [number, number]; onWater?: boolean;
+  /** Drawn in code in the game's own style instead of a painting (Deroy, Nov 23 2026: the Sheepshead Bay footbridge) */ drawn?: boolean }
 
 export const PAINTED: PaintedLandmark[] = [
   // Coney Island
@@ -17,7 +18,7 @@ export const PAINTED: PaintedLandmark[] = [
   { id: 'dyker', name: 'DYKER HEIGHTS LIGHTS', at: [40.6215, -74.0130], file: 'dyker', fact: 'SINCE THE MID-1980S, NEIGHBORS HAVE COVERED THEIR HOMES IN HOLIDAY LIGHTS. SOME HIRE PROS!', scale: 0.7, ready: true, size: [300, 261] },
   { id: 'domino', name: 'DOMINO SUGAR REFINERY', at: [40.71444, -73.9675], file: 'domino', fact: 'IN THE 1870S THIS REFINERY MADE MORE THAN HALF OF ALL THE SUGAR USED IN AMERICA.', scale: 0.85, ready: true, size: [300, 312] },
   { id: 'mccarren', name: 'McCARREN PARK POOL', at: [40.7198, -73.9510], file: 'mccarren', fact: 'OPENED IN 1936 FOR 6,800 SWIMMERS. CLOSED IN 1984, REOPENED IN 2012.', scale: 0.9, ready: true, size: [320, 264] },
-  { id: 'sheepshead', name: 'SHEEPSHEAD BAY FOOTBRIDGE', at: [40.5836, -73.9504], file: 'sheepshead', fact: 'NAMED FOR THE SHEEPSHEAD, A FISH WITH TEETH THAT LOOK A LOT LIKE HUMAN TEETH.', scale: 0.8, ready: true, onWater: true, size: [300, 296] },
+  { id: 'sheepshead', name: 'SHEEPSHEAD BAY FOOTBRIDGE', at: [40.5836, -73.9504], file: 'sheepshead', fact: 'NAMED FOR THE SHEEPSHEAD, A FISH WITH TEETH THAT LOOK A LOT LIKE HUMAN TEETH.', scale: 0.8, ready: true, onWater: true, size: [300, 296], drawn: true },
   { id: 'canarsie', name: 'CANARSIE PIER', at: [40.6290, -73.8845], file: 'canarsie', fact: 'THIS PIER IS PART OF A NATIONAL PARK: GATEWAY NATIONAL RECREATION AREA.', scale: 0.8, ready: true, onWater: true, size: [300, 290] },
   { id: 'floydbennett', name: 'FLOYD BENNETT FIELD', at: [40.5930, -73.8875], file: 'floydbennett', fact: "NYC'S FIRST CITY AIRPORT (1931). IN 1938 HOWARD HUGHES FLEW AROUND THE WORLD FROM HERE IN UNDER 4 DAYS.", scale: 0.85, ready: true, size: [320, 246] },
   { id: 'armyterminal', name: 'BROOKLYN ARMY TERMINAL', at: [40.64472, -74.02778], file: 'armyterminal', fact: 'IN 1958 ELVIS PRESLEY BOARDED AN ARMY SHIP HERE, HEADED TO GERMANY AS A SOLDIER.', scale: 1.0, ready: true, size: [320, 319] },
