@@ -35,7 +35,6 @@ class UI {
   private choiceCount = 0;
   private toastQueue: string[] = [];
   private lastObjText: string | null = null;
-  private peekTimer = 0;
   private toastBusy = false;
   private lastTick = 0;
   private touch = { x: 0, y: 0 };
@@ -49,14 +48,8 @@ class UI {
     bus.on('ui:toast', (t: string) => this.toast(t));
     bus.on('flyers:gained', (n: number) => this.showFlyer('big', n));
     bus.on('flyer:handed', () => this.showFlyer('mini'));
-    // Tap the mission card to fold it to one line (remembered); a new objective opens it for a few seconds
-    // Phones start with it folded to one line (more street to see); your own choice is remembered
-    try { const v = localStorage.getItem('gta-obj-min'); if (v === '1' || (v == null && (innerWidth <= 600 || innerHeight <= 500))) $('#objective').classList.add('min'); } catch { /* storage blocked */ }
-    $('#objective').addEventListener('click', () => {
-      const el = $('#objective'); el.classList.remove('peek');
-      const min = el.classList.toggle('min');
-      try { localStorage.setItem('gta-obj-min', min ? '1' : '0'); } catch { /* storage blocked */ }
-    });
+    // The mission card starts open, everywhere (Deroy, Nov 23 2026). Tap it to fold it to one line; a new objective opens it again.
+    $('#objective').addEventListener('click', () => { const el = $('#objective'); el.classList.remove('peek'); el.classList.toggle('min'); });
     $('#inventory').addEventListener('click', (e) => { if ((e.target as HTMLElement).closest('.inv-flyers')) this.showFlyer('big'); });
     bus.on('dialogue:show', (d: any) => this.showDialogue(d));
     bus.on('dialogue:end', () => this.hideDialogue());
@@ -415,9 +408,7 @@ class UI {
     const def = missions.active;
     $('#obj-title').textContent = def ? `${mlabel(def)} · ${def.title}` : 'FREE ROAM';
     const text = missions.objectiveText(), el = $('#objective');
-    if (text !== this.lastObjText && this.lastObjText !== null && el.classList.contains('min')) {
-      el.classList.add('peek'); clearTimeout(this.peekTimer); this.peekTimer = window.setTimeout(() => el.classList.remove('peek'), 5000);
-    }
+    if (text !== this.lastObjText && this.lastObjText !== null) el.classList.remove('min', 'peek'); // a new objective: open, so you read it
     this.lastObjText = text;
     $('#obj-text').textContent = text;
     const m = def ? state.mission(def.id) : null;
