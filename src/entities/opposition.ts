@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { CHAR_RES } from '../core/res';
 import { bus } from '../core/bus';
 import type { Dialogue } from '../systems/dialogue';
 import { makeCharacter } from '../world/golden';
@@ -146,7 +147,7 @@ export class Opposition {
     ];
     looks.forEach((l, i) => makeCharacter(scene, `gop${i}`, { ...l, style: 'cap', hatColor: '#d8262e', acc: 'clipboard', shoes: '#3a2a1a' }));
     for (let i = 0; i < count; i++) {
-      const sprite = scene.add.sprite(-999, -999, `gop${i % 3}`, 0).setOrigin(0.5).setVisible(false);
+      const sprite = scene.add.sprite(-999, -999, `gop${i % 3}`, 0).setOrigin(0.5).setScale(1 / CHAR_RES).setVisible(false);
       const tag = scene.add.text(-999, -999, 'FREE PARKING CAUCUS', { fontFamily: 'Nunito, Arial, sans-serif', fontSize: '11px', fontStyle: '900', color: '#ffffff', backgroundColor: '#d8262e', padding: { x: 5, y: 2 } }).setOrigin(0.5).setDepth(1e5).setVisible(false);
       this.squads.push({ sprite, tag, home: { x: 0, y: 0 }, state: 'gone', t: 2 + i * 3, vx: 0, vy: 0, role: 'chase' });
     }

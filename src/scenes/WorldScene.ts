@@ -10,6 +10,7 @@ import { LESSONS } from '../data/lessons';
 import { makeBust } from '../world/portraits';
 import { Pedestrians, type Ped } from '../entities/pedestrians';
 import { BallGames, type Court } from '../entities/ballgames';
+import { CHAR_RES, DPR } from '../core/res';
 import { Traffic } from '../entities/traffic';
 import { DEBATES, Opposition, type OppConfig } from '../entities/opposition';
 import { LINE_COLORS, SERVICES, Transit, bullet } from '../entities/transit';
@@ -145,7 +146,7 @@ export class WorldScene extends Phaser.Scene {
     this.anims.create({ key: 'bike-roll', frames: this.anims.generateFrameNumbers('player-bike', { frames: [0, 1] }), frameRate: 9, repeat: -1 });
     const start = this.layout.spots.playerStart;
     this.player = this.physics.add.sprite(start.x, start.y, 'player', 0).setOrigin(0.5, 0.5);
-    this.player.setCollideWorldBounds(true).setScale(1.2);
+    this.player.setCollideWorldBounds(true).setScale(1.2 / CHAR_RES); // a touch bigger than the crowd; textures are drawn at 2x
     makePlayerMarker(this);
     this.playerRing = this.add.image(start.x, start.y, 'player-ring');
     this.playerChevron = this.add.image(start.x, start.y, 'player-chevron');
@@ -471,7 +472,7 @@ export class WorldScene extends Phaser.Scene {
     // Vendors
     const vend = (id: string, key: string, cartKey: string, spot: { x: number; y: number }, name: string, lines: string[], gift: string) => {
       const cart = this.add.image(spot.x + 50, spot.y, cartKey).setOrigin(0.5, 0.92).setDepth(spot.y);
-      const v = this.add.sprite(spot.x, spot.y, key, 0).setOrigin(0.5, 0.5).setDepth(spot.y + 1).setRotation(Math.PI);
+      const v = this.add.sprite(spot.x, spot.y, key, 0).setOrigin(0.5, 0.5).setScale(1 / CHAR_RES).setDepth(spot.y + 1).setRotation(Math.PI);
       this.miniIgnore.push(cart, v);
       this.interactables.push({
         id, x: spot.x + 20, y: spot.y, r: 70, label: () => `Talk to ${name}`,
@@ -526,12 +527,12 @@ export class WorldScene extends Phaser.Scene {
       const s = n.offset ? { x: base.x + n.offset.dx, y: base.y + n.offset.dy } : base;
       const key = `npc-${n.id}`;
       this.anims.create({ key: `${key}-idle`, frames: this.anims.generateFrameNumbers(key, { frames: [0] }), frameRate: 1, repeat: -1 });
-      const spr = this.add.sprite(s.x, s.y, key, 0).setOrigin(0.5, 0.5).setDepth(s.y).setRotation(Math.PI);
+      const spr = this.add.sprite(s.x, s.y, key, 0).setOrigin(0.5, 0.5).setScale(1 / CHAR_RES).setDepth(s.y).setRotation(Math.PI);
       const ghost = !!(n as any).ghost;
       if (ghost) { // ghosts: a pulsing pale-blue aura, a wisp where feet would be, a translucent drifting body
         const glow = this.add.circle(s.x, s.y, 30, 0xcfe8ff, 0.3).setBlendMode(Phaser.BlendModes.ADD).setDepth(s.y - 1);
         const wisp = this.add.ellipse(s.x, s.y + 20, 30, 10, 0xdff0ff, 0.45).setDepth(s.y - 1);
-        spr.setTint(0xeaf4ff).setAlpha(0.8).setScale(1.12).setBlendMode(Phaser.BlendModes.SCREEN);
+        spr.setTint(0xeaf4ff).setAlpha(0.8).setScale(1.12 / CHAR_RES).setBlendMode(Phaser.BlendModes.SCREEN);
         const t = 1700 + Math.random() * 700;
         this.tweens.add({ targets: spr, y: s.y - 7, alpha: 0.55, duration: t, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
         this.tweens.add({ targets: glow, scale: 1.3, alpha: 0.12, y: s.y - 7, duration: t, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
@@ -567,7 +568,7 @@ export class WorldScene extends Phaser.Scene {
 
   private setupMinimap() {
     this.minimap = this.cameras.add(0, 0, 200, 200, false, 'minimap');
-    this.minimap.setZoom(0.09).setBounds(0, 0, WORLD_W, WORLD_H).setBackgroundColor('#1b1230');
+    this.minimap.setZoom(0.09 * DPR).setBounds(0, 0, WORLD_W, WORLD_H).setBackgroundColor('#1b1230');
     this.minimap.startFollow(this.player, true, 1, 1);
     this.layoutMinimap();
     this.mmPlayer = this.add.image(0, 0, 'mm-player').setDepth(2e6).setScale(1.2);
@@ -577,17 +578,19 @@ export class WorldScene extends Phaser.Scene {
   private layoutMinimap() {
     if (!this.minimap) return;
     // Phones held upright: the map fills the space beside the scorecard and button row (same top, same bottom)
-    if (this.scale.width <= 600) {
+    // Laid out in CSS pixels (like the HUD); the camera viewport is in game pixels (x DPR)
+    const SW = this.scale.width / DPR, SH = this.scale.height / DPR, vp = (x: number, y: number, w: number, h: number) => this.minimap.setViewport(x * DPR, y * DPR, w * DPR, h * DPR);
+    if (SW <= 600) {
       const st = document.getElementById('stats')?.getBoundingClientRect(), hb = document.getElementById('hud-buttons')?.getBoundingClientRect();
       if (st && hb && st.width > 0 && hb.height > 0) {
-        const x = Math.round(st.right + 10), y = Math.round(st.top), w = Math.round(this.scale.width - x - 8), h = Math.round(hb.bottom - st.top);
-        if (w > 60) { this.minimap.setViewport(x, y, w, h); bus.emit('minimap:layout', { x, y, size: w, h }); return; }
+        const x = Math.round(st.right + 10), y = Math.round(st.top), w = Math.round(SW - x - 8), h = Math.round(hb.bottom - st.top);
+        if (w > 60) { vp(x, y, w, h); bus.emit('minimap:layout', { x, y, size: w, h }); return; }
       }
     }
-    const phone = this.scale.width <= 600 || this.scale.height <= 500, m = phone ? 8 : 18;
-    const size = phone ? (this.scale.width <= 600 ? 100 : Math.min(120, Math.floor(this.scale.height * 0.3))) : Math.min(200, Math.floor(this.scale.width * 0.28));
-    this.minimap.setViewport(this.scale.width - size - m, m, size, size);
-    bus.emit('minimap:layout', { x: this.scale.width - size - m, y: m, size });
+    const phone = SW <= 600 || SH <= 500, m = phone ? 8 : 18;
+    const size = phone ? (SW <= 600 ? 100 : Math.min(120, Math.floor(SH * 0.3))) : Math.min(200, Math.floor(SW * 0.28));
+    vp(SW - size - m, m, size, size);
+    bus.emit('minimap:layout', { x: SW - size - m, y: m, size });
   }
   /**
    * Phaser draws every object in the world each frame, on-screen or not (~11,000 here, twice: map + minimap).
@@ -698,8 +701,8 @@ export class WorldScene extends Phaser.Scene {
   }
 
   private applyZoom() {
-    const w = this.scale.width;
-    this.cameras.main.setZoom(w > 1500 ? 1.25 : w > 900 ? 1.1 : 0.85);
+    const w = this.scale.width / DPR; // CSS pixels
+    this.cameras.main.setZoom((w > 1500 ? 1.25 : w > 900 ? 1.1 : 0.85) * DPR);
   }
 
   // ------------------------------------------------------------------ GAME FLOW
@@ -843,8 +846,9 @@ export class WorldScene extends Phaser.Scene {
   }
   private setPlayerBody() {
     const body = this.player.body as Phaser.Physics.Arcade.Body;
-    if (this.onBike) { body.setSize(22, 22).setOffset(13, 13); }
-    else { body.setSize(16, 16).setOffset(10, 10); }
+    const R = CHAR_RES; // the textures are drawn at 2x, so the body is given in 2x texture pixels (same size in the world)
+    if (this.onBike) { body.setSize(22 * R, 22 * R).setOffset(13 * R, 13 * R); }
+    else { body.setSize(16 * R, 16 * R).setOffset(10 * R, 10 * R); }
   }
 
   private nearestInteractable(): Interactable | null {
@@ -940,7 +944,7 @@ export class WorldScene extends Phaser.Scene {
     this.tweens.add({ targets: t, y: y - 40, alpha: 0, duration: 1000, ease: 'Cubic.out', onComplete: () => t.destroy() });
   }
   bubble(target: Phaser.GameObjects.Sprite, text: string) {
-    const k = this.scale.width < 900 ? 16 / 14 / this.cameras.main.zoom : 1; // phones: about 16px on screen, not 12
+    const k = this.scale.width / DPR < 900 ? 16 / 14 / (this.cameras.main.zoom / DPR) : 1; // phones: about 16px on screen, not 12
     const t = this.add.text(target.x, target.y - 66, text, {
       fontFamily: 'Nunito, Arial', fontSize: `${Math.round(14 * k)}px`, fontStyle: 'bold', color: '#16101f', backgroundColor: '#ffffff',
       padding: { x: Math.round(8 * k), y: Math.round(5 * k) }, wordWrap: { width: Math.round(220 * k) }, align: 'center',
@@ -1161,7 +1165,7 @@ export class WorldScene extends Phaser.Scene {
     state.setFlag('dragon_ready', false); state.setFlag('dragon_next_at', Date.now() + 90_000);
     body.checkCollision.none = true; this.player.anims.stop();
     if (this.textures.exists('dragon-art')) this.player.setTexture('dragon-art').setScale(0.62);
-    else this.player.setTint(0x7fd4c8).setScale(2.2);
+    else this.player.setTint(0x7fd4c8).setScale(2.2 / CHAR_RES);
     this.flyShadow = this.add.ellipse(this.player.x, this.player.y, 90, 50, 0x000000, 0.25).setDepth(5e4);
     this.minimap.ignore(this.flyShadow);
     this.flap = this.tweens.add({ targets: this.player, scaleX: this.player.scaleX * 0.9, duration: 220, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
@@ -1171,7 +1175,7 @@ export class WorldScene extends Phaser.Scene {
   private endDragon() {
     this.flyUntil = 0; this.flap?.stop(); this.flyShadow?.destroy(); this.flyShadow = undefined;
     const body = this.player.body as Phaser.Physics.Arcade.Body;
-    this.player.clearTint().setScale(1).setTexture(this.onBike ? 'player-bike' : 'player', 0);
+    this.player.clearTint().setScale(1.2 / CHAR_RES).setTexture(this.onBike ? 'player-bike' : 'player', 0);
     this.setPlayerBody(); body.checkCollision.none = false;
     const land = this.transit.nearestSidewalk(this.player.x, this.player.y, 30); // never land on a roof or in the river
     if (land) body.reset(land.x, land.y);
@@ -1514,7 +1518,7 @@ export class WorldScene extends Phaser.Scene {
       const blocks = bd / (TILE * ((BLOCK_W + BLOCK_H) / 2)), far = blocks < 0.75 ? '½ BLOCK' : `${Math.round(blocks)} BLOCK${Math.round(blocks) === 1 ? '' : 'S'}`;
       ui.setDistance(far, ang);
       // Off screen? A big pointer on the screen's edge says which way, who, and how far
-      const cam = this.cameras.main, sx = (x: number) => (x - cam.worldView.x) * cam.zoom, sy = (y: number) => (y - cam.worldView.y) * cam.zoom;
+      const cam = this.cameras.main, sx = (x: number) => ((x - cam.worldView.x) * cam.zoom) / DPR, sy = (y: number) => ((y - cam.worldView.y) * cam.zoom) / DPR; // CSS pixels, for the HUD
       const who = best.id === 'caucus' ? 'CAUCUS' : NPCS.find((n) => n.id === best.id)?.short.toUpperCase() ?? 'GOAL';
       ui.setGoalPointer({ fx: sx(this.player.x), fy: sy(this.player.y), tx: sx(best.p.x), ty: sy(best.p.y), label: `${who} · ${far}` });
     } else { this.arrow.setVisible(false); ui.setDistance(null); ui.setGoalPointer(null); }

@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { makeCharacter } from '../world/golden';
+import { CHAR_RES } from '../core/res';
 
 /** One basketball court: its playing area and the two rims (world coordinates). */
 export interface Court { x: number; y: number; w: number; h: number; hoops: [{ x: number; y: number }, { x: number; y: number }] }
@@ -41,7 +42,7 @@ export class BallGames {
       for (let i = 0; i < n; i++) {
         const team = (i % 2) as 0 | 1, x = c.x + R.frac() * c.w, y = c.y + R.frac() * c.h;
         const key = `baller${team}${R.between(0, 5)}`;
-        const s = scene.add.sprite(x, y, key, 0).setOrigin(0.5).setDepth(y);
+        const s = scene.add.sprite(x, y, key, 0).setOrigin(0.5).setScale(1 / CHAR_RES).setDepth(y);
         s.play(`${key}-run`); s.anims.pause();
         p.push({ s, team, tx: x, ty: y, speed: R.between(80, 115), retarget: 0 });
       }

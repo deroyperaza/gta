@@ -4,8 +4,14 @@ import { WorldScene } from './scenes/WorldScene';
 import { missions } from './systems/missions';
 import { ui } from './ui/ui';
 import { state } from './core/state';
+import { DPR } from './core/res';
 import { lockPageZoom } from './ui/nozoom';
 
+// Every text label draws at screen density (Phaser's default is 1x, which the sharper canvas would show as soft)
+{
+  const F = Phaser.GameObjects.GameObjectFactory.prototype as any, text = F.text;
+  F.text = function (x: number, y: number, t: string | string[], style?: Phaser.Types.GameObjects.Text.TextStyle) { return text.call(this, x, y, t, { resolution: DPR, ...style }); };
+}
 lockPageZoom(); // phones: the page never zooms; the game camera does
 
 async function boot() {
@@ -26,7 +32,8 @@ async function boot() {
     parent: 'game',
     backgroundColor: '#1b1230',
     // NONE: we size the game ourselves (keepGameSized). Phaser's RESIZE mode got stuck at stale sizes in the home-screen app.
-    scale: { mode: Phaser.Scale.NONE, width: window.innerWidth, height: window.innerHeight },
+    // Game pixels are CSS pixels x DPR (sharp on Retina screens); zoom shows the canvas at CSS size
+    scale: { mode: Phaser.Scale.NONE, width: Math.round(window.innerWidth * DPR), height: Math.round(window.innerHeight * DPR), zoom: 1 / DPR },
     physics: { default: 'arcade', arcade: { debug: false } },
     render: { antialias: true, roundPixels: false },
     scene: [WorldScene],
@@ -83,7 +90,8 @@ function keepGameSized(game: Phaser.Game) {
   const sync = () => {
     fitScreen();
     const r = el.getBoundingClientRect(), w = Math.round(r.width), h = Math.round(r.height);
-    if (w > 0 && h > 0 && (game.scale.width !== w || game.scale.height !== h)) game.scale.resize(w, h);
+    const gw = Math.round(w * DPR), gh = Math.round(h * DPR);
+    if (w > 0 && h > 0 && (game.scale.width !== gw || game.scale.height !== gh)) game.scale.resize(gw, gh);
   };
   game.events.once('ready', sync);
   window.addEventListener('resize', sync);

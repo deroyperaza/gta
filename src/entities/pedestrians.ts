@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import { MAP_H, MAP_W, T, TILE, WALKABLE, districtAt, type WorldLayout } from '../world/layout';
 import { PAL, type Look } from '../world/textures';
 import { makeCharacter } from '../world/golden';
+import { CHAR_RES } from '../core/res';
 import type { District } from '../core/types';
 
 export interface Ped {
@@ -42,7 +43,7 @@ export class Pedestrians {
       if (!this.walkable(tx * TILE + 16, ty * TILE + 16)) continue;
       const v = R.between(0, LOOKS - 1);
       const s = scene.add.sprite(tx * TILE + 16, ty * TILE + 16, `ped${v}`, 0).setOrigin(0.5, 0.5);
-      if (this.peds.length % 9 === 0) s.setScale(0.72); // kids
+      s.setScale((this.peds.length % 9 === 0 ? 0.72 : 1) / CHAR_RES); // kids are smaller; textures are drawn at 2x
       s.play(`ped${v}-walk`);
       const p: Ped = { sprite: s, vx: 0, vy: 0, speed: R.between(28, 55), timer: 0, district: districtAt(s.x, s.y), gotFlyer: false, pause: 0 };
       this.pickDir(p);

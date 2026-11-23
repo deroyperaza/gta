@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import { T, TILE, type BuildingDef, type BuildingType } from './layout';
 import { makeCharacter as makeFrontCharacter, type Look } from './textures';
 import { makeBust } from './portraits';
+import { CHAR_RES } from '../core/res';
 
 /**
  * Golden Hour renderer (Style A from style-study/moodboard.html).
@@ -583,10 +584,10 @@ export function makeCharacter(scene: Phaser.Scene, key: string, look: Look, bust
   makeFrontCharacter(scene, `${key}-front`, look);
   if (bust && !key.startsWith('ped')) makeBust(scene, key, look); // block neighbors get theirs when you first talk to them
   if (scene.textures.exists(key)) return;
-  const tex = scene.textures.createCanvas(key, PED * 2, PED)!;
+  const R = CHAR_RES, tex = scene.textures.createCanvas(key, PED * 2 * R, PED * R)!; // drawn at 2x; sprites show it at 1/CHAR_RES
   const c = tex.getContext();
-  for (let f = 0; f < 2; f++) { c.save(); c.translate(f * PED + PED / 2, PED / 2); drawWalker(c, look, f); c.restore(); }
-  tex.refresh(); tex.add(0, 0, 0, 0, PED, PED); tex.add(1, 0, PED, 0, PED, PED);
+  for (let f = 0; f < 2; f++) { c.save(); c.scale(R, R); c.translate(f * PED + PED / 2, PED / 2); drawWalker(c, look, f); c.restore(); }
+  tex.refresh(); tex.add(0, 0, 0, 0, PED * R, PED * R); tex.add(1, 0, PED * R, 0, PED * R, PED * R);
 }
 
 function drawBike(c: Ctx, frameColor: string, f: number, L = 40) {
@@ -626,16 +627,16 @@ export function makePlayerMarker(scene: Phaser.Scene) {
 export function makeBikeRider(scene: Phaser.Scene, key: string, look: Look) {
   makeFrontCharacter(scene, `${key}-front`, look);
   if (scene.textures.exists(key)) return;
-  const S = 48;
-  const tex = scene.textures.createCanvas(key, S * 2, S)!;
+  const S = 48, R = CHAR_RES;
+  const tex = scene.textures.createCanvas(key, S * 2 * R, S * R)!;
   const c = tex.getContext();
   for (let f = 0; f < 2; f++) {
-    c.save(); c.translate(f * S + S / 2, S / 2);
+    c.save(); c.scale(R, R); c.translate(f * S + S / 2, S / 2);
     drawBike(c, '#2fb5aa', f);
     c.translate(0, 3); drawWalker(c, { ...look }, 0, 1.55);
     c.restore();
   }
-  tex.refresh(); tex.add(0, 0, 0, 0, S, S); tex.add(1, 0, S, 0, S, S);
+  tex.refresh(); tex.add(0, 0, 0, 0, S * R, S * R); tex.add(1, 0, S * R, 0, S * R, S * R);
 }
 
 // ------------------------------------------------------------------ VEHICLES (top-down, facing up)

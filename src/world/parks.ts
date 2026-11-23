@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { CHAR_RES } from '../core/res';
 import { bus } from '../core/bus';
 import { state } from '../core/state';
 import { BLOCK_H, BLOCK_W, ROAD, T, TILE, type WorldLayout } from './layout';
@@ -45,7 +46,7 @@ export function drawParks(scene: Phaser.Scene, L: WorldLayout, ignore: Phaser.Ga
     ];
     band.forEach((lk, i) => {
       makeCharacter(scene, `band${i}`, { ...lk, shoes: '#111' });
-      const s = scene.add.sprite(bs.x - 46 + i * 30, bs.y + 18, `band${i}`, 0).setDepth(bs.y + 40);
+      const s = scene.add.sprite(bs.x - 46 + i * 30, bs.y + 18, `band${i}`, 0).setScale(1 / CHAR_RES).setDepth(bs.y + 40);
       scene.tweens.add({ targets: s, y: s.y - 3, duration: 260 + i * 40, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
     });
     // the crowd, on blankets on the lawn
@@ -56,8 +57,8 @@ export function drawParks(scene: Phaser.Scene, L: WorldLayout, ignore: Phaser.Ga
       const tx = Math.floor(x / TILE), ty = Math.floor(y / TILE); if (L.tiles[ty]?.[tx] !== T.GRASS) continue;
       blank.fillStyle(rng.pick(cols), 0.9).fillRect(x - 18, y - 12, 36, 26);
       for (let k = 0; k < 2; k++) {
-        const p = scene.add.sprite(x - 8 + k * 16, y, `ped${rng.between(0, 39)}`, 0).setDepth(y).setRotation(-Math.PI / 2 + rng.realInRange(-0.4, 0.4));
-        if (rng.frac() < 0.5) scene.tweens.add({ targets: p, scale: 1.06, duration: 300 + rng.between(0, 200), yoyo: true, repeat: -1 });
+        const p = scene.add.sprite(x - 8 + k * 16, y, `ped${rng.between(0, 39)}`, 0).setScale(1 / CHAR_RES).setDepth(y).setRotation(-Math.PI / 2 + rng.realInRange(-0.4, 0.4));
+        if (rng.frac() < 0.5) scene.tweens.add({ targets: p, scale: 1.06 / CHAR_RES, duration: 300 + rng.between(0, 200), yoyo: true, repeat: -1 });
       }
     }
     // music in the air
