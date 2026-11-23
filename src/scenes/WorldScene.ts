@@ -1380,15 +1380,19 @@ export class WorldScene extends Phaser.Scene {
     if (this.mode !== 'play' || ui.blocking()) return;
     if (this.transit.riding) { bus.emit('ui:toast', 'HOP OFF FIRST.'); return; }
     const famous = new Set(CAMEOS.map((c) => c.id));
-    const kind = (n: NpcDef) => (n as any).ghost ? 'Ghosts of Brooklyn' : famous.has(n.id) ? 'Famous Brooklynites' : (n as any).npOrg ? 'Nonprofit people' : (n as any).blockFolk ? 'Neighbors' : 'Characters';
-    const order = ['Characters', 'Famous Brooklynites', 'Ghosts of Brooklyn', 'Neighbors', 'Nonprofit people'];
+    const NP = 'Nonprofits (Brooklyn Org grantees)';
+    const kind = (n: NpcDef) => (n as any).ghost ? 'Ghosts of Brooklyn' : famous.has(n.id) ? 'Famous Brooklynites' : (n as any).npOrg ? NP : (n as any).blockFolk ? 'Neighbors' : 'Characters';
+    const order = ['Characters', 'Famous Brooklynites', 'Ghosts of Brooklyn', NP, 'Neighbors'];
     const people = NPCS.filter((n) => this.entityPos[n.id]).map((n) => {
       const p = this.entityPos[n.id]!;
       const hood = neighborhoodAt(p.x, p.y);
+      const np = n as any; // a nonprofit: what it works on, so you can search by issue ("housing", "youth")
+      if (np.npOrg) return { n, g: kind(n), sub: `${(np.issues ?? []).join(' · ')}${hood ? ` · ${hood}` : ''}` };
       return { n, g: kind(n), sub: hood && !n.title.includes(hood) ? `${n.title} · ${hood}` : n.title };
     }).sort((a, b) => order.indexOf(a.g) - order.indexOf(b.g) || a.n.name.localeCompare(b.n.name));
     ui.choose({ title: 'Find someone', sub: 'Search by name, role or neighborhood. Pick one to jump there.', search: true,
-      items: people.map(({ n, g, sub }) => ({ value: n.id, label: n.name, sub, group: g })) }, (id) => {
+      // Each category is an accordion with its count; searching opens the ones with matches
+      items: people.map(({ n, g, sub }) => ({ value: n.id, label: n.name, sub, section: g, sectionHtml: `${g} <span class="ch-count">${people.filter((x) => x.g === g).length}</span>` })) }, (id) => {
       const p = this.entityPos[id]; if (!p) return;
       // Land right beside them (in talking range), on open ground: not inside a building, not in the water
       const clear = (x: number, y: number) => { const tile = this.layout.tiles[Math.floor(y / TILE)]?.[Math.floor(x / TILE)]; return tile != null && tile !== T.WATER && tile !== T.OFFMAP && !this.layout.buildings.some((b) => x > b.x - 12 && x < b.x + b.w + 12 && y > b.y - 12 && y < b.y + b.h + 12); };

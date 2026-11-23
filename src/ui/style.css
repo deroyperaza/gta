@@ -604,3 +604,4 @@ body:not(.touch) #touch-pad.held { cursor: grabbing; }
 .map-zoom button { width: 42px; height: 42px; border-radius: 10px; border: 3px solid var(--ink); background: #fff; color: var(--ink); font: 26px/1 var(--display); box-shadow: 3px 3px 0 var(--ink); cursor: pointer; }
 .map-zoom button:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--ink); }
 .map-wrap { cursor: grab; } .map-wrap:active { cursor: grabbing; }
+.ch-sec summary .ch-count { font: 800 12px var(--body); color: #fff; background: var(--ink); border-radius: 10px; padding: 1px 8px; }
