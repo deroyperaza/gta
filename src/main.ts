@@ -5,6 +5,7 @@ import { missions } from './systems/missions';
 import { ui } from './ui/ui';
 import { lockPageZoom } from './ui/nozoom';
 
+declare const __BUILD__: string;
 lockPageZoom(); // phones: the page never zooms; the game camera does
 
 async function boot() {
@@ -24,7 +25,8 @@ async function boot() {
     type: Phaser.AUTO,
     parent: 'game',
     backgroundColor: '#1b1230',
-    scale: { mode: Phaser.Scale.RESIZE, width: window.innerWidth, height: window.innerHeight },
+    // NONE: we size the game ourselves (keepGameSized). Phaser's RESIZE mode got stuck at stale sizes in the home-screen app.
+    scale: { mode: Phaser.Scale.NONE, width: window.innerWidth, height: window.innerHeight },
     physics: { default: 'arcade', arcade: { debug: false } },
     render: { antialias: true, roundPixels: false },
     scene: [WorldScene],
@@ -34,19 +36,16 @@ async function boot() {
 }
 
 /**
- * The game always matches its container (#game, fixed to the screen). Launched from the iPhone home screen, the
- * page can report a stale height at startup (874x812 on an 874x402 screen); Phaser sized itself from that and,
- * since its container never changed size afterwards, never corrected it, so the camera centered you off the
- * bottom of the screen. Re-check on every resize or rotation, and twice a second as a safety net.
+ * The game always matches its container (#game, fixed to the screen). In the iPhone home-screen app, Phaser's own
+ * RESIZE mode got stuck at stale sizes: 874x812 on an 874x402 screen (you sat off the bottom), then 874x874 held
+ * upright on a 402-wide screen (the mini-map fell off the right). So we measure #game and set the size directly,
+ * on every resize or rotation and twice a second as a safety net.
  */
 function keepGameSized(game: Phaser.Game) {
   const el = document.getElementById('game')!;
   const sync = () => {
     const r = el.getBoundingClientRect(), w = Math.round(r.width), h = Math.round(r.height);
-    if (w > 0 && h > 0 && (game.scale.width !== w || game.scale.height !== h)) {
-      game.scale.parentSize.setSize(w, h); // RESIZE mode sizes from its remembered parent size: update it, then re-lay out
-      game.scale.refresh();
-    }
+    if (w > 0 && h > 0 && (game.scale.width !== w || game.scale.height !== h)) game.scale.resize(w, h);
   };
   game.events.once('ready', sync);
   window.addEventListener('resize', sync);
@@ -69,8 +68,10 @@ function screenReadout(game: Phaser.Game) {
     const vv = window.visualViewport, sc = game.scene.scenes[0] as any, cam = sc?.cameras?.main, p = sc?.player;
     const gameEl = document.getElementById('game')!.getBoundingClientRect(), cv = game.canvas?.getBoundingClientRect();
     const ps = cam && p ? `${Math.round((p.x - cam.worldView.x) * cam.zoom)},${Math.round((p.y - cam.worldView.y) * cam.zoom)}` : '-';
-    el.textContent = `inner ${innerWidth}x${innerHeight} · vv ${vv ? r(vv) + ' s' + vv.scale.toFixed(2) + ' top' + Math.round(vv.offsetTop) : '-'} · screen ${screen.width}x${screen.height}\n`
-      + `#game ${r(gameEl)}@${Math.round(gameEl.top)} · canvas ${cv ? r(cv) + '@' + Math.round(cv.top) : '-'} · phaser ${game.scale.width}x${game.scale.height} · cam ${cam ? r(cam) + ' z' + cam.zoom : '-'} · you ${ps}`;
+    el.textContent = `build ${__BUILD__} · inner ${innerWidth}x${innerHeight} · screen ${screen.width}x${screen.height}\n`
+      + `vv ${vv ? r(vv) + ' s' + vv.scale.toFixed(2) + ' top' + Math.round(vv.offsetTop) : '-'} · #game ${r(gameEl)}@${Math.round(gameEl.top)}\n`
+      + `canvas ${cv ? r(cv) + '@' + Math.round(cv.top) : '-'} · phaser ${game.scale.width}x${game.scale.height}\n`
+      + `cam ${cam ? r(cam) + ' z' + cam.zoom : '-'} · you ${ps}`;
   }, 500);
 }
 
