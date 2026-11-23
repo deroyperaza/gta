@@ -1464,8 +1464,7 @@ export class WorldScene extends Phaser.Scene {
       let best = targets[0], bd = Infinity;
       for (const t of targets) { const dd = Phaser.Math.Distance.Between(this.player.x, this.player.y, t.p.x, t.p.y); if (dd < bd) { bd = dd; best = t; } }
       const ang = Math.atan2(best.p.y - this.player.y, best.p.x - this.player.x);
-      this.arrow.setVisible(bd > 220);
-      this.arrow.setPosition(this.player.x + Math.cos(ang) * 64, this.player.y - 24 + Math.sin(ang) * 64).setRotation(ang);
+      // (no small arrow beside you any more: the goal pointer on the screen's edge already shows the way)
       // Distance in city blocks (a block is 18–22 tiles, road included): how Brooklyn gives directions
       const blocks = bd / (TILE * ((BLOCK_W + BLOCK_H) / 2)), far = blocks < 0.75 ? '½ BLOCK' : `${Math.round(blocks)} BLOCK${Math.round(blocks) === 1 ? '' : 'S'}`;
       ui.setDistance(far, ang);

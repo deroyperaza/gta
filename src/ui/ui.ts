@@ -292,19 +292,22 @@ class UI {
    * The goal pointer: when your target is off screen, a big arrow sits on the edge of the open play area
    * (below the HUD, above the touch controls), pointing at it, with who and how far.
    */
-  private goalArea: { l: number; t: number; r: number; b: number; at: number } | null = null;
+  private goalArea: { l: number; t: number; r: number; b: number; at: number; rects: DOMRect[] } | null = null;
   setGoalPointer(g: { fx: number; fy: number; tx: number; ty: number; label: string } | null) {
     const el = $('#goal-pointer');
     const W = innerWidth, H = innerHeight;
     if (!g || this.dialogueOpen) { el.hidden = true; return; }
     const now = performance.now();
     if (!this.goalArea || now - this.goalArea.at > 500) { // re-measure the HUD twice a second, not every frame
-      const bottomOf = (sel: string) => { const e = document.querySelector(sel) as HTMLElement | null; if (!e || !e.offsetParent) return 0; return e.getBoundingClientRect().bottom; };
-      const topOf = (sel: string) => { const e = document.querySelector(sel) as HTMLElement | null; if (!e || !e.offsetParent) return H; return e.getBoundingClientRect().top; };
-      const phone = W <= 600;
-      const t = Math.max(phone ? bottomOf('#objective') : 0, bottomOf('#hud-buttons'), phone ? 0 : bottomOf('#stats')) + 44;
-      const b = Math.min(topOf('#touch-pad'), topOf('#touch-btns'), phone ? H : topOf('#objective'), H) - 30;
-      this.goalArea = { l: 48, t, r: W - 48, b: Math.max(t + 80, b), at: now };
+      // Where each HUD piece sits decides what it blocks (the mission box is at the top on phones, the bottom on desktop):
+      // pieces across the middle of the screen bound the open band; pieces in a corner only push the pointer out of them
+      const rects = ['#stats', '#hud-buttons', '#objective', '#minimap-frame', '#touch-pad', '#touch-btns', '#prompt'].map((sel) => {
+        const e = document.querySelector(sel) as HTMLElement | null; if (!e || !e.offsetParent) return null;
+        const r = e.getBoundingClientRect(); return r.width && r.height ? r : null;
+      }).filter(Boolean) as DOMRect[];
+      let t = 44, b = H - 30;
+      for (const r of rects) if (r.left < W / 2 && r.right > W / 2) { if (r.top + r.height / 2 < H / 2) t = Math.max(t, r.bottom + 44); else b = Math.min(b, r.top - 30); }
+      this.goalArea = { l: 48, t, r: W - 48, b: Math.max(t + 80, b), at: now, rects };
     }
     const A = this.goalArea;
     // On screen and in the open area: the person is right there, no pointer needed
@@ -312,7 +315,10 @@ class UI {
     // Aim from you (kept inside the area) toward the target, and stop where that line meets the area's edge
     const cx = Math.min(A.r - 1, Math.max(A.l + 1, g.fx)), cy = Math.min(A.b - 1, Math.max(A.t + 1, g.fy)), dx = g.tx - cx, dy = g.ty - cy;
     const kx = dx > 0 ? (A.r - cx) / dx : dx < 0 ? (A.l - cx) / dx : Infinity, ky = dy > 0 ? (A.b - cy) / dy : dy < 0 ? (A.t - cy) / dy : Infinity;
-    const k = Math.min(kx, ky), x = cx + dx * k, y = cy + dy * k, ang = Math.atan2(dy, dx);
+    const k = Math.min(kx, ky), x = cx + dx * k, ang = Math.atan2(dy, dx);
+    let y = cy + dy * k;
+    // Landed on a corner piece (scorecard, mini-map, joystick)? Slide clear of it, toward the middle of the screen
+    for (const r of A.rects) if (x > r.left - 70 && x < r.right + 70 && y > r.top - 40 && y < r.bottom + 44) y = r.top + r.height / 2 < H / 2 ? r.bottom + 44 : r.top - 40;
     el.hidden = false;
     el.style.left = `${x}px`; el.style.top = `${y}px`;
     ($('#goal-pointer i') as HTMLElement).style.transform = `rotate(${ang}rad)`;
