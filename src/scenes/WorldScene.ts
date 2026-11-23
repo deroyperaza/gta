@@ -320,7 +320,7 @@ export class WorldScene extends Phaser.Scene {
         const y0 = o.y - 1.6 * TILE, y1 = o.y + bhp + 1.6 * TILE;
         const band = (hw: number, color: number, ya: number, yb: number, gr = sm) => { gr.fillStyle(color, 1); gr.fillPoints([{ x: atY(ya) - hw, y: ya }, { x: atY(ya) + hw, y: ya }, { x: atY(yb) + hw, y: yb }, { x: atY(yb) - hw, y: yb }], true); };
         band(2.9 * TILE, 0xa39c90, o.y, o.y + bhp);
-        { const hw = 1.75 * TILE; this.pave((gr) => band(hw, 0xffffff, y0, y1, gr), -8.9, { x0: Math.min(atY(y0), atY(y1)) - hw, y0, x1: Math.max(atY(y0), atY(y1)) + hw, y1 }); }
+        { const hw = 1.75 * TILE; this.pave((gr) => band(hw, 0x34363a, y0, y1, gr), -8.9, { x0: Math.min(atY(y0), atY(y1)) - hw, y0, x1: Math.max(atY(y0), atY(y1)) + hw, y1 }); }
         this.miniIgnore.push(sm);
       }
       const g = this.add.graphics().setDepth(-6), dx = fb.x - fa.x, dy = fb.y - fa.y, L = Math.hypot(dx, dy), ux = dx / L, uy = dy / L, nx = -uy, ny = ux;
@@ -363,7 +363,7 @@ export class WorldScene extends Phaser.Scene {
       sm.fillStyle(0xa39c90, 1); segs.forEach(([a, b]) => quad(a, b, av.hw + 1.2 * TILE, 2.2 * TILE));
       // The roadway is paved with the same asphalt tile as the grid streets, lined up with their grid, so where a street's
       // tiles are laid back over the avenue the two surfaces meet seamlessly (a flat fill left blocky patches there)
-      this.pave((gr) => { gr.fillStyle(0xffffff, 1); segs.forEach(([a, b]) => quad(a, b, av.hw, 0, 0, gr)); av.pts.slice(1, -1).forEach((p) => gr.fillCircle(p.x, p.y, av.hw)); }, -8.9,
+      this.pave((gr) => { gr.fillStyle(0x34363a, 1); segs.forEach(([a, b]) => quad(a, b, av.hw, 0, 0, gr)); av.pts.slice(1, -1).forEach((p) => gr.fillCircle(p.x, p.y, av.hw)); }, -8.9,
         { x0: Math.min(...av.pts.map((p) => p.x)) - av.hw, y0: Math.min(...av.pts.map((p) => p.y)) - av.hw, x1: Math.max(...av.pts.map((p) => p.x)) + av.hw, y1: Math.max(...av.pts.map((p) => p.y)) + av.hw });
       ln.lineStyle(2.5, 0xf2c23a, 0.9);
       for (const [a, b] of segs) {
@@ -620,19 +620,16 @@ export class WorldScene extends Phaser.Scene {
    * Skip the ones outside each camera's view, and on the minimap skip small text (a pixel or two at that zoom).
    */
   /**
-   * Pave a drawn shape with the grid streets' own asphalt tile, lined up with their grid, so a diagonal road meets the
-   * streets it crosses without a seam (a flat fill left blocky patches where the grid's tiles are laid back over it).
-   * area: the shape's bounds in world pixels.
+   * Pave a diagonal road: a flat fill in the grid asphalt tile's own base color (#34363a), so it meets the streets it
+   * crosses without dark patches (the old fill was darker). A tiled image here cost ~200MB, because Phaser backs a
+   * TileSprite with one canvas the size of the whole avenue, and phones crashed.
    */
-  private pave(draw: (g: Phaser.GameObjects.Graphics) => void, depth: number, area: { x0: number; y0: number; x1: number; y1: number }) {
-    const shape = this.make.graphics({}, false); draw(shape);
-    const tilesTex = this.textures.get('tiles'), fr = `t${T.ASPHALT}`;
-    if (!tilesTex.has(fr)) tilesTex.add(fr, 0, T.ASPHALT * TILE, 0, TILE, TILE);
-    const x0 = Math.floor(area.x0 / TILE) * TILE, y0 = Math.floor(area.y0 / TILE) * TILE;
-    const road = this.add.tileSprite(x0, y0, Math.ceil(area.x1 / TILE) * TILE - x0, Math.ceil(area.y1 / TILE) * TILE - y0, 'tiles', fr).setOrigin(0).setDepth(depth);
-    road.setMask(shape.createGeometryMask());
-    this.miniIgnore.push(road);
+  private pave(draw: (g: Phaser.GameObjects.Graphics) => void, depth: number, _area: { x0: number; y0: number; x1: number; y1: number }) {
+    const g = this.add.graphics().setDepth(depth);
+    draw(g);
+    this.miniIgnore.push(g);
   }
+
 
   private installCulling() {
     const CULL = new Set(['Sprite', 'Image', 'Text', 'Arc', 'Rectangle', 'Ellipse']);

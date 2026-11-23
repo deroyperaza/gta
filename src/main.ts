@@ -4,13 +4,13 @@ import { WorldScene } from './scenes/WorldScene';
 import { missions } from './systems/missions';
 import { ui } from './ui/ui';
 import { state } from './core/state';
-import { DPR } from './core/res';
+import { DPR, TEXT_RES } from './core/res';
 import { lockPageZoom } from './ui/nozoom';
 
 // Every text label draws at screen density (Phaser's default is 1x, which the sharper canvas would show as soft)
 {
   const F = Phaser.GameObjects.GameObjectFactory.prototype as any, text = F.text;
-  F.text = function (x: number, y: number, t: string | string[], style?: Phaser.Types.GameObjects.Text.TextStyle) { return text.call(this, x, y, t, { resolution: DPR, ...style }); };
+  F.text = function (x: number, y: number, t: string | string[], style?: Phaser.Types.GameObjects.Text.TextStyle) { return text.call(this, x, y, t, { resolution: TEXT_RES, ...style }); };
 }
 lockPageZoom(); // phones: the page never zooms; the game camera does
 
