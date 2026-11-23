@@ -48,6 +48,31 @@ const HOOD_NAMES: Record<string, string[]> = {
 };
 
 // Jobs, each with lines in that person's voice (opinions and jokes, not facts)
+/**
+ * Who does the job, Brooklyn as it is (Deroy, Nov 23 2026: "make it feel as realistic to the Brooklyn experience as
+ * possible"): delivery riders are mostly middle-aged men from South Asia, Mexico and Central America, West Africa and
+ * Fujian; bodegas and delis are run by Yemeni and other Arab families and by Dominicans and Puerto Ricans; street food
+ * is Mexican and Ecuadorian women, Egyptian halal-cart men and Chinese vendors. Name and look are drawn together.
+ */
+interface Crew { names: string[]; skin: string[]; hair: string[]; styles: Look['style'][]; dress: number; women?: string[] }
+const MID_HAIR = ['#1a1010', '#1a1010', '#2a1c14', '#3a2418', '#9a9aa8', '#d8d4dc']; // middle-aged: some gray
+const CREWS: Record<string, Crew> = {
+  southasianMen: { names: ['Mr. Iqbal', 'Tariq', 'Mr. Hossain', 'Asif', 'Mr. Akhtar', 'Shahid', 'Kamal', 'Mr. Rahim', 'Faisal', 'Mr. Uddin', 'Nadeem', 'Javed'], skin: ['#7a4a30', '#8d5a3a', '#a8714a', '#b98058'], hair: MID_HAIR, styles: ['short', 'short', 'bald', 'cap', 'beanie'], dress: 0 },
+  latinMen: { names: ['Don Chucho', 'Rigoberto', 'Efraín', 'Don Beto', 'Marvin', 'Ulises', 'Don Toño', 'Elmer', 'Wilmer', 'Don Fermín'], skin: ['#8d5a3a', '#a8714a', '#b98058', '#c58a5c'], hair: MID_HAIR, styles: ['short', 'short', 'cap', 'beanie', 'bald'], dress: 0 },
+  westAfricanMen: { names: ['Mamadou', 'Ousmane', 'Mr. Diallo', 'Ibrahima', 'Moussa', 'Mr. Traoré', 'Seydou'], skin: ['#2e1a12', '#3e2418', '#4a2c1c'], hair: MID_HAIR, styles: ['short', 'bald', 'cap', 'beanie'], dress: 0 },
+  fujianMen: { names: ['Mr. Lin', 'Wei', 'Mr. Zheng', 'Ah Hui', 'Mr. Chen', 'Jun'], skin: ['#e2b08a', '#e8c0a0', '#f2d2b8'], hair: MID_HAIR, styles: ['short', 'short', 'cap', 'beanie'], dress: 0 },
+  arabDeli: { names: ['Mr. Saleh', 'Ali', 'Mohammed', 'Uncle Sami', 'Mr. Alsaidi', 'Nasser', 'Mr. Qasem', 'Hamza', 'Abdul'], skin: ['#a8714a', '#b98058', '#c58a5c', '#d9a679'], hair: MID_HAIR, styles: ['short', 'short', 'bald', 'cap'], dress: 0 },
+  caribbeanDeli: { names: ['Papo', 'Don Rafael', 'Wilson', 'Junior', 'Don Ramón', 'Freddy', 'Doña Mercedes', 'Yolanda', 'Danny', 'Don Luis'], skin: ['#5a3624', '#6b4430', '#8d5a3a', '#a8714a', '#c58a5c'], hair: MID_HAIR, styles: ['short', 'bald', 'cap', 'curly', 'short'], dress: 0.5, women: ['Doña Mercedes', 'Yolanda'] },
+  latinaVendor: { names: ['Doña Lupe', 'Señora Teresa', 'Doña Chela', 'Rosario', 'Doña Fina', 'Maribel', 'Señora Inés', 'Doña Cata'], skin: ['#8d5a3a', '#a8714a', '#b98058', '#c58a5c'], hair: ['#1a1010', '#1a1010', '#2a1c14', '#9a9aa8'], styles: ['bun', 'long', 'braids', 'bun'], dress: 0.6, women: ['Doña Lupe', 'Señora Teresa', 'Doña Chela', 'Rosario', 'Doña Fina', 'Maribel', 'Señora Inés', 'Doña Cata'] },
+  egyptianCart: { names: ['Ahmed', 'Mahmoud', 'Mr. Gamal', 'Tamer', 'Hany', 'Mostafa'], skin: ['#a8714a', '#b98058', '#c58a5c'], hair: MID_HAIR, styles: ['short', 'short', 'bald', 'cap'], dress: 0 },
+  chineseVendor: { names: ['Auntie Fen', 'Mrs. Zhou', 'Ah Lan', 'Mr. Wu', 'Auntie Qing'], skin: ['#e2b08a', '#e8c0a0', '#f2d2b8'], hair: ['#1a1010', '#2a1c14', '#9a9aa8', '#d8d4dc'], styles: ['bun', 'short', 'short', 'beanie'], dress: 0.4, women: ['Auntie Fen', 'Mrs. Zhou', 'Ah Lan', 'Auntie Qing'] },
+};
+const JOB_CREWS: Record<string, string[]> = {
+  'Delivery Worker': ['southasianMen', 'southasianMen', 'southasianMen', 'latinMen', 'latinMen', 'westAfricanMen', 'fujianMen'],
+  'Corner Store Owner': ['arabDeli', 'arabDeli', 'arabDeli', 'caribbeanDeli', 'caribbeanDeli'],
+  'Street Vendor': ['latinaVendor', 'latinaVendor', 'latinaVendor', 'egyptianCart', 'chineseVendor'],
+};
+
 const JOBS: { title: string; lines: string[]; look?: Partial<Look>; where?: 'park' | 'beach' }[] = [
   { title: 'The Super', look: { acc: 'apron' }, lines: ['Boiler\'s fine. The boiler is always fine until it isn\'t.', 'Forty units. Forty keys. One of them opens nothing and I\'m afraid to throw it out.', 'Tell your landlord: the super is on the tenants\' side. Don\'t tell him I said that.', 'Somebody keeps putting pizza boxes in the paper recycling. I will find you.'] },
   { title: 'Crossing Guard', look: { shirt: '#ff8a3d' }, lines: ['Walk. Don\'t run. Okay, now run, that cab isn\'t stopping.', 'Twenty years on this corner. I\'ve crossed kids who now cross their own kids.', 'The light is a suggestion to drivers. I am not a suggestion.', 'Hold up. Hold up. ...Go.'] },
@@ -129,8 +154,9 @@ function folkFor(c: number, r: number): BlockFolk | null {
   const scene = !where && (hip || yup) && hash(`folk:${c},${r}:scene`) % 5 < 3; // most blocks there; not all (the old-timers are still here)
   const pool = scene ? (hip ? HIP_JOBS : YUP_JOBS) : JOBS.filter((j) => (where ? j.where === where : !j.where));
   const job = pool[at(pool.length, 3)];
+  const crewKeys = JOB_CREWS[job.title], crew = crewKeys ? CREWS[crewKeys[hash(`folk:${c},${r}:crew`) % crewKeys.length]] : null;
   const groups = scene ? [hip ? 'hipster' : 'yuppie'] : HOOD_NAMES[hood] ?? ['mixed', 'mixed', 'black', 'latino', 'caribbean'];
-  const names = NAMES[groups[at(groups.length, 7)]];
+  const names = crew ? crew.names : NAMES[groups[at(groups.length, 7)]];
   let name = names[at(names.length, 11)];
   for (let i = 1; USED.has(name) && i < names.length; i++) name = names[(at(names.length, 11) + i) % names.length];
   for (let i = 0, base = name; USED.has(name) && i < 18; i++) name = `${base} ${'ABCDEFGHJKLMNPRSTW'[(at(18, 13) + i) % 18]}.`; // two Mrs. Wongs on one map get different initials
@@ -140,7 +166,11 @@ function folkFor(c: number, r: number): BlockFolk | null {
   const roll = (what: string, n: number) => hash(`folk:${c},${r}:${what}`) % n;
   const style: Look['style'] = g === 'arab' && roll('cover', 3) === 0 ? 'hijab' : g === 'jewish' && roll('cover', 3) === 0 ? 'kippah' : g === 'southasian' && roll('cover', 5) === 0 ? 'turban' : STYLES[roll('style', STYLES.length)];
   const uniform = roll('uniform', 2) === 0 ? job.look ?? {} : {}; // half the time you see the work clothes
-  const look: Look = {
+  const look: Look = crew ? {
+    skin: crew.skin[roll('skin', crew.skin.length)], hair: crew.hair[roll('hair', crew.hair.length)], style: crew.styles[roll('style', crew.styles.length)],
+    shirt: SHIRT[roll('shirt', SHIRT.length)], pants: PANTS[roll('pants', PANTS.length)], shoes: SHOES[roll('shoes', SHOES.length)], hatColor: SHIRT[roll('hat', SHIRT.length)],
+    acc: job.look?.acc, dress: !!crew.women?.some((w) => name.startsWith(w)) && roll('dress', 10) < crew.dress * 10, // only the women on the crew ...(job.look ?? {}), // the work clothes, always
+  } : {
     skin: SKIN[roll('skin', SKIN.length)], hair: HAIR[roll('hair', HAIR.length)], style, shirt: SHIRT[roll('shirt', SHIRT.length)],
     pants: PANTS[roll('pants', PANTS.length)], shoes: SHOES[roll('shoes', SHOES.length)], hatColor: SHIRT[roll('hat', SHIRT.length)],
     acc: ACCS[roll('acc', ACCS.length)], dress: roll('dress', 3) === 0, ...uniform,
