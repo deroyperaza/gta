@@ -270,6 +270,9 @@ const BROWNSTONE_ROW: BuildingType[] = ['brownstone', 'brownstone', 'brownstone'
  * Walk-ups: the brick tenements with fire escapes of Bushwick and Williamsburg. Brownstone Brooklyn is BROWNSTONE_HOODS.
  */
 const HOOD_ROW: Record<string, BuildingType[]> = {
+  'Downtown Brooklyn': ['tower', 'tower', 'tower', 'apartment'],
+  'Vinegar Hill': ['walkup', 'walkup', 'warehouse', 'walkup'], // 1800s row houses and an old power plant, not towers
+  'Brooklyn Navy Yard': ['warehouse', 'warehouse', 'studio', 'tower'], // industrial, with one tall building (Building 77)
   'Ditmas Park': ['victorian', 'victorian', 'victorian', 'victorian', 'victorian', 'coffee'],
   'Flatbush': ['victorian', 'victorian', 'apartment', 'walkup', 'bodega', 'laundromat', 'bakery', 'church'],
   'Midwood': ['victorian', 'twofamily', 'twofamily', 'apartment', 'bakery', 'bodega'],
@@ -614,10 +617,30 @@ export function generateLayout(): WorldLayout {
       cursor += w + (!lm && DETACHED.has(type) ? 1 : 0); idx++; // a side yard next to a freestanding house
     }
     if (queue.length) console.warn('Avenue left no room for', queue.map((q) => q.id));
-    // Backyard trees & stuff in the strip above the buildings
+    // Downtown Brooklyn is towers, not backyards: pave the block and stand a second row of towers along its back
+    const towersBack = spec.kind === 'row' && neighborhoodOfBlock(c, r) === 'Downtown Brooklyn';
+    // Backyard trees & stuff in the strip above the buildings (the random draws always happen, so the rest of the map doesn't shift)
     for (let x = ix + 1; x < end - 1; x += 3 + Math.floor(rand() * 3)) {
       const kind = spec.kind === 'lot' ? (rand() < 0.5 ? 'crate' : 'dumpster') : 'tree';
-      props.push({ kind, x: px(x) + 16, y: px(iy) + 22, solid: true, variant: Math.floor(rand() * 3) });
+      const variant = Math.floor(rand() * 3);
+      if (!towersBack) props.push({ kind, x: px(x) + 16, y: px(iy) + 22, solid: true, variant });
+    }
+    if (towersBack) {
+      for (let y = iy; y < iy + ih; y++) for (let x = ix; x < end; x++) if (tiles[y][x] === T.YARD && !blocked[y][x]) set(x, y, T.PLAZA);
+      const frontTop = Math.min(...buildings.filter((b) => b.x >= ix * TILE && b.x < end * TILE && b.y >= iy * TILE && b.y < (iy + ih) * TILE).map((b) => Math.floor(b.y / TILE)), iy + ih);
+      const depth = frontTop - iy - 2; // a two-tile walkway between the rows
+      const local = rng(c * 7919 + r * 104729); // its own random numbers: nothing else on the map moves
+      if (depth >= 3) for (let x = ix, k = 0; x < end - 3;) {
+        const w = Math.min(4 + Math.floor(local() * 3), end - x); if (w < 3) break;
+        const hT = depth; // as deep as the strip allows; its shadow says how tall it is (golden.ts heightOf)
+        let ok = true;
+        for (let ty = iy; ty < iy + hT && ok; ty++) for (let tx = x; tx < x + w; tx++) if (onAve(tx, ty) || blocked[ty]?.[tx]) { ok = false; break; }
+        if (ok) {
+          buildings.push({ id: `bt-${c}-${r}-${k++}`, type: 'tower', district: dist, x: px(x), y: px(iy), w: w * TILE, h: hT * TILE, variant: Math.floor(local() * 4) });
+          markBlocked(blocked, px(x), px(iy), w * TILE, hT * TILE);
+          x += w + 1; // an alley between towers
+        } else x += 1;
+      }
     }
   }
 

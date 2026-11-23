@@ -162,7 +162,7 @@ export function buildingKey(b: BuildingDef) { return filler(b) ? `bld-f-${b.type
 export function shadowKey(b: BuildingDef) { return b.type === 'arena' ? `shd-${b.id}` : `shd-${b.w}x${b.h}`; }
 
 /** Building height in px that drives the cast shadow and how much south wall shows. */
-function heightOf(b: BuildingDef) { return b.h; }
+function heightOf(b: BuildingDef) { return b.type === 'tower' ? Math.max(b.h, 11 * 32) : b.h; } // a tower casts a tower's shadow, however shallow its lot
 export function facadeH(b: BuildingDef) { return Math.round(Math.min(Math.max(b.h * 0.36, 44), 120)); }
 
 export function makeBuilding(scene: Phaser.Scene, b: BuildingDef) {
