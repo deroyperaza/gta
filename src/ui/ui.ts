@@ -217,6 +217,14 @@ class UI {
     $('#portrait-zoom').addEventListener('click', (e) => { e.stopPropagation(); $('#portrait-zoom').hidden = true; });
     for (const id of ['journal', 'map']) $(`#${id}`).addEventListener('click', (e) => { if ((e.target as HTMLElement).matches('.close, .panel-bg')) this.closePanel(); });
     $('#passed').addEventListener('click', () => { if (performance.now() - this.passedAt > 600) this.closePanel(); });
+    // Click the dimmed background around any window to close it (how-it-works, pause, choices, ride app)
+    for (const id of ['help', 'pause', 'chooser', 'ride']) {
+      const el = $(`#${id}`);
+      el.addEventListener('click', (e) => {
+        const t = e.target as HTMLElement; if (t !== el && !t.matches('.panel-bg')) return;
+        if (id === 'help') $('#help-close').click(); else if (this.panel === id) this.closePanel();
+      });
+    }
     $('#hud-journal').onclick = () => this.openPanel('journal');
     $('#hud-map').onclick = () => this.openPanel('map');
     $('#minimap-frame').onclick = () => this.openPanel('map'); // tap the mini-map for the big map
