@@ -842,7 +842,8 @@ export class WorldScene extends Phaser.Scene {
     if (state.flag(`chat_${n.id}`)) { dialogue.say(n.id, n.id, line); return; }
     const keys = Object.keys(LESSONS), fresh = keys.filter((k) => !state.flag(`lesson_${k}`));
     const pool = fresh.length ? fresh : keys;
-    const key = pool[[...n.id].reduce((a, ch) => (a * 31 + ch.charCodeAt(0)) >>> 0, 7) % pool.length];
+    const own = (n as any).lesson as string | undefined; // workers teach about their own work (a vendor: vendor permits)
+    const key = own && LESSONS[own] && !state.flag(`lesson_${own}`) ? own : pool[[...n.id].reduce((a, ch) => (a * 31 + ch.charCodeAt(0)) >>> 0, 7) % pool.length];
     dialogue.start(n.id, {
       entries: [{ node: 'a' }],
       nodes: {

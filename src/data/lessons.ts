@@ -4,6 +4,13 @@
  * that teaches it (see those files' header comments and docs/FACTS-*.md). No new claims here.
  */
 export const LESSONS: Record<string, { who: string; text: string }> = {
+  // Taught by the street's own workers (blockfolk.ts). Sources, checked Nov 23 2026: NYC DCWP delivery minimum pay
+  // update (Oct 2026) and "Restaurants Using Delivery Apps" page; NYC IBO, "Fiscal Impact of Eliminating Street Vendor
+  // Permit Caps" (Jan 2024) and the Public Advocate's street vendor report (Dec 2025); NYC Earned Safe and Sick Time Act
+  // (DCWP's Protected Time Off Law), via Mayer Brown (Jan 2026).
+  'STREET VENDOR PERMITS': { who: 'a street vendor', text: 'Selling food on the street takes a city permit, and more than 10,000 people are on the waitlist. A 2021 law adds 445 new permits a year until 2032. The Street Vendor Project at the Urban Justice Center helps vendors fight tickets and organize.' },
+  'DELIVERY WORKERS\' PAY': { who: 'a delivery worker', text: 'Food and grocery delivery apps must pay riders at least $22.13 an hour before tips (since April 2026), rising every April. Since 2022, restaurants on the apps must let riders picking up an order use the bathroom. Underpaid? Call 311.' },
+  'PAID SICK TIME': { who: 'a bodega worker', text: 'Work somewhere with 5 or more employees in NYC? You earn paid sick time: one hour for every 30 you work, up to 40 hours a year (56 at places with 100 or more). It covers you whatever your immigration status. Questions: call 311.' },
   'COMMUNITY BOARDS': { who: 'Ms. Hattie', text: 'Brooklyn has 18 community boards of up to 50 unpaid neighbors, appointed by the Borough President. Their vote is advisory. Every meeting has a public session where anyone can speak for two minutes.' },
   'AI HIRING AUDITS': { who: 'Deroy', text: 'Local Law 144: an NYC company that screens job applicants with AI needs an independent bias audit every year, posted publicly, and must tell you beforehand. Report skips to the Department of Consumer and Worker Protection.' },
   'DIY POSTERS, POSTED LEGALLY': { who: 'Deroy', text: 'Bodega windows, laundromats and community boards, with permission. Not lampposts: in NYC that\'s against the law, with fines from $75 a poster.' },

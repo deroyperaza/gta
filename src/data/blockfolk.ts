@@ -13,7 +13,7 @@ import type { Look } from '../world/textures';
 import { CELLS, KINDS, NEIGHBORHOODS } from '../world/brooklynGrid';
 import type { NpcDef } from './npcs';
 
-export interface BlockFolk extends NpcDef { block: [number, number]; blockFolk: true }
+export interface BlockFolk extends NpcDef { block: [number, number]; blockFolk: true; lesson?: string }
 
 function hash(s: string) { let h = 2166136261; for (let i = 0; i < s.length; i++) h = Math.imul(h ^ s.charCodeAt(i), 16777619); return h >>> 0; }
 
@@ -73,7 +73,7 @@ const JOB_CREWS: Record<string, string[]> = {
   'Street Vendor': ['latinaVendor', 'latinaVendor', 'latinaVendor', 'egyptianCart', 'chineseVendor'],
 };
 
-const JOBS: { title: string; lines: string[]; look?: Partial<Look>; where?: 'park' | 'beach' }[] = [
+const JOBS: { title: string; lines: string[]; look?: Partial<Look>; where?: 'park' | 'beach'; /** the Pocket Civics lesson this job teaches (lessons.ts) */ lesson?: string }[] = [
   { title: 'The Super', look: { acc: 'apron' }, lines: ['Boiler\'s fine. The boiler is always fine until it isn\'t.', 'Forty units. Forty keys. One of them opens nothing and I\'m afraid to throw it out.', 'Tell your landlord: the super is on the tenants\' side. Don\'t tell him I said that.', 'Somebody keeps putting pizza boxes in the paper recycling. I will find you.'] },
   { title: 'Crossing Guard', look: { shirt: '#ff8a3d' }, lines: ['Walk. Don\'t run. Okay, now run, that cab isn\'t stopping.', 'Twenty years on this corner. I\'ve crossed kids who now cross their own kids.', 'The light is a suggestion to drivers. I am not a suggestion.', 'Hold up. Hold up. ...Go.'] },
   { title: 'Retired Teacher', look: { acc: 'glasses' }, lines: ['I taught half this block to read. The other half I\'m still working on.', 'Thirty-one years at the elementary school. Every September still feels like New Year\'s.', 'Sit up straight. Sorry. Habit.', 'Library card. Get one. Use it. Quiz on Friday.'] },
@@ -82,13 +82,13 @@ const JOBS: { title: string; lines: string[]; look?: Partial<Look>; where?: 'par
   { title: 'Block Association President', look: { acc: 'clipboard' }, lines: ['Meeting\'s the second Tuesday. There will be cookies. There will be agenda.', 'We got a tree planted last spring. Took two years and forty emails.', 'The block party needs volunteers. You look like a volunteer.', 'Our minutes are better than City Council\'s. I write them.'] },
   { title: 'Barber', look: { acc: 'apron' }, lines: ['Sit down, I can fix that. Whatever that is.', 'The shop hears everything. The shop says nothing. Mostly.', 'Saturday the wait is two hours and nobody leaves. That\'s community.', 'Line-up, fade, sports argument. Package deal.'] },
   { title: 'Mail Carrier', look: { shirt: '#3a5a8a', acc: 'tote' }, lines: ['Rain, snow, dogs. The dogs are the real test.', 'I know who gets letters and who only gets bills. I keep that to myself.', 'Fourteen miles a day. My step counter thinks I\'m training for something.', 'Put your name on the mailbox. Please. Everybody\'s "Resident."'] },
-  { title: 'Delivery Worker', look: { acc: 'headphones' }, lines: ['Six deliveries in the rain and four "thank you"s. That\'s a good day.', 'Buildings without elevators: my nemesis.', 'I know every shortcut in this neighborhood. Some of them are legal.', 'Tip what you can. Say hi either way.'] },
+  { title: 'Delivery Worker', lesson: "DELIVERY WORKERS' PAY", look: { acc: 'headphones' }, lines: ['Six deliveries in the rain and four "thank you"s. That\'s a good day.', 'Buildings without elevators: my nemesis.', 'I know every shortcut in this neighborhood. Some of them are legal.', 'Tip what you can. Say hi either way.'] },
   { title: 'Grandmother on the Stoop', look: { acc: 'cane' }, lines: ['I\'ve watched this street for fifty years. It\'s my show.', 'Come here. Eat something. You look thin.', 'Back in my day the ice cream truck was a nickel. Now it\'s a car payment.', 'Sit with me a minute. Nobody sits anymore.'] },
-  { title: 'Corner Store Owner', look: { acc: 'apron' }, lines: ['Take it, pay me tomorrow. You\'re good for it.', 'The cat runs the store. I just work here.', 'Open 6am to midnight. Seven days. Ask me about vacations. I dare you.', 'Everybody on this block owes me two dollars. I love them anyway.'] },
+  { title: 'Corner Store Owner', lesson: "PAID SICK TIME", look: { acc: 'apron' }, lines: ['Take it, pay me tomorrow. You\'re good for it.', 'The cat runs the store. I just work here.', 'Open 6am to midnight. Seven days. Ask me about vacations. I dare you.', 'Everybody on this block owes me two dollars. I love them anyway.'] },
   { title: 'Youth Coach', look: { acc: 'headphones' }, lines: ['Practice at four. Homework first. Non-negotiable.', 'I don\'t care if you win. I care if you show up. Then I care if you win.', 'These kids need a field, a ball and an adult who believes them.', 'Whistle\'s around my neck even on Sundays.'] },
   { title: 'Artist', look: { acc: 'beret' }, lines: ['I\'m painting the block. Literally. With permission. Mostly.', 'This wall needs a mural and I need a commission. We can help each other.', 'Art is how a neighborhood remembers itself.', 'I sold a painting! To my mom. Still counts.'] },
   { title: 'Tenant Organizer', look: { acc: 'clipboard' }, lines: ['Know your lease. Know your neighbors. Know your rights. In that order.', 'One tenant complaining is a nuisance. Forty is an association.', 'We meet in the lobby on Thursdays. Bring a chair and a grievance.', 'Repairs happen faster when the whole building asks.'] },
-  { title: 'Street Vendor', look: { acc: 'apron' }, lines: ['Mango with chili, best thing you\'ll eat all week.', 'I\'ve had this corner for twelve years. The corner and I understand each other.', 'Permit\'s in my pocket. Smile\'s on my face. Mango\'s in your hand.', 'Cash, card, whatever. Just eat.'] },
+  { title: 'Street Vendor', lesson: "STREET VENDOR PERMITS", look: { acc: 'apron' }, lines: ['Mango with chili, best thing you\'ll eat all week.', 'The permit waitlist is ten thousand people long. I got on it when my son was in diapers. He\'s in college.', 'I\'ve had this corner for twelve years. The corner and I understand each other.', 'Permit\'s in my pocket. Smile\'s on my face. Mango\'s in your hand.', 'Cash, card, whatever. Just eat.'] },
   { title: 'Librarian', look: { acc: 'glasses' }, lines: ['Shh. Kidding. Libraries are loud now. On purpose.', 'Free wifi, free books, free classes, free AC. We are the last free place.', 'Overdue? We don\'t do fines anymore. Come back.', 'Ask me anything. I mean it. That\'s the job.'] },
   { title: 'Dog Walker', where: 'park', look: { acc: 'tote' }, lines: ['Six dogs, one leash hand. It\'s a skill.', 'I know every dog in the neighborhood by name and none of their owners.', 'The park at 7am is the dogs\' town hall.', 'Biscuit is the boss. Don\'t tell the others.'] },
   { title: 'Chess Hustler', where: 'park', lines: ['Five dollars a game. I\'m being generous.', 'Sit. Move. Lose. It\'s educational.', 'I\'ve played this table thirty years. The table is winning.', 'Checkmate. Don\'t feel bad. Feel motivated.'] },
@@ -177,7 +177,7 @@ function folkFor(c: number, r: number): BlockFolk | null {
   };
   return {
     id: `bf_${c}_${r}`, name, short: name, title: `${job.title}, ${hood}`, district, spot: `bf_${c}_${r}`, color: COLORS[at(COLORS.length, 9)],
-    look, bio: `${job.title} in ${hood}. Has opinions about this block, and about you, which are mostly good.`, block: [c, r], blockFolk: true,
+    look, lesson: job.lesson, bio: `${job.title} in ${hood}. Has opinions about this block, and about you, which are mostly good.`, block: [c, r], blockFolk: true,
     idle: (() => { const who = roll('who', 25); return who < 2 ? [QUEER[roll('q', QUEER.length)], ...job.lines] : who === 2 ? [TRANS[roll('t', TRANS.length)], ...job.lines] : job.lines; })(),
   };
 }
