@@ -94,6 +94,16 @@ function screenReadout(game: Phaser.Game) {
   el.style.cssText = 'position:fixed;left:50%;bottom:4px;transform:translateX(-50%);z-index:99;background:rgba(0,0,0,.75);color:#0f0;font:11px/1.3 monospace;padding:3px 6px;border-radius:4px;pointer-events:none;white-space:pre;text-align:center';
   document.body.appendChild(el);
   const r = (o: { width: number; height: number }) => `${Math.round(o.width)}x${Math.round(o.height)}`;
+  // Where the page thinks you tapped: a green dot there, plus the spot and what it hit, in the readout
+  const dot = document.createElement('div');
+  dot.style.cssText = 'position:fixed;width:18px;height:18px;margin:-9px 0 0 -9px;border-radius:50%;border:3px solid #0f0;background:rgba(0,255,0,.25);z-index:100;pointer-events:none;display:none';
+  document.body.appendChild(dot);
+  let tap = '-';
+  document.addEventListener('pointerdown', (e) => {
+    const t = e.target as HTMLElement, b = t.closest('button') as HTMLElement | null;
+    tap = `${Math.round(e.clientX)},${Math.round(e.clientY)} ${e.pointerType} → ${b?.id || t.id || t.tagName.toLowerCase()}`;
+    dot.style.left = `${e.clientX}px`; dot.style.top = `${e.clientY}px`; dot.style.display = 'block';
+  }, true);
   setInterval(() => {
     const vv = window.visualViewport, sc = game.scene.scenes[0] as any, cam = sc?.cameras?.main, p = sc?.player;
     const gameEl = document.getElementById('game')!.getBoundingClientRect(), cv = game.canvas?.getBoundingClientRect();
@@ -101,7 +111,8 @@ function screenReadout(game: Phaser.Game) {
     el.textContent = `build ${__BUILD__} · inner ${innerWidth}x${innerHeight} · screen ${screen.width}x${screen.height}\n`
       + `vv ${vv ? r(vv) + ' s' + vv.scale.toFixed(2) + ' top' + Math.round(vv.offsetTop) : '-'} · #game ${r(gameEl)}@${Math.round(gameEl.top)}\n`
       + `canvas ${cv ? r(cv) + '@' + Math.round(cv.top) : '-'} · phaser ${game.scale.width}x${game.scale.height}\n`
-      + `cam ${cam ? r(cam) + ' z' + cam.zoom : '-'} · you ${ps}`;
+      + `cam ${cam ? r(cam) + ' z' + cam.zoom : '-'} · you ${ps}\n`
+      + `tap ${tap}`;
   }, 500);
 }
 
