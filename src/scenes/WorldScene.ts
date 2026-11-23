@@ -10,7 +10,7 @@ import { LESSONS } from '../data/lessons';
 import { makeBust } from '../world/portraits';
 import { Pedestrians, type Ped } from '../entities/pedestrians';
 import { BallGames, type Court } from '../entities/ballgames';
-import { CHAR_RES, DPR } from '../core/res';
+import { CHAR_RES, DPR, PLAYER_RES } from '../core/res';
 import { Traffic } from '../entities/traffic';
 import { DEBATES, Opposition, type OppConfig } from '../entities/opposition';
 import { LINE_COLORS, SERVICES, Transit, bullet } from '../entities/transit';
@@ -129,8 +129,8 @@ export class WorldScene extends Phaser.Scene {
       const im = this.textures.get('garbage').getSourceImage() as HTMLImageElement, t = this.textures.createCanvas('garbage-shd', im.width + 12, im.height + 12)!, cx = t.getContext();
       cx.filter = 'blur(4px)'; cx.fillStyle = 'rgba(8,5,14,.55)'; cx.beginPath(); cx.roundRect(6, 6, im.width, im.height, 10); cx.fill(); t.refresh();
     }
-    makeCharacter(this, 'player', PLAYER_LOOK);
-    makeBikeRider(this, 'player-bike', PLAYER_LOOK);
+    makeCharacter(this, 'player', PLAYER_LOOK, true, PLAYER_RES);
+    makeBikeRider(this, 'player-bike', PLAYER_LOOK, PLAYER_RES);
     for (const n of NPCS) makeCharacter(this, `npc-${n.id}`, n.look, !(n as any).blockFolk && !(n as any).npOrg && !BUSTS.includes(n.id)); // neighbors' and staffers' portraits wait for the first chat; painted ones load after startup
     makeCharacter(this, 'vendor-rosa', { skin: '#c58a5c', hair: '#3a2a1a', style: 'bun', shirt: '#ff8a3d', pants: '#3a2a5a', acc: 'apron', dress: true });
     makeCharacter(this, 'vendor-hamid', { skin: '#a8714a', hair: '#1a1010', style: 'cap', hatColor: '#ff4b4b', shirt: '#fff', pants: '#2b3a6b', acc: 'apron' });
@@ -146,13 +146,13 @@ export class WorldScene extends Phaser.Scene {
     this.anims.create({ key: 'bike-roll', frames: this.anims.generateFrameNumbers('player-bike', { frames: [0, 1] }), frameRate: 9, repeat: -1 });
     const start = this.layout.spots.playerStart;
     this.player = this.physics.add.sprite(start.x, start.y, 'player', 0).setOrigin(0.5, 0.5);
-    this.player.setCollideWorldBounds(true).setScale(1.2 / CHAR_RES); // a touch bigger than the crowd; textures are drawn at 2x
+    this.player.setCollideWorldBounds(true).setScale(1.2 / PLAYER_RES); // a touch bigger than the crowd; your textures are drawn at 3x
     makePlayerMarker(this);
-    this.playerRing = this.add.image(start.x, start.y, 'player-ring');
-    this.playerChevron = this.add.image(start.x, start.y, 'player-chevron');
-    this.playerPin = this.add.image(start.x, start.y, 'player-pin').setOrigin(0.5, 1).setDepth(1e6 - 1);
+    this.playerRing = this.add.image(start.x, start.y, 'player-ring').setScale(1 / PLAYER_RES);
+    this.playerChevron = this.add.image(start.x, start.y, 'player-chevron').setScale(1 / PLAYER_RES);
+    this.playerPin = this.add.image(start.x, start.y, 'player-pin').setOrigin(0.5, 1).setScale(1 / PLAYER_RES).setDepth(1e6 - 1);
     this.miniIgnore.push(this.playerRing, this.playerChevron, this.playerPin);
-    this.tweens.add({ targets: this.playerRing, scale: { from: 0.9, to: 1.12 }, alpha: { from: 1, to: 0.65 }, duration: 900, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
+    this.tweens.add({ targets: this.playerRing, scale: { from: 0.9 / PLAYER_RES, to: 1.12 / PLAYER_RES }, alpha: { from: 1, to: 0.65 }, duration: 900, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
     this.setPlayerBody();
     this.physics.add.collider(this.player, solids);
     this.physics.add.collider(this.player, this.groundLayer);
@@ -846,7 +846,7 @@ export class WorldScene extends Phaser.Scene {
   }
   private setPlayerBody() {
     const body = this.player.body as Phaser.Physics.Arcade.Body;
-    const R = CHAR_RES; // the textures are drawn at 2x, so the body is given in 2x texture pixels (same size in the world)
+    const R = PLAYER_RES; // your textures are drawn at 3x, so the body is given in 3x texture pixels (same size in the world)
     if (this.onBike) { body.setSize(22 * R, 22 * R).setOffset(13 * R, 13 * R); }
     else { body.setSize(16 * R, 16 * R).setOffset(10 * R, 10 * R); }
   }
@@ -1165,7 +1165,7 @@ export class WorldScene extends Phaser.Scene {
     state.setFlag('dragon_ready', false); state.setFlag('dragon_next_at', Date.now() + 90_000);
     body.checkCollision.none = true; this.player.anims.stop();
     if (this.textures.exists('dragon-art')) this.player.setTexture('dragon-art').setScale(0.62);
-    else this.player.setTint(0x7fd4c8).setScale(2.2 / CHAR_RES);
+    else this.player.setTint(0x7fd4c8).setScale(2.2 / PLAYER_RES);
     this.flyShadow = this.add.ellipse(this.player.x, this.player.y, 90, 50, 0x000000, 0.25).setDepth(5e4);
     this.minimap.ignore(this.flyShadow);
     this.flap = this.tweens.add({ targets: this.player, scaleX: this.player.scaleX * 0.9, duration: 220, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
@@ -1175,7 +1175,7 @@ export class WorldScene extends Phaser.Scene {
   private endDragon() {
     this.flyUntil = 0; this.flap?.stop(); this.flyShadow?.destroy(); this.flyShadow = undefined;
     const body = this.player.body as Phaser.Physics.Arcade.Body;
-    this.player.clearTint().setScale(1.2 / CHAR_RES).setTexture(this.onBike ? 'player-bike' : 'player', 0);
+    this.player.clearTint().setScale(1.2 / PLAYER_RES).setTexture(this.onBike ? 'player-bike' : 'player', 0);
     this.setPlayerBody(); body.checkCollision.none = false;
     const land = this.transit.nearestSidewalk(this.player.x, this.player.y, 30); // never land on a roof or in the river
     if (land) body.reset(land.x, land.y);

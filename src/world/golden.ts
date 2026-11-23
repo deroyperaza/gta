@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 import { T, TILE, type BuildingDef, type BuildingType } from './layout';
 import { makeCharacter as makeFrontCharacter, type Look } from './textures';
 import { makeBust } from './portraits';
-import { CHAR_RES } from '../core/res';
+import { CHAR_RES, PLAYER_RES } from '../core/res';
 
 /**
  * Golden Hour renderer (Style A from style-study/moodboard.html).
@@ -17,10 +17,11 @@ type Ctx = CanvasRenderingContext2D;
 /** Shadow throw per pixel of height, matching the mood board's golden sun. */
 export const SUN_SHADOW = { dx: 0.62, dy: 0.2, alpha: 0.5 };
 
-function canvas(scene: Phaser.Scene, key: string, w: number, h: number, draw: (c: Ctx) => void) {
+function canvas(scene: Phaser.Scene, key: string, w: number, h: number, draw: (c: Ctx) => void, res = 1) {
   if (scene.textures.exists(key)) return;
-  const tex = scene.textures.createCanvas(key, Math.ceil(w), Math.ceil(h))!;
-  draw(tex.getContext());
+  const tex = scene.textures.createCanvas(key, Math.ceil(w * res), Math.ceil(h * res))!; // res > 1: drawn bigger, shown at 1/res
+  const c = tex.getContext(); c.scale(res, res);
+  draw(c);
   tex.refresh();
   return tex;
 }
@@ -580,11 +581,11 @@ function drawWalker(c: Ctx, L: Look, f: number, scale = PS) {
 }
 
 /** Top-down walker (2 stride frames, facing up) plus a front-facing portrait under `${key}-front`. */
-export function makeCharacter(scene: Phaser.Scene, key: string, look: Look, bust = true) {
+export function makeCharacter(scene: Phaser.Scene, key: string, look: Look, bust = true, res = CHAR_RES) {
   makeFrontCharacter(scene, `${key}-front`, look);
   if (bust && !key.startsWith('ped')) makeBust(scene, key, look); // block neighbors get theirs when you first talk to them
   if (scene.textures.exists(key)) return;
-  const R = CHAR_RES, tex = scene.textures.createCanvas(key, PED * 2 * R, PED * R)!; // drawn at 2x; sprites show it at 1/CHAR_RES
+  const R = res, tex = scene.textures.createCanvas(key, PED * 2 * R, PED * R)!; // drawn at res x; sprites show it at 1/res
   const c = tex.getContext();
   for (let f = 0; f < 2; f++) { c.save(); c.scale(R, R); c.translate(f * PED + PED / 2, PED / 2); drawWalker(c, look, f); c.restore(); }
   tex.refresh(); tex.add(0, 0, 0, 0, PED * R, PED * R); tex.add(1, 0, PED * R, 0, PED * R, PED * R);
@@ -609,11 +610,11 @@ export function makePlayerMarker(scene: Phaser.Scene) {
     c.fillStyle = rg(c, cx, cy, 10, 40, [[0, 'rgba(255,79,163,.0)'], [0.55, 'rgba(255,79,163,.38)'], [0.8, 'rgba(255,79,163,.16)'], [1, 'rgba(255,79,163,0)']]); ell(c, cx, cy, 40, 40); c.fill();
     c.strokeStyle = 'rgba(22,16,31,.85)'; c.lineWidth = 7; ell(c, cx, cy, 26, 26); c.stroke();
     c.strokeStyle = '#ff4fa3'; c.lineWidth = 4; ell(c, cx, cy, 26, 26); c.stroke();
-  });
+  }, PLAYER_RES);
   canvas(scene, 'player-chevron', 28, 20, (c) => {
     c.fillStyle = '#ff4fa3'; c.strokeStyle = '#16101f'; c.lineWidth = 2.5; c.lineJoin = 'round';
     c.beginPath(); c.moveTo(14, 2); c.lineTo(26, 17); c.lineTo(14, 12); c.lineTo(2, 17); c.closePath(); c.fill(); c.stroke();
-  });
+  }, PLAYER_RES);
   // A "YOU" tag floating over your head, drawn above trees and crowds
   canvas(scene, 'player-pin', 56, 44, (c) => {
     c.fillStyle = '#ff4fa3'; c.strokeStyle = '#16101f'; c.lineWidth = 3; c.lineJoin = 'round';
@@ -621,13 +622,13 @@ export function makePlayerMarker(scene: Phaser.Scene) {
     c.beginPath(); c.moveTo(L + r, T); c.arcTo(R, T, R, B, r); c.arcTo(R, B, L, B, r); c.lineTo(35, B); c.lineTo(28, 40); c.lineTo(21, B); c.arcTo(L, B, L, T, r); c.arcTo(L, T, R, T, r); c.closePath();
     c.fill(); c.stroke();
     c.font = '20px Bangers, Impact, sans-serif'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillStyle = '#fff'; c.fillText('YOU', 28, 17);
-  });
+  }, PLAYER_RES);
 }
 
-export function makeBikeRider(scene: Phaser.Scene, key: string, look: Look) {
+export function makeBikeRider(scene: Phaser.Scene, key: string, look: Look, res = CHAR_RES) {
   makeFrontCharacter(scene, `${key}-front`, look);
   if (scene.textures.exists(key)) return;
-  const S = 48, R = CHAR_RES;
+  const S = 48, R = res;
   const tex = scene.textures.createCanvas(key, S * 2 * R, S * R)!;
   const c = tex.getContext();
   for (let f = 0; f < 2; f++) {
