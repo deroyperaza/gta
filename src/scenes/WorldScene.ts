@@ -166,6 +166,7 @@ export class WorldScene extends Phaser.Scene {
     for (const pk of drawParks(this, this.layout, this.miniIgnore)) this.interactables.push(pk); // after the crowd: the Bandshell audience wears their looks
     this.opp = new Opposition(this, this.layout, 6);
     this.transit = new Transit(this, this.layout);
+    for (const stn of this.transit.stations) if (stn.sign) this.clickToGo(stn.sign, stn.x, stn.y, () => this.takeSubway(stn));
     this.placeNameTags();
     bus.on('transit:alight', (p: { x: number; y: number }) => { (this.player.body as Phaser.Physics.Arcade.Body).reset(p.x, p.y); this.player.setVisible(true); });
     bus.on('ui:ride', () => this.rideApp());
@@ -468,6 +469,7 @@ export class WorldScene extends Phaser.Scene {
       if (!this.textures.exists('mm-bike')) { const t = this.textures.createCanvas('mm-bike', 64, 64)!, cx = t.getContext(); cx.beginPath(); cx.arc(32, 32, 28, 0, 7); cx.fillStyle = '#fff'; cx.fill(); cx.lineWidth = 5; cx.strokeStyle = '#16101f'; cx.stroke(); cx.font = '36px sans-serif'; cx.textAlign = 'center'; cx.textBaseline = 'middle'; cx.fillText('🚲', 32, 35); t.refresh(); }
       this.cameras.main.ignore(this.add.image(s.x, s.y, 'mm-bike').setScale(3.4).setDepth(2e6 - 1));
       this.interactables.push({ id, x: s.x, y: s.y, r: 70, label: () => (this.onBike ? 'Dock your bike' : 'Grab a BK Spokes bike'), act: () => this.toggleBike(!this.onBike) });
+      this.clickToGo([img, tag], s.x, s.y + 24, () => this.toggleBike(!this.onBike));
     }
     // Vendors
     const vend = (id: string, key: string, cartKey: string, spot: { x: number; y: number }, name: string, lines: string[], gift: string) => {
@@ -778,13 +780,45 @@ export class WorldScene extends Phaser.Scene {
       if (this.mode !== 'play' || ui.blocking() || performance.now() - this.lastDialogueEnd < 250) return;
       const d = Math.hypot(spr.x - this.player.x, spr.y - this.player.y);
       if (d <= 64) this.talk(n);
-      else bus.emit('ui:toast', `WALK CLOSER TO TALK TO ${n.short.toUpperCase()}`);
+      else this.comeOver(spr.x, spr.y, () => this.talk(n)); // anyone you can see: you head over and the conversation opens
     };
     for (const o of [zone, tag]) {
       o.on('pointerover', over);
       o.on('pointerout', out);
       o.on('pointerdown', click);
     }
+  }
+
+  /** Click a sign (subway entrance, bike dock): head over to it, then use it */
+  private clickToGo(objs: Phaser.GameObjects.GameObject[], x: number, y: number, act: () => void) {
+    for (const o of objs) {
+      (o as Phaser.GameObjects.Image).setInteractive({ useHandCursor: true });
+      o.on('pointerdown', () => {
+        if (this.mode !== 'play' || ui.blocking() || performance.now() - this.lastDialogueEnd < 250) return;
+        if (Math.hypot(x - this.player.x, y - this.player.y) <= 48) act(); else this.comeOver(x, y, act);
+      });
+    }
+  }
+
+  /** Glide over to an open spot beside someone, then do something (talk). No "walk closer" dead end. */
+  private autoWalk = false;
+  private comeOver(x: number, y: number, then: () => void) {
+    if (this.autoWalk || this.flying || this.mode !== 'play') return;
+    const px = this.player.x, py = this.player.y;
+    const spots = [[0, 34], [0, -34], [-36, 0], [36, 0], [-30, 30], [30, 30], [-30, -30], [30, -30], [0, 50]]
+      .map(([dx, dy]) => ({ x: x + dx, y: y + dy }))
+      .filter((p) => this.peds.walkable(p.x, p.y))
+      .sort((a, b) => Math.hypot(a.x - px, a.y - py) - Math.hypot(b.x - px, b.y - py));
+    const to = spots[0] ?? { x, y: y + 34 };
+    const body = this.player.body as Phaser.Physics.Arcade.Body;
+    const dist = Math.hypot(to.x - px, to.y - py);
+    this.autoWalk = true; body.setVelocity(0, 0); body.enable = false;
+    this.player.setRotation(Math.atan2(to.y - py, to.x - px) + Math.PI / 2);
+    if (!this.flying) this.player.play(this.onBike ? 'bike-roll' : 'player-walk', true);
+    this.tweens.add({
+      targets: this.player, x: to.x, y: to.y, duration: Phaser.Math.Clamp(dist * 0.9, 250, 900), ease: 'Sine.inOut',
+      onComplete: () => { body.enable = true; body.reset(to.x, to.y); this.autoWalk = false; this.player.anims.stop(); this.player.setFrame(0); then(); },
+    });
   }
 
   // ------------------------------------------------------------------ INTERACTIONS
@@ -1406,7 +1440,8 @@ export class WorldScene extends Phaser.Scene {
 
     const rideAt = this.mode === 'play' ? this.transit.update(dt, this.player) : null;
     if (rideAt) { body.reset(rideAt.x, rideAt.y); this.player.setVisible(false); }
-    if (blocking || rideAt) {
+    if (this.autoWalk) { /* gliding over to someone you clicked (comeOver): no steering */ }
+    else if (blocking || rideAt) {
       body.setVelocity(0, 0);
       this.player.anims.stop();
     } else {

@@ -22,7 +22,7 @@ export const LINE_COLORS: Record<string, string> = {
 };
 export const bullet = (r: string) => `<i class="bullet" style="background:${LINE_COLORS[r] ?? '#888'};color:${'NQRW'.includes(r) ? '#111' : '#fff'}">${r}</i>`;
 
-export interface Placed { st: Station; x: number; y: number }
+export interface Placed { st: Station; x: number; y: number; sign?: Phaser.GameObjects.GameObject[] }
 interface Path { pts: { x: number; y: number }[]; cum: number[]; len: number }
 interface Stop { s: number; x: number; y: number; px: number; py: number; name: string }
 interface BusRoute { id: string; to: [string, string]; path: Path; stops: Stop[]; color: string }
@@ -189,11 +189,12 @@ export class Transit {
       // Two complexes on the same corner: nudge the second along the sidewalk
       if (taken.some((t) => Math.hypot(t.x - p!.x, t.y - p!.y) < 70)) p = this.nearestSidewalk(p.x + 96, p.y + 64) ?? p;
       taken.push(p);
-      const placed = { st, x: p.x, y: p.y };
+      const placed: Placed = { st, x: p.x, y: p.y };
       this.stations.push(placed); this.byId[st.id] = placed;
-      this.scene.add.image(p.x, p.y, 'subway-entrance').setDepth(p.y - 30);
+      const entrance = this.scene.add.image(p.x, p.y, 'subway-entrance').setDepth(p.y - 30);
       const label = this.scene.add.text(p.x, p.y - 40, st.name, { fontFamily: 'Nunito, Arial, sans-serif', fontSize: '16px', fontStyle: '900', color: '#ffffff', backgroundColor: '#1d1d1f', padding: { x: 6, y: 3 } }).setOrigin(0.5, 1).setDepth(p.y + 40);
       // Route bullets are small baked circles (one texture per line), not a Graphics per station: ~190 Graphics cost real frame time on phones
+      placed.sign = [entrance, label]; // clickable (WorldScene): head over and take the subway
       { const lb = label.getBounds(), bw = st.routes.length * 23, top = p.y - 40 - label.height - 24; this.signRects.push(new Phaser.Geom.Rectangle(Math.min(lb.x, p.x - bw / 2), top, Math.max(lb.width, bw), lb.bottom - top)); }
       st.routes.forEach((r, i) => {
         const bx = p!.x - (st.routes.length - 1) * 11.5 + i * 23, by = p!.y - 40 - label.height - 13, key = `bullet-${r}`;
