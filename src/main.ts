@@ -6,7 +6,6 @@ import { ui } from './ui/ui';
 import { state } from './core/state';
 import { lockPageZoom } from './ui/nozoom';
 
-declare const __BUILD__: string;
 lockPageZoom(); // phones: the page never zooms; the game camera does
 
 async function boot() {
@@ -33,7 +32,6 @@ async function boot() {
     scene: [WorldScene],
   });
   keepGameSized(game);
-  screenReadout(game);
   autoUpdate(game);
 }
 
@@ -73,7 +71,17 @@ function autoUpdate(game: Phaser.Game) {
  */
 function keepGameSized(game: Phaser.Game) {
   const el = document.getElementById('game')!;
+  // Home-screen app held upright: the phone gives the page 812px of an 874px screen and leaves a dark strip at the
+  // bottom. Stretch the game, HUD and overlays to the full screen height (style.css: body.tall).
+  const standalone = matchMedia('(display-mode: standalone), (display-mode: fullscreen)').matches || (navigator as any).standalone;
+  const fitScreen = () => {
+    const long = Math.max(screen.width, screen.height), short = Math.min(screen.width, screen.height);
+    const tall = !!standalone && Math.abs(innerWidth - short) < 2 && innerHeight < long && innerHeight > long - 120;
+    document.body.classList.toggle('tall', tall);
+    if (tall) document.documentElement.style.setProperty('--app-h', `${long}px`);
+  };
   const sync = () => {
+    fitScreen();
     const r = el.getBoundingClientRect(), w = Math.round(r.width), h = Math.round(r.height);
     if (w > 0 && h > 0 && (game.scale.width !== w || game.scale.height !== h)) game.scale.resize(w, h);
   };
@@ -85,35 +93,5 @@ function keepGameSized(game: Phaser.Game) {
   setInterval(sync, 500);
 }
 
-/** TEMPORARY (Nov 23 2026): in the home-screen app only, show what the phone reports about the screen,
- *  to find why the player sits low there. Remove once fixed. */
-function screenReadout(game: Phaser.Game) {
-  const standalone = matchMedia('(display-mode: standalone), (display-mode: fullscreen)').matches || (navigator as any).standalone;
-  if (!standalone) return;
-  const el = document.createElement('div');
-  el.style.cssText = 'position:fixed;left:50%;bottom:4px;transform:translateX(-50%);z-index:99;background:rgba(0,0,0,.75);color:#0f0;font:11px/1.3 monospace;padding:3px 6px;border-radius:4px;pointer-events:none;white-space:pre;text-align:center';
-  document.body.appendChild(el);
-  const r = (o: { width: number; height: number }) => `${Math.round(o.width)}x${Math.round(o.height)}`;
-  // Where the page thinks you tapped: a green dot there, plus the spot and what it hit, in the readout
-  const dot = document.createElement('div');
-  dot.style.cssText = 'position:fixed;width:18px;height:18px;margin:-9px 0 0 -9px;border-radius:50%;border:3px solid #0f0;background:rgba(0,255,0,.25);z-index:100;pointer-events:none;display:none';
-  document.body.appendChild(dot);
-  let tap = '-';
-  document.addEventListener('pointerdown', (e) => {
-    const t = e.target as HTMLElement, b = t.closest('button') as HTMLElement | null;
-    tap = `${Math.round(e.clientX)},${Math.round(e.clientY)} ${e.pointerType} → ${b?.id || t.id || t.tagName.toLowerCase()}`;
-    dot.style.left = `${e.clientX}px`; dot.style.top = `${e.clientY}px`; dot.style.display = 'block';
-  }, true);
-  setInterval(() => {
-    const vv = window.visualViewport, sc = game.scene.scenes[0] as any, cam = sc?.cameras?.main, p = sc?.player;
-    const gameEl = document.getElementById('game')!.getBoundingClientRect(), cv = game.canvas?.getBoundingClientRect();
-    const ps = cam && p ? `${Math.round((p.x - cam.worldView.x) * cam.zoom)},${Math.round((p.y - cam.worldView.y) * cam.zoom)}` : '-';
-    el.textContent = `build ${__BUILD__} · inner ${innerWidth}x${innerHeight} · screen ${screen.width}x${screen.height}\n`
-      + `vv ${vv ? r(vv) + ' s' + vv.scale.toFixed(2) + ' top' + Math.round(vv.offsetTop) : '-'} · #game ${r(gameEl)}@${Math.round(gameEl.top)}\n`
-      + `canvas ${cv ? r(cv) + '@' + Math.round(cv.top) : '-'} · phaser ${game.scale.width}x${game.scale.height}\n`
-      + `cam ${cam ? r(cam) + ' z' + cam.zoom : '-'} · you ${ps}\n`
-      + `tap ${tap}`;
-  }, 500);
-}
 
 boot();
