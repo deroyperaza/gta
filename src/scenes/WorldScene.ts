@@ -4,6 +4,7 @@ import { state } from '../core/state';
 import { DISTRICTS, type District } from '../core/types';
 import { DIALOGUES } from '../data/dialogues';
 import { NPCS, PLAYER_LOOK, type NpcDef } from '../data/npcs';
+import { CAMEOS } from '../data/cameos';
 import { NONPROFITS } from '../data/nonprofits';
 import { flyerLine, pickLine, STREET_LINES, streetLine } from '../data/chatter';
 import { LESSONS } from '../data/lessons';
@@ -71,7 +72,7 @@ export class WorldScene extends Phaser.Scene {
   peds!: Pedestrians;
   private groundNames: Phaser.GameObjects.Text[] = [];
   private groundName(x: number, y: number, text: string, style: Phaser.Types.GameObjects.Text.TextStyle) { const t = this.add.text(x, y, text, style); this.groundNames.push(t); return t; }
-  private nameTags: { tag: Phaser.GameObjects.Text; x: number; y: number }[] = [];
+  private nameTags: { id: string; tag: Phaser.GameObjects.Text; x: number; y: number }[] = [];
   private fixedLabels: Phaser.Geom.Rectangle[] = [];
   private ballgames?: BallGames;
   traffic!: Traffic;
@@ -540,6 +541,11 @@ export class WorldScene extends Phaser.Scene {
       const sp = best ?? fallback ?? spots[0];
       tag.setPosition(x + sp[0], y + sp[1]);
       add(tag.getBounds());
+      if (Math.hypot(sp[0], sp[1]) > 60) { // a tag hanging farther off gets a thin line back to its person, so it can't read as a neighbor's
+        const b = tag.getBounds(), ex = Phaser.Math.Clamp(x, b.x, b.right), ey = Phaser.Math.Clamp(y - 10, b.y, b.bottom);
+        const line = this.add.line(0, 0, x, y - 10, ex, ey, 0x16101f, 0.55).setOrigin(0).setLineWidth(1.5).setDepth(1e5 - 1);
+        this.miniIgnore.push(line);
+      }
     }
   }
 
@@ -566,7 +572,7 @@ export class WorldScene extends Phaser.Scene {
       const blocker = solids.create(s.x, s.y - 8, undefined) as Phaser.Physics.Arcade.Image;
       blocker.setVisible(false); (blocker.body as Phaser.Physics.Arcade.StaticBody).setSize(22, 14);
       const tag = this.add.text(s.x, s.y - 40, ghost ? `👻 ${n.short.toUpperCase()}` : n.short.toUpperCase(), { fontFamily: 'Nunito, "Helvetica Neue", Arial, sans-serif', fontSize: '15px', fontStyle: '900', color: ghost ? '#2a3a5a' : '#16101f', backgroundColor: ghost ? '#dfeeff' : n.color, padding: { x: 7, y: 3 }, shadow: { offsetX: 2, offsetY: 2, color: '#16101f', blur: 0, fill: false, stroke: false } }).setOrigin(0.5).setDepth(1e5);
-      this.nameTags.push({ tag, x: s.x, y: s.y }); // placed once the station signs exist (placeNameTags)
+      this.nameTags.push({ id: n.id, tag, x: s.x, y: s.y }); // placed once the station signs exist (placeNameTags)
       this.miniIgnore.push(tag, spr);
       this.npcSprites[n.id] = spr;
       this.entityPos[n.id] = s;
@@ -1373,8 +1379,9 @@ export class WorldScene extends Phaser.Scene {
   private findPerson() {
     if (this.mode !== 'play' || ui.blocking()) return;
     if (this.transit.riding) { bus.emit('ui:toast', 'HOP OFF FIRST.'); return; }
-    const kind = (n: NpcDef) => (n as any).ghost ? 'Ghosts of Brooklyn' : (n as any).npOrg ? 'Nonprofit people' : (n as any).blockFolk ? 'Neighbors' : 'Characters';
-    const order = ['Characters', 'Neighbors', 'Nonprofit people', 'Ghosts of Brooklyn'];
+    const famous = new Set(CAMEOS.map((c) => c.id));
+    const kind = (n: NpcDef) => (n as any).ghost ? 'Ghosts of Brooklyn' : famous.has(n.id) ? 'Famous Brooklynites' : (n as any).npOrg ? 'Nonprofit people' : (n as any).blockFolk ? 'Neighbors' : 'Characters';
+    const order = ['Characters', 'Famous Brooklynites', 'Ghosts of Brooklyn', 'Neighbors', 'Nonprofit people'];
     const people = NPCS.filter((n) => this.entityPos[n.id]).map((n) => {
       const p = this.entityPos[n.id]!;
       const hood = neighborhoodAt(p.x, p.y);
@@ -1390,7 +1397,12 @@ export class WorldScene extends Phaser.Scene {
       const t = spots.find(theirs) ?? spots[0] ?? { x: p.x, y: p.y + 42 };
       (this.player.body as Phaser.Physics.Arcade.Body).reset(t.x, t.y);
       this.cameras.main.flash(250, 255, 79, 163);
-      bus.emit('ui:toast', `THERE'S ${(NPCS.find((n) => n.id === id)?.short ?? '').toUpperCase()}`);
+      const n = NPCS.find((x) => x.id === id);
+      bus.emit('ui:toast', `THERE'S ${(n?.short ?? '').toUpperCase()}`);
+      // No doubt who you found: their name tag pulses, and the conversation opens
+      const tag = this.nameTags.find((nt) => nt.id === id)?.tag;
+      if (tag) this.tweens.add({ targets: tag, scale: 1.3, duration: 260, yoyo: true, repeat: 3, ease: 'Sine.inOut', onComplete: () => tag.setScale(1) });
+      if (n && this.npcSprites[id]) this.time.delayedCall(450, () => { if (!ui.blocking()) this.talk(n); });
     });
   }
 
