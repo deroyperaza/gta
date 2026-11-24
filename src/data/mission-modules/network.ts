@@ -96,7 +96,7 @@ export const network: MissionModule = {
           { text: 'Not a clue.', next: 'net_1' },
         ] },
         net_1: { speaker: 'adaeze', text: 'Close. It pools a place\'s giving and puts it to work close to home. We\'re a partner and platform for local philanthropy, from Brooklyn, for Brooklyn. In 15+ years we\'ve moved more than $150 million to nonprofits.', next: 'net_2' },
-        net_2: { speaker: 'adaeze', text: 'We fund over 100 organizations a year, across every issue, and residents help decide where the grants go. All 261 groups we\'ve backed are out there. Look for the teal name tags.', next: 'net_2b' },
+        net_2: { speaker: 'adaeze', text: 'We fund over 100 organizations a year, across every issue, and residents help decide where the grants go. Hundreds of groups we\'ve backed are out there. Look for the teal name tags.', next: 'net_2b' },
         // brooklyn.org/about: "the advocate for Brooklyn's nonprofit community"; collaborates with "businesses, government, foundations, and more"; "leverage our civic influence to achieve systemic change"
         net_2b: { speaker: 'adaeze', text: 'And we\'re not just a bank. We\'re the advocate for Brooklyn\'s nonprofit community. We bring neighbors, nonprofits, local businesses, government and other funders to the same table. We know the groups, the issues and who to call, and we use that influence to push for real change.', next: 'net_3' },
         net_3: { speaker: 'adaeze', text: 'Your first assignment: meet four of this year\'s grantees, in different neighborhoods. Some just got grants, some are Spark Prize finalists. Ask what they do and actually listen.', choices: [

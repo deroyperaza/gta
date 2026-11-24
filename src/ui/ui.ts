@@ -675,7 +675,7 @@ class UI {
       + `<p class="sub">${spoken.length} of ${Object.keys(LANGS).length} languages started.</p>`;
     $('#journal .panel-body').innerHTML = `
       <div class="jcol"><h3>MISSIONS</h3>${mrows}
-        <h3>BROOKLYN ORG NETWORK</h3><p class="sub">All 261 Brooklyn nonprofits funded by Brooklyn Org, the borough's community foundation. Each has someone on the map. Learn what they do and they join your network.</p>${network}
+        <h3>BROOKLYN ORG NETWORK</h3><p class="sub">Hundreds of Brooklyn nonprofits funded by Brooklyn Org, the borough's community foundation. Each has someone on the map. Learn what they do and they join your network.</p>${network}
         <h3>POCKET CIVICS</h3><p class="sub">Everything you've learned, in your pocket. Later conversations will test it.</p>${lessons}
         <h3>PHRASEBOOK</h3><p class="sub">Every phrase a neighbor taught you, in their language.</p>${phrasebook}</div>
       <div class="jcol"><h3>THE MOVEMENT</h3>
