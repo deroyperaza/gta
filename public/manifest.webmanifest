@@ -1,6 +1,6 @@
 {
-  "name": "Gather and Take Action",
-  "short_name": "BK GTA",
+  "name": "Give and Take Action",
+  "short_name": "Give & Take",
   "description": "A satirical Brooklyn organizing game.",
   "start_url": "./",
   "scope": "./",
