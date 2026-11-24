@@ -516,6 +516,7 @@ body.touch #prompt .pa::before { content: attr(data-ico); font-size: 20px; }
   #stats { box-sizing: border-box; width: min(240px, calc(100vw - 150px)); max-width: none; }
   #hud-buttons { box-sizing: border-box; width: min(240px, calc(100vw - 150px)); top: calc(112px + env(safe-area-inset-top, 0px)); left: calc(8px + env(safe-area-inset-left, 0px)); right: auto; justify-content: space-between; }
   #hud-buttons button { flex: 1 1 auto; }
+  #hud-buttons kbd { display: none; } /* a narrow desktop window: key hints made the buttons two lines tall, under the mission box */
   #objective { top: calc(150px + env(safe-area-inset-top, 0px)); }
   #minimap-frame::after { content: 'MAP'; position: absolute; bottom: -12px; left: 50%; transform: translateX(-50%); background: #fff; color: var(--ink); font: 13px var(--display); letter-spacing: 1px; padding: 0 8px; border: 2.5px solid var(--ink); border-radius: 8px; }
 }

@@ -747,9 +747,9 @@ export function generateLayout(): WorldLayout {
       for (let i = props.length - 1; i >= 0; i--) { const tx = Math.floor(props[i].x / TILE), ty = Math.floor(props[i].y / TILE); if (tx >= x0 - 1 && tx <= x1 + 1 && ty >= y0 - 1 && ty <= y1 + 1) props.splice(i, 1); }
       spots.liufield_tl = { x: px(x0), y: px(y0) }; spots.liufield_br = { x: px(x1 + 1), y: px(y1 + 1) };
       spots.liufield = { x: px((x0 + x1 + 1) / 2), y: px(y1 + 1) + 8 };
-      // The painting (sprites/liu-campus.png, 640x428) fills the lot's width on its south edge (WorldScene.paintedLiu):
+      // The painting (sprites/liu-campus.png, 640x424) fills the lot's width on its south edge (WorldScene.paintedLiu):
       // the lawn above it is open ground again, and the name sits on the campus's north edge
-      const top = Math.max(px(y0), px(y1 + 1) + 22 - Math.round((px(x1 + 1) - px(x0) + 24) * 428 / 640));
+      const top = Math.max(px(y0), px(y1 + 1) - 4 - Math.round((px(x1 + 1) - px(x0) - 8) * 424 / 640));
       for (let y = y0; y < Math.floor(top / TILE); y++) for (let x = x0; x <= x1; x++) blocked[y][x] = false;
       labels.push({ text: 'LIU BROOKLYN FIELD', x: px((x0 + x1 + 1) / 2), y: top - 6 });
     }

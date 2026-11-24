@@ -1140,12 +1140,13 @@ export class WorldScene extends Phaser.Scene {
     const a = this.layout.spots.liufield_tl, b = this.layout.spots.liufield_br, sp = this.layout.spots.liufield;
     if (!a || !b || !sp || !this.textures.exists('lmk-liu')) return false;
     // Painted north-up for the tall lot (Deroy: field north, Paramount south), so no rotation and the light matches its neighbors
-    const img = this.add.image((a.x + b.x) / 2, b.y + 10, 'lmk-liu').setOrigin(0.5, 1);
-    const k = Math.min((b.x - a.x + 24) / img.width, (b.y - a.y + 10) / img.height);
+    // Kept inside the lot, a few pixels off the sidewalk on every side (Deroy: it was sitting on the sidewalk)
+    const img = this.add.image((a.x + b.x) / 2, b.y - 4, 'lmk-liu').setOrigin(0.5, 1);
+    const k = Math.min((b.x - a.x - 8) / img.width, (b.y - a.y - 8) / img.height);
     img.setScale(k).setDepth(b.y); // anyone on the sidewalk below draws in front
     // The campus painting is wider than tall, so it fills the lot's width and sits on its south edge: only the painted
     // part is solid, and the lawn left above it stays open to walk on
-    const top = Math.max(a.y, b.y + 10 - img.displayHeight + 12);
+    const top = Math.max(a.y, b.y - 4 - img.displayHeight);
     const wall = this.add.zone((a.x + b.x) / 2, (top + b.y) / 2, b.x - a.x, b.y - top); // solid, like any building
     this.physics.add.existing(wall, true); this.liuWall = wall; // collider added once the player exists
     this.interactables.push({ id: 'liufield', x: sp.x, y: sp.y - 30, r: 140, label: () => 'Book the field', act: () => bus.emit('ui:toast', 'LIU\'S FIELD BELONGS TO THE UNIVERSITY: ASK LIU. A CITY PARK FIELD? BOOK IT WITH AN NYC PARKS PERMIT, $25 TO PROCESS. (LUCO SAYS HI.)') });
