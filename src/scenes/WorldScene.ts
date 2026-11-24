@@ -22,6 +22,7 @@ import { drawParks } from '../world/parks';
 import { PAINTED } from '../data/landmarks';
 import { dialogue } from '../systems/dialogue';
 import { missions } from '../systems/missions';
+import type { MissionDef } from '../data/missions';
 import { ui, type ChoiceItem } from '../ui/ui';
 import { BLOCK_H, BLOCK_W, COLS, ROWS, RUNWAYS, RUNWAY_W, geo, neighborhoodOfBlock, GAP_CIRCLE, gapOutline, ROAD, T, TILE, WORLD_H, WORLD_W, districtAt, generateLayout, neighborhoodAt, type BuildingDef, type WorldLayout } from '../world/layout';
 import { makeProps } from '../world/textures';
@@ -190,6 +191,7 @@ export class WorldScene extends Phaser.Scene {
     bus.on('transit:alight', (p: { x: number; y: number }) => { (this.player.body as Phaser.Physics.Arcade.Body).reset(p.x, p.y); this.player.setVisible(true); });
     bus.on('ui:ride', () => this.rideApp());
     bus.on('ui:find', () => this.findPerson());
+    bus.on('mission:started', (def: MissionDef) => { if (!def.side && !def.comingSoon && this.entityPos[def.giver]) this.briefGiver = def.giver; });
     bus.on('event:dragon:quiz', () => this.time.delayedCall(250, () => this.dragonQuiz()));
     bus.on('event:dragon:ride', () => this.startDragon());
     bus.on('event:network', () => { // a Brooklyn Org grantee joins your network
@@ -788,7 +790,6 @@ export class WorldScene extends Phaser.Scene {
     this.cameras.main.startFollow(this.player, true, 0.12, 0.12);
     this.cameras.main.flash(400, 255, 140, 60);
     bus.emit('ui:toast', 'YOU JUST GOT OUT OF JURY DUTY');
-    setTimeout(() => bus.emit('ui:toast', 'FIND ADAEZE AT BROOKLYN ORG →'), 900); // Mission 1 starts with her
   }
 
   private loadGame() {
@@ -1441,21 +1442,8 @@ export class WorldScene extends Phaser.Scene {
     ui.choose({ title: 'Find someone', sub: 'Search by name, role or neighborhood. Pick one to jump there.', search: true,
       // Each category is an accordion with its count; searching opens the ones with matches
       items: people.map(({ n, g, sub }) => ({ value: n.id, label: n.name, sub, section: g, sectionHtml: `${g} <span class="ch-count">${people.filter((x) => x.g === g).length}</span>` })) }, (id) => {
-      const p = this.entityPos[id]; if (!p) return;
       state.setFlag('used_find', true);
-      // Land right beside them (in talking range), on open ground: not inside a building, not in the water
-      const clear = (x: number, y: number) => { const tile = this.layout.tiles[Math.floor(y / TILE)]?.[Math.floor(x / TILE)]; return tile != null && tile !== T.WATER && tile !== T.OFFMAP && !this.layout.buildings.some((b) => x > b.x - 12 && x < b.x + b.w + 12 && y > b.y - 12 && y < b.y + b.h + 12); };
-      const spots = [[0, 42], [0, -42], [42, 0], [-42, 0], [30, 30], [-30, 30], [30, -30], [-30, -30]].map(([dx, dy]) => ({ x: p.x + dx, y: p.y + dy })).filter((c) => clear(c.x, c.y));
-      const theirs = (c: { x: number; y: number }) => !this.interactables.some((it) => it.id !== id && Math.hypot(it.x - c.x, it.y - c.y) < 42); // E talks to them, not a neighbor
-      const t = spots.find(theirs) ?? spots[0] ?? { x: p.x, y: p.y + 42 };
-      (this.player.body as Phaser.Physics.Arcade.Body).reset(t.x, t.y);
-      this.cameras.main.flash(250, 255, 79, 163);
-      const n = NPCS.find((x) => x.id === id);
-      bus.emit('ui:toast', `THERE'S ${(n?.short ?? '').toUpperCase()}`);
-      // No doubt who you found: their name tag pulses, and the conversation opens
-      const tag = this.nameTags.find((nt) => nt.id === id)?.tag;
-      if (tag) this.tweens.add({ targets: tag, scale: 1.3, duration: 260, yoyo: true, repeat: 3, ease: 'Sine.inOut', onComplete: () => tag.setScale(1) });
-      if (n && this.npcSprites[id]) this.time.delayedCall(450, () => { if (!ui.blocking()) this.talk(n); });
+      this.jumpTo(id, true);
     });
   }
 
@@ -1556,10 +1544,37 @@ export class WorldScene extends Phaser.Scene {
   private celebrate(x: number, y: number) { this.hearts(x, y - 30, 20); this.cameras.main.flash(300, 255, 210, 63); }
 
   // ------------------------------------------------------------------ LOOP
+  /** Land right beside someone (Find, or a mission's giver when the mission starts) and, if asked, open the conversation */
+  private jumpTo(id: string, talk: boolean) {
+      const p = this.entityPos[id]; if (!p) return;
+      // Land right beside them (in talking range), on open ground: not inside a building, not in the water
+      const clear = (x: number, y: number) => { const tile = this.layout.tiles[Math.floor(y / TILE)]?.[Math.floor(x / TILE)]; return tile != null && tile !== T.WATER && tile !== T.OFFMAP && !this.layout.buildings.some((b) => x > b.x - 12 && x < b.x + b.w + 12 && y > b.y - 12 && y < b.y + b.h + 12); };
+      const spots = [[0, 42], [0, -42], [42, 0], [-42, 0], [30, 30], [-30, 30], [30, -30], [-30, -30]].map(([dx, dy]) => ({ x: p.x + dx, y: p.y + dy })).filter((c) => clear(c.x, c.y));
+      const theirs = (c: { x: number; y: number }) => !this.interactables.some((it) => it.id !== id && Math.hypot(it.x - c.x, it.y - c.y) < 42); // E talks to them, not a neighbor
+      const t = spots.find(theirs) ?? spots[0] ?? { x: p.x, y: p.y + 42 };
+      (this.player.body as Phaser.Physics.Arcade.Body).reset(t.x, t.y);
+      this.cameras.main.flash(250, 255, 79, 163);
+      const n = NPCS.find((x) => x.id === id);
+      bus.emit('ui:toast', `THERE'S ${(n?.short ?? '').toUpperCase()}`);
+      // No doubt who you found: their name tag pulses, and the conversation opens
+      const tag = this.nameTags.find((nt) => nt.id === id)?.tag;
+      if (tag) this.tweens.add({ targets: tag, scale: 1.3, duration: 260, yoyo: true, repeat: 3, ease: 'Sine.inOut', onComplete: () => tag.setScale(1) });
+      if (talk && n && this.npcSprites[id]) this.time.delayedCall(450, () => { if (!ui.blocking()) this.talk(n); });
+  }
+
+  /** Each main mission starts where it's explained: once nothing is on screen, you land by the giver and their window opens (Deroy, Nov 24 2026) */
+  private briefGiver: string | null = null;
+  private briefCheck() {
+    if (!this.briefGiver || this.mode !== 'play' || ui.blocking() || this.transit.riding) return;
+    const id = this.briefGiver; this.briefGiver = null;
+    this.time.delayedCall(700, () => this.jumpTo(id, true));
+  }
+
   /** Mission 1 travel tips: how to reach your next grantee faster, by distance (a bike for short hops, transit for long ones) */
   private tipAt = 0; private tipsSeen = new Set<string>();
   private travelTips(now: number) {
     if (now < this.tipAt) return; this.tipAt = now + 1500;
+    if (document.getElementById('tip')?.hidden === false) return; // another tip is up (the goal tip after Mission 1's briefing)
     const m = missions.active;
     if (m?.id !== 'network' || state.mission('network').stage !== 1 || this.mode !== 'play' || ui.blocking() || this.onBike || this.transit.riding) return;
     const next = netPicks().filter((id) => !state.flag(`net_${id}`) && this.entityPos[id])
@@ -1579,6 +1594,7 @@ export class WorldScene extends Phaser.Scene {
 
   update(_t: number, deltaMs: number) {
     this.travelTips(_t);
+    this.briefCheck();
     { const want = this.mode === 'play' && !!missions.active?.night; if (want !== this.night) this.setNight(want); } // night missions
     const dt = Math.min(deltaMs, 50) / 1000;
     const blocking = ui.blocking() || this.mode !== 'play';

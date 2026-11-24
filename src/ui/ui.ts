@@ -62,6 +62,9 @@ class UI {
     });
     $('#tip .close').addEventListener('click', (e) => { e.stopPropagation(); $('#tip').hidden = true; });
     bus.on('event:network', () => { $('#tip').hidden = true; });
+    // The goal in one line, after you've taken your first mission and closed the conversation (Deroy, Nov 24 2026): (i) has the rest
+    bus.on('event:goaltip', () => { const t = window.setInterval(() => { if (this.blocking()) return; clearInterval(t);
+      bus.emit('ui:tip', 'Earn Solidarity, Power and Trust. Keep Attention low. Tap (i) for how it works.', 5000); }, 400); });
     bus.on('mission:passed', () => { $('#tip').hidden = true; }); // no travel tip behind the Mission Passed screen // you just met a group: a tip about reaching it is stale
     bus.on('flyers:gained', (n: number) => this.showFlyer('big', n));
     bus.on('flyer:handed', () => this.showFlyer('mini'));
@@ -91,8 +94,6 @@ class UI {
   private pendingStart: string | null = null;
   private begin(ev: 'game:new' | 'game:load') {
     this.startPlay(); if (this.world) bus.emit(ev); else this.pendingStart = ev;
-    // The goal in one line, not the whole how-it-works panel (Deroy, Nov 24 2026): the (i) button has the rest
-    if (ev === 'game:new') setTimeout(() => bus.emit('ui:tip', 'Earn Solidarity, Power and Trust. Keep Attention low. Tap (i) for how it works.', 5000), 900);
   }
 
   blocking() { return this.panel !== null || this.dialogueOpen; }

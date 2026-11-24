@@ -100,7 +100,7 @@ export const network: MissionModule = {
         // brooklyn.org/about: "the advocate for Brooklyn's nonprofit community"; collaborates with "businesses, government, foundations, and more"; "leverage our civic influence to achieve systemic change"
         net_2b: { speaker: 'adaeze', text: 'And we\'re not just a bank. We\'re the advocate for Brooklyn\'s nonprofit community. We bring neighbors, nonprofits, local businesses, government and other funders to the same table. We know the groups, the issues and who to call, and we use that influence to push for real change.', next: 'net_3' },
         net_3: { speaker: 'adaeze', text: 'Your first assignment: meet four of this year\'s grantees, in different neighborhoods. Some just got grants, some are Spark Prize finalists. Ask what they do and actually listen.', choices: [
-          { text: 'On it. Who are they?', next: 'net_4', effects: { flags: { net1_accepted: true }, rel: { adaeze: 3 } } },
+          { text: 'On it. Who are they?', next: 'net_4', effects: { flags: { net1_accepted: true }, rel: { adaeze: 3 }, event: 'goaltip' } },
         ] },
         net_4: { speaker: 'adaeze', text: 'They\'re in your mission box, and pinned on your map. Hit FIND [F] to jump to one, or take the train. Fun fact: through December 31, we match up to $10,000 in gifts to every Spark Prize finalist on Brooklyn Gives.' },
         net_wait: { speaker: 'adaeze', text: 'Still out there? Your four are in the mission box. The best stuff is never all on one block.' },
