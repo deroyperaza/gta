@@ -1458,7 +1458,7 @@ export class WorldScene extends Phaser.Scene {
       // Each category is an accordion with its count; searching opens the ones with matches
       items: [
         // Brooklyn Org itself: a button at the top that takes you to Adaeze at its storefront
-        ...(this.entityPos['adaeze'] ? [{ value: 'adaeze', label: 'Brooklyn Org', sub: `Adaeze, Grants Officer${neighborhoodAt(this.entityPos['adaeze']!.x, this.entityPos['adaeze']!.y) ? ` · ${neighborhoodAt(this.entityPos['adaeze']!.x, this.entityPos['adaeze']!.y)}` : ''}` }] : []),
+        ...(this.entityPos['adaeze'] ? [{ value: 'adaeze', label: 'Brooklyn Org' }] : []),
         ...people.map(({ n, g, sub }) => ({ value: n.id, label: n.name, sub, section: g, sectionHtml: `<i class="ch-swatch" style="background:${labelColor(n)}"></i>${g} <span class="ch-count">${people.filter((x) => x.g === g).length}</span>` }))] }, (id) => {
       state.setFlag('used_find', true);
       this.jumpTo(id, true);
