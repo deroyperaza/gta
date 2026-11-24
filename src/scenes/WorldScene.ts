@@ -167,6 +167,7 @@ export class WorldScene extends Phaser.Scene {
     }
     makeCharacter(this, 'player', PLAYER_LOOK, true, PLAYER_RES);
     makeBikeRider(this, 'player-bike', PLAYER_LOOK, PLAYER_RES);
+    for (const n of NPCS) if ((n as any).npOrg && !LAZY_BUSTS.includes(n.id)) (n as any).noPortrait = true; // staffers not painted yet talk without a portrait; painted ones get added to LAZY_BUSTS (Deroy, Nov 24 2026)
     for (const n of NPCS) makeCharacter(this, `npc-${n.id}`, n.look, !(n as any).blockFolk && !(n as any).npOrg && !BUSTS.includes(n.id) && !LAZY_BUSTS.includes(n.id)); // neighbors' and staffers' portraits wait for the first chat; painted ones load after startup
     makeCharacter(this, 'vendor-rosa', { skin: '#c58a5c', hair: '#3a2a1a', style: 'bun', shirt: '#ff8a3d', pants: '#3a2a5a', acc: 'apron', dress: true });
     makeCharacter(this, 'vendor-hamid', { skin: '#a8714a', hair: '#1a1010', style: 'cap', hatColor: '#ff4b4b', shirt: '#fff', pants: '#2b3a6b', acc: 'apron' });

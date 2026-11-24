@@ -534,7 +534,7 @@ class UI {
     $<HTMLElement>('#dlg-name').style.background = (npc as any)?.ghost ? labelColor(npc!) : npc?.color ?? '#ff4fa3'; // Icons: their map color, so the gold crown reads
     $('#dlg-portrait').classList.remove('ghost'); // Brooklyn Icons' portraits show as painted (no spectral tint)
     this.drawPortrait(npc ? `npc-${npc.id}` : d.speaker === 'Doña Rosa' ? 'vendor-rosa' : d.speaker === 'Hamid' ? 'vendor-hamid' : d.owner === 'cat' ? 'cat' : d.owner === 'fridge' ? 'fridge-full' : d.owner === 'gop' ? 'gop0' : 'player');
-    $<HTMLElement>('#dlg-portrait').style.display = (npc as any)?.blockFolk ? 'none' : ''; // Neighbors talk without a portrait (their drawn ones weren't good enough)
+    $<HTMLElement>('#dlg-portrait').style.display = (npc as any)?.blockFolk || (npc as any)?.noPortrait ? 'none' : ''; // Neighbors, and staffers not painted yet, talk without a portrait (their drawn ones weren't good enough)
     const rel = npc ? state.rel(npc.id) : null;
     $('#dlg-rel').innerHTML = rel != null ? `<span>RELATIONSHIP</span><div class="rt"><i style="width:${(rel + 100) / 2}%"></i></div>` : '';
     $('#dialogue').classList.add('open');
