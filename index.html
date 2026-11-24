@@ -4,7 +4,8 @@
   <meta charset="UTF-8" />
   <!-- Google Analytics 4 (property "Give and Take Action", Hyperakt account): only on the live site, so dev and test runs don't count -->
   <script>
-    if (/(^|\.)giveandtakeaction\.org$/.test(location.hostname)) {
+    // Skips automated browsers too (crawlers, test scripts): navigator.webdriver is true in headless Chrome, Playwright and Selenium
+    if (/(^|\.)giveandtakeaction\.org$/.test(location.hostname) && !navigator.webdriver) {
       var ga = document.createElement('script'); ga.async = true; ga.src = 'https://www.googletagmanager.com/gtag/js?id=G-21FDRSQPYE'; document.head.appendChild(ga);
       window.dataLayer = window.dataLayer || [];
       window.gtag = function () { dataLayer.push(arguments); };
