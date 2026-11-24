@@ -379,7 +379,7 @@ class UI {
     ($('#goal-pointer i') as HTMLElement).style.transform = `rotate(${ang}rad)`;
     const b = $('#goal-pointer b'); if (b.textContent !== g.label) b.textContent = g.label;
     // keep the label inside the screen: it sits on the inner side of the arrow
-    b.style.transform = `translate(calc(-50% + ${(-Math.cos(ang) * 62).toFixed(1)}px), calc(-50% + ${(-Math.sin(ang) * 44).toFixed(1)}px))`; // on the inner side of the arrow, toward the middle of the screen
+    b.style.transform = `translate(calc(-50% + ${(-Math.cos(ang) * 92).toFixed(1)}px), calc(-50% + ${(-Math.sin(ang) * 58).toFixed(1)}px))`; // on the inner side of the arrow, toward the middle of the screen
   }
 
   tick() {

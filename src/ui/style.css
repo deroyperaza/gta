@@ -505,7 +505,7 @@ button, a, .pa, .ch-item, #touch-btns button, #hud-buttons button { touch-action
 /* Goal pointer: off-screen target, on the edge of the open play area */
 #goal-pointer { position: absolute; width: 0; height: 0; pointer-events: none; z-index: 3; }
 #goal-pointer[hidden] { display: none; }
-#goal-pointer i { position: absolute; left: -26px; top: -26px; width: 52px; height: 52px; background: no-repeat center / contain url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 52 52'%3E%3Cpath d='M48 26 10 6 18 26 10 46Z' fill='%23f5c242' stroke='%2316101f' stroke-width='4' stroke-linejoin='round'/%3E%3C/svg%3E"); filter: drop-shadow(0 3px 0 rgba(22,16,31,.6)); animation: goal-pulse 1s ease-in-out infinite; }
+#goal-pointer i { position: absolute; left: -32px; top: -32px; width: 64px; height: 64px; z-index: 1; background: no-repeat center / contain url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 52 52'%3E%3Cpath d='M48 26 10 6 18 26 10 46Z' fill='%23f5c242' stroke='%2316101f' stroke-width='4' stroke-linejoin='round'/%3E%3C/svg%3E"); filter: drop-shadow(0 0 2px #fff) drop-shadow(0 0 2px #fff) drop-shadow(0 3px 0 rgba(22,16,31,.6)); /* white halo: reads on dark ground too */ animation: goal-pulse 1s ease-in-out infinite; }
 #goal-pointer b { position: absolute; left: 0; top: 0; white-space: nowrap; font: 15px/1 var(--display); letter-spacing: 1px; color: var(--ink); background: var(--yellow); border: 2.5px solid var(--ink); border-radius: 9px; padding: 4px 8px 3px; box-shadow: 2px 2px 0 var(--ink); }
 @keyframes goal-pulse { 50% { scale: 1.15; } }
 /* ---------- Phone controls, cleaned up (Nov 2026) ----------
@@ -646,3 +646,5 @@ body:not(.touch) #touch-pad.held { cursor: grabbing; }
 #mission-intro.show.out { animation: introOut .5s ease forwards; } /* fades as the giver's window opens */
 @keyframes introOut { from { opacity: 1; } to { opacity: 0; } }
 .ch-swatch { display: inline-block; width: 14px; height: 14px; border: 2px solid var(--ink); border-radius: 4px; margin-right: 8px; vertical-align: -1px; } /* Find: each kind's map label color */
+.support-bko { display: inline-block; margin-top: 12px; font: 900 14px var(--body); color: #fff; text-decoration: underline; text-decoration-color: var(--yellow); text-decoration-thickness: 2px; text-underline-offset: 4px; }
+.support-bko:hover { color: var(--yellow); }
