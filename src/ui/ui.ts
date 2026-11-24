@@ -664,7 +664,7 @@ class UI {
       return `<div class="jm ${cls}"><div class="jm-h"><span>${def.side ? `${def.kind ?? 'MEDIATION'} ·` : '#' + def.number} ${def.title}</span><em>${status}</em></div>${body}</div>`;
     }).join('');
     const trust = (Object.keys(DISTRICTS) as District[]).map((k) => `<div class="bar"><label style="color:${DISTRICTS[k].color}">${DISTRICTS[k].name}</label><div class="track"><i style="width:${(d.trust[k] + 100) / 2}%;background:${DISTRICTS[k].color}"></i></div><b>${d.trust[k]}</b></div>`).join('');
-    const people = NPCS.filter((n) => !(n as any).npOrg).map((n) => { // staffers live in the network section
+    const people = NPCS.filter((n) => !(n as any).npOrg).sort((a, b) => Number(b.id in d.relationships) - Number(a.id in d.relationships)).map((n) => { // staffers live in the network section; people you've met come first (Deroy, Nov 24 2026)
       const met = n.id in d.relationships;
       const r = state.rel(n.id);
       return `<div class="person ${met ? '' : 'unmet'}"><div class="p-h"><b style="color:${n.color}">${met ? n.name : '???'}</b><em>${met ? n.title : DISTRICTS[n.district].name}</em></div>
