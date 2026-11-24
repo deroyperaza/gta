@@ -521,9 +521,9 @@ class UI {
     // Scene-setting lines (*in italics*) show the person you're talking to, not your own face
     const npc = NPC_BY_ID[d.speaker] ?? (d.speaker === 'you' && d.text.trim().startsWith('*') ? NPC_BY_ID[d.owner] : undefined);
     const name = npc ? npc.name : d.speaker === 'you' ? 'You' : d.speaker;
-    $('#dlg-name').textContent = name;
+    $('#dlg-name').textContent = (npc as any)?.ghost ? `👑 ${name}` : name; // Brooklyn Icons wear a crown on their card
     $('#dlg-title').textContent = npc ? npc.title : '';
-    $<HTMLElement>('#dlg-name').style.background = npc?.color ?? '#ff4fa3';
+    $<HTMLElement>('#dlg-name').style.background = (npc as any)?.ghost ? labelColor(npc!) : npc?.color ?? '#ff4fa3'; // Icons: their map color, so the gold crown reads
     $('#dlg-portrait').classList.remove('ghost'); // Brooklyn Icons' portraits show as painted (no spectral tint)
     this.drawPortrait(npc ? `npc-${npc.id}` : d.speaker === 'Doña Rosa' ? 'vendor-rosa' : d.speaker === 'Hamid' ? 'vendor-hamid' : d.owner === 'cat' ? 'cat' : d.owner === 'fridge' ? 'fridge-full' : d.owner === 'gop' ? 'gop0' : 'player');
     const rel = npc ? state.rel(npc.id) : null;
