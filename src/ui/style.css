@@ -625,3 +625,7 @@ body:not(.touch) #touch-pad.held { cursor: grabbing; }
 #tip .close { position: absolute; top: 6px; right: 6px; width: 26px; height: 26px; border: 2px solid var(--ink); border-radius: 50%; background: var(--yellow); font: 900 12px/1 Nunito, Arial, sans-serif; cursor: pointer; }
 @keyframes tipIn { from { opacity: 0; } }
 @media (max-width: 600px) { #tip { top: auto; bottom: calc(250px + env(safe-area-inset-bottom, 0px)); } }
+
+/* A staffer's donate link beside DONE in the conversation box */
+#dlg-more { display: flex; justify-content: flex-end; align-items: center; gap: 12px; flex-wrap: wrap; }
+#dlg-more a.give.dlg-give { margin-top: 0; align-self: center; font-size: 17px; padding: 6px 12px; }

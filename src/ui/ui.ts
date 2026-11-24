@@ -260,6 +260,7 @@ class UI {
     });
     $('#dialogue').addEventListener('click', (e) => {
       if ((e.target as HTMLElement).closest('#dlg-close')) { e.stopPropagation(); dialogue.end(); return; }
+      if ((e.target as HTMLElement).closest('a.give')) { e.stopPropagation(); return; } // a donate link opens its page; the conversation stays put
       const btn = (e.target as HTMLElement).closest('[data-choice]');
       if (btn) this.pick(Number(btn.getAttribute('data-choice')));
       else this.advanceDialogue();
@@ -531,7 +532,9 @@ class UI {
     $('#dlg-more').style.visibility = d.choices.length ? 'hidden' : 'visible';
     // Say plainly that there's more: a real button, "keep going" when another line follows, "done" on the last one
     const more = !!(dialogue as any).node?.next;
-    $('#dlg-more').innerHTML = `<button type="button" class="dlg-go">${more ? 'KEEP GOING ▶' : 'DONE ✓'}<kbd>E</kbd></button>`;
+    // A nonprofit staffer's last line carries their donate link (Brooklyn Gives first, else their own page)
+    const gl = !more && (npc as any)?.npOrg ? giveLink((npc as any).org) : null;
+    $('#dlg-more').innerHTML = `${gl ? `<a class="give dlg-give" href="${gl.url}" target="_blank" rel="noopener">${gl.label}</a>` : ''}<button type="button" class="dlg-go">${more ? 'KEEP GOING ▶' : 'DONE ✓'}<kbd>E</kbd></button>`;
     // typewriter
     if (this.typing) clearInterval(this.typing.timer);
     const textEl = $('#dlg-text'); textEl.textContent = '';
