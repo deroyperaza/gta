@@ -68,12 +68,12 @@ const short = (id: string) => NP[id].org.replace(/^The /, '').replace(/ \(.*\)$/
 
 export const network: MissionModule = {
   mission: {
-    id: 'network', number: 1, title: 'MEET THE NETWORK', district: 'downtown', giver: 'adaeze',
+    id: 'network', number: 1, title: 'MEET BROOKLYN ORG NONPROFIT GRANTEES', district: 'downtown', giver: 'adaeze',
     tagline: 'Brooklyn Org funds groups in every corner of the borough. Go meet four of them where they work.',
     stages: [
       { text: () => 'Meet Adaeze at Brooklyn Org, by Hanson Place', targets: () => ['adaeze'], done: () => f('net1_accepted') },
       {
-        text: () => `Meet some Brooklyn Org grantees (${met().length}/${netPicks().length}):\n${netPicks().map((id) => `${f(`net_${id}`) ? '☑' : '☐'} ${short(id)}`).join('\n')}`, // a checklist (Deroy, Nov 24 2026)
+        text: () => `${netPicks().map((id) => `${f(`net_${id}`) ? '☑' : '☐'} ${short(id)}`).join('\n')}`, // just the checklist: the purple mission title says what to do (Deroy, Nov 24 2026) // a checklist (Deroy, Nov 24 2026)
         targets: () => left(),
         done: () => left().length === 0,
       },
