@@ -27,11 +27,12 @@ function tagName(name: string) {
   for (const w of words) { if ((out + ' ' + w).trim().length > 22) break; out = (out + ' ' + w).trim(); }
   return out + '…';
 }
-/** Brooklyn Org's own blurbs sometimes open with "This grant is part of…": skip to what the group does */
-const lead = (t: string) => t.split(/(?<=[.!?])\s/).filter((x) => !/^This (grant|project|award)/i.test(x)).join(' ') || t;
+/** Brooklyn Org's own blurbs sometimes open with "This grant is part of…": skip to what the group does.
+ *  Sentences end at . ! ? followed by a capital, so "S.T.O.P. protects" and "Mr. & Ms. Destiny" stay whole (Nov 24 2026) */
+const lead = (t: string) => t.split(/(?<=[.!?])(?<!\b(?:Mr|Ms|Mrs|Dr|St|Jr|Sr|Ave|No)\.)\s(?=[A-Z0-9"“(])/).filter((x) => !/^This (grant|project|award)/i.test(x)).join(' ') || t;
 /** One short, complete idea of what the group does, for quiz answers */
 function gistOf(desc: string) {
-  let s = lead(desc).split(/(?<=[.!?])\s/)[0].replace(/\.$/, '');
+  let s = lead(desc).split(/(?<=[.!?])(?<!\b(?:Mr|Ms|Mrs|Dr|St|Jr|Sr|Ave|No)\.)\s(?=[A-Z0-9"“(])/)[0].replace(/\.$/, '');
   let best = s.length;
   for (const cut of [' by ', ' through ', ' while ', ', including ', ', such as ', ', from ', '; ']) { const i = s.indexOf(cut); if (i >= 40 && i < best) best = i; }
   s = s.slice(0, best).replace(/[,;:]$/, '');
@@ -61,7 +62,7 @@ function firstPerson(t: string) {
   }
   return `We ${base.toLowerCase()}${head}${tail}`;
 }
-const firstSentences = (desc: string) => { const parts = lead(desc).split(/(?<=[.!?])\s/); let t = parts[0]; if (t.length < 90 && parts[1]) t += ' ' + parts[1]; return t; };
+const firstSentences = (desc: string) => { const parts = lead(desc).split(/(?<=[.!?])(?<!\b(?:Mr|Ms|Mrs|Dr|St|Jr|Sr|Ave|No)\.)\s(?=[A-Z0-9"“(])/); let t = parts[0]; if (t.length < 90 && parts[1]) t += ' ' + parts[1]; return t; };
 
 const FIRST = ['Maya', 'Andre', 'Rosa', 'Kwame', 'Priya', 'Devon', 'Leila', 'Marisol', 'Tomas', 'Aisha', 'Jonah', 'Grace', 'Rafael', 'Nia', 'Omar', 'Ingrid', 'Malik', 'Yesenia', 'Chen', 'Fatou', 'Sam', 'Imani', 'Luis', 'Talia', 'Darius', 'Esther', 'Kofi', 'Bianca', 'Hector', 'Shanice', 'Yuri', 'Noor', 'Gabe', 'Ama', 'Reggie', 'Sofia', 'Jamal', 'Mei', 'Ezra', 'Keisha', 'Arjun', 'Lupita', 'Desmond', 'Hana', 'Theo', 'Zainab', 'Marcus', 'Ruth', 'Andrés', 'Tamika'];
 const ROLES = ['Organizer', 'Program Director', 'Volunteer Coordinator', 'Youth Worker', 'Outreach Lead', 'Community Liaison', 'Case Manager', 'Executive Director', 'Teaching Artist', 'Volunteer'];
