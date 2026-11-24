@@ -105,7 +105,7 @@ export const NPCS: NpcDef[] = [
     idle: ['The small kids get the ball sometimes. That is soccer justice.', 'The street is the biggest park we have.'],
   },
   {
-    id: 'danae', name: 'Danae', short: 'Danae', title: 'The Designer', district: 'parkslope', spot: 'danae', color: '#ff9a7a',
+    id: 'danae', name: 'Danae', short: 'Danae', title: 'The Designer', district: 'plg', spot: 'danae', color: '#ff9a7a',
     look: { skin: '#e0a88a', hair: '#2a170e', style: 'curly', shirt: '#f08a78', pants: '#c8885a', shoes: '#c8322a' },
     bio: 'Builds museum exhibitions. Wants every kid in Brooklyn to know the museum is theirs too.',
     idle: ['Library card. City ID. Museums. In that order.', 'The museum is yours. You already paid for it.'],

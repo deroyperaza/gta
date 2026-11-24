@@ -119,7 +119,7 @@ const BLOCKS: Record<string, BlockSpec> = {
   '11,10': { kind: 'park', name: 'Brooklyn Botanic Garden' }, // behind the Brooklyn Museum, like the real one
   '6,9': { kind: 'garden', name: 'Fifth Ave Community Garden' },
   '7,10': { kind: 'row', landmarks: [
-    { id: 'yoga', type: 'boutique', w: 5, name: 'HOT YOGA FOR CAPITALISTS', spot: 'danae' },
+    { id: 'yoga', type: 'boutique', w: 5, name: 'HOT YOGA FOR CAPITALISTS' },
     { id: 'laundry1', type: 'laundromat', w: 4, name: 'SUDS OF SOLIDARITY' },
     { id: 'oat', type: 'coffee', w: 4, name: '14 OAT MILKS' } ] },
   // ---------- BED-STUY ----------
@@ -165,7 +165,7 @@ const BLOCKS: Record<string, BlockSpec> = {
   '11,11': { kind: 'row', landmarks: [{ id: 'plgarms', type: 'apartment', w: 8, name: 'THE PARKSIDE-ISH ARMS' }] },
   '10,11': { kind: 'row', landmarks: [
     { id: 'plglegal', type: 'government', w: 6, name: 'FREE TENANT LAWYERS, 2ND FL' },
-    { id: 'plgcoffee', type: 'coffee', w: 4, name: 'LIMESTONE COFFEE' } ] },
+    { id: 'plgcoffee', type: 'coffee', w: 4, name: 'LIMESTONE COFFEE', spot: 'danae' } ] }, // Danae lives in PLG (Deroy, Nov 24 2026)
   // ---------- RED HOOK ----------
   '3,9': { kind: 'lot', landmarks: [
     { id: 'flatpack', type: 'warehouse', w: 9, name: 'FLAT-PACK FURNITURE MEGASTORE' },

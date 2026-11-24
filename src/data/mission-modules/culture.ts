@@ -31,7 +31,7 @@ export const culture: MissionModule = {
     id: 'culture', number: 12, title: 'FREE FOR ALL', district: 'crownheights', giver: 'danae',
     tagline: 'Twelve kids live ten minutes from the Brooklyn Museum and have never been inside. Fix that for zero dollars.',
     stages: [
-      { text: () => 'Meet Danae in Park Slope', targets: () => ['danae'], done: () => f('culture_accepted') },
+      { text: () => 'Meet Danae in Prospect Lefferts Gardens', targets: () => ['danae'], done: () => f('culture_accepted') },
       { text: () => 'Get the kids library cards: find Naim on the Central Library steps', targets: () => ['naim'], done: () => f('culture_cards') },
       {
         text: () => `Library card drive at Grand Army Plaza: hand out flyers [SPACE] (${Math.min(flyers(), 5)}/5)${f('at_gap') ? '' : ' · get to the plaza'}`,
@@ -52,7 +52,7 @@ export const culture: MissionModule = {
     ],
     rewards: (): Effect => {
       const r = state.flag('culture_result');
-      if (r === 'good') return { solidarity: 320, power: 3, trust: { crownheights: 20, parkslope: 6 }, rel: { danae: 10, naim: 5 }, toast: 'THE MUSEUM IS THEIRS' };
+      if (r === 'good') return { solidarity: 320, power: 3, trust: { crownheights: 20, plg: 6 }, rel: { danae: 10, naim: 5 }, toast: 'THE MUSEUM IS THEIRS' };
       if (r === 'ok') return { solidarity: 170, power: 1, trust: { crownheights: 10 }, rel: { danae: 4 } };
       return { solidarity: 70, trust: { crownheights: 3 } };
     },

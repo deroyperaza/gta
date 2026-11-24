@@ -447,7 +447,7 @@ export const DIALOGUES: Record<string, Dialogue> = {
       pass: { speaker: 'danae', text: 'Culture Pass. With a Brooklyn Public Library card you can reserve free passes to more than a hundred museums, gardens and theaters.', next: 'pass2' },
       pass2: {
         speaker: 'danae', text: 'And IDNYC, the free city ID, gets you free one-year memberships at a bunch of museums. Library card plus city ID. That\'s a whole year of culture for zero dollars.',
-        choices: [{ text: 'Library card drive this weekend.', effects: { rel: { danae: 6 }, solidarity: 10, trust: { parkslope: 3 }, toast: 'POCKET CIVICS · CULTURE PASS + IDNYC' } }],
+        choices: [{ text: 'Library card drive this weekend.', effects: { rel: { danae: 6 }, solidarity: 10, trust: { plg: 3 }, toast: 'POCKET CIVICS · CULTURE PASS + IDNYC' } }],
       },
       fave: { speaker: 'danae', text: 'Whichever one a kid is standing in front of with their mouth open. That\'s the exhibit working.', next: 'pass' },
       after: { speaker: 'danae', text: 'Library card. City ID. Museums. In that order.' },
