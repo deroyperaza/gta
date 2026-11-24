@@ -600,6 +600,14 @@ export class WorldScene extends Phaser.Scene {
     this.minimap.setZoom(0.09 * DPR).setBounds(0, 0, WORLD_W, WORLD_H).setBackgroundColor('#1b1230');
     this.minimap.startFollow(this.player, true, 1, 1);
     this.layoutMinimap();
+    // Safari can move the HUD without a resize (its toolbars and the status-bar inset settle after load): when the
+    // scorecard or button row shifts, line the map back up with them
+    let hudAt = '';
+    this.time.addEvent({ delay: 500, loop: true, callback: () => {
+      const st = document.getElementById('stats')?.getBoundingClientRect(), hb = document.getElementById('hud-buttons')?.getBoundingClientRect();
+      const at = st && hb ? `${Math.round(st.top)},${Math.round(st.right)},${Math.round(hb.bottom)},${innerWidth}` : '';
+      if (at !== hudAt) { hudAt = at; this.layoutMinimap(); }
+    } });
     this.mmPlayer = this.add.image(0, 0, 'mm-player').setDepth(2e6).setScale(1.2);
     this.cameras.main.ignore(this.mmPlayer);
     this.minimap.ignore([this.player, this.arrow, ...this.miniIgnore, ...this.peds.sprites(), ...this.opp.sprites(), ...this.traffic.lightSprites]);
