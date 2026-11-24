@@ -630,3 +630,14 @@ body:not(.touch) #touch-pad.held { cursor: grabbing; }
 #dlg-more { display: flex; justify-content: flex-end; align-items: center; gap: 12px; flex-wrap: wrap; }
 #dlg-more a.give.dlg-give { margin-top: 0; align-self: center; font-size: 17px; padding: 6px 12px; }
 #tip[hidden] { display: none; } /* the flex layout above would otherwise override [hidden] */
+/* Mission Passed on short windows (a 720px-tall laptop): scale to the window height so the mission line on top isn't cut off */
+#passed { justify-content: safe center; overflow-y: auto; }
+@media (max-height: 820px) and (min-width: 601px) {
+  #passed .mp-sub { font-size: 20px; }
+  #passed .mp-big { font-size: min(10.5vw, 12.5vh); }
+  #passed .mp-extra { margin-top: 4px; font-size: 22px; }
+  #passed .mp-lines { margin: 8px 0; }
+  #passed .mp-lines li { font-size: min(3.4vw, 4.4vh); }
+  #passed .mp-cards { max-height: 32vh; }
+  #passed .mp-real { margin-bottom: 8px; }
+}
