@@ -20,6 +20,7 @@
  */
 import { state } from '../../core/state';
 import { NONPROFITS } from '../nonprofits';
+import { giveUrl } from '../bkgives';
 import type { MissionModule } from './types';
 
 const f = (k: string) => !!state.flag(k);
@@ -52,7 +53,7 @@ export const POOL: [string, string][] = [
   ['np_streetvendorproject', '2026 BKO Spark Prize Finalist'],
   ['np_thealexhouseproject', '2026 BKO Spark Prize Finalist'],
   ['np_thebravehouse', '2026 BKO Spark Prize Finalist'],
-].filter(([id]) => NONPROFITS.some((n) => n.id === id)) as [string, string][];
+].filter(([id]) => { const n = NONPROFITS.find((x) => x.id === id); return !!n && !!giveUrl(n.org); }) as [string, string][]; // only groups with a Brooklyn Gives page (Deroy, Nov 24 2026)
 
 const NP = Object.fromEntries(NONPROFITS.map((n) => [n.id, n]));
 /** This game's four (drawn at New Game); an older save without them falls back to the first four of the pool */
