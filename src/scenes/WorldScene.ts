@@ -42,6 +42,8 @@ const WALK = 150, RUN = 245, BIKE = 330, BIKE_RUN = 410;
 const BUSTS = ['dee', 'hattie', 'farouk', 'juni', 'tyler', 'gary', 'skye', 'marcus', 'priya', 'brendan', 'deroy', 'jenna', 'nell', 'bridgette', 'adrian', 'danae', 'jon', 'emily', 'naim', 'luco', 'vega', 'cole', 'scott', 'darnell', 'grace', 'bev', 'okafor', 'andre', 'yara', 'inez', 'celestine', 'kofi', 'jasmine',
   'capone', 'tweed', 'greeley', 'bernstein', 'basquiat', 'tiffany', 'jackie', 'whitman', 'mckinney', 'ebbets', 'chadwick', 'beecher', 'clinton', 'morse', 'chisholm', 'lenahorne', 'biggie', 'rbg', 'yauch',
   'spikelee', 'carmelo', 'rosieperez', 'yasiinbey', 'chrisrock', 'streisand', 'jayz', 'bernie', 'melbrooks', 'mamdani', 'reynoso', 'hanif', 'jumaane', 'osse', 'tishjames', 'jeffries', 'schumer'];
+/** Painted portraits for neighbors and side characters: fetched on the first chat, not at startup, to keep phones' image memory down */
+const LAZY_BUSTS = ['abe', 'marisol', 'desmond', 'nadine', 'motti', 'yvette', 'adaeze', 'pearl', 'wen', 'haddad'];
 /** Street objects painted in ChatGPT (public/sprites/props/<key>.png): each takes over the code-drawn texture of the same key */
 const PAINTED_PROPS = ['dock', 'truck', 'fridge-empty', 'fridge-full', 'cat', 'grocerybag', 'hoop0', 'hoop1', 'duck0', 'duck1', 'sunflower', 'trashpile', 'rat', 'streetbin', 'garbage', 'trashpile-sm'];
 
@@ -137,7 +139,7 @@ export class WorldScene extends Phaser.Scene {
     }
     makeCharacter(this, 'player', PLAYER_LOOK, true, PLAYER_RES);
     makeBikeRider(this, 'player-bike', PLAYER_LOOK, PLAYER_RES);
-    for (const n of NPCS) makeCharacter(this, `npc-${n.id}`, n.look, !(n as any).blockFolk && !(n as any).npOrg && !BUSTS.includes(n.id)); // neighbors' and staffers' portraits wait for the first chat; painted ones load after startup
+    for (const n of NPCS) makeCharacter(this, `npc-${n.id}`, n.look, !(n as any).blockFolk && !(n as any).npOrg && !BUSTS.includes(n.id) && !LAZY_BUSTS.includes(n.id)); // neighbors' and staffers' portraits wait for the first chat; painted ones load after startup
     makeCharacter(this, 'vendor-rosa', { skin: '#c58a5c', hair: '#3a2a1a', style: 'bun', shirt: '#ff8a3d', pants: '#3a2a5a', acc: 'apron', dress: true });
     makeCharacter(this, 'vendor-hamid', { skin: '#a8714a', hair: '#1a1010', style: 'cap', hatColor: '#ff4b4b', shirt: '#fff', pants: '#2b3a6b', acc: 'apron' });
 
@@ -857,7 +859,9 @@ export class WorldScene extends Phaser.Scene {
 
   // ------------------------------------------------------------------ INTERACTIONS
   private talk(n: NpcDef) {
-    if (!this.textures.exists(`npc-${n.id}-bust`) && !BUSTS.includes(n.id)) makeBust(this, `npc-${n.id}`, n.look); // drawn on first chat
+    if (LAZY_BUSTS.includes(n.id)) { // painted, fetched on the first chat; it swaps in when it arrives
+      if (!this.textures.exists(`npc-${n.id}-bust`)) { this.load.image(`npc-${n.id}-bust`, `portraits/${n.id}.jpg`); this.load.start(); }
+    } else if (!this.textures.exists(`npc-${n.id}-bust`) && !BUSTS.includes(n.id)) makeBust(this, `npc-${n.id}`, n.look); // drawn on first chat
     const spr = this.npcSprites[n.id];
     spr.setFlipX(this.player.x < spr.x);
     const d = DIALOGUES[n.id];
@@ -870,8 +874,8 @@ export class WorldScene extends Phaser.Scene {
    * (a small Solidarity and relationship bump too); after that they never repeat a line until they've said them all.
    */
   private chatWith(n: NpcDef) {
-    if (!this.textures.exists(`npc-${n.id}-bust`) && !BUSTS.includes(n.id)) makeBust(this, `npc-${n.id}`, n.look);
-    const lines = [...(n.idle ?? []), ...(STREET_LINES[n.district] ?? [])];
+    if (!this.textures.exists(`npc-${n.id}-bust`) && !BUSTS.includes(n.id) && !LAZY_BUSTS.includes(n.id)) makeBust(this, `npc-${n.id}`, n.look);
+    const lines =[...(n.idle ?? []), ...(STREET_LINES[n.district] ?? [])];
     const line = pickLine(`npc:${n.id}`, lines.length ? lines : ['...']);
     const lang = this.phraseLesson(n); // a neighbor who speaks a language teaches you one phrase (languages.ts)
     const L = LANGS[(n as any).lang ?? ''], hi = L && L.phrases.some((_, i) => state.flag(`ph_${L.id}_${i}`)) ? `«${L.phrases[0].text}» ` : '';
