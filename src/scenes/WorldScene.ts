@@ -41,7 +41,7 @@ const WALK = 150, RUN = 245, BIKE = 330, BIKE_RUN = 410;
  *  Hand-painted likenesses (style-study/portraits.html), then ghosts in period dress and famous Brooklynites (ChatGPT, Nov 22 2026). */
 const BUSTS = ['dee', 'hattie', 'farouk', 'juni', 'tyler', 'gary', 'skye', 'marcus', 'priya', 'brendan', 'deroy', 'jenna', 'nell', 'bridgette', 'adrian', 'danae', 'jon', 'emily', 'naim', 'luco', 'vega', 'cole', 'scott', 'darnell', 'grace', 'bev', 'okafor', 'andre', 'yara', 'inez', 'celestine', 'kofi', 'jasmine',
   'capone', 'tweed', 'greeley', 'bernstein', 'basquiat', 'tiffany', 'jackie', 'whitman', 'mckinney', 'ebbets', 'chadwick', 'beecher', 'clinton', 'morse', 'chisholm', 'lenahorne', 'biggie', 'rbg', 'yauch',
-  'spikelee', 'carmelo', 'rosieperez', 'yasiinbey', 'chrisrock', 'streisand', 'jayz', 'bernie', 'melbrooks', 'mamdani', 'reynoso'];
+  'spikelee', 'carmelo', 'rosieperez', 'yasiinbey', 'chrisrock', 'streisand', 'jayz', 'bernie', 'melbrooks', 'mamdani', 'reynoso', 'hanif', 'jumaane', 'osse', 'tishjames', 'jeffries', 'schumer'];
 /** Street objects painted in ChatGPT (public/sprites/props/<key>.png): each takes over the code-drawn texture of the same key */
 const PAINTED_PROPS = ['dock', 'truck', 'fridge-empty', 'fridge-full', 'cat', 'grocerybag', 'hoop0', 'hoop1', 'duck0', 'duck1', 'sunflower', 'trashpile', 'rat', 'streetbin', 'garbage', 'trashpile-sm'];
 
