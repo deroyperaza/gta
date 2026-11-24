@@ -85,18 +85,18 @@ export const VILLAINS: Villain[] = [
     beaten: '*The Data Broker is filling out a bias audit, very slowly.*',
   }),
   villain({
-    id: 'capone', name: 'The Ghost of Al Capone', short: 'Ghost of Al Capone', title: 'Villain · Born in Brooklyn, 1899', district: 'downtown', spot: 'vl_capone', at: [40.6985, -73.9795], color: '#c9b38a', ghost: true,
+    id: 'capone', name: 'Al Capone', short: 'Al Capone', title: 'Villain · Born in Brooklyn, 1899', district: 'downtown', spot: 'vl_capone', at: [40.6985, -73.9795], color: '#c9b38a',
     look: { skin: '#e8d8c8', hair: '#2a2a2a', style: 'cap', hatColor: '#3a3a40', shirt: '#4a4a52', pants: '#3a3a40', shoes: '#111', acc: 'tie' },
-    bio: 'Born in Brooklyn, near the Navy Yard, in 1899. Ran Chicago\'s mob, and it wasn\'t the shootouts that brought him down: in 1931 he was convicted of federal income tax evasion. His ghost came home to Brooklyn. It is still very annoyed about the taxes.',
+    bio: 'Born in Brooklyn, near the Navy Yard, in 1899. Ran Chicago\'s mob, and it wasn\'t the shootouts that brought him down: in 1931 he was convicted of federal income tax evasion. In this game he\'s back in Brooklyn, still very annoyed about the taxes.',
     intro: '*A translucent man in a pinstripe suit and fedora drifts out of the shadows by the Navy Yard.* Ey. This is my old neighborhood. You know what took me down? Not the cops. The ACCOUNTANTS. So. You think you can follow the money? Prove it.',
     qs: [
       { q: 'Who\'s supposed to watch this city\'s money, huh? Nobody, that\'s who.', right: 'The City Comptroller: audits city agencies and manages the pension funds.', wrong: ['The Mayor audits the Mayor\'s own agencies every year.', 'The Borough President audits all city money in Brooklyn.'] },
       { q: 'Them pension funds vote secret-like at company meetings. Nobody can see.', right: 'Every vote the city\'s pension funds cast is posted on NYC Open Data.', wrong: ['The votes are sealed for 25 years, like a mob file.', 'Only City Council members can see how the funds vote.'] },
       { q: 'And they never caught me for the big stuff, see. So what\'s the lesson?', right: 'Follow the money. The paper trail is what brings down the powerful.', wrong: ['Get a better lawyer, and never write anything down.', 'Only the police can bring down the powerful, so stay out of it.'] },
     ],
-    win: '*He tips his ghostly fedora.* ...Follow the money. Smart kid. Smarter than my accountant. *He fades into the fog off the East River.*',
+    win: '*He tips his fedora.* ...Follow the money. Smart kid. Smarter than my accountant. *He disappears into the fog off the East River.*',
     lose: 'Fuggedaboutit. Come back when you can follow a dollar better than the IRS.',
-    beaten: '*The ghost of Capone is counting old ledgers. He looks up and nods, grudgingly.*',
+    beaten: '*Al Capone is counting old ledgers. He looks up and nods, grudgingly.*',
   }),
 ];
 

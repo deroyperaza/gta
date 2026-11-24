@@ -596,7 +596,7 @@ export class WorldScene extends Phaser.Scene {
       this.anims.create({ key: `${key}-idle`, frames: this.anims.generateFrameNumbers(key, { frames: [0] }), frameRate: 1, repeat: -1 });
       const spr = this.add.sprite(s.x, s.y, key, 0).setOrigin(0.5, 0.5).setScale(1 / CHAR_RES).setDepth(s.y).setRotation(Math.PI);
       const ghost = !!(n as any).ghost;
-      if (ghost) { // ghosts: a pulsing pale-blue aura, a wisp where feet would be, a translucent drifting body
+      if (false && ghost) { // Brooklyn Icons (formerly ghosts) stand like everyone else: no spectral glow or float (Jameela, Nov 24 2026). Was: a pulsing pale-blue aura, a wisp where feet would be, a translucent drifting body
         const glow = this.add.circle(s.x, s.y, 30, 0xcfe8ff, 0.3).setBlendMode(Phaser.BlendModes.ADD).setDepth(s.y - 1);
         const wisp = this.add.ellipse(s.x, s.y + 20, 30, 10, 0xdff0ff, 0.45).setDepth(s.y - 1);
         spr.setTint(0xeaf4ff).setAlpha(0.8).setScale(1.12 / CHAR_RES).setBlendMode(Phaser.BlendModes.SCREEN);
@@ -609,7 +609,7 @@ export class WorldScene extends Phaser.Scene {
       spr.play({ key: `${key}-idle` });
       const blocker = solids.create(s.x, s.y - 8, undefined) as Phaser.Physics.Arcade.Image;
       blocker.setVisible(false); (blocker.body as Phaser.Physics.Arcade.StaticBody).setSize(22, 14);
-      const tag = this.add.text(s.x, s.y - 40, ghost ? `👻 ${n.short.toUpperCase()}` : n.short.toUpperCase(), { fontFamily: 'Nunito, "Helvetica Neue", Arial, sans-serif', fontSize: '15px', fontStyle: '900', color: ghost ? '#2a3a5a' : '#16101f', backgroundColor: labelColor(n), /* one color per kind of person (labels.ts) */ padding: { x: 7, y: 3 }, shadow: { offsetX: 2, offsetY: 2, color: '#16101f', blur: 0, fill: false, stroke: false } }).setOrigin(0.5).setDepth(1e5);
+      const tag = this.add.text(s.x, s.y - 40, ghost ? `👑 ${n.short.toUpperCase()}` : n.short.toUpperCase(), { fontFamily: 'Nunito, "Helvetica Neue", Arial, sans-serif', fontSize: '15px', fontStyle: '900', color: ghost ? '#2a3a5a' : '#16101f', backgroundColor: labelColor(n), /* one color per kind of person (labels.ts) */ padding: { x: 7, y: 3 }, shadow: { offsetX: 2, offsetY: 2, color: '#16101f', blur: 0, fill: false, stroke: false } }).setOrigin(0.5).setDepth(1e5);
       this.nameTags.push({ id: n.id, tag, x: s.x, y: s.y }); // placed once the station signs exist (placeNameTags)
       this.miniIgnore.push(tag, spr);
       this.npcSprites[n.id] = spr;
@@ -1445,8 +1445,8 @@ export class WorldScene extends Phaser.Scene {
     if (this.transit.riding) { bus.emit('ui:toast', 'HOP OFF FIRST.'); return; }
     const famous = new Set(CAMEOS.map((c) => c.id));
     const NP = 'Nonprofits (Brooklyn Org grantees)';
-    const kind = (n: NpcDef) => (n as any).ghost ? 'Ghosts of Brooklyn' : famous.has(n.id) ? 'Famous Brooklynites' : (n as any).npOrg ? NP : (n as any).blockFolk ? 'Neighbors' : 'Characters';
-    const order = ['Characters', 'Famous Brooklynites', 'Ghosts of Brooklyn', NP, 'Neighbors'];
+    const kind = (n: NpcDef) => (n as any).ghost ? 'Brooklyn Icons' : famous.has(n.id) ? 'Famous Brooklynites' : (n as any).npOrg ? NP : (n as any).blockFolk ? 'Neighbors' : 'Characters';
+    const order = ['Characters', 'Famous Brooklynites', 'Brooklyn Icons', NP, 'Neighbors'];
     const people = NPCS.filter((n) => this.entityPos[n.id]).map((n) => {
       const p = this.entityPos[n.id]!;
       const hood = neighborhoodAt(p.x, p.y);
