@@ -54,7 +54,8 @@ const LAZY_BUSTS = ['abe', 'marisol', 'desmond', 'nadine', 'motti', 'yvette', 'a
   'np_brooklynbookbodega', 'np_uprose',
   'np_impacctbrooklyn', 'np_osborneassociation', 'np_youthjusticenetwork', 'np_surveillancetechnologyoversi',
   'np_naturallyoccurringculturaldi', 'np_southbrooklynsanctuary', 'np_blacktransfemmesinthearts', 'np_blackveteransforsocialjustic',
-  'np_brooklynballet', 'np_brooklyndebateleague', 'np_buildingbeats', 'np_envisionfreedomfund']; // nonprofit staffers, painted Nov 24 2026 (the two in the Brooklyn Org blog post first)
+  'np_brooklynballet', 'np_brooklyndebateleague', 'np_buildingbeats', 'np_envisionfreedomfund',
+  'np_footsteps', 'np_newyorkstateyouthleadershipc', 'np_raisinghealthpartners', 'np_streetvendorproject']; // nonprofit staffers, painted Nov 24 2026 (the two in the Brooklyn Org blog post first)
 /** Street objects painted in ChatGPT (public/sprites/props/<key>.png): each takes over the code-drawn texture of the same key */
 const PAINTED_PROPS = ['dock', 'truck', 'fridge-empty', 'fridge-full', 'cat', 'grocerybag', 'hoop0', 'hoop1', 'duck0', 'duck1', 'sunflower', 'trashpile', 'rat', 'streetbin', 'garbage', 'trashpile-sm'];
 
