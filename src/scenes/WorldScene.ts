@@ -207,6 +207,7 @@ export class WorldScene extends Phaser.Scene {
     bus.on('transit:alight', (p: { x: number; y: number }) => { (this.player.body as Phaser.Physics.Arcade.Body).reset(p.x, p.y); this.player.setVisible(true); });
     bus.on('ui:ride', () => this.rideApp());
     bus.on('ui:find', () => this.findPerson());
+    bus.on('ui:jumpto', (id: string) => { if (this.mode === 'play' && !ui.blocking() && !this.transit.riding) this.jumpTo(id, true); }); // a tap on Mission 1's checklist
     bus.on('mission:started', (def: MissionDef) => { if (!def.side && !def.comingSoon && this.entityPos[def.giver]) { this.briefGiver = def.giver; this.briefAt = this.time.now + 2300; } });
     bus.on('event:dragon:quiz', () => this.time.delayedCall(250, () => this.dragonQuiz()));
     bus.on('event:dragon:ride', () => this.startDragon());

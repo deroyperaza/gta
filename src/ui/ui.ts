@@ -13,6 +13,7 @@ import { MISSIONS, type MissionDef } from '../data/missions';
 import { NPCS, NPC_BY_ID } from '../data/npcs';
 import { dialogue } from '../systems/dialogue';
 import { missions } from '../systems/missions';
+import { netPicks } from '../data/mission-modules/network';
 import { BLOCK_H, BLOCK_W, COLS, MAP_H, MAP_W, ROAD, ROWS, T, TILE, WALKABLE, districtOfBlock, neighborhoodOfBlock, type WorldLayout } from '../world/layout';
 
 /**
@@ -70,7 +71,10 @@ class UI {
     bus.on('flyers:gained', (n: number) => this.showFlyer('big', n));
     bus.on('flyer:handed', () => this.showFlyer('mini'));
     // The mission card starts open, everywhere (Deroy, Nov 23 2026). Tap it to fold it to one line; a new objective opens it again.
-    $('#objective').addEventListener('click', () => { const el = $('#objective'); el.classList.remove('peek'); el.classList.toggle('min'); });
+    $('#objective').addEventListener('click', (e) => {
+      const j = (e.target as HTMLElement).closest<HTMLElement>('.obj-jump'); // Mission 1's checklist: tap a grantee to go to them (Deroy, Nov 24 2026)
+      if (j?.dataset.id) { bus.emit('ui:jumpto', j.dataset.id); return; }
+      const el = $('#objective'); el.classList.remove('peek'); el.classList.toggle('min'); });
     $('#inventory').addEventListener('click', (e) => { if ((e.target as HTMLElement).closest('.inv-flyers')) this.showFlyer('big'); });
     bus.on('dialogue:show', (d: any) => this.showDialogue(d));
     bus.on('dialogue:end', () => this.hideDialogue());
@@ -432,6 +436,10 @@ class UI {
     if (text !== this.lastObjText && this.lastObjText !== null) el.classList.remove('min', 'peek'); // a new objective: open, so you read it
     this.lastObjText = text;
     $('#obj-text').textContent = text;
+    if (def?.id === 'network') { // each grantee on the checklist is a button that takes you to them
+      const ids = netPicks(), lines = text.split('\n'), box = $('#obj-text');
+      if (lines.length === ids.length) { box.textContent = ''; lines.forEach((l, i) => { const btn = document.createElement('button'); btn.type = 'button'; btn.className = 'obj-jump'; btn.dataset.id = ids[i]; btn.textContent = l; btn.title = 'Go there'; box.appendChild(btn); }); }
+    }
     const m = def ? state.mission(def.id) : null;
     $('#obj-optional').innerHTML = def?.optional && m && m.stage > 0
       ? def.optional.map((o) => `<li class="${m.optionalDone[o.id] ? 'done' : ''}">${m.optionalDone[o.id] ? '★' : '☆'} ${o.text}</li>`).join('') : '';
