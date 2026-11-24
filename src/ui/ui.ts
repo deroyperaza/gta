@@ -58,7 +58,8 @@ class UI {
       clearTimeout(this.tipTimer); this.tipTimer = window.setTimeout(() => { el.hidden = true; }, 9000);
     });
     $('#tip .close').addEventListener('click', (e) => { e.stopPropagation(); $('#tip').hidden = true; });
-    bus.on('event:network', () => { $('#tip').hidden = true; }); // you just met a group: a tip about reaching it is stale
+    bus.on('event:network', () => { $('#tip').hidden = true; });
+    bus.on('mission:passed', () => { $('#tip').hidden = true; }); // no travel tip behind the Mission Passed screen // you just met a group: a tip about reaching it is stale
     bus.on('flyers:gained', (n: number) => this.showFlyer('big', n));
     bus.on('flyer:handed', () => this.showFlyer('mini'));
     // The mission card starts open, everywhere (Deroy, Nov 23 2026). Tap it to fold it to one line; a new objective opens it again.
