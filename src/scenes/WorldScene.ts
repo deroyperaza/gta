@@ -43,7 +43,8 @@ const BUSTS = ['dee', 'hattie', 'farouk', 'juni', 'tyler', 'gary', 'skye', 'marc
   'capone', 'tweed', 'greeley', 'bernstein', 'basquiat', 'tiffany', 'jackie', 'whitman', 'mckinney', 'ebbets', 'chadwick', 'beecher', 'clinton', 'morse', 'chisholm', 'lenahorne', 'biggie', 'rbg', 'yauch',
   'spikelee', 'carmelo', 'rosieperez', 'yasiinbey', 'chrisrock', 'streisand', 'jayz', 'bernie', 'melbrooks', 'mamdani', 'reynoso', 'hanif', 'jumaane', 'osse', 'tishjames', 'jeffries', 'schumer'];
 /** Painted portraits for neighbors and side characters: fetched on the first chat, not at startup, to keep phones' image memory down */
-const LAZY_BUSTS = ['abe', 'marisol', 'desmond', 'nadine', 'motti', 'yvette', 'adaeze', 'pearl', 'wen', 'haddad'];
+const LAZY_BUSTS = ['abe', 'marisol', 'desmond', 'nadine', 'motti', 'yvette', 'adaeze', 'pearl', 'wen', 'haddad',
+  'lionel', 'itzel', 'rafa', 'toni', 'amparo', 'odette', 'renee', 'imani', 'lewis', 'danielle'];
 /** Street objects painted in ChatGPT (public/sprites/props/<key>.png): each takes over the code-drawn texture of the same key */
 const PAINTED_PROPS = ['dock', 'truck', 'fridge-empty', 'fridge-full', 'cat', 'grocerybag', 'hoop0', 'hoop1', 'duck0', 'duck1', 'sunflower', 'trashpile', 'rat', 'streetbin', 'garbage', 'trashpile-sm'];
 
