@@ -1,0 +1,717 @@
+{
+  "Access Justice Brooklyn": {
+    "url": "https://www.accessjusticebrooklyn.org/donate/",
+    "verified": "200",
+    "how": "Donate link on homepage"
+  },
+  "After Hours Project": {
+    "url": "https://afterhoursproject.org/donate/",
+    "verified": "200",
+    "how": "Donate link on homepage; Cloudflare blocks curl (403)"
+  },
+  "Alfreda’s Picture Show": {
+    "url": "https://givebutter.com/e03JC6",
+    "verified": "200",
+    "how": "Alfreda's Cinema Givebutter form, linked from the Support page of its site (alfredascinema.wixsite.com/indiecinema)"
+  },
+  "The Ali Forney Center": {
+    "url": "https://www.aliforneycenter.org/donate",
+    "verified": "200",
+    "how": "Donate link on homepage"
+  },
+  "America on Tech": {
+    "url": "https://www.americaontech.org/donate.html",
+    "verified": "200",
+    "how": "Donate page linked from homepage (Donorbox embed)"
+  },
+  "Arab American Association of New York": {
+    "url": "https://givebutter.com/support-aaany",
+    "verified": "200",
+    "how": "Givebutter donate link on homepage"
+  },
+  "Arthur Ashe Institute for Urban Health": {
+    "url": "https://www.arthurasheinstitute.org/donate",
+    "verified": "200",
+    "how": "Donate page on org site (PayPal button)"
+  },
+  "Asian American Federation": {
+    "url": "https://www.aafederation.org/donate/",
+    "verified": "200",
+    "how": "Donate link on homepage"
+  },
+  "Asiyah Women’s Center": {
+    "url": "https://www.asiyahwomenscenter.org/donate",
+    "verified": "200",
+    "how": "Donate link on homepage (Donorbox embed)"
+  },
+  "Autistic Adults NYC": {
+    "url": "https://www.autisticadultsnyc.org/donate",
+    "verified": "200",
+    "how": "Donate link on homepage (Donorbox embed)"
+  },
+  "The B.R.O. Experience Foundation": {
+    "url": "https://www.thebroexperience.org/donate",
+    "verified": "200",
+    "how": "Donate link on homepage (Givebutter embed)"
+  },
+  "BADA Community Development Corporation": {
+    "url": "https://www.badaunite.org/donate/",
+    "verified": "200",
+    "how": "Donate link on badaunite.org (site CitizensNYC lists for BADA; runs FEEP); server returns 406 to curl"
+  },
+  "Bed-Stuy Restoration": {
+    "url": "https://restorationplaza.org/donatenow/",
+    "verified": "200",
+    "how": "Donation link on restorationplaza.org homepage"
+  },
+  "Black Diaspora Liberty Initiative": {
+    "url": "https://givebutter.com/HkjNUL",
+    "verified": "200",
+    "how": "Donate menu item on bdlinitiative.org points to this Givebutter campaign"
+  },
+  "BloomAgainBklyn": {
+    "url": "https://www.bloomagainbklyn.org/donate",
+    "verified": "200",
+    "how": "Donate link on homepage"
+  },
+  "Breaking Ground": {
+    "url": "https://www.breakingground.org/donate",
+    "verified": "200",
+    "how": "Donate link on homepage"
+  },
+  "Brooklyn Arts Council": {
+    "url": "https://secure.givelively.org/donate/brooklyn-arts-council",
+    "verified": "linked-from-site",
+    "how": "Give Lively donate link on homepage and Support page; Give Lively returns 403 to curl"
+  },
+  "Brooklyn Community Housing & Services": {
+    "url": "https://fundraise.givesmart.com/f/4v19/n?vid=17bc3i",
+    "verified": "linked-from-site",
+    "how": "Donate link in bchands.org header (GiveSmart); Cloudflare 403 to curl"
+  },
+  "Brooklyn Community Kitchen": {
+    "url": "https://brooklyncommunitykitchen.org/donate",
+    "verified": "200",
+    "how": "Donate link on homepage"
+  },
+  "Brooklyn Defender Services": {
+    "url": "https://bds.org/donate-now",
+    "verified": "200",
+    "how": "Donate link on homepage"
+  },
+  "Brooklyn Emerge": {
+    "url": "https://brooklynemerge.org/",
+    "verified": "200",
+    "how": "PayPal donation form on brooklynemerge.org homepage (no separate donate page)"
+  },
+  "Brooklyn FAM: Festival of Arts and Music": {
+    "url": "https://bkgives.brooklyn.org/organization/brooklyn-fam",
+    "verified": "200",
+    "how": "brooklynfam.org redirects to its Linktree, which links this Brooklyn Gives page"
+  },
+  "Brooklyn Movement Center": {
+    "url": "https://www.brooklynmovementcenter.org/support-bmc",
+    "verified": "200",
+    "how": "Support BMC page linked from homepage (Givebutter embed)"
+  },
+  "Brownsville Community Culinary Center (BCCC)": {
+    "url": "https://www.thebccc.org/donate-1",
+    "verified": "200",
+    "how": "Donate link on homepage (Donorbox embed)"
+  },
+  "CABS Health Network": {
+    "url": "https://cabshealthnetwork.org/donate-today/",
+    "verified": "200",
+    "how": "Donate Today link on homepage (Stripe donation form)"
+  },
+  "The Campaign Against Hunger": {
+    "url": "https://www.tcahnyc.org/give/",
+    "verified": "200",
+    "how": "Give link on homepage (Donorbox)"
+  },
+  "Caribbean Women’s Health Association": {
+    "url": "https://www.cwha.org/ways-to-give/donate/",
+    "verified": "200",
+    "how": "Donate link on homepage"
+  },
+  "CaringKind": {
+    "url": "https://wearecaringkind.org/give",
+    "verified": "200",
+    "how": "Give link on homepage; Cloudflare 403 to curl"
+  },
+  "Carroll Gardens Association": {
+    "url": "https://www.carrollgardensassociation.com/support",
+    "verified": "200",
+    "how": "Support page in site nav with PayPal donate button"
+  },
+  "CASA-NYC": {
+    "url": "https://casa-nyc.org/donate/",
+    "verified": "200",
+    "how": "Donate link on homepage"
+  },
+  "Center for Community Alternatives": {
+    "url": "https://www.communityalternatives.org/donate",
+    "verified": "200",
+    "how": "Donate link on homepage (Zeffy form)"
+  },
+  "Center for NuLeadership on Human Justice and Healing": {
+    "url": "https://nuleadership.org/donate",
+    "verified": "200",
+    "how": "Donate link on homepage"
+  },
+  "Center for Urban Pedagogy": {
+    "url": "https://www.welcometocup.org/donate",
+    "verified": "200",
+    "how": "Donate link on homepage"
+  },
+  "Central Asian Foundation": {
+    "url": "https://caf-us.org/donate/",
+    "verified": "200",
+    "how": "Donate link on homepage (Stripe donate link)"
+  },
+  "Children’s Defense Fund-New York": {
+    "url": "https://www.childrensdefense.org/donate/",
+    "verified": "200",
+    "how": "cdfny.org redirects to CDF's New York page, whose donate link goes to CDF's national donate page"
+  },
+  "Community Counseling and Mediation": {
+    "url": "https://ccmnyc.org/donate/",
+    "verified": "200",
+    "how": "Donate link on homepage; 403 to curl"
+  },
+  "Como un lugar": {
+    "url": "https://www.paypal.com/paypalme/colectivocomounlugar",
+    "verified": "200",
+    "how": "PayPal link on comounlugar.com homepage"
+  },
+  "Coney Island Lighthouse Mission": {
+    "url": "https://www.actsnyc.com/support-us",
+    "verified": "200",
+    "how": "Support Us page on actsnyc.com (PayPal, Zelle, Cash App)"
+  },
+  "Council of Peoples Organization": {
+    "url": "https://www.paypal.com/ncp/payment/NNGLX84RCQ2XA",
+    "verified": "200",
+    "how": "'Donate Now' button on copo.org homepage goes to this PayPal payment page (prefills $100)"
+  },
+  "Crown Heights North Association": {
+    "url": "https://www.crownheightsnorth.org/donate",
+    "verified": "200",
+    "how": "Donate page on crownheightsnorth.org, linked in site nav"
+  },
+  "Cultural Heritage and Identity through Food and Nutrition": {
+    "url": "https://nyc-chifan.org/support",
+    "verified": "200",
+    "how": "CHIFAN's Support page (nyc-chifan.org); its Donate Now button goes to a Zeffy form"
+  },
+  "Cypress Hills Local Development Corporation": {
+    "url": "https://www.cypresshills.org/donate-now",
+    "verified": "200",
+    "how": "Donate link on cypresshills.org homepage"
+  },
+  "Day One New York": {
+    "url": "https://dayoneny.org/donate/",
+    "verified": "200",
+    "how": "Donate link on dayoneny.org homepage"
+  },
+  "The Door": {
+    "url": "https://www.door.org/donate/",
+    "verified": "200",
+    "how": "Donate link on door.org homepage"
+  },
+  "The Doula Program": {
+    "url": "https://donatenow.networkforgood.org/doulaprogram",
+    "verified": "200",
+    "how": "Network for Good form linked from doulaprogram.org homepage (Doula Program to Accompany & Comfort)"
+  },
+  "East New York Community Land Trust": {
+    "url": "https://www.eastnewyorkclt.org/donate",
+    "verified": "200",
+    "how": "Donate link on eastnewyorkclt.org homepage"
+  },
+  "Educational Video Center": {
+    "url": "https://www.evc.org/evc-donation-form",
+    "verified": "200",
+    "how": "Donation form linked from evc.org homepage"
+  },
+  "Expecting Relief": {
+    "url": "https://www.expectingrelief.org/donate",
+    "verified": "200",
+    "how": "Donate link on expectingrelief.org homepage"
+  },
+  "FentCheck": {
+    "url": "https://fentcheck.org/donate-fentcheck",
+    "verified": "200",
+    "how": "Donate page linked from fentcheck.org homepage"
+  },
+  "First Tech Fund": {
+    "url": "https://honoryourdreams.org/donate-now",
+    "verified": "200",
+    "how": "firsttechfund.com now redirects to Honor Your Dreams (its rebrand); Donate Now link on that homepage"
+  },
+  "Flatbush Development Corporation": {
+    "url": "https://www.fdconline.org/donate/",
+    "verified": "200",
+    "how": "Donate link on fdconline.org homepage"
+  },
+  "The Flossy Organization": {
+    "url": "https://www.theflossy.org/donate",
+    "verified": "200",
+    "how": "Donate link on theflossy.org homepage"
+  },
+  "Freedom To Thrive": {
+    "url": "https://freedomtothrive.networkforgood.com/projects/205779-contributions",
+    "verified": "200",
+    "how": "Network for Good contributions page linked from freedomtothrive.org homepage"
+  },
+  "Genspace NYC": {
+    "url": "https://www.genspace.org/support-us",
+    "verified": "200",
+    "how": "Support Us page on genspace.org (links to its Givebutter year-end campaign)"
+  },
+  "Girl Be Heard": {
+    "url": "https://girlbeheard.org/donate/",
+    "verified": "200",
+    "how": "Donate link on girlbeheard.org homepage"
+  },
+  "Good Call": {
+    "url": "https://givebutter.com/keep-the-line-open-h6rbse",
+    "verified": "200",
+    "how": "Primary donate button on goodcall.org homepage goes to this Givebutter campaign"
+  },
+  "Good Co. Cares": {
+    "url": "https://goodcocares.org/give",
+    "verified": "200",
+    "how": "Give page linked from goodcocares.org homepage"
+  },
+  "GRIOT Circle": {
+    "url": "https://secure.qgiv.com/for/griotcircle/",
+    "verified": "200",
+    "how": "Donate button on griotcircle.org homepage goes to this Qgiv form"
+  },
+  "Groundswell Community Mural Project": {
+    "url": "https://groundswell.nyc/donate/",
+    "verified": "200",
+    "how": "Donate page on groundswell.nyc (embeds Give Lively form)"
+  },
+  "GrowHouse NYC": {
+    "url": "https://www.growhousenyc.org/05-connect",
+    "verified": "200",
+    "how": "Connect page on growhousenyc.org has a 'Support our Work' section with an embedded Givebutter widget"
+  },
+  "Haitian Women for Haitian Refugees": {
+    "url": "https://donatenow.networkforgood.org/haitianrefugees",
+    "verified": "200",
+    "how": "Donate link on haitianrefugees.org homepage (Network for Good; fiscally sponsored by IFCO)"
+  },
+  "HEAT Program": {
+    "url": "https://givebutter.com/heatprogram",
+    "verified": "200",
+    "how": "DONATE NOW button on heatprogram.org homepage goes to this Givebutter page"
+  },
+  "Heights and Hills": {
+    "url": "https://giving.gofundme.com/campaign/818753/donate",
+    "verified": "200",
+    "how": "'Donate Now' button on heightsandhills.org homepage (org's own GoFundMe Pro/Classy form)"
+  },
+  "Hook Arts Media": {
+    "url": "https://www.hookarts.org/donate",
+    "verified": "200",
+    "how": "Donate link on hookarts.org homepage"
+  },
+  "HousingPlus": {
+    "url": "https://housingplusnyc.org/donate/",
+    "verified": "200",
+    "how": "Donate link on housingplusnyc.org homepage"
+  },
+  "Imani’s Safehouse": {
+    "url": "https://givebutter.com/DB2nJ2",
+    "verified": "200",
+    "how": "Givebutter campaign used by the Donate buttons on imanissafehouse.com"
+  },
+  "ImmSchools": {
+    "url": "https://www.immschools.org/donate-1",
+    "verified": "200",
+    "how": "Donate link on immschools.org homepage"
+  },
+  "IntegrateNYC": {
+    "url": "https://integratenyc.org/donate",
+    "verified": "200",
+    "how": "Donate button in integratenyc.org header; page embeds Give Lively form"
+  },
+  "Isabahlia Ladies Of Elegance Foundation": {
+    "url": "https://www.isabahlialoefinc.org/donate-1",
+    "verified": "200",
+    "how": "Donate link on isabahlialoefinc.org homepage"
+  },
+  "Jamel Gaines Creative Outlet": {
+    "url": "https://www.creativeoutlet.org/donate-now",
+    "verified": "200",
+    "how": "Donate link on creativeoutlet.org homepage"
+  },
+  "Jews for Racial and Economic Justice": {
+    "url": "https://www.jfrej.org/make-a-donation-to-jfrej",
+    "verified": "200",
+    "how": "jfrej.org/donate redirects to this donation page"
+  },
+  "JMACforFamilies": {
+    "url": "https://jmacforfamilies.org/donate",
+    "verified": "200",
+    "how": "Donate link on jmacforfamilies.org homepage"
+  },
+  "JobsFirstNYC": {
+    "url": "https://jobsfirstnyc.org/donate/",
+    "verified": "200",
+    "how": "Donate link on jobsfirstnyc.org homepage"
+  },
+  "Kindred Bakery": {
+    "url": "https://www.kindredbakerybk.org/donate",
+    "verified": "200",
+    "how": "Donate page on kindredbakerybk.org (links to Givebutter)"
+  },
+  "Laundry Workers Center": {
+    "url": "https://www.lwcu.org/support",
+    "verified": "200",
+    "how": "Support page on lwcu.org (laundryworkerscenter.org redirects) with embedded donation form"
+  },
+  "LiveOn NY": {
+    "url": "https://www.liveon-ny.org/donate",
+    "verified": "200",
+    "how": "Donate link on liveon-ny.org homepage"
+  },
+  "Loving You Into Freedom": {
+    "url": "https://givebutter.com/DzPdXL",
+    "verified": "200",
+    "how": "Givebutter campaign linked from lovingyouintofreedom.com homepage"
+  },
+  "May Day Space": {
+    "url": "https://maydayspace.org/donate/",
+    "verified": "200",
+    "how": "Donate link on maydayspace.org homepage"
+  },
+  "Meals for Unity": {
+    "url": "https://mealsforunity.org/pages/make-a-donation",
+    "verified": "200",
+    "how": "Make a Donation page linked from mealsforunity.org homepage"
+  },
+  "Mixteca": {
+    "url": "https://www.mixteca.org/en/ways-to-donate",
+    "verified": "200",
+    "how": "Ways to Donate page linked from mixteca.org homepage"
+  },
+  "Multiculture Center Kaleidoscope": {
+    "url": "https://givebutter.com/fxFDY8",
+    "verified": "200",
+    "how": "Givebutter (Dance Under the Sky 2027, Multiculture Center Kaleidoscope Inc) linked from club-kaleidoscope.org; org's own .org site is down"
+  },
+  "Muscle Inspires New Empowerment": {
+    "url": "https://www.zeffy.com/en-US/donation-form/support-mine",
+    "verified": "linked-from-site",
+    "how": "Zeffy form linked from strengthismine.org homepage (Zeffy blocks curl)"
+  },
+  "Museum of Contemporary African Diasporan Art (MoCADA)": {
+    "url": "https://givebutter.com/giveMo",
+    "verified": "200",
+    "how": "Givebutter 'GiveMo' linked from mocada.org homepage"
+  },
+  "Muslim Community Network": {
+    "url": "https://www.mcnny.org/donate",
+    "verified": "200",
+    "how": "Donate link on mcnny.org homepage"
+  },
+  "Myrtle Avenue Brooklyn Partnership": {
+    "url": "https://myrtleavenue.org/donate",
+    "verified": "200",
+    "how": "Org's /donate redirects to its Square 'Myrtle Neighbors Fund' page"
+  },
+  "Neighborhood Housing Services of Brooklyn (NHS)": {
+    "url": "https://www.nhsbrooklyn.org/donate",
+    "verified": "200",
+    "how": "Donate link on nhsbrooklyn.org homepage"
+  },
+  "Neighbors in Action": {
+    "url": "https://www.innovatingjustice.org/donate/",
+    "verified": "200",
+    "how": "neighborsinaction.org redirects to parent Center for Justice Innovation's program page, which links this donate page"
+  },
+  "New Sanctuary Coalition": {
+    "url": "https://www.newsanctuarynsc.org/donate",
+    "verified": "200",
+    "how": "Donate link on newsanctuarynsc.org (old newsanctuarynyc.org domain is now spam)"
+  },
+  "New York Communities for Change": {
+    "url": "https://secure.actblue.com/donate/supportnycc",
+    "verified": "200",
+    "how": "ActBlue donate link on nycommunities.org homepage"
+  },
+  "New York Immigration Coalition": {
+    "url": "https://www.nyic.org/get-involved/donate/",
+    "verified": "200",
+    "how": "Donate page on nyic.org (forwards to NYIC ActBlue form)"
+  },
+  "North Brooklyn Mutual Aid": {
+    "url": "https://northbrooklynmutualaid.org/Donate",
+    "verified": "200",
+    "how": "Donate link on northbrooklynmutualaid.org homepage"
+  },
+  "NYC Together": {
+    "url": "https://nyctogether.org/#DONATE",
+    "verified": "200",
+    "how": "Donate section (Stripe) on nyctogether.org homepage"
+  },
+  "Octavia Project": {
+    "url": "https://www.octaviaproject.org/support/",
+    "verified": "200",
+    "how": "Support page linked from octaviaproject.org homepage"
+  },
+  "Parlé Endeavors": {
+    "url": "https://parleendeavors.org/donate/",
+    "verified": "200",
+    "how": "Donate link on parleendeavors.org homepage"
+  },
+  "Passive House for Everyone": {
+    "url": "https://www.passivehouseforeveryone.org/become-a-donor",
+    "verified": "200",
+    "how": "Workshop Donations page on org site; Donate button goes to its Zeffy form"
+  },
+  "Pineapple Ride": {
+    "url": "https://pineappleride.org/donate",
+    "verified": "200",
+    "how": "Donate page on pineappleride.org (Stripe/PayPal/Venmo options)"
+  },
+  "Pratt Center for Community Development": {
+    "url": "https://giving.pratt.edu/site/Donation2?df_id=1720&mfc_pref=T&1720.donation=form1",
+    "verified": "200",
+    "how": "'Support Pratt Center' button on prattcenter.net/get_involved/support; Pratt Institute form designated to Pratt Center"
+  },
+  "The Prescod Institute for Sport, Teamwork, and Education": {
+    "url": "https://secure.actblue.com/donate/fencing-in-the-park-inc--1",
+    "verified": "200",
+    "how": "ActBlue donate link on pisteacademy.org homepage (legal name Fencing in the Park Inc)"
+  },
+  "Princess Chambers": {
+    "url": "https://www.princesschambersinc.org/donate",
+    "verified": "200",
+    "how": "Donate page linked from princesschambersinc.org homepage"
+  },
+  "Project: Anti-Violence Workshops for Youth and Families in East Flatbush": {
+    "url": "https://www.caeny.org/donate",
+    "verified": "200",
+    "how": "Lead partner Center for Anti-Violence Education's donate page (caeny.org)"
+  },
+  "Project: Creative Conversations: Art and Dialogue for Racial Justice": {
+    "url": "https://www.redhookartproject.org/donate",
+    "verified": "200",
+    "how": "Lead partner Red Hook Art Project's donate page"
+  },
+  "Project: D13 Teach Fabulous! Family Engagement Initiative": {
+    "url": "https://donorbox.org/nyc-teach-fabulous",
+    "verified": "200",
+    "how": "Donorbox link on teachfabulous.org homepage"
+  },
+  "Project: Kensington Cultural Council": {
+    "url": "https://www.nocdny.org/donation",
+    "verified": "200",
+    "how": "Lead org NOCD-NY's donation page (links to its forgood.org form)"
+  },
+  "Project: ROOTED": {
+    "url": "https://blackspace.org/?campaign=536938",
+    "verified": "200",
+    "how": "Lead partner BlackSpace's Donate link on blackspace.org (Fundraise Up campaign; 403 to curl)"
+  },
+  "Prospect Lefferts Gardens Heritage Council": {
+    "url": "https://www.paypal.com/donate/?hosted_button_id=J536CFH3XGT66",
+    "verified": "linked-from-site",
+    "how": "PayPal DONATE button on plghc.org (PayPal blocks curl)"
+  },
+  "Prospect Park Alliance": {
+    "url": "https://donate.prospectpark.org/campaign/639302/donate",
+    "verified": "200",
+    "how": "Donate link on prospectpark.org homepage"
+  },
+  "QARAVAN": {
+    "url": "https://www.qaravan.org/donate/",
+    "verified": "200",
+    "how": "Donate page linked from qaravan.org homepage"
+  },
+  "Rain or Shine Diaper Fund": {
+    "url": "https://hcb.hackclub.com/donations/start/rain-or-shine-diaper-fund",
+    "verified": "200",
+    "how": "Donate link on rainorshinediaperfund.org; HCB (Hack Club) fiscal-sponsor donation page"
+  },
+  "Red Hook Mutual Aid": {
+    "url": "https://rhma.nyc/donate/",
+    "verified": "200",
+    "how": "Donate page on rhma.nyc (embedded Open Collective form); 406 to bare curl UA, 200 with browser UA"
+  },
+  "Release Aging People in Prison": {
+    "url": "https://rappcampaign.com/donate/",
+    "verified": "200",
+    "how": "Donate page on rappcampaign.com (Give Lively via fiscal sponsor SEE)"
+  },
+  "Restore Forward": {
+    "url": "https://blackwomensblueprint.ourpowerbase.net/civicrm/contribute/transact?reset=1&id=4",
+    "verified": "200",
+    "how": "Donate buttons on restoreny.org go to The Reconciliation Center (nonprofit arm) donation form"
+  },
+  "Riders Alliance": {
+    "url": "https://www.ridersalliance.org/donate",
+    "verified": "200",
+    "how": "Donate link on homepage"
+  },
+  "Rooted Theater Company": {
+    "url": "https://www.rootedtheaterco.org/donate",
+    "verified": "200",
+    "how": "Donate page on homepage (Donorbox embed)"
+  },
+  "Rovaco Dance Company": {
+    "url": "https://fundraising.fracturedatlas.org/rovaco-dance-company",
+    "verified": "200",
+    "how": "rovacodance.com donate page links to Fractured Atlas fiscal-sponsor page"
+  },
+  "Sadie Nash Leadership Project": {
+    "url": "https://www.sadienash.org/support",
+    "verified": "200",
+    "how": "Support/Ways to Give page linked from homepage (Givebutter)"
+  },
+  "Safe Passage Project": {
+    "url": "https://www.safepassageproject.org/donate/",
+    "verified": "200",
+    "how": "Donate link on homepage"
+  },
+  "Sakhi for South Asian Survivors": {
+    "url": "https://give.sakhi.org/campaign/725928/donate",
+    "verified": "200",
+    "how": "Donate link on sakhi.org homepage (Classy)"
+  },
+  "Sauti Yetu": {
+    "url": "https://sautiyetunyc.org/donate/",
+    "verified": "200",
+    "how": "Donate link on sautiyetunyc.org homepage"
+  },
+  "St. Nicks Alliance": {
+    "url": "https://stnicksalliance.networkforgood.com/projects/294715-st-nicks-alliance-general-giving-campaign-2026",
+    "verified": "200",
+    "how": "Donate link on stnicksalliance.org homepage (Network for Good general giving 2026)"
+  },
+  "Stay’n Out": {
+    "url": "https://staynout.org/how-you-can-help/",
+    "verified": "200",
+    "how": "'How You Can Help' page on staynout.org (NYTC) with PayPal donate button"
+  },
+  "STEM From Dance": {
+    "url": "https://stemfromdance.org/donate/",
+    "verified": "200",
+    "how": "Donate link on homepage"
+  },
+  "Tea Arts & Culture": {
+    "url": "https://teaartsculture.org/support-us",
+    "verified": "200",
+    "how": "Support Us/Donate page on teaartsculture.org (Zeffy/Givebutter)"
+  },
+  "Technology for Families in Need (TechFIN)": {
+    "url": "https://secure.givelively.org/donate/technology-for-families-in-need",
+    "verified": "linked-from-site",
+    "how": "Donate link on wearetechfin.org homepage (Give Lively; 403 to curl)"
+  },
+  "Teens Take Charge": {
+    "url": "https://www.teenstakecharge.com/donate",
+    "verified": "200",
+    "how": "Donate link on homepage (PayPal)"
+  },
+  "Theatre of the Oppressed NYC": {
+    "url": "https://www.tonyc.nyc/donate",
+    "verified": "200",
+    "how": "Donate link on homepage (Givebutter)"
+  },
+  "Tomorrow’s Leaders NYC": {
+    "url": "https://tlnyc.org/donate/",
+    "verified": "200",
+    "how": "Donate link on homepage (Donorbox)"
+  },
+  "Uniquely Me Creative Arts": {
+    "url": "https://app.autobooks.co/pay/uniquely-me-creative-arts",
+    "verified": "200",
+    "how": "DONATE buttons on umcanyc.org homepage"
+  },
+  "United Chinese Association of Brooklyn": {
+    "url": "https://www.ucabrooklyn.org/donate",
+    "verified": "200",
+    "how": "Donate link on ucabrooklyn.org homepage"
+  },
+  "Unlock NYC": {
+    "url": "https://www.every.org/unlock-nyc#/donate/card",
+    "verified": "linked-from-site",
+    "how": "Donate link on weunlock.nyc homepage (Every.org; 429 bot check to curl)"
+  },
+  "UPROSE": {
+    "url": "https://www.uprose.org/donate/",
+    "verified": "200",
+    "how": "Donate link on homepage"
+  },
+  "Urban Homesteading Assistance Board": {
+    "url": "https://www.uhab.org/donate/",
+    "verified": "linked-from-site",
+    "how": "UHAB's own donate page (403 to curl; confirmed via search listing of uhab.org/donate)"
+  },
+  "Urban Youth Collaborative": {
+    "url": "https://www.urbanyouthcollaborative.org/support-us",
+    "verified": "linked-from-site",
+    "how": "Support Us page on UYC site; redirects to Make the Road NY donation form (Cloudflare 403 to curl)"
+  },
+  "Welder Underground": {
+    "url": "https://www.welderunderground.org/donate",
+    "verified": "200",
+    "how": "Donate link on homepage (Zeffy)"
+  },
+  "Woman Unsilenced": {
+    "url": "https://womanunsilenced.org/donate-1",
+    "verified": "200",
+    "how": "Donate link on homepage (goes on to BK Gives)"
+  },
+  "Women’s Empowerment Coalition of NYC": {
+    "url": "https://www.wecnyc.org/donate",
+    "verified": "200",
+    "how": "Donate link on homepage (Donorbox)"
+  },
+  "Worker’s Justice Project": {
+    "url": "https://secure.actblue.com/donate/workersjustice",
+    "verified": "200",
+    "how": "Donate button on workersjustice.org homepage (ActBlue)"
+  },
+  "Yadestiny Treasure Chest": {
+    "url": "https://yadestinytreasurechest.org/donate/",
+    "verified": "200",
+    "how": "Donate link on homepage (406 to bare curl UA, 200 with browser UA)"
+  },
+  "You Gotta Believe": {
+    "url": "https://www.yougottabelieve.org/support-us/donate/",
+    "verified": "200",
+    "how": "Donate link on homepage"
+  },
+  "Youth Advocacy Corps": {
+    "url": "https://www.advocacycorps.org/support-yac",
+    "verified": "200",
+    "how": "Support YAC page on homepage (Donate Now via fiscal sponsor FJC)"
+  },
+  "YVote": {
+    "url": "https://www.yvoteny.org/donate",
+    "verified": "200",
+    "how": "Donate link on yvoteny.org homepage (Givebutter)"
+  },
+  "The YWCA of Brooklyn": {
+    "url": "https://www.ywcabklyn.org/donate",
+    "verified": "200",
+    "how": "Donate link on homepage (Give Lively)"
+  },
+  "UHAB": {
+    "url": "https://www.uhab.org/donate/",
+    "verified": "linked-from-site",
+    "how": "Same org as Urban Homesteading Assistance Board; 403 to curl, confirmed via search listing"
+  },
+  "Asiyah Women's Center": {
+    "url": "https://www.asiyahwomenscenter.org/donate",
+    "verified": "200",
+    "how": "Donate link on homepage (Donorbox)"
+  }
+}

@@ -5,7 +5,7 @@ import { DISTRICTS, type District, type ItemId } from '../core/types';
 import { ITEMS } from '../data/items';
 import { LESSONS } from '../data/lessons';
 import { GRANTEES, type Grantee } from '../data/grantees';
-import { BK_GIVES, giveUrl } from '../data/bkgives';
+import { BK_GIVES, giveLink } from '../data/bkgives';
 import { NONPROFITS, ISSUES } from '../data/nonprofits';
 import { LANGS } from '../data/languages';
 import { MISSIONS, type MissionDef } from '../data/missions';
@@ -610,8 +610,8 @@ class UI {
       ${extra ? `<div class="mp-extra">${extra}</div>` : ''}
       <ul class="mp-lines">${lines.map((l, i) => `<li style="animation-delay:${0.5 + i * 0.18}s">${l}</li>`).join('')}</ul>
       ${real.length ? `<div class="mp-real" style="animation-delay:${0.6 + lines.length * 0.18}s"><div class="mp-real-h">IN REAL LIFE · BROOKLYN ORG GRANTEES DOING THIS WORK</div><div class="mp-cards">${real.map((g) => {
-        const url = giveUrl(g.name);
-        return `<div class="mp-card"><b>${g.name}</b><p>${g.what}</p>${url ? `<a class="give" href="${url}" target="_blank" rel="noopener">DONATE ON BROOKLYN GIVES</a>` : ''}</div>`;
+        const gl = giveLink(g.name);
+        return `<div class="mp-card"><b>${g.name}</b><p>${g.what}</p>${gl ? `<a class="give" href="${gl.url}" target="_blank" rel="noopener">${gl.label}</a>` : ''}</div>`;
       }).join('')}</div><a class="give-all" href="${BK_GIVES}" target="_blank" rel="noopener">GIVINGTUESDAY · FIND MORE BROOKLYN CAUSES</a></div>` : ''}
       <div class="mp-hint">PRESS ANY KEY</div>`;
   }
@@ -650,7 +650,7 @@ class UI {
     const known = NONPROFITS.filter((n) => state.flag(`net_${n.id}`));
     const badges = ISSUES.map((i) => { const all = NONPROFITS.filter((n) => n.issues.includes(i)).length, got = known.filter((n) => n.issues.includes(i)).length; return `<span class="np-badge${got ? ' on' : ''}">${i} <b>${got}/${all}</b></span>`; }).join('');
     const network = `<p class="sub"><b>${known.length} of ${NONPROFITS.length}</b> groups in your network.</p><div class="np-badges">${badges}</div>`
-      + (known.length ? known.map((g) => { const url = giveUrl(g.org); return `<div class="lesson"><b>${g.org}</b><em>${g.issues.join(' · ')}</em><p>${g.what}</p>${url ? `<a class="give" href="${url}" target="_blank" rel="noopener">DONATE ON BROOKLYN GIVES</a>` : ''}</div>`; }).join('') : '<p>Look for people with clipboards and teal name tags. Each one works at a real Brooklyn nonprofit.</p>');
+      + (known.length ? known.map((g) => { const gl = giveLink(g.org); return `<div class="lesson"><b>${g.org}</b><em>${g.issues.join(' · ')}</em><p>${g.what}</p>${gl ? `<a class="give" href="${gl.url}" target="_blank" rel="noopener">${gl.label}</a>` : ''}</div>`; }).join('') : '<p>Look for people with clipboards and teal name tags. Each one works at a real Brooklyn nonprofit.</p>');
     const earned = Object.entries(LESSONS).filter(([k]) => state.flag(`lesson_${k}`));
     const lessons = (earned.length ? earned.map(([k, l]) => `<div class="lesson"><b>${k}</b><em>from ${l.who}</em><p>${l.text}</p></div>`).join('') : '<p>Nothing yet. Talk to people. They know things.</p>')
       + `<p class="sub">${earned.length} of ${Object.keys(LESSONS).length} learned.</p>`;

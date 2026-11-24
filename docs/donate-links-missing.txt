@@ -1,0 +1,26 @@
+Brooklyn Arts and Culture Kollective (BACK) - no website or donate page found; coalition with no confirmed fiscal sponsor
+Brooklyn College Community Partnership - welcometobccp.org has no online donate option (fiscally sponsored by RFCUNY)
+Brooklyn Level Up - bklvlup.org has only a Stripe "Fund the Future" link (https://buy.stripe.com/eVa6pm4C7aAgclacMM), not labeled as a donation; unconfirmed
+Bushwick Housing Independence Project - bhipbk.org has no donate link; an old Donorbox campaign exists but isn't linked from the site
+Coney Island Anti Violence Collaborative - ciavc.org no longer resolves (DNS fails); no other official donate page
+Crown Heights CARE Collective - no website; Linktree only lists GoFundMe campaigns run by Another World for specific events
+Families and Friends of the Wrongfully Convicted - wrongfullyconvicted.info has no donate link; /donate 404
+Friends of Saratoga Park BedStuy - no website (Instagram/Eventbrite only); no donate page found
+GayRidge - gayridge.org returns 404; only Venmo/PayPal handles in social posts, not confirmable
+The Hannah Legacy - thehannahlegacy.org does not resolve/404; only a Facebook page
+Iglesia Cristiana Pentecostal Movimiento Las Maravillas del Éxodo - no website found; only food-pantry directory listings
+Mexican Coalition — no donate link on homepage; its donate-taxdeductible page points to a Stripe test link
+The NY Birth Control Access Project — nybcap.org has no donate link and /donate returns 404
+Opening Act — no donate link on site; site says it is closing after the 2025/26 school year
+Plaza Proletaria — no website; only a Linktree pointing to a personal GoFundMe
+Project: Bed-Stuy University — lead Magnolia Tree Earth Center's site renders empty to fetchers; partner Liminal's site has no donate link
+Project: Beyond Memorial — Liminal's site has no donate link; its Givebutter campaign has ended
+Project: Cultivate Green - lead partner Brooklyn Level Up only has a Stripe "Fund the Future" checkout link, not labeled as a donation; unconfirmed
+Project: X Marks the SPOT — lead org MUAMA has no website found (Instagram only)
+Pure Legacee — site's donate QR code points to purelegacee.org/donate, which returns 404
+Queer Detainee Empowerment Project — qdep.org is down (Cloudflare 520), so the donate page can't be confirmed
+Ready, Set, Grow to Glow — site readysetgrowtoglow.org is a parked domain; no donate page found
+Rockaway Parkway Merchants Association — merchants association (now Canarsie Merchants Association, cmainc.org); no donate link on site
+Shoot Hoops Not Guns Brower Park — no official website found (only Charity Navigator listing)
+Student Dream — studentdream.org has a broken SSL certificate; no donate page confirmed
+United Community Centers — ucceny.org blocks all fetches (403) and UCC merged into Cypress Hills LDC; donate target unconfirmed

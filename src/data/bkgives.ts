@@ -104,6 +104,10 @@ const PAGES: Record<string, string> = {
   "Ñaños in Action": "Nanos-In-Action",
 };
 
+import { DIRECT } from './donate';
+
 export const BK_GIVES = 'https://bkgives.brooklyn.org';
 /** The group's Brooklyn Gives donation page, if it has one */
 export const giveUrl = (name: string) => (PAGES[name] ? `${BK_GIVES}/organization/${PAGES[name]}` : null);
+/** Where to give: the group's Brooklyn Gives page first, else its own donation page */
+export const giveLink = (name: string) => { const bk = giveUrl(name); return bk ? { url: bk, label: 'DONATE ON BROOKLYN GIVES' } : DIRECT[name] ? { url: DIRECT[name], label: 'DONATE' } : null; };
