@@ -56,7 +56,17 @@ const LAZY_BUSTS = ['abe', 'marisol', 'desmond', 'nadine', 'motti', 'yvette', 'a
   'np_naturallyoccurringculturaldi', 'np_southbrooklynsanctuary', 'np_blacktransfemmesinthearts', 'np_blackveteransforsocialjustic',
   'np_brooklynballet', 'np_brooklyndebateleague', 'np_buildingbeats', 'np_envisionfreedomfund',
   'np_footsteps', 'np_newyorkstateyouthleadershipc', 'np_raisinghealthpartners', 'np_streetvendorproject',
-  'np_thealexhouseproject', 'np_thebravehouse']; // nonprofit staffers, painted Nov 24 2026 (the two in the Brooklyn Org blog post first)
+  'np_thealexhouseproject', 'np_thebravehouse',
+  'np_651arts', 'np_accessjusticebrooklyn', 'np_afrolatinforum', 'np_afterhoursproject', 'np_agefriendlycentralbrooklyn', 'np_alfredaspictureshow',
+  'np_americaontech', 'np_arabamericanassociationofnew', 'np_arabamericanfamilysupportcen', 'np_arthurasheinstituteforurbanh', 'np_artsdemocracy', 'np_asianamericanfederation',
+  'np_asiyahwomenscenter', 'np_autisticadultsnyc', 'np_badacommunitydevelopmentcorp', 'np_bedstuyrestoration', 'np_blackdiasporalibertyinitiati', 'np_bloomagainbklyn',
+  'np_breakingground', 'np_bricartsmedia', 'np_bridgestreetdevelopmentcorpo', 'np_brooklynartsandculturekollec', 'np_brooklynartscouncil', 'np_brooklynartsexchangebax',
+  'np_brooklyncaribbeanliteraryfes', 'np_brooklynchildrensmuseum', 'np_brooklyncollegecommunitypart', 'np_brooklyncommunityhousingserv', 'np_brooklyncommunitykitchen', 'np_brooklyncommunitypridecenter',
+  'np_brooklyndefenderservices', 'np_brooklynemerge', 'np_brooklynfamfestivalofartsand', 'np_brooklynlevelup', 'np_brooklynmovementcenter', 'np_brooklynrescuemissionurbanha',
+  'np_brooklynyouthcompany', 'np_brownsvillecommunityculinary', 'np_bushwickhousingindependencep', 'np_cabshealthnetwork', 'np_caribbeanwomenshealthassocia', 'np_caringkind',
+  'np_carrollgardensassociation', 'np_casanyc', 'np_centerforcommunityalternativ', 'np_centerforfamilylifeinsunsetp', 'np_centerforlawandsocialjustice', 'np_centerfornuleadershiponhuman',
+  'np_centerforurbanpedagogy', 'np_centralasianfoundation', 'np_childrensdefensefundnewyork', 'np_churchesunitedforfairhousing', 'np_communitycounselingandmediat', 'np_communityhelpinparkslopechip',
+  'np_thealiforneycenter', 'np_thebillieholidaytheatre', 'np_theblackinstitute', 'np_thebroexperiencefoundation', 'np_thecampaignagainsthunger', 'np_thecirclekeepers']; // nonprofit staffers, painted Nov 24 2026 (the two in the Brooklyn Org blog post first)
 /** Street objects painted in ChatGPT (public/sprites/props/<key>.png): each takes over the code-drawn texture of the same key */
 const PAINTED_PROPS = ['dock', 'truck', 'fridge-empty', 'fridge-full', 'cat', 'grocerybag', 'hoop0', 'hoop1', 'duck0', 'duck1', 'sunflower', 'trashpile', 'rat', 'streetbin', 'garbage', 'trashpile-sm'];
 
