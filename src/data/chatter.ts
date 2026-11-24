@@ -269,7 +269,6 @@ const MORE: Record<District, string[]> = {
     'Borough Hall steps are the best seat downtown. Free speech, free sun.',
     'I came downtown to pay a ticket. Got another ticket. Circle of life.',
     'The train station has nine exits and every one of them is wrong.',
-    'Jury duty: you sit, you wait, you learn everybody\'s life story, you go home.',
     'My building\'s lobby has art in it. I don\'t understand it. The doorman does.',
     'Sneaker store, sneaker store, phone store, sneaker store. This is commerce.',
     'Saw a protest, a wedding and a film shoot on the same block. Downtown is multitasking.',

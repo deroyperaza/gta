@@ -19,7 +19,7 @@ export const DIALOGUES: Record<string, Dialogue> = {
         speaker: 'dee', text: 'They want to cut the fridge grants to build a GAZEBO? Say less. The fridge regulars will be there. Ms. Hattie is bringing folding chairs and a look.',
         choices: [{ text: 'See you on the steps.', effects: { rel: { dee: 4 }, flags: { pvp_ally_dee: true }, inc: { pvp_crowd: 6 }, toast: 'DEE IS IN · +6 MARCHERS' } }],
       },
-      intro: { speaker: 'dee', text: 'You. Yeah, you with the jury-duty face. You look like somebody with two free hands.', next: 'intro2' },
+      intro: { speaker: 'dee', text: 'You. Yeah, you. You look like somebody with two free hands.', next: 'intro2' },
       intro2: {
         speaker: 'dee', text: 'Fridge is down to one lime and a sticky note that says "stay strong." Three spots promised donations and nobody\'s picked up.',
         choices: [
