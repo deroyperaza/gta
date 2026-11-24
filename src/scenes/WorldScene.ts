@@ -1446,7 +1446,7 @@ export class WorldScene extends Phaser.Scene {
     const famous = new Set(CAMEOS.map((c) => c.id));
     const NP = 'Nonprofits (Brooklyn Org grantees)';
     const kind = (n: NpcDef) => (n as any).ghost ? 'Brooklyn Icons' : famous.has(n.id) ? 'Famous Brooklynites' : (n as any).npOrg ? NP : (n as any).blockFolk ? 'Neighbors' : 'Characters';
-    const order = ['Characters', 'Famous Brooklynites', 'Brooklyn Icons', NP, 'Neighbors'];
+    const order = [NP, 'Characters', 'Famous Brooklynites', 'Brooklyn Icons', 'Neighbors']; // Brooklyn Org's grantees first, after Brooklyn Org itself
     const people = NPCS.filter((n) => this.entityPos[n.id]).map((n) => {
       const p = this.entityPos[n.id]!;
       const hood = neighborhoodAt(p.x, p.y);
@@ -1456,7 +1456,10 @@ export class WorldScene extends Phaser.Scene {
     }).sort((a, b) => order.indexOf(a.g) - order.indexOf(b.g) || a.n.name.localeCompare(b.n.name));
     ui.choose({ title: 'Find someone', sub: 'Search by name, role or neighborhood. Pick one to jump there.', search: true,
       // Each category is an accordion with its count; searching opens the ones with matches
-      items: people.map(({ n, g, sub }) => ({ value: n.id, label: n.name, sub, section: g, sectionHtml: `<i class="ch-swatch" style="background:${labelColor(n)}"></i>${g} <span class="ch-count">${people.filter((x) => x.g === g).length}</span>` })) }, (id) => {
+      items: [
+        // Brooklyn Org itself: a button at the top that takes you to Adaeze at its storefront
+        ...(this.entityPos['adaeze'] ? [{ value: 'adaeze', label: 'Brooklyn Org', sub: `Adaeze, Grants Officer${neighborhoodAt(this.entityPos['adaeze']!.x, this.entityPos['adaeze']!.y) ? ` · ${neighborhoodAt(this.entityPos['adaeze']!.x, this.entityPos['adaeze']!.y)}` : ''}` }] : []),
+        ...people.map(({ n, g, sub }) => ({ value: n.id, label: n.name, sub, section: g, sectionHtml: `<i class="ch-swatch" style="background:${labelColor(n)}"></i>${g} <span class="ch-count">${people.filter((x) => x.g === g).length}</span>` }))] }, (id) => {
       state.setFlag('used_find', true);
       this.jumpTo(id, true);
     });
