@@ -99,8 +99,7 @@ class MissionSystem {
       state.apply({ trust: { [def.district]: -hit }, rel: { [def.giver]: def.number >= 5 ? -4 : -2 } }, { quiet: true });
       lines.push(`${DISTRICTS[def.district].name.toUpperCase()} TRUST -${hit} · THE BLOCK REMEMBERS`);
     }
-    const real = granteesFor(def.id);
-    if (real.length) lines.push(`IN REAL LIFE · BROOKLYN ORG GRANTEES DOING THIS WORK: ${real.map((g) => g.name.toUpperCase()).join(' · ')}`);
+    const real = granteesFor(def.id); // shown as cards under the lines, each with its Brooklyn Gives donation link
     { // Your network pays off: every group you know that works on this mission's issues adds Solidarity (up to 10 groups)
       const issues = new Set(MISSION_ISSUES[def.id] ?? []);
       if (issues.size) {
@@ -110,7 +109,7 @@ class MissionSystem {
         else lines.push(`YOUR NETWORK · MEET GROUPS WORKING ON ${[...issues].slice(0, 2).join(' & ').toUpperCase()} (TEAL NAME TAGS) FOR A BONUS NEXT TIME`);
       }
     }
-    bus.emit('mission:passed', { def, lines, toast: reward.toast });
+    bus.emit('mission:passed', { def, lines, toast: reward.toast, real });
     if (def.side) { // back to the main mission, right where you left it
       const r = state.flag('resume_mission'); delete state.d.flags.resume_mission;
       if (typeof r === 'string' && state.mission(r).status === 'active') state.d.activeMission = r;

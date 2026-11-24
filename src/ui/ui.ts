@@ -4,7 +4,8 @@ import { state } from '../core/state';
 import { DISTRICTS, type District, type ItemId } from '../core/types';
 import { ITEMS } from '../data/items';
 import { LESSONS } from '../data/lessons';
-import { GRANTEES } from '../data/grantees';
+import { GRANTEES, type Grantee } from '../data/grantees';
+import { BK_GIVES, giveUrl } from '../data/bkgives';
 import { NONPROFITS, ISSUES } from '../data/nonprofits';
 import { LANGS } from '../data/languages';
 import { MISSIONS, type MissionDef } from '../data/missions';
@@ -53,7 +54,7 @@ class UI {
     $('#inventory').addEventListener('click', (e) => { if ((e.target as HTMLElement).closest('.inv-flyers')) this.showFlyer('big'); });
     bus.on('dialogue:show', (d: any) => this.showDialogue(d));
     bus.on('dialogue:end', () => this.hideDialogue());
-    bus.on('mission:passed', (p: any) => this.showPassed(p.def, p.lines, p.toast));
+    bus.on('mission:passed', (p: any) => this.showPassed(p.def, p.lines, p.toast, p.real));
     bus.on('mission:failed', (p: any) => this.showFailed(p.def, p.text));
     bus.on('mission:started', (def: MissionDef) => this.missionIntro(def));
     bus.on('world:district', (_d: District, info: { name: string; color: string; blurb: string }) => this.districtBanner(info));
@@ -224,7 +225,7 @@ class UI {
     $('#dlg-portrait').addEventListener('click', (e) => { e.stopPropagation(); this.zoomPortrait(); });
     $('#portrait-zoom').addEventListener('click', (e) => { e.stopPropagation(); $('#portrait-zoom').hidden = true; });
     for (const id of ['journal', 'map']) $(`#${id}`).addEventListener('click', (e) => { if ((e.target as HTMLElement).matches('.close, .panel-bg')) this.closePanel(); });
-    $('#passed').addEventListener('click', () => { if (performance.now() - this.passedAt > 600) this.closePanel(); });
+    $('#passed').addEventListener('click', (e) => { if ((e.target as HTMLElement).closest('.mp-real')) return; if (performance.now() - this.passedAt > 600) this.closePanel(); }); // the donation cards don't dismiss it
     // Click the dimmed background around any window to close it (how-it-works, pause, choices, ride app)
     for (const id of ['help', 'pause', 'chooser', 'ride']) {
       const el = $(`#${id}`);
@@ -598,7 +599,7 @@ class UI {
   }
 
   // ------------------------------------------------------------------ MISSION SCREENS
-  private showPassed(def: MissionDef, lines: string[], extra?: string) {
+  private showPassed(def: MissionDef, lines: string[], extra?: string, real: Grantee[] = []) {
     this.closePanel(true);
     if (this.dialogueOpen) dialogue.end();
     this.panel = 'passed';
@@ -608,6 +609,10 @@ class UI {
     el.innerHTML = `<div class="burst"></div><div class="mp-sub">${mlabel(def)} · ${def.title}</div><div class="mp-big">MISSION PASSED</div>
       ${extra ? `<div class="mp-extra">${extra}</div>` : ''}
       <ul class="mp-lines">${lines.map((l, i) => `<li style="animation-delay:${0.5 + i * 0.18}s">${l}</li>`).join('')}</ul>
+      ${real.length ? `<div class="mp-real" style="animation-delay:${0.6 + lines.length * 0.18}s"><div class="mp-real-h">IN REAL LIFE · BROOKLYN ORG GRANTEES DOING THIS WORK</div><div class="mp-cards">${real.map((g) => {
+        const url = giveUrl(g.name);
+        return `<div class="mp-card"><b>${g.name}</b><p>${g.what}</p>${url ? `<a class="give" href="${url}" target="_blank" rel="noopener">DONATE ON BROOKLYN GIVES</a>` : ''}</div>`;
+      }).join('')}</div><a class="give-all" href="${BK_GIVES}" target="_blank" rel="noopener">GIVINGTUESDAY · FIND MORE BROOKLYN CAUSES</a></div>` : ''}
       <div class="mp-hint">PRESS ANY KEY</div>`;
   }
   private showFailed(def: MissionDef, text: string) {
@@ -645,7 +650,7 @@ class UI {
     const known = NONPROFITS.filter((n) => state.flag(`net_${n.id}`));
     const badges = ISSUES.map((i) => { const all = NONPROFITS.filter((n) => n.issues.includes(i)).length, got = known.filter((n) => n.issues.includes(i)).length; return `<span class="np-badge${got ? ' on' : ''}">${i} <b>${got}/${all}</b></span>`; }).join('');
     const network = `<p class="sub"><b>${known.length} of ${NONPROFITS.length}</b> groups in your network.</p><div class="np-badges">${badges}</div>`
-      + (known.length ? known.map((g) => `<div class="lesson"><b>${g.org}</b><em>${g.issues.join(' · ')}</em><p>${g.what}</p></div>`).join('') : '<p>Look for people with clipboards and teal name tags. Each one works at a real Brooklyn nonprofit.</p>');
+      + (known.length ? known.map((g) => { const url = giveUrl(g.org); return `<div class="lesson"><b>${g.org}</b><em>${g.issues.join(' · ')}</em><p>${g.what}</p>${url ? `<a class="give" href="${url}" target="_blank" rel="noopener">DONATE ON BROOKLYN GIVES</a>` : ''}</div>`; }).join('') : '<p>Look for people with clipboards and teal name tags. Each one works at a real Brooklyn nonprofit.</p>');
     const earned = Object.entries(LESSONS).filter(([k]) => state.flag(`lesson_${k}`));
     const lessons = (earned.length ? earned.map(([k, l]) => `<div class="lesson"><b>${k}</b><em>from ${l.who}</em><p>${l.text}</p></div>`).join('') : '<p>Nothing yet. Talk to people. They know things.</p>')
       + `<p class="sub">${earned.length} of ${Object.keys(LESSONS).length} learned.</p>`;
