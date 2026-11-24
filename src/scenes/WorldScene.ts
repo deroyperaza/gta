@@ -169,17 +169,17 @@ export class WorldScene extends Phaser.Scene {
     const pl = (window as any).__pl; pl?.set(0.15);
     this.load.on('progress', (p: number) => pl?.set(0.15 + p * 0.8));
     // Painted portraits (BUSTS) load in the background once you're playing: see loadPortraitsLater()
-    this.load.image('bko-wordmark', 'sprites/bko-wordmark.png'); // Brooklyn Org's official horizontal wordmark (Wheatpaste), for its storefront sign
-    this.load.image('lmk-liu', 'sprites/liu-campus.png'); // LIU Brooklyn, painted in ChatGPT north-up: the field northwest, the Paramount corner southeast, the red sculpture on the south plaza
-    this.load.image('barclays-sprite', 'sprites/barclays.png');
-    this.load.image('bridge-tower-art', 'sprites/bridgetower.png');
-    this.load.image('dragon-art', 'sprites/dragon.png'); // Naim's dragon, painted in ChatGPT
-    this.load.image('cart0-art', 'sprites/cart-halal.png'); this.load.image('cart1-art', 'sprites/cart-churro.png'); // Hamid's and Doña Rosa's carts, painted in ChatGPT
-    for (const k of PAINTED_PROPS) this.load.image(`${k}-art`, `sprites/props/${k}.png`); // street objects painted in ChatGPT, Nov 2026
-    for (const p of PAINTED) if (p.ready) this.load.image(`lmk-${p.id}`, `sprites/${p.file}.png`); // landmarks placed by coordinates
-    this.load.image('gap-island', 'sprites/gap.png'); // Grand Army Plaza's island, painted in ChatGPT, keyed
-    for (const id of ['bandshell', 'gwgate', 'carousel', 'conservatory', 'bkcollege']) this.load.image(`park-${id}`, `sprites/${id}.png`); // painted in ChatGPT, keyed
-    for (const id of PAINTED_LANDMARKS) this.load.image(`lm-${id}`, `sprites/${id}.png`);
+    this.load.image('bko-wordmark', 'sprites/bko-wordmark.webp'); // Brooklyn Org's official horizontal wordmark (Wheatpaste), for its storefront sign
+    this.load.image('lmk-liu', 'sprites/liu-campus.webp'); // LIU Brooklyn, painted in ChatGPT north-up: the field northwest, the Paramount corner southeast, the red sculpture on the south plaza
+    this.load.image('barclays-sprite', 'sprites/barclays.webp');
+    this.load.image('bridge-tower-art', 'sprites/bridgetower.webp');
+    this.load.image('dragon-art', 'sprites/dragon.webp'); // Naim's dragon, painted in ChatGPT
+    this.load.image('cart0-art', 'sprites/cart-halal.webp'); this.load.image('cart1-art', 'sprites/cart-churro.webp'); // Hamid's and Doña Rosa's carts, painted in ChatGPT
+    for (const k of PAINTED_PROPS) this.load.image(`${k}-art`, `sprites/props/${k}.webp`); // street objects painted in ChatGPT, Nov 2026
+    for (const p of PAINTED) if (p.ready) this.load.image(`lmk-${p.id}`, `sprites/${p.file}.webp`); // landmarks placed by coordinates
+    this.load.image('gap-island', 'sprites/gap.webp'); // Grand Army Plaza's island, painted in ChatGPT, keyed
+    for (const id of ['bandshell', 'gwgate', 'carousel', 'conservatory', 'bkcollege']) this.load.image(`park-${id}`, `sprites/${id}.webp`); // painted in ChatGPT, keyed
+    for (const id of PAINTED_LANDMARKS) this.load.image(`lm-${id}`, `sprites/${id}.webp`);
   }
 
   create() {
