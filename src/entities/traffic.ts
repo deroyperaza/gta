@@ -55,7 +55,18 @@ export class Traffic {
       g.generateTexture('bike-stencil', 16, 14); g.destroy();
     }
     const hide: Phaser.GameObjects.GameObject[] = [];
+    // Grand Army Plaza: traffic swings around the island, so the painted lanes stop at the circle instead of cutting through it
+    const inPlaza = (x: number, y: number) => ((x - GCX) / (GA + 40)) ** 2 + ((y - GCY) / (GB + 40)) ** 2 < 1;
     const bikeLane = (axis: 'x' | 'y', at: number, from: number, to: number) => {
+      const mid = at + ROAD * TILE / 2, out = (t: number) => !inPlaza(axis === 'y' ? mid : t, axis === 'y' ? t : mid);
+      let a = -1; // paint only the stretches outside the plaza
+      for (let t = from; t <= to; t += 16) {
+        if (out(t)) { if (a < 0) a = t; }
+        else if (a >= 0) { if (t - 16 - a > 64) paintLane(axis, at, a, t - 16); a = -1; }
+      }
+      if (a >= 0 && to - a > 64) paintLane(axis, at, a, to);
+    };
+    const paintLane = (axis: 'x' | 'y', at: number, from: number, to: number) => {
       for (const side of [0, ROAD * TILE - 16]) {
         const x = axis === 'y' ? at + side : from, y = axis === 'y' ? from : at + side, w = axis === 'y' ? 16 : to - from, h = axis === 'y' ? to - from : 16;
         hide.push(scene.add.rectangle(x, y, w, h, 0x3f9a56, 0.85).setOrigin(0).setDepth(-7));
@@ -127,7 +138,8 @@ export class Traffic {
         if (d > 0 && d < (v.len + o.len) / 2 + 22) { blocked = true; break; }
       }
       if (!blocked) { // a bus in the way, in this lane or crossing ahead: the spot just in front of this car is inside the bus
-        const ahead = v.len / 2 + 26, px = v.axis === 'y' ? v.lane : s.x + v.dir * ahead, py = v.axis === 'y' ? s.y + v.dir * ahead : v.lane;
+        // along the way the car actually faces (around Grand Army Plaza that's the curve, not the straight grid lane)
+        const ahead = v.len / 2 + 26, fx = Math.sin(s.rotation), fy = -Math.cos(s.rotation), px = s.x + fx * ahead, py = s.y + fy * ahead;
         for (const b of buses) {
           const hx = Math.sin(b.rotation), hy = -Math.cos(b.rotation), ox = px - b.x, oy = py - b.y;
           const inFrontOfBus = Math.hypot(s.x - (b.x + hx * 90), s.y - (b.y + hy * 90)) < 36; // that bus is waiting on this car: keep going, clear the way

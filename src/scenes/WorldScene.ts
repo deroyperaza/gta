@@ -398,7 +398,8 @@ export class WorldScene extends Phaser.Scene {
       ln.lineStyle(2.5, 0xf2c23a, 0.9);
       for (const [a, b] of segs) {
         const dx = b.x - a.x, dy = b.y - a.y, L = Math.hypot(dx, dy), ux = dx / L, uy = dy / L, nx = -uy, ny = ux;
-        for (let t = 70; t < L - 70; t += 34) for (const o of [-2.5, 2.5]) ln.lineBetween(a.x + ux * t + nx * o, a.y + uy * t + ny * o, a.x + ux * (t + 20) + nx * o, a.y + uy * (t + 20) + ny * o);
+        const gx = GAP_CIRCLE.x * TILE, gy = GAP_CIRCLE.y * TILE, gax = (GAP_CIRCLE.ax + GAP_CIRCLE.w + 1.4) * TILE, gay = (GAP_CIRCLE.ay + GAP_CIRCLE.w + 1.4) * TILE;
+        for (let t = 70; t < L - 70; t += 34) for (const o of [-2.5, 2.5]) if (((a.x + ux * t - gx) / gax) ** 2 + ((a.y + uy * t - gy) / gay) ** 2 > 1) ln.lineBetween( /* no center line through Grand Army Plaza */a.x + ux * t + nx * o, a.y + uy * t + ny * o, a.x + ux * (t + 20) + nx * o, a.y + uy * (t + 20) + ny * o);
       }
       // Where the avenue crosses a grid street, the street wins: its own tiles (asphalt, lane lines, the regular
       // intersection crosswalks) are laid back over the avenue's smooth sidewalk band. No extra crosswalks at an angle,
@@ -433,15 +434,23 @@ export class WorldScene extends Phaser.Scene {
     {
       const g = GAP_CIRCLE, cx = g.x * TILE, cy = g.y * TILE;
       const band = (gr: Phaser.GameObjects.Graphics, d: number) => gr.fillPoints(gapOutline(d).map((p) => ({ x: p.x * TILE, y: p.y * TILE })), true);
-      const ring = this.add.graphics().setDepth(-9);
+      const ring = this.add.graphics().setDepth(-8.45); // above the avenue's paving and re-laid street tiles (-8.9, -8.5), so none poke through the ring
       ring.fillStyle(0xa39c90, 1); band(ring, g.w + 1.2);
       // The four streets (Flatbush/Vanderbilt north-south, Eastern Pkwy/Union St east-west) run straight into the ring:
       // asphalt cuts through the sidewalk band, with a crosswalk where each one meets the circle
       const reachY = (g.ay + g.w + 2.4) * TILE, reachX = (g.ax + g.w + 2.4) * TILE, sw = ROAD * TILE;
-      ring.fillStyle(0x24272a, 1);
+      ring.fillStyle(0x34363a, 1); // the same asphalt as the avenues' paving, so the plaza isn't a different shade
       ring.fillRect(cx - sw / 2, cy - reachY, sw, reachY * 2);
       ring.fillRect(cx - reachX, cy - sw / 2, reachX * 2, sw);
-      ring.fillStyle(0x24272a, 1); band(ring, g.w);
+      // Avenues that meet the circle (Flatbush) run their roadway into it, across the sidewalk band
+      for (const av of this.layout.avenues) for (let i = 1; i < av.pts.length; i++) {
+        const a = av.pts[i - 1], b2 = av.pts[i], L = Math.hypot(b2.x - a.x, b2.y - a.y), ux = (b2.x - a.x) / L, uy = (b2.y - a.y) / L;
+        for (let t = 0; t < L; t += 12) {
+          const px = a.x + ux * t, py = a.y + uy * t;
+          if (((px - cx) / reachX) ** 2 + ((py - cy) / reachY) ** 2 < 1) ring.fillCircle(px, py, av.hw);
+        }
+      }
+      band(ring, g.w);
       ring.fillStyle(0x8f8a80, 1); band(ring, 0.25);
       const lane = this.add.graphics().setDepth(-6), mid = gapOutline(g.w / 2, 120);
       lane.lineStyle(3, 0xece6da, 0.7);

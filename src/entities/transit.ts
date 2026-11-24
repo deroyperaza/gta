@@ -82,7 +82,7 @@ export class Transit {
   routes: BusRoute[] = [];
   buses: Bus[] = [];
   /** Cars on the road (from traffic.ts), so buses never drive through them */
-  cars: () => { x: number; y: number }[] = () => [];
+  cars: () => { x: number; y: number; rotation?: number }[] = () => [];
   flatbush!: Path;
   riding: Riding | null = null;
   waiting: { route: BusRoute; stop: Stop } | null = null;
@@ -448,7 +448,12 @@ export class Transit {
       // Keep a bus length behind any bus ahead in the same lane (no driving through each other)
       const hx = Math.cos(b.sprite.rotation - Math.PI / 2), hy = Math.sin(b.sprite.rotation - Math.PI / 2); // the sprite faces where it's going
       // a car just in front of the bumper, from any direction: the bus waits for it to clear
-      const carAhead = !riding && b.dwell <= 0 && this.cars().some((c) => Math.hypot(c.x - (b.sprite.x + hx * 90), c.y - (b.sprite.y + hy * 90)) < 36);
+      const carAhead = !riding && b.dwell <= 0 && this.cars().some((c: any) => {
+        if (Math.hypot(c.x - (b.sprite.x + hx * 90), c.y - (b.sprite.y + hy * 90)) >= 36) return false;
+        // a car pointed back at the bus is waiting on the bus itself: don't wait on it, or neither ever moves
+        const chx = Math.cos((c.rotation ?? 0) - Math.PI / 2), chy = Math.sin((c.rotation ?? 0) - Math.PI / 2), dx = b.sprite.x - c.x, dy = b.sprite.y - c.y, d = Math.hypot(dx, dy) || 1;
+        return (chx * dx + chy * dy) / d < 0.3;
+      });
       const blockedAhead = !riding && b.dwell <= 0 && this.buses.some((o) => {
         if (o === b) return false;
         const ox = o.sprite.x - b.sprite.x, oy = o.sprite.y - b.sprite.y, d = Math.hypot(ox, oy);
