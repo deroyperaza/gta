@@ -297,8 +297,12 @@ export class WorldScene extends Phaser.Scene {
       // Brooklyn Org's storefront carries its real one-line wordmark (official file, Wheatpaste on Blacktop) over the sign band
       const ob = b.id === 'bkorg' ? signBand(b) : null;
       if (ob && this.textures.exists('bko-wordmark')) {
-        const lh = 17, mark = this.add.image(ob.x + ob.w / 2, ob.y + ob.h / 2, 'bko-wordmark').setOrigin(0.5);
-        mark.setScale(lh / mark.height);
+        // Drawn once at the size it shows on screen (camera zoom x pixel density), with the browser's high-quality downscale: sharp, not WebGL-shrunk
+        const lh = 17, k = Math.max(1, (innerWidth > 1500 ? 1.25 : innerWidth > 900 ? 1.1 : 0.85) * DPR);
+        const src = this.textures.get('bko-wordmark').getSourceImage() as HTMLImageElement;
+        const th = Math.round(lh * k), tw = Math.round(src.width * th / src.height);
+        if (!this.textures.exists('bko-sign')) { const ct = this.textures.createCanvas('bko-sign', tw, th)!; const cx = ct.getContext(); cx.imageSmoothingEnabled = true; cx.imageSmoothingQuality = 'high'; cx.drawImage(src, 0, 0, tw, th); ct.refresh(); }
+        const mark = this.add.image(ob.x + ob.w / 2, ob.y + ob.h / 2, 'bko-sign').setOrigin(0.5).setScale(1 / k);
         const plate = this.add.rectangle(mark.x, mark.y, ob.w, lh * 1.6, 0x131313).setDepth(b.y + b.h + 0.3);
         mark.setDepth(b.y + b.h + 0.4); this.miniIgnore.push(plate, mark);
       }
