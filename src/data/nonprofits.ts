@@ -51,7 +51,15 @@ function firstPerson(t: string) {
   else if (!base && /(sses|shes|ches|xes|zes)$/.test(v)) base = v.slice(0, -2);
   else if (!base && /[^s]s$/.test(v)) base = v.slice(0, -1);
   if (!base || /^(A|An|The|This|Our|Since|Founded|Brooklyn|New|Through|With|For)$/.test(v)) return `Here's what we do: ${t}`;
-  return `We ${base.toLowerCase()}${rest}`;
+  // Verbs chained right after the first one follow it: "builds and preserves" -> "build and preserve" (Deroy, Nov 24 2026)
+  const plain = (w: string) => /ies$/.test(w) ? w.slice(0, -3) + 'y' : /(sses|shes|ches|xes|zes)$/.test(w) ? w.slice(0, -2) : /[^s]s$/.test(w) ? w.slice(0, -1) : w;
+  let tail = rest, head = '';
+  for (let k = 0; k < 4; k++) {
+    const c = tail.match(/^((?:,\s*(?:and\s+|or\s+)?)|\s+(?:and|or)\s+)([a-z]+(?:ies|es|s))\b/);
+    if (!c || /ss$/.test(c[2])) break;
+    head += c[1] + plain(c[2]); tail = tail.slice(c[0].length);
+  }
+  return `We ${base.toLowerCase()}${head}${tail}`;
 }
 const firstSentences = (desc: string) => { const parts = lead(desc).split(/(?<=[.!?])\s/); let t = parts[0]; if (t.length < 90 && parts[1]) t += ' ' + parts[1]; return t; };
 

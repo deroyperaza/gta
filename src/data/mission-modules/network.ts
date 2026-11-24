@@ -72,7 +72,7 @@ export const network: MissionModule = {
     stages: [
       { text: () => 'Meet Adaeze at Brooklyn Org, by Hanson Place', targets: () => ['adaeze'], done: () => f('net1_accepted') },
       {
-        text: () => `Meet some Brooklyn Org grantees (${met().length}/${netPicks().length}): ${left().map(short).join(' · ')}`,
+        text: () => `Meet some Brooklyn Org grantees (${met().length}/${netPicks().length}):\n${netPicks().map((id) => `${f(`net_${id}`) ? '☑' : '☐'} ${short(id)}`).join('\n')}`, // a checklist (Deroy, Nov 24 2026)
         targets: () => left(),
         done: () => left().length === 0,
       },

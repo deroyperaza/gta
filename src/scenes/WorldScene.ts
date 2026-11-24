@@ -26,7 +26,7 @@ import { ui, type ChoiceItem } from '../ui/ui';
 import { BLOCK_H, BLOCK_W, COLS, ROWS, RUNWAYS, RUNWAY_W, geo, neighborhoodOfBlock, GAP_CIRCLE, gapOutline, ROAD, T, TILE, WORLD_H, WORLD_W, districtAt, generateLayout, neighborhoodAt, type BuildingDef, type WorldLayout } from '../world/layout';
 import { makeProps } from '../world/textures';
 import { signBand } from '../world/golden';
-import { POOL, NET_PICKS } from '../data/mission-modules/network';
+import { POOL, NET_PICKS, netPicks } from '../data/mission-modules/network';
 import { storefrontFor } from '../data/storefronts';
 import { buildingKey, makeBikeRider, makeBridgeTower, makeBuilding, makeCharacter, makePlayerMarker, makeStreetProps, makeTiles, makeVehicles, shadowKey, shadowOffset, SHADOW_PAD } from '../world/golden';
 
@@ -1555,7 +1555,29 @@ export class WorldScene extends Phaser.Scene {
   private celebrate(x: number, y: number) { this.hearts(x, y - 30, 20); this.cameras.main.flash(300, 255, 210, 63); }
 
   // ------------------------------------------------------------------ LOOP
+  /** Mission 1 travel tips: how to reach your next grantee faster, by distance (a bike for short hops, transit for long ones) */
+  private tipAt = 0; private tipsSeen = new Set<string>();
+  private travelTips(now: number) {
+    if (now < this.tipAt) return; this.tipAt = now + 1500;
+    const m = missions.active;
+    if (m?.id !== 'network' || state.mission('network').stage !== 1 || this.mode !== 'play' || ui.blocking() || this.onBike || this.transit.riding) return;
+    const next = netPicks().filter((id) => !state.flag(`net_${id}`) && this.entityPos[id])
+      .map((id) => ({ id, d: Math.hypot(this.entityPos[id]!.x - this.player.x, this.entityPos[id]!.y - this.player.y) })).sort((a, b) => a.d - b.d)[0];
+    if (!next || next.d < 1200) return; // close enough to walk: no tip
+    const kind = next.d < 4500 ? 'bike' : 'transit'; // about 30 seconds on foot
+    const key = `${next.id}:${kind}`;
+    if (this.tipsSeen.has(key) || this.tipsSeen.size >= 6) return;
+    if (this.tipsSeen.size && now - this.lastTip < 25000) return; // not back to back
+    this.tipsSeen.add(key); this.lastTip = now;
+    const who = NONPROFITS.find((n) => n.id === next.id)?.org ?? 'your next group';
+    bus.emit('ui:tip', kind === 'bike'
+      ? `${who} is a short ride away. Grab a BK Spokes bike at a dock (the bike signs on your map) and you'll be there in half the time.`
+      : `${who} is across Brooklyn. Take the subway or a bus, hail a dollar van on Flatbush, or call a ride with RIDE [R]. Or jump there with FIND [F].`);
+  }
+  private lastTip = 0;
+
   update(_t: number, deltaMs: number) {
+    this.travelTips(_t);
     { const want = this.mode === 'play' && !!missions.active?.night; if (want !== this.night) this.setNight(want); } // night missions
     const dt = Math.min(deltaMs, 50) / 1000;
     const blocking = ui.blocking() || this.mode !== 'play';
