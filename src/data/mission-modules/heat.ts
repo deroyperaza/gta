@@ -28,7 +28,7 @@ const RESET = { at_lm_arcade: false, at_lm_hotdog: false, at_lm_mermaid: false }
 
 export const heat: MissionModule = {
   mission: {
-    id: 'heat', number: 12, title: 'HEAT WAVE', district: 'coneyisland', giver: 'inez',
+    id: 'heat', number: 13, title: 'HEAT WAVE', district: 'coneyisland', giver: 'inez',
     tagline: 'Day three over 95. The elevator at Surfside Towers is "resting." Ms. Inez has a list of neighbors who live alone.',
     stages: [
       { text: () => 'Find Ms. Inez at Surfside Towers on Coney Island', targets: () => ['inez'], done: () => f('heat_accepted') },

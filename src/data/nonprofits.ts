@@ -65,6 +65,11 @@ const STYLES: Look['style'][] = ['short', 'afro', 'bun', 'long', 'bald', 'beanie
 const ACCS: (Look['acc'] | undefined)[] = ['clipboard', 'clipboard', 'tote', 'tote', 'glasses', 'phone', undefined]; // staffers carry the clipboard
 const REGION_DISTRICT: Record<string, District> = { 'North Brooklyn': 'bushwick', 'Central Brooklyn': 'bedstuy', 'East Brooklyn': 'flatbush', 'West Brooklyn': 'parkslope', 'South Brooklyn': 'coneyisland', 'Brooklyn-wide': 'downtown' };
 
+/** Finalists for the Spark Prize, announced Oct 8 2026 (brooklyn.org, "Meet the Finalists for the 10th Brooklyn Org Spark Prize";
+ *  Brooklyn Org calls it the 2027 prize). Labeled as Deroy asked (Nov 24 2026). The 12 on the grantee map: */
+export const SPARK_FINALIST = '2026 BKO Spark Prize Finalist';
+const FINALISTS = new Set(['Black Veterans for Social Justice', 'Brooklyn Ballet', 'Brooklyn Debate League', 'Building Beats', 'Envision Freedom Fund', 'Footsteps',
+  'IMPACCT Brooklyn', 'New York State Youth Leadership Council', 'RaisingHealth Partners', 'Street Vendor Project', 'The Alex House Project', 'The Brave House']);
 const raws = RAW as Raw[];
 const used = new Set<string>();
 export const NONPROFITS: Nonprofit[] = raws.map((r) => {
@@ -74,7 +79,7 @@ export const NONPROFITS: Nonprofit[] = raws.map((r) => {
   const look: Look = { skin: SKIN[roll('skin', SKIN.length)], hair: HAIR[roll('hair', HAIR.length)], style: STYLES[roll('style', STYLES.length)], shirt: SHIRT[roll('shirt', SHIRT.length)], pants: PANTS[roll('pants', PANTS.length)], shoes: '#f2f2f2', acc: ACCS[roll('acc', ACCS.length)], hatColor: SHIRT[roll('hat', SHIRT.length)], dress: roll('dress', 3) === 0 };
   const short = tagName(r.name), what = firstSentences(r.desc), gist = gistOf(r.desc);
   return {
-    id, name: r.name, short, title: `${first}, ${role}`, district: REGION_DISTRICT[r.locs.find((l) => l !== 'Brooklyn-wide') ?? 'Brooklyn-wide'] ?? 'downtown',
+    id, name: r.name, short, title: FINALISTS.has(r.name) ? `${first}, ${role} · ${SPARK_FINALIST}` : `${first}, ${role}`, district: REGION_DISTRICT[r.locs.find((l) => l !== 'Brooklyn-wide') ?? 'Brooklyn-wide'] ?? 'downtown',
     spot: id, look, bio: what, color: '#2fd1c5', org: r.name, what, gist, issues: r.issues, locs: r.locs, mode: r.mode, at: r.at, hood: r.hood, npOrg: true,
     dialogue: { entries: [], nodes: {} },
   };

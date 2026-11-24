@@ -28,7 +28,7 @@ const RESET = { at_gap: false, at_lm_bkmuseum: false, at_lm_kingsish: false };
 
 export const culture: MissionModule = {
   mission: {
-    id: 'culture', number: 11, title: 'FREE FOR ALL', district: 'crownheights', giver: 'danae',
+    id: 'culture', number: 12, title: 'FREE FOR ALL', district: 'crownheights', giver: 'danae',
     tagline: 'Twelve kids live ten minutes from the Brooklyn Museum and have never been inside. Fix that for zero dollars.',
     stages: [
       { text: () => 'Meet Danae in Park Slope', targets: () => ['danae'], done: () => f('culture_accepted') },

@@ -30,7 +30,7 @@ const RESET_SPOTS = { at_lm_bkmuseum: false, at_lm_centrallib: false };
 
 export const access: MissionModule = {
   mission: {
-    id: 'access', number: 8, title: 'ELEVATOR PITCH', district: 'crownheights', giver: 'naim',
+    id: 'access', number: 9, title: 'ELEVATOR PITCH', district: 'crownheights', giver: 'naim',
     tagline: 'Naim\'s friend Teo can\'t get to science class. The lab is up three flights. Councilmember Gary is "looking into it."',
     stages: [
       { text: () => 'Meet Naim on the Central Library steps', targets: () => ['naim'], done: () => f('access_accepted') },

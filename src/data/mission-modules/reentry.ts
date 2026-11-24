@@ -25,7 +25,7 @@ const DONE = (id: string) => ({ missionStatus: { id, is: 'complete' as const } }
 
 export const reentry: MissionModule = {
   mission: {
-    id: 'reentry', number: 6, title: 'SECOND CHANCES', district: 'downtown', giver: 'bridgette',
+    id: 'reentry', number: 7, title: 'SECOND CHANCES', district: 'downtown', giver: 'bridgette',
     tagline: 'Gary booked a "Second Chances" photo op. He forgot to invite anyone getting one.',
     stages: [
       { text: () => 'Talk to Bridgette at the Dept. of Permits & Delays', targets: () => ['bridgette'], done: () => f('reentry_accepted') },

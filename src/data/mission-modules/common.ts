@@ -33,7 +33,7 @@ const RESET = { at_lm_farmacy: false, at_lm_chchurch: false, at_lm_kingstonhw: f
 
 export const common: MissionModule = {
   mission: {
-    id: 'common', number: 16, title: 'ONE PARKWAY', district: 'crownheights', giver: 'nadine',
+    id: 'common', number: 17, title: 'ONE PARKWAY', district: 'crownheights', giver: 'nadine',
     tagline: 'Two neighbors want the same empty lot on Montgomery Street. A developer wants it more. His flyers say they\'re enemies. They haven\'t met.',
     stages: [
       { text: () => 'Meet Nadine at the Eastern Pkwy Neighbors Center', targets: () => ['nadine'], done: () => f('common_accepted') },

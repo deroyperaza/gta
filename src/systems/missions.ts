@@ -4,6 +4,7 @@ import { MISSION_BY_ID, type MissionDef } from '../data/missions';
 import { DISTRICTS } from '../core/types';
 import { NPC_BY_ID } from '../data/npcs';
 import { granteesFor } from '../data/grantees';
+import { netPicks } from '../data/mission-modules/network';
 import { NONPROFITS, MISSION_ISSUES } from '../data/nonprofits';
 
 /**
@@ -94,12 +95,14 @@ class MissionSystem {
     // Missions 3+: a weak result costs you. The neighborhood trusts you less (so its stops take longer next time),
     // and the person who brought you in is a little let down.
     const resultKey = def.id === 'march' ? 'pvp_result' : `${def.id}_result`; // Mission 3 predates the naming
-    if (def.number >= 3 && state.flag(resultKey) === 'weak') {
-      const hit = def.number >= 5 ? 8 : 5; // 3–4 sting a little; 5+ sting more
-      state.apply({ trust: { [def.district]: -hit }, rel: { [def.giver]: def.number >= 5 ? -4 : -2 } }, { quiet: true });
+    if (def.number >= 4 && state.flag(resultKey) === 'weak') { // the march (now Mission 4) onward
+      const hit = def.number >= 6 ? 8 : 5; // 4–5 sting a little; 6+ sting more
+      state.apply({ trust: { [def.district]: -hit }, rel: { [def.giver]: def.number >= 6 ? -4 : -2 } }, { quiet: true });
       lines.push(`${DISTRICTS[def.district].name.toUpperCase()} TRUST -${hit} · THE BLOCK REMEMBERS`);
     }
-    const real = granteesFor(def.id); // shown as cards under the lines, each with its Brooklyn Gives donation link
+    const real = def.id === 'network' // Mission 1: the four grantees you just met
+      ? netPicks().map((id) => NONPROFITS.find((n) => n.id === id)!).map((n) => ({ name: n.org, what: n.what.split(/(?<=[.!?])\s/)[0], funded: '', missions: [] }))
+      : granteesFor(def.id); // shown as cards under the lines, each with its Brooklyn Gives donation link
     { // Your network pays off: every group you know that works on this mission's issues adds Solidarity (up to 10 groups)
       const issues = new Set(MISSION_ISSUES[def.id] ?? []);
       if (issues.size) {

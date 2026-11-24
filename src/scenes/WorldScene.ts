@@ -26,6 +26,7 @@ import { ui, type ChoiceItem } from '../ui/ui';
 import { BLOCK_H, BLOCK_W, COLS, ROWS, RUNWAYS, RUNWAY_W, geo, neighborhoodOfBlock, GAP_CIRCLE, gapOutline, ROAD, T, TILE, WORLD_H, WORLD_W, districtAt, generateLayout, neighborhoodAt, type BuildingDef, type WorldLayout } from '../world/layout';
 import { makeProps } from '../world/textures';
 import { signBand } from '../world/golden';
+import { POOL, NET_PICKS } from '../data/mission-modules/network';
 import { storefrontFor } from '../data/storefronts';
 import { buildingKey, makeBikeRider, makeBridgeTower, makeBuilding, makeCharacter, makePlayerMarker, makeStreetProps, makeTiles, makeVehicles, shadowKey, shadowOffset, SHADOW_PAD } from '../world/golden';
 
@@ -761,6 +762,18 @@ export class WorldScene extends Phaser.Scene {
   }
 
   // ------------------------------------------------------------------ GAME FLOW
+  /** Mission 1's four grantees: a fresh random draw from this year's grantees each New Game, over at least 3 neighborhoods */
+  private pickNetwork() {
+    const pool = POOL.map(([id]) => id).filter((id) => this.entityPos[id]);
+    const hood = (id: string) => districtAt(this.entityPos[id]!.x, this.entityPos[id]!.y);
+    let pick = pool.slice(0, NET_PICKS);
+    for (let t = 0; t < 200; t++) {
+      const draw = [...pool].sort(() => Math.random() - 0.5).slice(0, NET_PICKS);
+      if (new Set(draw.map(hood)).size >= Math.min(3, NET_PICKS)) { pick = draw; break; }
+    }
+    state.setFlag('net1_picks', pick.join(','));
+  }
+
   private newGame() {
     setTimeout(() => this.layoutMinimap(), 60); // once the HUD is showing, so it can be measured
     state.reset();
@@ -768,7 +781,8 @@ export class WorldScene extends Phaser.Scene {
     this.toggleBike(false, true);
     const s = this.layout.spots.playerStart;
     this.player.setPosition(s.x, s.y);
-    missions.start('stock');
+    this.pickNetwork();
+    missions.start('network'); // Mission 1 opens at Brooklyn Org
     this.mode = 'play';
     this.cameras.main.startFollow(this.player, true, 0.12, 0.12);
     this.cameras.main.flash(400, 255, 140, 60);
@@ -1427,6 +1441,7 @@ export class WorldScene extends Phaser.Scene {
       // Each category is an accordion with its count; searching opens the ones with matches
       items: people.map(({ n, g, sub }) => ({ value: n.id, label: n.name, sub, section: g, sectionHtml: `${g} <span class="ch-count">${people.filter((x) => x.g === g).length}</span>` })) }, (id) => {
       const p = this.entityPos[id]; if (!p) return;
+      state.setFlag('used_find', true);
       // Land right beside them (in talking range), on open ground: not inside a building, not in the water
       const clear = (x: number, y: number) => { const tile = this.layout.tiles[Math.floor(y / TILE)]?.[Math.floor(x / TILE)]; return tile != null && tile !== T.WATER && tile !== T.OFFMAP && !this.layout.buildings.some((b) => x > b.x - 12 && x < b.x + b.w + 12 && y > b.y - 12 && y < b.y + b.h + 12); };
       const spots = [[0, 42], [0, -42], [42, 0], [-42, 0], [30, 30], [-30, 30], [30, -30], [-30, -30]].map(([dx, dy]) => ({ x: p.x + dx, y: p.y + dy })).filter((c) => clear(c.x, c.y));

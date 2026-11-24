@@ -32,7 +32,7 @@ const BOWS = [
 
 export const bins: MissionModule = {
   mission: {
-    id: 'bins', number: 100, title: 'BINS, NOT BAGS', district: 'downtown', giver: 'bev', side: true, kind: 'SIDE MISSION', night: true,
+    id: 'bins', number: 101, title: 'BINS, NOT BAGS', district: 'downtown', giver: 'bev', side: true, kind: 'SIDE MISSION', night: true,
     tagline: 'Every night, ten bags on the curb and a rat buffet. Europe put its trash in bins decades ago. Ms. Bev wants her block next.',
     stages: [
       { text: () => 'Ask Ms. Bev what actually works', targets: () => ['bev'], done: () => f('bins_plan') },

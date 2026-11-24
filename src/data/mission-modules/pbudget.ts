@@ -27,7 +27,7 @@ const RESET_SPOTS = { at_lm_paradehq: false, at_lm_panyard: false, at_lm_chtenan
 
 export const pbudget: MissionModule = {
   mission: {
-    id: 'pbudget', number: 7, title: 'THE PEOPLE\'S MONEY', district: 'crownheights', giver: 'jenna',
+    id: 'pbudget', number: 8, title: 'THE PEOPLE\'S MONEY', district: 'crownheights', giver: 'jenna',
     tagline: 'The city lets kids vote on real money. Nobody told the kids. Jenna has a plan, and it starts with listening.',
     stages: [
       { text: () => 'Meet Jenna at Tenants United Hall in Bed-Stuy', targets: () => ['jenna'], done: () => f('pbudget_accepted') },

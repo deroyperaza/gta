@@ -18,9 +18,10 @@ import { ej } from './ej';
 import { rj } from './rj';
 import { dance } from './dance';
 import { bins } from './bins';
+import { network } from './network';
 import { medBike, medTriangle, medMosque, medChoir } from './mediations';
 
 /** Missions 4+ — one file each, in play order. */
-export const MODULES: MissionModule[] = [rent, board, reentry, pbudget, access, streets, robot, culture, heat, blockparty, fares, food, common, bridge, elders, ej, rj, medBike, medTriangle, medMosque, medChoir, dance, bins];
+export const MODULES: MissionModule[] = [rent, board, reentry, pbudget, access, streets, robot, culture, heat, blockparty, fares, food, common, bridge, elders, ej, rj, medBike, medTriangle, medMosque, medChoir, dance, bins, network];
 
 export const MODULE_NPCS = MODULES.flatMap((m) => m.npcs ?? []);

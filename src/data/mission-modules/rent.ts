@@ -23,7 +23,7 @@ const take = { items: { posters: 4, art: 1 }, rel: { juni: 6 }, trust: { bushwic
 
 export const rent: MissionModule = {
   mission: {
-    id: 'rent', number: 4, title: 'RENT IS TOO DAMN HIGH', district: 'plg', giver: 'nell',
+    id: 'rent', number: 5, title: 'RENT IS TOO DAMN HIGH', district: 'plg', giver: 'nell',
     tagline: 'A landlord LLC filed twelve evictions in one morning. Nell needs lawyers on the case and Juni needs a wall.',
     stages: [
       { text: () => 'Meet Nell at the Lefferts Tenants Association', targets: () => ['nell'], done: () => f('rent_accepted') },

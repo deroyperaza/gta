@@ -34,7 +34,7 @@ const RESET = { rj_renee: false, rj_imani: false };
 
 export const rj: MissionModule = {
   mission: {
-    id: 'rj', number: 20, title: 'NO PROGRAMS', district: 'crownheights', giver: 'odette',
+    id: 'rj', number: 21, title: 'NO PROGRAMS', district: 'crownheights', giver: 'odette',
     tagline: 'An apartment ad that says "NO PROGRAMS." A job offer that says "lose the locs." Odette\'s clinic has a long line and a short fuse. Help her clear it.',
     stages: [
       { text: () => 'Meet Odette at the Bergen St Know Your Rights Clinic', targets: () => ['odette'], done: () => f('rj_accepted') },

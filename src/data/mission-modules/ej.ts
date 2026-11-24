@@ -36,7 +36,7 @@ const RESET = { ej_rafa: false, ej_toni: false, ej_amparo: false };
 
 export const ej: MissionModule = {
   mission: {
-    id: 'ej', number: 19, title: 'PEAK SEASON', district: 'sunsetpark', giver: 'itzel',
+    id: 'ej', number: 20, title: 'PEAK SEASON', district: 'sunsetpark', giver: 'itzel',
     tagline: 'It\'s 94 degrees. Every AC in Brooklyn is on, and the oldest power plants in the city just woke up next to Sunset Park. Itzel has a map, a thermometer and a plan.',
     stages: [
       { text: () => 'Meet Itzel at the Sunset Park Climate Collective', targets: () => ['itzel'], done: () => f('ej_accepted') },

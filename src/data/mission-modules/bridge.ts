@@ -32,7 +32,7 @@ const RESET = { at_lm_bxcenter: false, at_lm_enyfarm: false, at_lm_chcenter: fal
 
 export const bridge: MissionModule = {
   mission: {
-    id: 'bridge', number: 17, title: 'THE BRIDGE', district: 'downtown', giver: 'adaeze',
+    id: 'bridge', number: 18, title: 'THE BRIDGE', district: 'downtown', giver: 'adaeze',
     tagline: 'Sloane has money and good intentions. Brownsville has the answers. Brooklyn Org is the bridge between them, if you can get Sloane to cross it with her ears open.',
     stages: [
       { text: () => 'Meet Adaeze at Brooklyn Org, by Hanson Place', targets: () => ['adaeze'], done: () => f('bridge_accepted') },

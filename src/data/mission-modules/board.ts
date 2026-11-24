@@ -22,7 +22,7 @@ const flyers = () => (state.d.activeMission === 'board' ? (state.mission('board'
 
 export const board: MissionModule = {
   mission: {
-    id: 'board', number: 5, title: 'THE COMMUNITY BOARD FROM HELL', district: 'downtown', giver: 'tyler',
+    id: 'board', number: 6, title: 'THE COMMUNITY BOARD FROM HELL', district: 'downtown', giver: 'tyler',
     tagline: 'Tyler wants 400 luxury units. The community board meets at 7. Skye is livestreaming. Godspeed.',
     stages: [
       { text: () => 'Hear Tyler\'s pitch at Luxe Lofts', targets: () => ['tyler'], done: () => f('board_accepted') },

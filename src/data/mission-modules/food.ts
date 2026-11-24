@@ -30,7 +30,7 @@ const RESET = { at_lm_bxdeli: false, at_lm_bxdollar: false, at_lm_bxchicken: fal
 
 export const food: MissionModule = {
   mission: {
-    id: 'food', number: 15, title: 'THE NEAREST TOMATO', district: 'flatbush', giver: 'celestine',
+    id: 'food', number: 16, title: 'THE NEAREST TOMATO', district: 'flatbush', giver: 'celestine',
     tagline: 'Ms. Celestine can buy a lottery ticket, a phone charger and a honey bun on every corner in Brownsville. A tomato is a field trip.',
     stages: [
       { text: () => 'Meet Ms. Celestine at the Brownsville Tenants & Eaters Assn', targets: () => ['celestine'], done: () => f('food_accepted') },

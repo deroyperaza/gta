@@ -39,7 +39,7 @@ const alliesIn = () => MARCH_ALLIES.filter((a) => f(`pvp_ally_${a}`)).length;
 
 export const MISSIONS: MissionDef[] = [
   {
-    id: 'stock', number: 1, title: 'STOCK THE BLOCK', district: 'bedstuy', giver: 'dee',
+    id: 'stock', number: 2, title: 'STOCK THE BLOCK', district: 'bedstuy', giver: 'dee',
     tagline: 'The Gates Ave community fridge is down to one lime. Fix that.',
     stages: [
       { text: () => 'Meet Dee at the Community Fridge in Bed-Stuy', targets: () => ['dee'], done: () => f('stb_accepted') },
@@ -70,7 +70,7 @@ export const MISSIONS: MissionDef[] = [
     next: 'circle',
   },
   {
-    id: 'circle', number: 2, title: 'THE CIRCLE', district: 'bedstuy', giver: 'hattie',
+    id: 'circle', number: 3, title: 'THE CIRCLE', district: 'bedstuy', giver: 'hattie',
     tagline: 'A noise dispute between neighbors is about to become a war. Facilitate a restorative justice circle.',
     stages: [
       { text: () => 'Join Ms. Hattie\'s circle at the Gates Ave Community Center', targets: () => ['hattie'], done: () => f('circle_done') },
@@ -84,7 +84,7 @@ export const MISSIONS: MissionDef[] = [
     next: 'march',
   },
   {
-    id: 'march', number: 3, title: 'THE PEOPLE VS. THE POWER', district: 'downtown', giver: 'gary',
+    id: 'march', number: 4, title: 'THE PEOPLE VS. THE POWER', district: 'downtown', giver: 'gary',
     tagline: 'A demonstration is forming at Borough Hall. Recruit, marshal, and march — without letting it boil over.',
     stages: [
       { text: () => 'Talk to Councilmember Gary at Borough Hall', targets: () => ['gary'], done: () => f('pvp_accepted') },
@@ -118,11 +118,11 @@ export const MISSIONS: MissionDef[] = [
     next: 'rent',
   },
   {
-    id: 'rent', number: 4, title: 'RENT IS TOO DAMN HIGH', district: 'bushwick', giver: 'juni', comingSoon: true,
+    id: 'rent', number: 5, title: 'RENT IS TOO DAMN HIGH', district: 'bushwick', giver: 'juni', comingSoon: true,
     tagline: 'Build a spectacular public installation about rent strikes with Juni\'s collective.', stages: [], next: 'board',
   },
   {
-    id: 'board', number: 5, title: 'THE COMMUNITY BOARD FROM HELL', district: 'downtown', giver: 'tyler', comingSoon: true,
+    id: 'board', number: 6, title: 'THE COMMUNITY BOARD FROM HELL', district: 'downtown', giver: 'tyler', comingSoon: true,
     tagline: 'Tyler wants 400 luxury units. The community board meets at 7. Skye is livestreaming. Godspeed.', stages: [],
   },
 ];

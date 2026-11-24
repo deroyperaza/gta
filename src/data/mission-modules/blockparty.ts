@@ -60,7 +60,7 @@ const guestDialogue = Object.fromEntries(LINES.map(([id, line, reply, name]) => 
 
 export const blockparty: MissionModule = {
   mission: {
-    id: 'blockparty', number: 13, title: 'THE BLOCK PARTY', district: 'coneyisland', giver: 'emily',
+    id: 'blockparty', number: 14, title: 'THE BLOCK PARTY', district: 'coneyisland', giver: 'emily',
     tagline: 'One block. One day. No cars. Everybody you ever organized with, and a cake in the middle like a monument.',
     stages: [
       { text: () => 'Meet Emily on the Coney Island boardwalk', targets: () => ['emily'], done: () => f('blockparty_accepted') },

@@ -29,7 +29,7 @@ const RESET_SPOTS = { at_lm_synergy: false, at_lm_bktower: false };
 
 export const robot: MissionModule = {
   mission: {
-    id: 'robot', number: 10, title: 'HIRED BY A ROBOT', district: 'downtown', giver: 'deroy',
+    id: 'robot', number: 11, title: 'HIRED BY A ROBOT', district: 'downtown', giver: 'deroy',
     tagline: 'Yara applied for a dispatcher job. A robot said no in four seconds. Nobody can tell her why. Deroy wants that story told right.',
     stages: [
       { text: () => 'Meet Deroy at the First Church of the Block Party', targets: () => ['deroy'], done: () => f('robot_accepted') },

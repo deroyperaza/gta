@@ -24,7 +24,7 @@ const RESET = { rode_bus: false, rode_van: false, rode_car: false, at_gap: false
 
 export const fares: MissionModule = {
   mission: {
-    id: 'fares', number: 14, title: 'TWO BUSES AND A PRAYER', district: 'flatbush', giver: 'marisol',
+    id: 'fares', number: 15, title: 'TWO BUSES AND A PRAYER', district: 'flatbush', giver: 'marisol',
     tagline: 'Marisol lives in Marine Park. The nearest subway is a bus ride away. Her shift starts at nine. Her commute starts at seven-fifteen.',
     stages: [
       { text: () => 'Meet Marisol on Avenue U in Marine Park', targets: () => ['marisol'], done: () => f('fares_accepted') },

@@ -27,7 +27,7 @@ const BOWS = [
 
 export const dance: MissionModule = {
   mission: {
-    id: 'dance', number: 100, title: 'THE WHOLE BLOCK DANCES', district: 'bushwick', giver: 'vega', side: true, kind: 'SIDE MISSION',
+    id: 'dance', number: 101, title: 'THE WHOLE BLOCK DANCES', district: 'bushwick', giver: 'vega', side: true, kind: 'SIDE MISSION',
     tagline: 'Vega is nine and wants to teach the whole block to dance. Free. In the street. Grandmas included. She needs music, the elders, and you.',
     stages: [
       { text: () => 'Ask Marcus to DJ', targets: () => ['marcus'], done: () => f('dance_music') },

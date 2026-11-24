@@ -29,7 +29,7 @@ const RESET_SPOTS = { at_lm_oat: false, at_lm_laundry1: false, at_garden: false 
 
 export const streets: MissionModule = {
   mission: {
-    id: 'streets', number: 9, title: 'STREETS FOR PEOPLE', district: 'parkslope', giver: 'adrian',
+    id: 'streets', number: 10, title: 'STREETS FOR PEOPLE', district: 'parkslope', giver: 'adrian',
     tagline: 'Adrián wants to turn one block into a playground on Saturdays. The Free Parking Caucus wants to turn it into a parking spot. Forever.',
     stages: [
       { text: () => 'Meet Adrián in Prospect Park', targets: () => ['adrian'], done: () => f('streets_accepted') },
