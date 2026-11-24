@@ -95,7 +95,7 @@ export const network: MissionModule = {
         { cond: S('network', 2), node: 'net_back' },
       ],
       nodes: {
-        net_0: { speaker: 'adaeze', text: 'You made it out of jury duty! Welcome to Brooklyn Org. Quick question: do you know what a community foundation does?', choices: [
+        net_0: { speaker: 'adaeze', text: 'Welcome to Brooklyn Org. Quick question: do you know what a community foundation does?', choices: [
           { text: 'Gives out money?', next: 'net_1' },
           { text: 'Not a clue.', next: 'net_1' },
         ] },
