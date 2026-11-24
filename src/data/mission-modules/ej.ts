@@ -172,7 +172,7 @@ export const ej: MissionModule = {
       idle: ['Hot day. The barges are awake.', 'I\'ll bring fish to the meeting.', 'This waterfront fed my family. Now it should stop poisoning it.'],
     },
     {
-      id: 'toni', name: 'Ms. Toni', short: 'Ms. Toni', title: 'Solar Installer (Starting Monday)', district: 'redhook', spot: 'lm_rhhouses', color: '#ffd23f',
+      id: 'toni', name: 'Ms. Toni', short: 'Ms. Toni', title: 'Solar Installer (Starting Monday)', district: 'redhook', spot: 'lm_rhhouses', color: '#F5C242',
       offset: { dx: 36, dy: 4 },
       look: { skin: '#5a3624', hair: '#1a1010', style: 'braids', shirt: '#ff8a3d', pants: '#2b3a6b', shoes: '#3a2a1a', acc: 'clipboard' },
       bio: 'Fifty-one. Drove a school bus for twenty years. Lives in the Red Hook Houses. Just finished free solar training at the RETI Center and starts her new job Monday.',

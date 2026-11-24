@@ -140,7 +140,7 @@ export const NEIGHBORS: Neighbor[] = [
   },
   {
     id: 'lupe', name: 'Lupe', short: 'Lupe', title: 'Tamales, Fifth Ave', district: 'sunsetpark', spot: 'nb_lupe', at: [40.6420, -74.0130], color: '#7fd45a',
-    look: { skin: '#a8714a', hair: '#1a1010', style: 'braids', shirt: '#ffd23f', pants: '#2b2b40', shoes: '#f2f2f2', acc: 'apron' },
+    look: { skin: '#a8714a', hair: '#1a1010', style: 'braids', shirt: '#F5C242', pants: '#2b2b40', shoes: '#f2f2f2', acc: 'apron' },
     bio: 'From Puebla. Sells tamales from a cart on Fifth Avenue from 5 a.m. Her daughter is in her first year at Brooklyn College.',
     idle: ['¡Tamales! Rojo, verde, dulce.', 'My daughter studies accounting. She does my taxes now. Strict.', 'Five a.m. is the best hour. Nobody bothers you yet.'],
     dialogue: talk('lupe', {
@@ -150,7 +150,7 @@ export const NEIGHBORS: Neighbor[] = [
     }, 'lupe_0', 'Verde today. Trust me.'),
   },
   {
-    id: 'olena', name: 'Olena', short: 'Olena', title: 'Brighton Beach Ave', district: 'coneyisland', spot: 'nb_olena', at: [40.5776, -73.9610], color: '#ffd23f',
+    id: 'olena', name: 'Olena', short: 'Olena', title: 'Brighton Beach Ave', district: 'coneyisland', spot: 'nb_olena', at: [40.5776, -73.9610], color: '#F5C242',
     look: { skin: '#f6d2b8', hair: '#c9a25a', style: 'bun', shirt: '#2b5fd1', pants: '#2b2b40', shoes: '#111', acc: 'scarf', dress: true },
     bio: 'From Odesa. Thirty years on Brighton Beach Avenue, twenty at the same pharmacy counter. Speaks to Russian customers in Russian and to everyone else in a very strong opinion.',
     idle: ['The sea here is not the Black Sea. But it tries.', 'Buy a scarf. It\'s November. Your neck is a tragedy.', 'Everyone on this avenue has a cousin somewhere hard. Be kind.'],
@@ -284,7 +284,7 @@ export const NEIGHBORS: Neighbor[] = [
   // ---------------------------------------------------------------- people in the mediation calls (mission-modules/mediations.ts)
   {
     id: 'teo', name: 'Teo', short: 'Teo', title: 'Delivery Rider, Bedford Ave', district: 'bushwick', spot: 'nb_teo', at: [40.7078, -73.9592], color: '#ff9f3d',
-    look: { skin: '#a8714a', hair: '#1a1010', style: 'cap', hatColor: '#ffd23f', shirt: '#2f8f7a', pants: '#2b2b40', shoes: '#f2f2f2', acc: 'phone' },
+    look: { skin: '#a8714a', hair: '#1a1010', style: 'cap', hatColor: '#F5C242', shirt: '#2f8f7a', pants: '#2b2b40', shoes: '#f2f2f2', acc: 'phone' },
     bio: 'From Guerrero. Forty deliveries a day on an e-bike he\'s still paying off. Has a daughter in second grade who corrects his English and his parking.',
     idle: ['Forty deliveries. Zero bathroom breaks.', 'The lane is my office.', 'My daughter says slow down. I slow down.'],
     dialogue: talk('teo', { teo_0: { speaker: 'teo', text: 'Can\'t talk long. The app gives me eleven minutes for a two-mile ride. ...Okay, one minute. What?', choices: [{ text: '(Just say hi.)', effects: met('teo') }] } }, 'teo_0', 'Eleven minutes. Always eleven minutes.'),

@@ -51,7 +51,7 @@ export const NPCS: NpcDef[] = [
     idle: ['My door is always open. My calendar is not.', 'I hear you. I hear everyone. That\'s the problem, honestly.', 'Have you tried voting? Twice? In the primary?'],
   },
   {
-    id: 'tyler', name: 'Tyler Brandt', short: 'Tyler', title: 'Founder, Luxe Lofts™', district: 'downtown', spot: 'tyler', color: '#ffd23f',
+    id: 'tyler', name: 'Tyler Brandt', short: 'Tyler', title: 'Founder, Luxe Lofts™', district: 'downtown', spot: 'tyler', color: '#F5C242',
     look: { skin: '#f6d2b8', hair: '#f2d06b', style: 'short', shirt: '#f2f2f2', pants: '#c9b9a0', acc: 'phone', shoes: '#fff' },
     bio: 'Aggressively cheerful real estate developer. Calls displacement "neighborhood refreshing." Owns a Patagonia vest for every day of the week.',
     idle: ['Love the energy! Have you considered monetizing it?', 'We\'re not gentrifying, we\'re ACTIVATING.', 'Our lobby has a mural of a mural. Very authentic.'],
@@ -93,7 +93,7 @@ export const NPCS: NpcDef[] = [
     idle: ['Never go to Housing Court alone.', 'Ask for your rent history. It\'s free.'],
   },
   {
-    id: 'bridgette', name: 'Bridgette', short: 'Bridgette', title: 'The Defender', district: 'downtown', spot: 'bridgette', color: '#ffd23f',
+    id: 'bridgette', name: 'Bridgette', short: 'Bridgette', title: 'The Defender', district: 'downtown', spot: 'bridgette', color: '#F5C242',
     look: { skin: '#e2b094', hair: '#5e3e28', style: 'bun', shirt: '#88a4c4', pants: '#88a4c4', shoes: '#f2f2f2', acc: 'clipboard' },
     bio: 'Former public defender who teaches the next ones. Runs a voter registration table with a clipboard, a mint fanny pack and zero tolerance for "my vote doesn\'t matter."',
     idle: ['Out of prison? You can vote. Re-register.', 'Registered? Great. Now register someone nobody else asked.'],

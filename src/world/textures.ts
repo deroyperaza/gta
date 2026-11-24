@@ -9,7 +9,7 @@ import { T, TILE, type BuildingDef, type BuildingType } from './layout';
 
 export const INK = '#16101f';
 export const PAL = {
-  purple: '#7b3fe4', deep: '#3b1f78', pink: '#ff4fa3', orange: '#ff8a3d', yellow: '#ffd23f',
+  purple: '#7b3fe4', deep: '#3b1f78', pink: '#ff4fa3', orange: '#ff8a3d', yellow: '#F5C242',
   blue: '#3a7bff', teal: '#2fd1c5', green: '#5fd35a', red: '#ff4b4b', cream: '#fff3dc',
 };
 
@@ -114,9 +114,9 @@ const BASE: Record<BuildingType, string[]> = {
   twofamily: ['#c4a27a', '#9a6a50', '#d8ccb4', '#8a7a6a'],
   walkup: ['#8b4a38', '#9a5a44', '#7a4a3a', '#a2684e'],
   brownstone: ['#a0583b', '#8a4b3a', '#b46a45', '#7d4d6b'],
-  coffee: ['#2fd1c5', '#ff8a3d', '#ffd23f', '#ff4fa3'],
+  coffee: ['#2fd1c5', '#ff8a3d', '#F5C242', '#ff4fa3'],
   boutique: ['#ff9ad1', '#c7a6ff', '#ffe1a8', '#9be7ff'],
-  nonprofit: ['#9be37b', '#ffd23f', '#9be37b', '#ffd23f'],
+  nonprofit: ['#9be37b', '#F5C242', '#9be37b', '#F5C242'],
   coop: ['#6fcf5e', '#6fcf5e', '#6fcf5e', '#6fcf5e'],
   bodega: ['#ffcf3f', '#ffcf3f', '#ffcf3f', '#ffcf3f'],
   mural: ['#ff4fa3', '#ff4fa3', '#ff4fa3', '#ff4fa3'],
@@ -167,7 +167,7 @@ function drawBuilding(c: Ctx, b: BuildingDef) {
     const tx = 16 + rnd() * (w - 60);
     box(c, tx, 22, 30, 26, '#8b5a3c', 2.5, 4); c.beginPath(); c.moveTo(tx - 2, 22); c.lineTo(tx + 15, 8); c.lineTo(tx + 32, 22); c.closePath(); c.fillStyle = '#6e4430'; c.fill(); c.lineWidth = 2.5; c.strokeStyle = INK; c.stroke();
   } else { box(c, 12, 14, 20, 14, '#9a94b0', 2); }
-  if (type === 'sales') { c.fillStyle = '#ffd23f'; c.fillRect(10, 10, w - 20, 4); }
+  if (type === 'sales') { c.fillStyle = '#F5C242'; c.fillRect(10, 10, w - 20, 4); }
 
   // Facade
   box(c, 2, fy, w - 4, fh - 2, base, 0);
@@ -267,7 +267,7 @@ function graffiti(c: Ctx, w: number, y: number) {
   const tags = ['RENT IS THEFT', 'BK 4EVA', 'UNION!', 'WHO OWNS BKLYN?', 'ART NOT CONDOS'];
   const t = tags[Math.floor(rnd() * tags.length)];
   c.save(); c.translate(w / 2, y); c.rotate(-0.06);
-  fitText(c, t, 0, 0, w * 0.7, 20, ['#7bd66b', '#ff4fa3', '#ffd23f', '#5aa9ff'][Math.floor(rnd() * 4)]);
+  fitText(c, t, 0, 0, w * 0.7, 20, ['#7bd66b', '#ff4fa3', '#F5C242', '#5aa9ff'][Math.floor(rnd() * 4)]);
   c.restore();
 }
 
@@ -445,7 +445,7 @@ export function makeBikeRider(scene: Phaser.Scene, key: string, look: Look) {
 // ------------------------------------------------------------------ VEHICLES & PROPS
 export function makeVehicles(scene: Phaser.Scene) {
   const cars: { key: string; body: string; long?: boolean; label?: string; roof?: string }[] = [
-    { key: 'car0', body: '#ff4fa3' }, { key: 'car1', body: '#3a7bff' }, { key: 'car2', body: '#ffd23f' },
+    { key: 'car0', body: '#ff4fa3' }, { key: 'car1', body: '#3a7bff' }, { key: 'car2', body: '#F5C242' },
     { key: 'car3', body: '#5fd35a', roof: '#fff', label: 'BORO' }, { key: 'car4', body: '#22202e', label: 'LUX' },
     { key: 'car5', body: '#ff8a3d' }, { key: 'van', body: '#f0eef6', long: true, label: 'SMAZON' }, { key: 'car6', body: '#2fd1c5' },
   ];
@@ -512,7 +512,7 @@ export function makeProps(scene: Phaser.Scene) {
     circ(c, 26, 72, 8, INK, 0); circ(c, 112, 72, 8, INK, 0);
     box(c, 40, 0, 26, 12, '#ffd6ec', 2.5, 6);
   });
-  for (let v = 0; v < 2; v++) canvas(scene, `duck${v}`, 26, 20, (c) => { c.beginPath(); c.ellipse(12, 13, 10, 6, 0, 0, 7); c.fillStyle = v ? '#fff' : '#ffd23f'; c.fill(); c.lineWidth = 2.5; c.strokeStyle = INK; c.stroke(); circ(c, 19, 7, 5, v ? '#fff' : '#3fb24f', 2.5); box(c, 22, 6, 4, 3, PAL.orange, 1.5); });
+  for (let v = 0; v < 2; v++) canvas(scene, `duck${v}`, 26, 20, (c) => { c.beginPath(); c.ellipse(12, 13, 10, 6, 0, 0, 7); c.fillStyle = v ? '#fff' : '#F5C242'; c.fill(); c.lineWidth = 2.5; c.strokeStyle = INK; c.stroke(); circ(c, 19, 7, 5, v ? '#fff' : '#3fb24f', 2.5); box(c, 22, 6, 4, 3, PAL.orange, 1.5); });
   canvas(scene, 'sunflower', 30, 60, (c) => { box(c, 13, 24, 4, 34, '#3fb24f', 2, 2); for (let i = 0; i < 10; i++) { const a = (i / 10) * Math.PI * 2; circ(c, 15 + Math.cos(a) * 9, 14 + Math.sin(a) * 9, 5, PAL.yellow, 2); } circ(c, 15, 14, 6, '#7a4a2a', 2.5); });
   for (let v = 0; v < 2; v++) canvas(scene, `hoop${v}`, 30, 60, (c) => { box(c, 12, 20, 6, 40, '#666', 2.5); box(c, 2, 2, 26, 20, '#fff', 3); c.beginPath(); c.ellipse(15, 18, 7, 3, 0, 0, 7); c.strokeStyle = PAL.orange; c.lineWidth = 3; c.stroke(); });
   canvas(scene, 'crate0', 32, 32, (c) => { box(c, 3, 6, 26, 24, '#c08a4f', 3, 2); c.strokeStyle = INK; c.lineWidth = 2; c.beginPath(); c.moveTo(3, 6); c.lineTo(29, 30); c.stroke(); });

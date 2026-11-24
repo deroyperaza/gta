@@ -66,7 +66,7 @@ export const GHOSTS: Ghost[] = [
     }, 'bernstein_0', '*He hums the opening of something you almost recognize.* Go dance at the Bandshell. That\'s an order.'),
   },
   {
-    id: 'basquiat', name: 'The Ghost of Jean-Michel Basquiat', short: 'Basquiat', title: 'Artist, Born in Brooklyn, 1960–1988', district: 'sunsetpark', spot: 'gh_basquiat', at: [40.6530, -73.9935], color: '#ffd23f', ghost: true,
+    id: 'basquiat', name: 'The Ghost of Jean-Michel Basquiat', short: 'Basquiat', title: 'Artist, Born in Brooklyn, 1960–1988', district: 'sunsetpark', spot: 'gh_basquiat', at: [40.6530, -73.9935], color: '#F5C242', ghost: true,
     look: { skin: '#5a3624', hair: '#1a1010', style: 'mohawk', shirt: '#e8e4d8', pants: '#2b2b40', shoes: '#111' },
     bio: 'Born in Brooklyn. Started out writing SAMO© on walls around Manhattan with his friend Al Diaz. Became one of the most important painters of his time. Died at 27.',
     idle: ['*sketches a crown in the air*', 'Brooklyn first. Always.', 'Walls talk. Somebody has to write on them.'],
@@ -197,7 +197,7 @@ export const GHOSTS: Ghost[] = [
   },
   // ---------------------------------------------------------------- more ghosts who haunt their own Brooklyn places (docs/FACTS-ghosts.md)
   {
-    id: 'chisholm', name: 'The Ghost of Shirley Chisholm', short: 'Shirley Chisholm', title: 'First Black Woman in Congress, 1924–2005', district: 'plg', spot: 'gh_chisholm', at: [40.6553, -73.9617], color: '#ffd23f', ghost: true, street: true,
+    id: 'chisholm', name: 'The Ghost of Shirley Chisholm', short: 'Shirley Chisholm', title: 'First Black Woman in Congress, 1924–2005', district: 'plg', spot: 'gh_chisholm', at: [40.6553, -73.9617], color: '#F5C242', ghost: true, street: true,
     look: { skin: '#5a3624', hair: '#1a1010', style: 'curly', shirt: '#d8262e', pants: '#2a1a2a', shoes: '#111', dress: true, acc: 'glasses' },
     bio: 'Born in Brooklyn, went to Girls\' High in Bed-Stuy, lived on St. Johns Place. In 1968 became the first Black woman elected to Congress. In 1972 became the first Black candidate to run for a major party\'s presidential nomination. Her slogan: "Unbought and Unbossed." A monument to her is being built at this corner of Prospect Park.',
     idle: ['Unbought and unbossed.', 'They didn\'t give me a seat. I ran for one.', 'Your block needs a candidate. Look in the mirror.'],
@@ -225,7 +225,7 @@ export const GHOSTS: Ghost[] = [
     }, 'lenahorne_0', 'The band is good tonight. Go dance. That\'s what the shell is for.'),
   },
   {
-    id: 'biggie', name: 'The Ghost of The Notorious B.I.G.', short: 'The Notorious B.I.G.', title: 'Christopher Wallace, 1972–1997', district: 'bedstuy', spot: 'gh_biggie', at: [40.6828, -73.9634], color: '#ffd23f', ghost: true, street: true,
+    id: 'biggie', name: 'The Ghost of The Notorious B.I.G.', short: 'The Notorious B.I.G.', title: 'Christopher Wallace, 1972–1997', district: 'bedstuy', spot: 'gh_biggie', at: [40.6828, -73.9634], color: '#F5C242', ghost: true, street: true,
     look: { skin: '#3a2014', hair: '#1a1010', style: 'beanie', hatColor: '#d8262e', shirt: '#2a2a30', pants: '#1a1a20', shoes: '#f2f2f2', acc: 'glasses' },
     bio: 'Christopher Wallace grew up at 226 St. James Place in Clinton Hill with his mother, Voletta, and became one of the most celebrated rappers ever. He died in 1997 at 24. In 2019, after years of neighbors pushing, his block was co-named "Christopher \'Notorious B.I.G.\' Wallace Way."',
     idle: ['St. James Place. This is home.', 'My mom, Voletta. Say hi if you see her.', 'Brooklyn made me. Brooklyn kept me.'],

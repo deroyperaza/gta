@@ -171,7 +171,7 @@ export const elders: MissionModule = {
       idle: ['Not Ohio.', 'Rent goes up, I go down to lunch.', 'Thirty years on the line. My knees remember every one.'],
     },
     {
-      id: 'haddad', name: 'Mrs. Haddad', short: 'Mrs. Haddad', title: 'Grandmother of Six', district: 'flatbush', spot: 'lm_patty', color: '#ffd23f',
+      id: 'haddad', name: 'Mrs. Haddad', short: 'Mrs. Haddad', title: 'Grandmother of Six', district: 'flatbush', spot: 'lm_patty', color: '#F5C242',
       offset: { dx: 36, dy: 4 },
       look: { skin: '#d8a880', hair: '#2a1a12', style: 'hijab', hatColor: '#6a3a7a', shirt: '#6a3a7a', pants: '#2a1a2a', shoes: '#111', dress: true, acc: 'phone' },
       bio: 'Seventy-six. Came from Syria in 1988. Six grandchildren, all of whose phone numbers she knows by heart, which turns out to matter.',

@@ -39,7 +39,7 @@ export function drawParks(scene: Phaser.Scene, L: WorldLayout, ignore: Phaser.Ga
     const g = scene.add.graphics().setDepth(bs.y + 29);
     // the band
     const band = [
-      { skin: '#6b3e26', hair: '#1a1010', style: 'afro' as const, shirt: '#ffd23f', pants: '#1a1a1c' },
+      { skin: '#6b3e26', hair: '#1a1010', style: 'afro' as const, shirt: '#F5C242', pants: '#1a1a1c' },
       { skin: '#e8c0a0', hair: '#8b4a2a', style: 'long' as const, shirt: '#ff4fa3', pants: '#2b3a6b' },
       { skin: '#a8714a', hair: '#1a1010', style: 'cap' as const, hatColor: '#2fd1c5', shirt: '#1f2a44', pants: '#d9c7a3' },
       { skin: '#4a2a1a', hair: '#1a1010', style: 'braids' as const, shirt: '#7b3fe4', pants: '#1a1a1c' },
@@ -63,7 +63,7 @@ export function drawParks(scene: Phaser.Scene, L: WorldLayout, ignore: Phaser.Ga
     }
     // music in the air
     scene.time.addEvent({ delay: 700, loop: true, callback: () => {
-      const n = scene.add.text(bs.x + Phaser.Math.Between(-80, 80), bs.y - 10, Phaser.Utils.Array.GetRandom(['♪', '♫', '♬']), { fontSize: '22px', color: '#ffd23f', stroke: '#16101f', strokeThickness: 4 }).setDepth(bs.y + 500);
+      const n = scene.add.text(bs.x + Phaser.Math.Between(-80, 80), bs.y - 10, Phaser.Utils.Array.GetRandom(['♪', '♫', '♬']), { fontSize: '22px', color: '#F5C242', stroke: '#16101f', strokeThickness: 4 }).setDepth(bs.y + 500);
       ignore.push(n);
       scene.tweens.add({ targets: n, y: n.y - 90, x: n.x + Phaser.Math.Between(-30, 30), alpha: 0, duration: 2200, onComplete: () => n.destroy() });
     } });

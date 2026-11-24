@@ -136,12 +136,12 @@ const YUP_JOBS: typeof JOBS = [
 
 const SKIN = ['#2e1a12', '#3e2418', '#4a2c1c', '#5a3624', '#6b4430', '#7a4a30', '#8d5a3a', '#a8714a', '#b98058', '#c58a5c', '#d9a679', '#e2b08a', '#e8c0a0', '#f2d2b8', '#f6dcc6'];
 const HAIR = ['#1a1010', '#1a1010', '#2a1c14', '#3a2418', '#4a2a1a', '#6a4a2a', '#7a5a3a', '#a8743a', '#c9a25a', '#e0c070', '#8a3a2a', '#b84a2a', '#d8d4dc', '#e8e4f0', '#9a9aa8', '#ff4fa3', '#7b3fe4', '#2fd1c5'];
-const SHIRT = ['#ff4fa3', '#2fd1c5', '#ffd23f', '#7b3fe4', '#ff8a3d', '#6fcf5e', '#1b4fa0', '#c83a4a', '#e8e4dc', '#3a3a4a', '#9b59d0', '#ff6b6b', '#2f6a4a', '#8a5a3a', '#f2efe6', '#4a6a8a', '#c9a43a', '#5a3a6a', '#e86a9a', '#3a8ad4', '#a8b98e', '#d4a24a', '#1a1a20', '#b85a3a'];
+const SHIRT = ['#ff4fa3', '#2fd1c5', '#F5C242', '#7b3fe4', '#ff8a3d', '#6fcf5e', '#1b4fa0', '#c83a4a', '#e8e4dc', '#3a3a4a', '#9b59d0', '#ff6b6b', '#2f6a4a', '#8a5a3a', '#f2efe6', '#4a6a8a', '#c9a43a', '#5a3a6a', '#e86a9a', '#3a8ad4', '#a8b98e', '#d4a24a', '#1a1a20', '#b85a3a'];
 const PANTS = ['#2b2b40', '#2b3a6b', '#3a2a1a', '#4a4a5a', '#1a1a20', '#5a4a32', '#6a5a4a', '#3a5a8a', '#7a2a3a', '#c9b9a0', '#2f4a3a', '#8a7a9a'];
-const SHOES = ['#f2f2f2', '#111', '#3a2a1a', '#ff4fa3', '#2fd1c5', '#c83a4a', '#7a5a3a', '#ffd23f'];
+const SHOES = ['#f2f2f2', '#111', '#3a2a1a', '#ff4fa3', '#2fd1c5', '#c83a4a', '#7a5a3a', '#F5C242'];
 const ACCS: (Look['acc'] | undefined)[] = [undefined, undefined, undefined, 'glasses', 'glasses', 'tote', 'phone', 'headphones', 'scarf', 'beret', 'bandana', 'cane', 'tie'];
 const STYLES: Look['style'][] = ['short', 'short', 'afro', 'bun', 'long', 'long', 'bald', 'beanie', 'cap', 'braids', 'braids', 'curly', 'curly', 'mohawk'];
-const COLORS = ['#ffb23f', '#8fd4ff', '#ff9ec7', '#7fd45a', '#c9a2ff', '#ffd23f', '#ff8a3d', '#4fd18b'];
+const COLORS = ['#ffb23f', '#8fd4ff', '#ff9ec7', '#7fd45a', '#c9a2ff', '#F5C242', '#ff8a3d', '#4fd18b'];
 
 const USED = new Set<string>();
 function folkFor(c: number, r: number): BlockFolk | null {

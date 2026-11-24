@@ -5,6 +5,7 @@ import { DISTRICTS, type District } from '../core/types';
 import { DIALOGUES } from '../data/dialogues';
 import { NPCS, PLAYER_LOOK, type NpcDef } from '../data/npcs';
 import { CAMEOS } from '../data/cameos';
+import { labelColor } from '../data/labels';
 import { NONPROFITS } from '../data/nonprofits';
 import { flyerLine, pickLine, STREET_LINES, streetLine } from '../data/chatter';
 import { LESSONS } from '../data/lessons';
@@ -191,7 +192,7 @@ export class WorldScene extends Phaser.Scene {
     bus.on('transit:alight', (p: { x: number; y: number }) => { (this.player.body as Phaser.Physics.Arcade.Body).reset(p.x, p.y); this.player.setVisible(true); });
     bus.on('ui:ride', () => this.rideApp());
     bus.on('ui:find', () => this.findPerson());
-    bus.on('mission:started', (def: MissionDef) => { if (!def.side && !def.comingSoon && this.entityPos[def.giver]) this.briefGiver = def.giver; });
+    bus.on('mission:started', (def: MissionDef) => { if (!def.side && !def.comingSoon && this.entityPos[def.giver]) { this.briefGiver = def.giver; this.briefAt = this.time.now + 2300; } });
     bus.on('event:dragon:quiz', () => this.time.delayedCall(250, () => this.dragonQuiz()));
     bus.on('event:dragon:ride', () => this.startDragon());
     bus.on('event:network', () => { // a Brooklyn Org grantee joins your network
@@ -209,7 +210,7 @@ export class WorldScene extends Phaser.Scene {
     this.events.on('gop:taunt', (sq: any, t: string) => this.bubble(sq.sprite, t));
     bus.on('opposition:caught', () => this.heldUp());
     bus.on('opposition:outnumbered', () => state.apply({ solidarity: 8 }, { quiet: true }));
-    this.traffic = new Traffic(this, (x, y) => this.floatText(x, y - 30, Phaser.Utils.Array.GetRandom(['HONK!', 'BEEP!', 'MOVE!', 'YO!']), '#ffd23f'));
+    this.traffic = new Traffic(this, (x, y) => this.floatText(x, y - 30, Phaser.Utils.Array.GetRandom(['HONK!', 'BEEP!', 'MOVE!', 'YO!']), '#F5C242'));
     // Buses and cars see each other: nobody drives through anybody
     this.traffic.buses = () => this.transit.buses.map((b) => b.sprite);
     this.transit.cars = () => this.traffic.vehicles.map((v) => v.sprite);
@@ -594,7 +595,7 @@ export class WorldScene extends Phaser.Scene {
       spr.play({ key: `${key}-idle` });
       const blocker = solids.create(s.x, s.y - 8, undefined) as Phaser.Physics.Arcade.Image;
       blocker.setVisible(false); (blocker.body as Phaser.Physics.Arcade.StaticBody).setSize(22, 14);
-      const tag = this.add.text(s.x, s.y - 40, ghost ? `👻 ${n.short.toUpperCase()}` : n.short.toUpperCase(), { fontFamily: 'Nunito, "Helvetica Neue", Arial, sans-serif', fontSize: '15px', fontStyle: '900', color: ghost ? '#2a3a5a' : '#16101f', backgroundColor: ghost ? '#dfeeff' : n.color, padding: { x: 7, y: 3 }, shadow: { offsetX: 2, offsetY: 2, color: '#16101f', blur: 0, fill: false, stroke: false } }).setOrigin(0.5).setDepth(1e5);
+      const tag = this.add.text(s.x, s.y - 40, ghost ? `👻 ${n.short.toUpperCase()}` : n.short.toUpperCase(), { fontFamily: 'Nunito, "Helvetica Neue", Arial, sans-serif', fontSize: '15px', fontStyle: '900', color: ghost ? '#2a3a5a' : '#16101f', backgroundColor: labelColor(n), /* one color per kind of person (labels.ts) */ padding: { x: 7, y: 3 }, shadow: { offsetX: 2, offsetY: 2, color: '#16101f', blur: 0, fill: false, stroke: false } }).setOrigin(0.5).setDepth(1e5);
       this.nameTags.push({ id: n.id, tag, x: s.x, y: s.y }); // placed once the station signs exist (placeNameTags)
       this.miniIgnore.push(tag, spr);
       this.npcSprites[n.id] = spr;
@@ -1441,7 +1442,7 @@ export class WorldScene extends Phaser.Scene {
     }).sort((a, b) => order.indexOf(a.g) - order.indexOf(b.g) || a.n.name.localeCompare(b.n.name));
     ui.choose({ title: 'Find someone', sub: 'Search by name, role or neighborhood. Pick one to jump there.', search: true,
       // Each category is an accordion with its count; searching opens the ones with matches
-      items: people.map(({ n, g, sub }) => ({ value: n.id, label: n.name, sub, section: g, sectionHtml: `${g} <span class="ch-count">${people.filter((x) => x.g === g).length}</span>` })) }, (id) => {
+      items: people.map(({ n, g, sub }) => ({ value: n.id, label: n.name, sub, section: g, sectionHtml: `<i class="ch-swatch" style="background:${labelColor(n)}"></i>${g} <span class="ch-count">${people.filter((x) => x.g === g).length}</span>` })) }, (id) => {
       state.setFlag('used_find', true);
       this.jumpTo(id, true);
     });
@@ -1474,7 +1475,7 @@ export class WorldScene extends Phaser.Scene {
     if (this.hold) {
       const k = Math.min(1, this.hold.t / this.hold.need), r = 40;
       this.holdRing.lineStyle(8, 0x000000, 0.35).strokeCircle(this.player.x, this.player.y, r);
-      this.holdRing.lineStyle(6, 0xffd23f, 1).beginPath().arc(this.player.x, this.player.y, r, -Math.PI / 2, -Math.PI / 2 + k * Math.PI * 2).strokePath();
+      this.holdRing.lineStyle(6, 0xf5c242, 1).beginPath().arc(this.player.x, this.player.y, r, -Math.PI / 2, -Math.PI / 2 + k * Math.PI * 2).strokePath();
     }
   }
 
@@ -1563,9 +1564,10 @@ export class WorldScene extends Phaser.Scene {
   }
 
   /** Each main mission starts where it's explained: once nothing is on screen, you land by the giver and their window opens (Deroy, Nov 24 2026) */
-  private briefGiver: string | null = null;
+  private briefGiver: string | null = null; private briefAt = 0;
   private briefCheck() {
     if (!this.briefGiver || this.mode !== 'play' || ui.blocking() || this.transit.riding) return;
+    if (this.time.now < this.briefAt) return; // let the mission title be read first (Deroy, Nov 24 2026)
     const id = this.briefGiver; this.briefGiver = null;
     this.time.delayedCall(700, () => this.jumpTo(id, true));
   }

@@ -6,6 +6,7 @@ import { ITEMS } from '../data/items';
 import { LESSONS } from '../data/lessons';
 import { GRANTEES, type Grantee } from '../data/grantees';
 import { BK_GIVES, giveLink } from '../data/bkgives';
+import { labelColor } from '../data/labels';
 import { NONPROFITS, ISSUES } from '../data/nonprofits';
 import { LANGS } from '../data/languages';
 import { MISSIONS, type MissionDef } from '../data/missions';
@@ -516,6 +517,7 @@ class UI {
   // ------------------------------------------------------------------ DIALOGUE
   private showDialogue(d: { owner: string; speaker: string; text: string; choices: { text: string; index: number; tag?: string }[] }) {
     this.dialogueOpen = true;
+    const intro = $('#mission-intro'); if (intro.classList.contains('show')) { intro.classList.add('out'); clearTimeout(this.introTimer); this.introTimer = window.setTimeout(() => intro.classList.remove('show', 'out'), 500); } // the mission title fades as a window opens
     // Scene-setting lines (*in italics*) show the person you're talking to, not your own face
     const npc = NPC_BY_ID[d.speaker] ?? (d.speaker === 'you' && d.text.trim().startsWith('*') ? NPC_BY_ID[d.owner] : undefined);
     const name = npc ? npc.name : d.speaker === 'you' ? 'You' : d.speaker;
@@ -780,14 +782,14 @@ class UI {
       const p = w.entityPos[n.id]; if (!p) continue;
       const x = (p.x / TILE) * s, y = (p.y / TILE) * s;
       const met = n.id in state.d.relationships;
-      // People are little diamonds, so they never read as subway stops (round): teal for nonprofit staffers, yellow for your objective
+      // People are little diamonds, so they never read as subway stops (round), in their kind's label color; yellow for your objective
       const r = targets.has(n.id) ? 20 : 14; // big enough to read as a diamond on a phone
       c.beginPath(); c.moveTo(x, y - r); c.lineTo(x + r, y); c.lineTo(x, y + r); c.lineTo(x - r, y); c.closePath();
-      c.fillStyle = targets.has(n.id) ? '#ffd23f' : (n as any).npOrg ? '#2fd1c5' : n.color; c.fill(); c.lineWidth = 3.5; c.strokeStyle = '#16101f'; c.stroke();
+      c.fillStyle = targets.has(n.id) ? '#F5C242' : labelColor(n); // yellow = your objective; otherwise the kind's label color (labels.ts) c.fill(); c.lineWidth = 3.5; c.strokeStyle = '#16101f'; c.stroke();
       if (met || targets.has(n.id)) { c.lineWidth = 4; c.strokeText(n.short, x, y - r - 4); c.fillStyle = '#fff'; c.fillText(n.short, x, y - r - 4); }
     }
     const fp = w.entityPos.fridge;
-    if (fp) { const x = (fp.x / TILE) * s, y = (fp.y / TILE) * s; c.fillStyle = targets.has('fridge') ? '#ffd23f' : '#fff'; c.fillRect(x - 6, y - 8, 12, 16); c.strokeRect(x - 6, y - 8, 12, 16); }
+    if (fp) { const x = (fp.x / TILE) * s, y = (fp.y / TILE) * s; c.fillStyle = targets.has('fridge') ? '#F5C242' : '#fff'; c.fillRect(x - 6, y - 8, 12, 16); c.strokeRect(x - 6, y - 8, 12, 16); }
     // Neighborhood names go on top of everything (subway, stations, people), each on a dark tag so it always reads
     c.font = '900 40px Nunito, Arial'; c.textAlign = 'center'; c.textBaseline = 'middle';
     const placed: [number, number, number, number][] = []; // tags already down: x, y, w, h (centers)

@@ -269,7 +269,7 @@ function drawBuilding(c: Ctx, b: BuildingDef) {
       ['#8a4b3a', '#f2c29b', '#c58a5c', '#5a3324'].forEach((hc, i) => { c.fillStyle = hc; rr(c, sx - 62 + i * 34, sy - 26, 14, 34, 5); c.fill(); });
       c.restore();
       c.fillStyle = 'rgba(0,0,0,.55)'; c.fillRect(10, rh + 6, w - 20, 16); sign(c, 'FEED THE BLOCK', w / 2, rh + 14, w - 30, 13, '#fff3dc', 900);
-      sign(c, 'TAKE WHAT YOU NEED · LEAVE WHAT YOU CAN', w / 2, h - 9, w - 24, 8, '#ffd23f', 800);
+      sign(c, 'TAKE WHAT YOU NEED · LEAVE WHAT YOU CAN', w / 2, h - 9, w - 24, 8, '#F5C242', 800);
       break;
     }
     case 'warehouse': {
@@ -689,7 +689,7 @@ export function makeVehicles(scene: Phaser.Scene) {
   canvas(scene, 'cyclist-shd', 34, 56, (c) => { c.filter = 'blur(3px)'; c.fillStyle = 'rgba(8,5,14,.4)'; rr(c, 10, 6, 14, 44, 6); c.fill(); });
   // More riders: everyday cyclists and BK Spokes share bikes (teal)
   const riders: [string, Look][] = [
-    ['#2fb5aa', { skin: '#6b4430', hair: '#1a1010', style: 'afro', shirt: '#ffd23f', pants: '#2b2b40' }],
+    ['#2fb5aa', { skin: '#6b4430', hair: '#1a1010', style: 'afro', shirt: '#F5C242', pants: '#2b2b40' }],
     ['#1c1a18', { skin: '#f2d2b8', hair: '#a8743a', style: 'bun', shirt: '#7b3fe4', pants: '#1a1a20' }],
     ['#3a8ad4', { skin: '#a8714a', hair: '#1a1010', style: 'beanie', hatColor: '#ff4fa3', shirt: '#2f6a4a', pants: '#3a2a1a' }],
   ];

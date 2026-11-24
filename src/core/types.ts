@@ -10,7 +10,7 @@ export const DISTRICTS: Record<District, { name: string; color: string; blurb: s
   bushwick: { name: 'Bushwick', color: '#a46bff', blurb: 'Warehouses, galleries, and at least one guy building a theremin.' },
   crownheights: { name: 'Crown Heights', color: '#3fd0a0', blurb: 'Steel pans, roti shops, and a tenant union that wins.' },
   redhook: { name: 'Red Hook', color: '#ff6b4a', blurb: 'Piers, pupusas, and floodwater nobody planned for.' },
-  coneyisland: { name: 'Coney Island', color: '#ffd23f', blurb: 'The boardwalk, the beach, and a Ferris wheel older than your landlord.' },
+  coneyisland: { name: 'Coney Island', color: '#F5C242', blurb: 'The boardwalk, the beach, and a Ferris wheel older than your landlord.' },
   flatbush: { name: 'Flatbush', color: '#ff9a3f', blurb: 'Beef patties, block parties, and the loudest dollar vans in the borough.' },
   plg: { name: 'Prospect Lefferts Gardens', short: 'PLG', color: '#e86bd8', blurb: 'Limestone row houses, the park next door, and some of the toughest tenant associations in Brooklyn.' },
   waterfront: { name: 'The Waterfront', color: '#4fd1d9', blurb: 'The Bridge, the Promenade, and a skyline view that costs $40 to photograph.' },

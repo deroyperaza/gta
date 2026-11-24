@@ -66,7 +66,7 @@ export const heat: MissionModule = {
 
   npcs: [
     {
-      id: 'inez', name: 'Ms. Inez', short: 'Ms. Inez', title: 'The Floor Captain', district: 'coneyisland', spot: 'lm_coneyhouses', color: '#ffd23f',
+      id: 'inez', name: 'Ms. Inez', short: 'Ms. Inez', title: 'The Floor Captain', district: 'coneyisland', spot: 'lm_coneyhouses', color: '#F5C242',
       offset: { dx: 34, dy: 4 },
       look: { skin: '#9a6440', hair: '#dcd8e2', style: 'curly', shirt: '#ff8a5c', pants: '#2f4a6b', shoes: '#f2f2f2', acc: 'clipboard', dress: true },
       bio: 'Retired school crossing guard. Floor captain of all fourteen floors of Surfside Towers, whether or not anyone asked. Keeps a list of every neighbor who lives alone, in pen.',
