@@ -467,7 +467,7 @@ body:has(#mission-intro.show) #district { visibility: hidden; }
 button, a, .pa, .ch-item, #touch-btns button, #hud-buttons button { touch-action: manipulation; }
 
 /* Ghost portraits: faded, cold, glowing, floating */
-#dlg-portrait.ghost { filter: grayscale(.75) brightness(1.2) contrast(.9) sepia(.2) hue-rotate(175deg) saturate(1.4); opacity: .82;
+#dlg-portrait.ghost { filter: grayscale(.75) brightness(1.2) contrast(.9) sepia(.2) hue-rotate(175deg) saturate(1.4); /* solid: the blue tone is enough (Deroy, Nov 24 2026) */
   background: radial-gradient(circle at 50% 60%, #f4fbff, #bcd8f2 60%, #8fb0d6); box-shadow: 0 0 18px 6px rgba(190,225,255,.85);
   animation: ghostfloat 3.2s ease-in-out infinite; }
 @keyframes ghostfloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
