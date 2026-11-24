@@ -66,7 +66,11 @@ const LAZY_BUSTS = ['abe', 'marisol', 'desmond', 'nadine', 'motti', 'yvette', 'a
   'np_brooklynyouthcompany', 'np_brownsvillecommunityculinary', 'np_bushwickhousingindependencep', 'np_cabshealthnetwork', 'np_caribbeanwomenshealthassocia', 'np_caringkind',
   'np_carrollgardensassociation', 'np_casanyc', 'np_centerforcommunityalternativ', 'np_centerforfamilylifeinsunsetp', 'np_centerforlawandsocialjustice', 'np_centerfornuleadershiponhuman',
   'np_centerforurbanpedagogy', 'np_centralasianfoundation', 'np_childrensdefensefundnewyork', 'np_churchesunitedforfairhousing', 'np_communitycounselingandmediat', 'np_communityhelpinparkslopechip',
-  'np_thealiforneycenter', 'np_thebillieholidaytheatre', 'np_theblackinstitute', 'np_thebroexperiencefoundation', 'np_thecampaignagainsthunger', 'np_thecirclekeepers']; // nonprofit staffers, painted Nov 24 2026 (the two in the Brooklyn Org blog post first)
+  'np_thealiforneycenter', 'np_thebillieholidaytheatre', 'np_theblackinstitute', 'np_thebroexperiencefoundation', 'np_thecampaignagainsthunger', 'np_thecirclekeepers',
+  'np_comounlugar', 'np_coneyislandantiviolencecolla', 'np_coneyislandlighthousemission', 'np_coolculture', 'np_councilofpeoplesorganization', 'np_crownheightscarecollective',
+  'np_crownheightsnorthassociation', 'np_culturalheritageandidentityt', 'np_cypresshillslocaldevelopment', 'np_dayonenewyork', 'np_destinyhelpersoutreach', 'np_documented',
+  'np_drivechange', 'np_eastnewyorkcommunitylandtrus', 'np_educationalvideocenter', 'np_expectingrelief', 'np_familiesandfriendsofthewrong', 'np_thedoor',
+  'np_thedoulaprogram']; // nonprofit staffers, painted Nov 24 2026 (the two in the Brooklyn Org blog post first)
 /** Street objects painted in ChatGPT (public/sprites/props/<key>.png): each takes over the code-drawn texture of the same key */
 const PAINTED_PROPS = ['dock', 'truck', 'fridge-empty', 'fridge-full', 'cat', 'grocerybag', 'hoop0', 'hoop1', 'duck0', 'duck1', 'sunflower', 'trashpile', 'rat', 'streetbin', 'garbage', 'trashpile-sm'];
 
