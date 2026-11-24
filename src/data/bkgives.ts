@@ -110,4 +110,6 @@ export const BK_GIVES = 'https://bkgives.brooklyn.org';
 /** The group's Brooklyn Gives donation page, if it has one */
 export const giveUrl = (name: string) => (PAGES[name] ? `${BK_GIVES}/organization/${PAGES[name]}` : null);
 /** Where to give: the group's Brooklyn Gives page first, else its own donation page */
-export const giveLink = (name: string) => { const bk = giveUrl(name); return bk ? { url: bk, label: 'DONATE ON BROOKLYN GIVES' } : DIRECT[name] ? { url: DIRECT[name], label: 'DONATE' } : null; };
+/** Tags a donate link so Brooklyn Gives (and each org's own analytics) can count the gifts that came from the game */
+export const utm = (url: string) => { try { const u = new URL(url); u.searchParams.set('utm_source', 'giveandtakeaction'); u.searchParams.set('utm_medium', 'game'); u.searchParams.set('utm_campaign', 'givingtuesday2026'); return u.toString(); } catch { return url; } };
+export const giveLink = (name: string) => { const bk = giveUrl(name); return bk ? { url: utm(bk), label: 'DONATE ON BROOKLYN GIVES' } : DIRECT[name] ? { url: utm(DIRECT[name]), label: 'DONATE' } : null; };

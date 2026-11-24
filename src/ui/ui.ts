@@ -5,7 +5,7 @@ import { DISTRICTS, type District, type ItemId } from '../core/types';
 import { ITEMS } from '../data/items';
 import { LESSONS } from '../data/lessons';
 import { GRANTEES, type Grantee } from '../data/grantees';
-import { BK_GIVES, giveLink } from '../data/bkgives';
+import { BK_GIVES, giveLink, utm } from '../data/bkgives';
 import { labelColor } from '../data/labels';
 import { NONPROFITS, ISSUES } from '../data/nonprofits';
 import { LANGS } from '../data/languages';
@@ -636,7 +636,7 @@ class UI {
       ${real.length ? `<div class="mp-real" style="animation-delay:${0.6 + lines.length * 0.18}s"><div class="mp-real-h">IN REAL LIFE · BROOKLYN ORG GRANTEES DOING THIS WORK</div><div class="mp-cards">${real.map((g) => {
         const gl = giveLink(g.name);
         return `<div class="mp-card"><b>${g.name}</b><p>${g.what}</p>${gl ? `<a class="give" href="${gl.url}" target="_blank" rel="noopener">${gl.label}</a>` : ''}</div>`;
-      }).join('')}</div><a class="give-all" href="${BK_GIVES}" target="_blank" rel="noopener">GIVINGTUESDAY · FIND MORE BROOKLYN CAUSES</a></div>` : ''}
+      }).join('')}</div><a class="give-all" href="${utm(BK_GIVES)}" target="_blank" rel="noopener">GIVINGTUESDAY · FIND MORE BROOKLYN CAUSES</a></div>` : ''}
       <div class="mp-hint">PRESS ANY KEY</div>`;
   }
   private showFailed(def: MissionDef, text: string) {

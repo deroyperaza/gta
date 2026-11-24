@@ -6,6 +6,7 @@ import { ui } from './ui/ui';
 import { state } from './core/state';
 import { DPR, TEXT_RES } from './core/res';
 import { lockPageZoom } from './ui/nozoom';
+import { initAnalytics } from './core/analytics';
 
 // Every text label draws at screen density (Phaser's default is 1x, which the sharper canvas would show as soft)
 {
@@ -26,6 +27,7 @@ async function boot() {
 
   missions.init();
   ui.init();
+  initAnalytics();
 
   const game = new Phaser.Game({
     type: Phaser.AUTO,
