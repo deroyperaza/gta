@@ -45,7 +45,8 @@ const BUSTS = ['dee', 'hattie', 'farouk', 'juni', 'tyler', 'gary', 'skye', 'marc
 /** Painted portraits for neighbors and side characters: fetched on the first chat, not at startup, to keep phones' image memory down */
 const LAZY_BUSTS = ['abe', 'marisol', 'desmond', 'nadine', 'motti', 'yvette', 'adaeze', 'pearl', 'wen', 'haddad',
   'lionel', 'itzel', 'rafa', 'toni', 'amparo', 'odette', 'renee', 'imani', 'lewis', 'danielle',
-  'carmen', 'rivka', 'chen', 'lupe', 'olena', 'farida', 'imran', 'marieclaude', 'kwame', 'yusuf'];
+  'carmen', 'rivka', 'chen', 'lupe', 'olena', 'farida', 'imran', 'marieclaude', 'kwame', 'yusuf',
+  'sloane', 'luis', 'harjit', 'teo', 'yossel', 'boris', 'bilal', 'becca', 'baron', 'redtape'];
 /** Street objects painted in ChatGPT (public/sprites/props/<key>.png): each takes over the code-drawn texture of the same key */
 const PAINTED_PROPS = ['dock', 'truck', 'fridge-empty', 'fridge-full', 'cat', 'grocerybag', 'hoop0', 'hoop1', 'duck0', 'duck1', 'sunflower', 'trashpile', 'rat', 'streetbin', 'garbage', 'trashpile-sm'];
 
