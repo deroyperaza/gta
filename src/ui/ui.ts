@@ -36,6 +36,7 @@ class UI {
   private choiceCount = 0;
   private toastQueue: string[] = [];
   private tipTimer = 0;
+  private tipFade = 0;
   private lastObjText: string | null = null;
   private toastBusy = false;
   private lastTick = 0;
@@ -48,14 +49,16 @@ class UI {
     bus.on('state:changed', () => this.renderHud());
     bus.on('mission:updated', () => this.renderObjective());
     bus.on('ui:toast', (t: string) => this.toast(t));
-    bus.on('ui:tip', (t: string) => { // a travel tip: shows for 9 seconds, or until you close it
-      const el = $('#tip'); el.querySelector('p')!.textContent = t; el.hidden = false;
+    bus.on('ui:tip', (t: string, ms = 9000) => { // a tip card: holds, then fades out on its own (or close it with the ×)
+      const el = $('#tip'); el.querySelector('p')!.textContent = t; el.hidden = false; el.classList.remove('fade');
       // Top-aligned with the scorecard, in the gap between it and the minimap (phones keep the CSS spot when that gap is too narrow)
       const st = $('#stats').getBoundingClientRect(), mm = $('#minimap-frame').getBoundingClientRect();
       const gap = (mm.left > st.right ? mm.left : innerWidth) - st.right - 32;
       if (gap >= 300 && innerWidth > 600) Object.assign(el.style, { top: `${st.top}px`, left: `${st.right + 16 + Math.max(0, (gap - Math.min(gap, 460)) / 2)}px`, width: `${Math.min(gap, 460)}px`, transform: 'none', bottom: 'auto' });
       else el.removeAttribute('style');
-      clearTimeout(this.tipTimer); this.tipTimer = window.setTimeout(() => { el.hidden = true; }, 9000);
+      clearTimeout(this.tipTimer); clearTimeout(this.tipFade);
+      this.tipFade = window.setTimeout(() => el.classList.add('fade'), ms);
+      this.tipTimer = window.setTimeout(() => { el.hidden = true; el.classList.remove('fade'); }, ms + 700);
     });
     $('#tip .close').addEventListener('click', (e) => { e.stopPropagation(); $('#tip').hidden = true; });
     bus.on('event:network', () => { $('#tip').hidden = true; });
@@ -88,7 +91,8 @@ class UI {
   private pendingStart: string | null = null;
   private begin(ev: 'game:new' | 'game:load') {
     this.startPlay(); if (this.world) bus.emit(ev); else this.pendingStart = ev;
-    if (ev === 'game:new') setTimeout(() => this.openPanel('help'), 300); // the goal and the meters, before anything else
+    // The goal in one line, not the whole how-it-works panel (Deroy, Nov 24 2026): the (i) button has the rest
+    if (ev === 'game:new') setTimeout(() => bus.emit('ui:tip', 'Earn Solidarity, Power and Trust. Keep Attention low. Tap (i) for how it works.', 5000), 900);
   }
 
   blocking() { return this.panel !== null || this.dialogueOpen; }

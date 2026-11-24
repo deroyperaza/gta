@@ -787,7 +787,7 @@ export class WorldScene extends Phaser.Scene {
     this.cameras.main.startFollow(this.player, true, 0.12, 0.12);
     this.cameras.main.flash(400, 255, 140, 60);
     bus.emit('ui:toast', 'YOU JUST GOT OUT OF JURY DUTY');
-    setTimeout(() => bus.emit('ui:toast', 'FIND DEE IN BED-STUY →'), 900);
+    setTimeout(() => bus.emit('ui:toast', 'FIND ADAEZE AT BROOKLYN ORG →'), 900); // Mission 1 starts with her
   }
 
   private loadGame() {
