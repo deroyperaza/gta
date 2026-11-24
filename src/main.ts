@@ -37,6 +37,7 @@ async function boot() {
     // Game pixels are CSS pixels x DPR (sharp on Retina screens); zoom shows the canvas at CSS size
     scale: { mode: Phaser.Scale.NONE, width: Math.round(window.innerWidth * DPR), height: Math.round(window.innerHeight * DPR), zoom: 1 / DPR },
     physics: { default: 'arcade', arcade: { debug: false } },
+    audio: { noAudio: true }, // the game has no sound; Phaser's audio setup cost ~0.4 s at startup
     render: { antialias: true, roundPixels: false },
     scene: [WorldScene],
   });
