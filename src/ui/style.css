@@ -642,3 +642,4 @@ body:not(.touch) #touch-pad.held { cursor: grabbing; }
   #passed .mp-real { margin-bottom: 8px; }
 }
 #tip.fade { opacity: 0; transition: opacity .6s ease; }
+.mp-card p { display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical; overflow: hidden; } /* long blurbs never push the Donate button out of view */
