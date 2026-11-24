@@ -629,3 +629,4 @@ body:not(.touch) #touch-pad.held { cursor: grabbing; }
 /* A staffer's donate link beside DONE in the conversation box */
 #dlg-more { display: flex; justify-content: flex-end; align-items: center; gap: 12px; flex-wrap: wrap; }
 #dlg-more a.give.dlg-give { margin-top: 0; align-self: center; font-size: 17px; padding: 6px 12px; }
+#tip[hidden] { display: none; } /* the flex layout above would otherwise override [hidden] */
