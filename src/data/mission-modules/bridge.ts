@@ -134,6 +134,7 @@ export const bridge: MissionModule = {
   npcs: [
     {
       id: 'adaeze', name: 'Adaeze', short: 'Adaeze', title: 'Grants Officer, Brooklyn Org', district: 'downtown', spot: 'lm_bkorg', color: '#ffb23f',
+      lesson: 'COMMUNITY FOUNDATIONS', // her pitch for Brooklyn Org, the first time you chat
       offset: { dx: 40, dy: 4 },
       look: { skin: '#4a2a1a', hair: '#1a1010', style: 'braids', shirt: '#ffb23f', pants: '#2b2b40', shoes: '#f2f2f2', acc: 'glasses' },
       bio: 'Grants officer at Brooklyn Org. Grew up in East Flatbush, daughter of a home health aide and a cab driver. Believes the best grant decision is the one she doesn\'t make herself.',

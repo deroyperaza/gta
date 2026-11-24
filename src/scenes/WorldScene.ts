@@ -120,6 +120,7 @@ export class WorldScene extends Phaser.Scene {
     const pl = (window as any).__pl; pl?.set(0.15);
     this.load.on('progress', (p: number) => pl?.set(0.15 + p * 0.8));
     // Painted portraits (BUSTS) load in the background once you're playing: see loadPortraitsLater()
+    this.load.image('bko-wordmark', 'sprites/bko-wordmark.png'); // Brooklyn Org's official horizontal wordmark (Wheatpaste), for its storefront sign
     this.load.image('lmk-liu', 'sprites/liu-campus.png'); // LIU Brooklyn, painted in ChatGPT north-up: the field northwest, the Paramount corner southeast, the red sculpture on the south plaza
     this.load.image('barclays-sprite', 'sprites/barclays.png');
     this.load.image('bridge-tower-art', 'sprites/bridgetower.png');
@@ -292,6 +293,14 @@ export class WorldScene extends Phaser.Scene {
         const sb = this.add.rectangle(band.x, band.y, band.w, band.h, bg).setOrigin(0).setDepth(b.y + b.h + 0.1);
         const t = this.add.text(band.x + band.w / 2, band.y + band.h / 2 + 0.5, st.name, { fontFamily: 'Nunito, Arial, sans-serif', fontStyle: '900', fontSize: '24px', color: st.sign[1] }).setOrigin(0.5).setDepth(b.y + b.h + 0.2);
         t.setScale(Math.min(8 / 24, (band.w - 6) / t.width)); this.miniIgnore.push(sb, t); this.storeKinds.push(st.kind);
+      }
+      // Brooklyn Org's storefront carries its real one-line wordmark (official file, Wheatpaste on Blacktop) over the sign band
+      const ob = b.id === 'bkorg' ? signBand(b) : null;
+      if (ob && this.textures.exists('bko-wordmark')) {
+        const lh = 17, mark = this.add.image(ob.x + ob.w / 2, ob.y + ob.h / 2, 'bko-wordmark').setOrigin(0.5);
+        mark.setScale(lh / mark.height);
+        const plate = this.add.rectangle(mark.x, mark.y, ob.w, lh * 1.6, 0x131313).setDepth(b.y + b.h + 0.3);
+        mark.setDepth(b.y + b.h + 0.4); this.miniIgnore.push(plate, mark);
       }
       // Slightly inset collision so the player can hug facades
       (img.body as Phaser.Physics.Arcade.StaticBody).setSize(b.w - 4, b.h - 6).setOffset(2, 0);
@@ -895,7 +904,7 @@ export class WorldScene extends Phaser.Scene {
       entries: [{ node: 'a' }],
       nodes: {
         a: { speaker: n.id, text: line, next: 'b' },
-        b: { speaker: n.id, text: `Here's something worth knowing around here. ${LESSONS[key].text}`, choices: [{ text: 'Good to know. Thanks.', next: lang ? 'lang' : undefined, effects: { solidarity: 5, rel: { [n.id]: 3 }, flags: { [`chat_${n.id}`]: true }, toast: `POCKET CIVICS · ${key}` } }] },
+        b: { speaker: n.id, text: key === own && LESSONS[key].who === n.short ? LESSONS[key].text : `Here's something worth knowing around here. ${LESSONS[key].text}`, /* their own lesson, in their own voice */ choices: [{ text: 'Good to know. Thanks.', next: lang ? 'lang' : undefined, effects: { solidarity: 5, rel: { [n.id]: 3 }, flags: { [`chat_${n.id}`]: true }, toast: `POCKET CIVICS · ${key}` } }] },
         ...(lang ?? {}),
       },
     } as any);

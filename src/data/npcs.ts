@@ -8,6 +8,7 @@ export interface NpcDef {
   offset?: { dx: number; dy: number };
   /** Lines when nothing mission-relevant is happening */
   idle?: string[];
+  lesson?: string; // the Pocket Civics lesson they teach the first time you chat (lessons.ts)
 }
 
 export const PLAYER_LOOK: Look = { skin: '#c58a5c', hair: '#2a1a12', style: 'beanie', hatColor: '#ff8a3d', shirt: '#7b3fe4', pants: '#2b3a6b', shoes: '#ff4fa3', acc: 'tote' };
