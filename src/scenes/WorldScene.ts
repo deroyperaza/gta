@@ -114,7 +114,7 @@ export class WorldScene extends Phaser.Scene {
     const pl = (window as any).__pl; pl?.set(0.15);
     this.load.on('progress', (p: number) => pl?.set(0.15 + p * 0.8));
     // Painted portraits (BUSTS) load in the background once you're playing: see loadPortraitsLater()
-    this.load.image('lmk-liu', 'sprites/liu-north.png'); // LIU Brooklyn, painted in ChatGPT north-up: the field north, the Paramount corner south on DeKalb
+    this.load.image('lmk-liu', 'sprites/liu-campus.png'); // LIU Brooklyn, painted in ChatGPT north-up: the field northwest, the Paramount corner southeast, the red sculpture on the south plaza
     this.load.image('barclays-sprite', 'sprites/barclays.png');
     this.load.image('bridge-tower-art', 'sprites/bridgetower.png');
     this.load.image('dragon-art', 'sprites/dragon.png'); // Naim's dragon, painted in ChatGPT
@@ -1143,7 +1143,10 @@ export class WorldScene extends Phaser.Scene {
     const img = this.add.image((a.x + b.x) / 2, b.y + 10, 'lmk-liu').setOrigin(0.5, 1);
     const k = Math.min((b.x - a.x + 24) / img.width, (b.y - a.y + 10) / img.height);
     img.setScale(k).setDepth(b.y); // anyone on the sidewalk below draws in front
-    const wall = this.add.zone((a.x + b.x) / 2, (a.y + b.y) / 2, b.x - a.x, b.y - a.y); // solid, like any building
+    // The campus painting is wider than tall, so it fills the lot's width and sits on its south edge: only the painted
+    // part is solid, and the lawn left above it stays open to walk on
+    const top = Math.max(a.y, b.y + 10 - img.displayHeight + 12);
+    const wall = this.add.zone((a.x + b.x) / 2, (top + b.y) / 2, b.x - a.x, b.y - top); // solid, like any building
     this.physics.add.existing(wall, true); this.liuWall = wall; // collider added once the player exists
     this.interactables.push({ id: 'liufield', x: sp.x, y: sp.y - 30, r: 140, label: () => 'Book the field', act: () => bus.emit('ui:toast', 'LIU\'S FIELD BELONGS TO THE UNIVERSITY: ASK LIU. A CITY PARK FIELD? BOOK IT WITH AN NYC PARKS PERMIT, $25 TO PROCESS. (LUCO SAYS HI.)') });
     return true;
