@@ -477,7 +477,7 @@ export const DIALOGUES: Record<string, Dialogue> = {
       adhd: { speaker: 'naim', text: 'My brain runs six tabs at once. Some days that\'s chaos. Most days it means I see what everybody else walks past. And school has to work for brains like mine too.', next: 'p504' },
       p504: { speaker: 'naim', text: 'Section 504 of a federal civil rights law says public schools have to give students with disabilities accommodations. Extra time, movement breaks, a quieter room. It\'s not a favor. It\'s a right.', next: 'elev' },
       elev: { speaker: 'naim', text: 'If a kid uses a wheelchair and the science lab is up three flights with no elevator, that kid doesn\'t get science. I\'m in my school\'s disability awareness club. We count the stairs. Then we write the letters.', next: 'lander' },
-      lander: { speaker: 'naim', text: 'I once asked Brad Lander, back when he was City Comptroller, how we get elevators into schools. He gave me half an answer. So I asked again. Politely. Until I got the other half.', next: 'lander2' },
+      lander: { speaker: 'naim', text: 'I once asked a city official how we get elevators into schools. I got half an answer. So I asked again. Politely. Until I got the other half.', next: 'lander2' },
       lander2: {
         speaker: 'naim', text: 'Here\'s the move: ask your question, listen, then ask the follow-up they hoped you wouldn\'t. "Okay, but when?" works on everybody. Even people with titles.',
         choices: [{ text: '"Okay, but when?"', effects: { rel: { naim: 6 }, solidarity: 10, trust: { crownheights: 3 }, flags: { naim_504: true }, toast: 'POCKET CIVICS · 504 RIGHTS + ASK THE FOLLOW-UP' } }],
