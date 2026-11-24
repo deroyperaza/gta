@@ -36,7 +36,7 @@ interface Interactable {
   id: string; x: number; y: number; r: number;
   label: () => string | null; act: () => void;
   /** A name tag: standing on it counts as in range, wherever it hangs */
-  tag?: Phaser.GameObjects.Text;
+  tag?: Phaser.GameObjects.Text; // built when it first comes near the screen (lazy name tags), so it can be undefined
 }
 
 const WALK = 150, RUN = 245, BIKE = 330, BIKE_RUN = 410;
@@ -101,7 +101,33 @@ export class WorldScene extends Phaser.Scene {
   peds!: Pedestrians;
   private groundNames: Phaser.GameObjects.Text[] = [];
   private groundName(x: number, y: number, text: string, style: Phaser.Types.GameObjects.Text.TextStyle) { const t = this.add.text(x, y, text, style); this.groundNames.push(t); return t; }
-  private nameTags: { id: string; tag: Phaser.GameObjects.Text; x: number; y: number }[] = [];
+  /** Name tags are placed at startup from a cheap measurement, but each Text (a canvas + a GPU texture) is only built
+   *  when it nears the screen: 600+ tags cost ~1.4 s to build up front (Deroy, Nov 24 2026: load-time fix) */
+  private nameTags: { id: string; x: number; y: number; label: string; style: Phaser.Types.GameObjects.Text.TextStyle; w: number; h: number; px: number; py: number; tag?: Phaser.GameObjects.Text; hook?: (t: Phaser.GameObjects.Text) => void }[] = [];
+  private tagMeasure?: { ctx: CanvasRenderingContext2D; h: number; pad: number };
+  private tagSize(label: string, style: Phaser.Types.GameObjects.Text.TextStyle) {
+    if (!this.tagMeasure) { // measure one real tag for the height and the extra width Phaser adds; the rest by canvas measureText
+      const probe = this.add.text(0, 0, 'WM', style), ctx = document.createElement('canvas').getContext('2d')!;
+      ctx.font = `${style.fontStyle} ${style.fontSize} ${style.fontFamily}`;
+      this.tagMeasure = { ctx, h: probe.height, pad: probe.width - ctx.measureText('WM').width }; probe.destroy();
+    }
+    const m = this.tagMeasure; return { w: Math.ceil(m.ctx.measureText(label).width + m.pad), h: m.h };
+  }
+  /** Build a name tag's Text now (it nears the screen, or Find just pulsed it) */
+  private ensureTag(e: WorldScene['nameTags'][number]) {
+    if (e.tag) return e.tag;
+    const tag = this.add.text(e.px, e.py, e.label, e.style).setOrigin(0.5).setDepth(1e5);
+    e.tag = tag; this.miniIgnore.push(tag); this.minimap?.ignore(tag); e.hook?.(tag);
+    return tag;
+  }
+  /** Build the tags in (or just beyond) the camera's view; a few dozen a pass so nothing stutters */
+  private lazyTags(all = false) {
+    const v = this.cameras.main.worldView, m = 500; let n = 0;
+    for (const e of this.nameTags) {
+      if (e.tag) continue;
+      if (e.px > v.x - m && e.px < v.right + m && e.py > v.y - m && e.py < v.bottom + m) { this.ensureTag(e); if (!all && ++n >= 40) return; }
+    }
+  }
   private fixedLabels: Phaser.Geom.Rectangle[] = [];
   private ballgames?: BallGames;
   traffic!: Traffic;
@@ -209,6 +235,8 @@ export class WorldScene extends Phaser.Scene {
     for (const t of this.groundNames) { const b = t.getBounds(); if (tall.some((o) => o.depth > t.depth && Phaser.Geom.Rectangle.Overlaps(b, o.getBounds()))) t.setDepth(8.9e4); }
     for (const stn of this.transit.stations) if (stn.sign) this.clickToGo(stn.sign, stn.x, stn.y, () => this.takeSubway(stn));
     this.placeNameTags();
+    this.lazyTags(true); // the tags around the start, now; the rest as the camera reaches them
+    this.time.addEvent({ delay: 150, loop: true, callback: () => this.lazyTags() });
     bus.on('transit:alight', (p: { x: number; y: number }) => { (this.player.body as Phaser.Physics.Arcade.Body).reset(p.x, p.y); this.player.setVisible(true); });
     bus.on('ui:ride', () => this.rideApp());
     bus.on('ui:find', () => this.findPerson());
@@ -584,19 +612,19 @@ export class WorldScene extends Phaser.Scene {
     const onBuilding = (r: Phaser.Geom.Rectangle) => this.layout.buildings.some((b) => r.right > b.x && r.x < b.x + b.w && r.bottom > b.y && r.y < b.y + b.h);
     for (const r of [...this.transit.signRects, ...this.fixedLabels]) add(r);
     const spots = [[0, -40], [0, 34], [-70, 34], [70, 34], [-70, -40], [70, -40], [0, 60], [0, -66], [-110, 0], [110, 0], [-100, 60], [100, 60], [-100, -66], [100, -66], [0, 86], [0, -92]];
-    for (const { tag, x, y } of this.nameTags) {
+    for (const e of this.nameTags) {
+      const { x, y, w, h } = e, at = (sp: number[]) => new Phaser.Geom.Rectangle(x + sp[0] - w / 2, y + sp[1] - h / 2, w, h);
       let best: number[] | null = null, fallback: number[] | null = null;
       for (const sp of spots) {
-        tag.setPosition(x + sp[0], y + sp[1]);
-        const r = tag.getBounds(); if (clashes(r)) continue;
+        const r = at(sp); if (clashes(r)) continue;
         if (!onBuilding(r)) { best = sp; break; }
         fallback ??= sp; // over a building beats over another label
       }
       const sp = best ?? fallback ?? spots[0];
-      tag.setPosition(x + sp[0], y + sp[1]);
-      add(tag.getBounds());
+      e.px = x + sp[0]; e.py = y + sp[1]; e.tag?.setPosition(e.px, e.py);
+      add(at(sp));
       if (Math.hypot(sp[0], sp[1]) > 60) { // a tag hanging farther off gets a thin line back to its person, so it can't read as a neighbor's
-        const b = tag.getBounds(), ex = Phaser.Math.Clamp(x, b.x, b.right), ey = Phaser.Math.Clamp(y - 10, b.y, b.bottom);
+        const b = at(sp), ex = Phaser.Math.Clamp(x, b.x, b.right), ey = Phaser.Math.Clamp(y - 10, b.y, b.bottom);
         const line = this.add.line(0, 0, x, y - 10, ex, ey, 0x16101f, 0.55).setOrigin(0).setLineWidth(1.5).setDepth(1e5 - 1);
         this.miniIgnore.push(line);
       }
@@ -625,13 +653,15 @@ export class WorldScene extends Phaser.Scene {
       spr.play({ key: `${key}-idle` });
       const blocker = solids.create(s.x, s.y - 8, undefined) as Phaser.Physics.Arcade.Image;
       blocker.setVisible(false); (blocker.body as Phaser.Physics.Arcade.StaticBody).setSize(22, 14);
-      const tag = this.add.text(s.x, s.y - 40, ghost ? `👑 ${n.short.toUpperCase()}` : n.short.toUpperCase(), { fontFamily: 'Nunito, "Helvetica Neue", Arial, sans-serif', fontSize: '15px', fontStyle: '900', color: ghost ? '#2a3a5a' : '#16101f', backgroundColor: labelColor(n), /* one color per kind of person (labels.ts) */ padding: { x: 7, y: 3 }, shadow: { offsetX: 2, offsetY: 2, color: '#16101f', blur: 0, fill: false, stroke: false } }).setOrigin(0.5).setDepth(1e5);
-      this.nameTags.push({ id: n.id, tag, x: s.x, y: s.y }); // placed once the station signs exist (placeNameTags)
-      this.miniIgnore.push(tag, spr);
+      const label = ghost ? `👑 ${n.short.toUpperCase()}` : n.short.toUpperCase();
+      const style = { fontFamily: 'Nunito, "Helvetica Neue", Arial, sans-serif', fontSize: '15px', fontStyle: '900', color: ghost ? '#2a3a5a' : '#16101f', backgroundColor: labelColor(n), /* one color per kind of person (labels.ts) */ padding: { x: 7, y: 3 }, shadow: { offsetX: 2, offsetY: 2, color: '#16101f', blur: 0, fill: false, stroke: false } };
+      const entry: WorldScene['nameTags'][number] = { id: n.id, x: s.x, y: s.y, label, style, ...this.tagSize(label, style), px: s.x, py: s.y - 40 };
+      this.nameTags.push(entry); // placed once the station signs exist (placeNameTags); the Text itself is built near the screen (lazyTags)
+      this.miniIgnore.push(spr);
       this.npcSprites[n.id] = spr;
       this.entityPos[n.id] = s;
-      this.interactables.push({ id: n.id, x: s.x, y: s.y, r: 64, tag, label: () => `Talk to ${n.short}`, act: () => this.talk(n) });
-      this.makeNpcClickable(n, spr, tag);
+      this.interactables.push({ id: n.id, x: s.x, y: s.y, r: 64, get tag() { return entry.tag; }, label: () => `Talk to ${n.short}`, act: () => this.talk(n) });
+      entry.hook = this.makeNpcClickable(n, spr, entry);
     }
     // Commissioner Whiskers
     const cs = this.layout.spots.cat;
@@ -861,19 +891,18 @@ export class WorldScene extends Phaser.Scene {
   }
 
   // Hover + click on a named character (sprite or name tag) = the "Talk to X" prompt.
-  private makeNpcClickable(n: NpcDef, spr: Phaser.GameObjects.Sprite, tag: Phaser.GameObjects.Text) {
+  private makeNpcClickable(n: NpcDef, spr: Phaser.GameObjects.Sprite, entry: { tag?: Phaser.GameObjects.Text }) {
     const ring = this.add.circle(spr.x, spr.y, 24).setStrokeStyle(2, 0xffd36b, 0.95).setFillStyle(0xffd36b, 0.14).setDepth(spr.depth - 1).setVisible(false);
     this.miniIgnore.push(ring);
     const zone = this.add.zone(spr.x, spr.y - 8, 56, 64).setInteractive({ useHandCursor: true });
-    tag.setInteractive({ useHandCursor: true });
     const over = () => {
       ring.setVisible(true);
-      tag.setScale(1.15);
+      entry.tag?.setScale(1.15);
       spr.setTint(0xfff1c4);
     };
     const out = () => {
       ring.setVisible(false);
-      tag.setScale(1);
+      entry.tag?.setScale(1);
       spr.clearTint();
     };
     const click = () => {
@@ -882,11 +911,9 @@ export class WorldScene extends Phaser.Scene {
       if (d <= 64) this.talk(n);
       else this.comeOver(spr.x, spr.y, () => this.talk(n)); // anyone you can see: you head over and the conversation opens
     };
-    for (const o of [zone, tag]) {
-      o.on('pointerover', over);
-      o.on('pointerout', out);
-      o.on('pointerdown', click);
-    }
+    const hookUp = (o: Phaser.GameObjects.GameObject) => { o.on('pointerover', over); o.on('pointerout', out); o.on('pointerdown', click); };
+    hookUp(zone);
+    return (tag: Phaser.GameObjects.Text) => { tag.setInteractive({ useHandCursor: true }); hookUp(tag); }; // the name tag, once it's built
   }
 
   /** Click a sign (subway entrance, bike dock): head over to it, then use it */
@@ -1591,7 +1618,7 @@ export class WorldScene extends Phaser.Scene {
       const n = NPCS.find((x) => x.id === id);
       bus.emit('ui:toast', `THERE'S ${(n?.short ?? '').toUpperCase()}`);
       // No doubt who you found: their name tag pulses, and the conversation opens
-      const tag = this.nameTags.find((nt) => nt.id === id)?.tag;
+      const ne = this.nameTags.find((nt) => nt.id === id), tag = ne && this.ensureTag(ne);
       if (tag) this.tweens.add({ targets: tag, scale: 1.3, duration: 260, yoyo: true, repeat: 3, ease: 'Sine.inOut', onComplete: () => tag.setScale(1) });
       if (talk && n && this.npcSprites[id]) this.time.delayedCall(450, () => { if (!ui.blocking()) this.talk(n); });
   }
