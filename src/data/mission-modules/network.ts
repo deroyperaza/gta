@@ -79,11 +79,6 @@ export const network: MissionModule = {
       },
       { text: () => 'Report back to Adaeze at Brooklyn Org', targets: () => ['adaeze'], done: () => f('net1_done') },
     ],
-    optional: [
-      { id: 'find', text: 'Jump to a group with FIND [F]', done: () => f('used_find'), reward: { solidarity: 15 } },
-      { id: 'ride', text: 'Ride the subway or a bike between neighborhoods', done: () => Object.keys(state.d.flags).some((k) => k.startsWith('rode_') && state.d.flags[k]), reward: { solidarity: 20 } },
-      { id: 'more', text: 'Meet 2 more groups on your own', done: () => (Number(state.flag('network')) || 0) >= netPicks().length + 2, reward: { solidarity: 40 } },
-    ],
     rewards: () => ({ solidarity: 200, power: 2, trust: { downtown: 15 }, rel: { adaeze: 10 }, toast: 'YOU KNOW THE NETWORK' }),
     next: 'stock',
   },

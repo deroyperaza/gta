@@ -50,6 +50,11 @@ class UI {
     bus.on('ui:toast', (t: string) => this.toast(t));
     bus.on('ui:tip', (t: string) => { // a travel tip: shows for 9 seconds, or until you close it
       const el = $('#tip'); el.querySelector('p')!.textContent = t; el.hidden = false;
+      // Top-aligned with the scorecard, in the gap between it and the minimap (phones keep the CSS spot when that gap is too narrow)
+      const st = $('#stats').getBoundingClientRect(), mm = $('#minimap-frame').getBoundingClientRect();
+      const gap = (mm.left > st.right ? mm.left : innerWidth) - st.right - 32;
+      if (gap >= 300 && innerWidth > 600) Object.assign(el.style, { top: `${st.top}px`, left: `${st.right + 16 + Math.max(0, (gap - Math.min(gap, 460)) / 2)}px`, width: `${Math.min(gap, 460)}px`, transform: 'none', bottom: 'auto' });
+      else el.removeAttribute('style');
       clearTimeout(this.tipTimer); this.tipTimer = window.setTimeout(() => { el.hidden = true; }, 9000);
     });
     $('#tip .close').addEventListener('click', (e) => { e.stopPropagation(); $('#tip').hidden = true; });

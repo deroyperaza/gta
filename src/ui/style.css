@@ -619,9 +619,9 @@ body:not(.touch) #touch-pad.held { cursor: grabbing; }
 
 /* Travel tips (Mission 1): a card under the toasts, dismissible, gone on its own after a few seconds */
 #tip { position: absolute; top: 150px; left: 50%; transform: translateX(-50%); width: min(440px, 90vw); display: flex; align-items: flex-start; gap: 10px; padding: 10px 40px 10px 12px;
-  background: var(--cream); color: var(--ink); border: 3px solid var(--ink); border-radius: 12px; box-shadow: 5px 5px 0 var(--purple); pointer-events: auto; animation: tipIn .3s cubic-bezier(.3,1.5,.5,1); z-index: 30; }
+  background: var(--pink); color: var(--ink); border: 3px solid var(--ink); border-radius: 12px; box-shadow: 5px 5px 0 var(--ink); pointer-events: auto; animation: tipIn .3s cubic-bezier(.3,1.5,.5,1); z-index: 30; }
 #tip b { flex: none; font: 15px var(--display); letter-spacing: 1px; background: var(--yellow); border: 2px solid var(--ink); border-radius: 6px; padding: 1px 7px; margin-top: 1px; }
 #tip p { margin: 0; font: 700 15px/1.35 Nunito, Arial, sans-serif; }
 #tip .close { position: absolute; top: 6px; right: 6px; width: 26px; height: 26px; border: 2px solid var(--ink); border-radius: 50%; background: var(--yellow); font: 900 12px/1 Nunito, Arial, sans-serif; cursor: pointer; }
-@keyframes tipIn { from { opacity: 0; transform: translate(-50%, -10px); } }
+@keyframes tipIn { from { opacity: 0; } }
 @media (max-width: 600px) { #tip { top: auto; bottom: calc(250px + env(safe-area-inset-bottom, 0px)); } }
