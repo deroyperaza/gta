@@ -648,5 +648,6 @@ body:not(.touch) #touch-pad.held { cursor: grabbing; }
 #mission-intro.show.out { animation: introOut .5s ease forwards; } /* fades as the giver's window opens */
 @keyframes introOut { from { opacity: 1; } to { opacity: 0; } }
 .ch-swatch { display: inline-block; width: 14px; height: 14px; border: 2px solid var(--ink); border-radius: 4px; margin-right: 8px; vertical-align: -1px; } /* Find: each kind's map label color */
-.support-bko { display: inline-block; margin-top: 12px; font: 900 14px var(--body); color: #fff; text-decoration: underline; text-decoration-color: var(--yellow); text-decoration-thickness: 2px; text-underline-offset: 4px; }
+.support-line { margin-top: 12px; font: 900 14px var(--body); color: #fff; text-wrap: balance; }
+.support-bko { display: inline; font: 900 14px var(--body); color: #fff; text-decoration: underline; text-decoration-color: var(--yellow); text-decoration-thickness: 2px; text-underline-offset: 4px; }
 .support-bko:hover { color: var(--yellow); }
