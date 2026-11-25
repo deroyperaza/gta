@@ -11,6 +11,9 @@
       window.gtag = function () { dataLayer.push(arguments); };
       gtag('js', new Date());
       gtag('config', 'G-21FDRSQPYE');
+      // Email link scanners (Ashburn/Reston data centers) load the page but never touch it: a first tap, click or key marks a real person
+      var human = function () { gtag('event', 'human'); ['pointerdown', 'keydown'].forEach(function (t) { removeEventListener(t, human, true); }); };
+      ['pointerdown', 'keydown'].forEach(function (t) { addEventListener(t, human, true); });
     }
   </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover" />
