@@ -111,7 +111,7 @@ const BLOCKS: Record<string, BlockSpec> = {
   // ---------- PARK SLOPE ----------
   '7,9': { kind: 'row', landmarks: [
     { id: 'coop', type: 'coop', w: 6, name: 'THE RIGHTEOUS TURNIP CO-OP', spot: 'brendan' },
-    { id: 'pour', type: 'coffee', w: 4, name: 'POUR DECISIONS' },
+    { id: 'pour', type: 'coffee', w: 4, name: 'POUR DECISIONS', spot: 'alex' },
     { id: 'candles', type: 'boutique', w: 5, name: 'CANDLES FOR DOGS' } ] },
   '9,8': { kind: 'row' }, // Plaza St brownstones, northwest of the circle
   '9,9': { kind: 'park', name: 'Prospect Park' },
@@ -125,7 +125,7 @@ const BLOCKS: Record<string, BlockSpec> = {
   // ---------- BED-STUY ----------
   '11,6': { kind: 'row', landmarks: [
     { id: 'tenanthall', type: 'tenant', w: 6, name: 'TENANTS UNITED HALL', spot: 'jenna' },
-    { id: 'laundry2', type: 'laundromat', w: 4, name: 'SPIN CITY WASH' } ] },
+    { id: 'laundry2', type: 'laundromat', w: 4, name: 'SPIN CITY WASH', spot: 'ariel' } ] },
   '11,7': { kind: 'row', landmarks: [
     { id: 'mural', type: 'mural', w: 6, name: 'COMMUNITY FRIDGE MURAL', spot: 'dee' },
     { id: 'stuyapt', type: 'apartment', w: 5, name: '' } ] },
@@ -146,7 +146,7 @@ const BLOCKS: Record<string, BlockSpec> = {
   '10,9': { kind: 'plaza', noFountain: true, landmarks: [
     { id: 'centrallib', type: 'library', w: 9, h: 10, at: [6, 2], name: 'CENTRAL LIBRARY', spot: 'naim' } ] },
   // Brooklyn Museum: south side of Eastern Pkwy, just east of the Library, its front facing north onto the boulevard
-  '11,9': { kind: 'plaza', noFountain: true, landmarks: [{ id: 'bkmuseum', type: 'library', w: 15, h: 10, name: 'BROOKLYN MUSEUM' }] },
+  '11,9': { kind: 'plaza', noFountain: true, landmarks: [{ id: 'bkmuseum', type: 'library', w: 15, h: 10, name: 'BROOKLYN MUSEUM', spot: 'amy' }] },
   '12,8': { kind: 'row', landmarks: [{ id: 'roti', type: 'bakery', w: 5, name: 'ROTI & ROTI & ROTI' }] },
   '12,9': { kind: 'row', landmarks: [
     { id: 'farmacy', type: 'coffee', w: 5, name: 'FRANKLIN AVE FARMACY' },

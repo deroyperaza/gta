@@ -454,6 +454,73 @@ export const DIALOGUES: Record<string, Dialogue> = {
     },
   },
 
+  // ============================================================ ALEX · how to give well: a specific ask, monthly gifts, employer matching
+  alex: {
+    entries: [{ cond: { notFlag: 'met_alex' }, node: 'intro' }, { node: 'after' }],
+    nodes: {
+      intro: {
+        speaker: 'alex', text: 'I help nonprofits plan how they raise money. Twelve years. Same lesson every time: people give when you ask for something specific.',
+        choices: [
+          { text: 'How should I give?', next: 'monthly', effects: { rel: { alex: 5 }, flags: { met_alex: true } } },
+          { text: 'How do I ask?', next: 'ask', effects: { rel: { alex: 3 }, flags: { met_alex: true } } },
+          { text: 'Why the clipboard?', next: 'clip', effects: { rel: { alex: 2 }, flags: { met_alex: true } } },
+        ],
+      },
+      ask: { speaker: 'alex', text: '"Anything helps" gets you nothing. "Twenty-five dollars buys a week of groceries for the fridge" gets you twenty-five dollars. Name the amount. Name what it does.', next: 'monthly' },
+      monthly: { speaker: 'alex', text: 'Give monthly, even if it\'s small. Ten dollars a month lets a group plan a year ahead. A one-time gift lets them plan a week.', next: 'match' },
+      match: {
+        speaker: 'alex', text: 'And ask your job if it matches donations. Lots of employers do. Same gift, twice the money. Most people never ask.',
+        choices: [{ text: 'Setting up a monthly gift.', effects: { rel: { alex: 6 }, solidarity: 10, trust: { parkslope: 3 }, toast: 'POCKET CIVICS · GIVE MONTHLY, ASK FOR THE MATCH' } }],
+      },
+      clip: { speaker: 'alex', text: 'Soccer lineups. Same skill. Everybody gets minutes, you plan the season, not the game.', next: 'monthly' },
+      after: { speaker: 'alex', text: 'Specific ask. Monthly gift. Employer match. That\'s the whole playbook.' },
+    },
+  },
+
+  // ============================================================ AMY · read a nonprofit's Form 990 before you give
+  amy: {
+    entries: [{ cond: { notFlag: 'met_amy' }, node: 'intro' }, { node: 'after' }],
+    nodes: {
+      intro: {
+        speaker: 'amy', text: 'I run operations for a big museum. Budgets, buildings, five-year plans. Want to know the most useful document in the nonprofit world? It\'s a tax form.',
+        choices: [
+          { text: 'A tax form?', next: 'form', effects: { rel: { amy: 5 }, flags: { met_amy: true } } },
+          { text: 'Why does a museum need a plan?', next: 'plan', effects: { rel: { amy: 3 }, flags: { met_amy: true } } },
+        ],
+      },
+      plan: { speaker: 'amy', text: 'Because a mission without a budget is a wish. The plan is where you decide what you\'ll actually do, and what you\'ll say no to.', next: 'form' },
+      form: { speaker: 'amy', text: 'The Form 990. Most nonprofits file one with the IRS every year, and it\'s public. Who runs it, what they spend, what they pay their leaders.', next: 'form2' },
+      form2: {
+        speaker: 'amy', text: 'ProPublica\'s Nonprofit Explorer puts them online for free. Five minutes of reading before you give, and you\'ll know more than most board members.',
+        choices: [{ text: 'Reading one tonight.', effects: { rel: { amy: 6 }, solidarity: 10, trust: { crownheights: 3 }, toast: 'POCKET CIVICS · READ THE 990' } }],
+      },
+      after: { speaker: 'amy', text: 'Read the 990 before you write the check.' },
+    },
+  },
+
+  // ============================================================ ARIEL · volunteer your skills, on a schedule
+  ariel: {
+    entries: [{ cond: { notFlag: 'met_ariel' }, node: 'intro' }, { node: 'after' }],
+    nodes: {
+      intro: {
+        speaker: 'ariel', text: 'I manage projects for a design studio that works with nonprofits. Before that, ten years in the sector and a first-grade special ed classroom. Want to know what groups need besides money?',
+        choices: [
+          { text: 'What do they need?', next: 'skills', effects: { rel: { ariel: 5 }, flags: { met_ariel: true } } },
+          { text: 'First grade?', next: 'teach', effects: { rel: { ariel: 3 }, flags: { met_ariel: true } } },
+          { text: 'Why the laundromat?', next: 'wash', effects: { rel: { ariel: 2 }, flags: { met_ariel: true } } },
+        ],
+      },
+      teach: { speaker: 'ariel', text: 'Six-year-olds taught me everything about planning. Clear steps, a schedule everyone can see, and room for the day to go sideways.', next: 'skills' },
+      wash: { speaker: 'ariel', text: 'Forty-five minutes per load. Best planning time in Brooklyn. Also Arthur likes the warm dryers.', next: 'skills' },
+      skills: { speaker: 'ariel', text: 'Your skills. A small group can\'t afford a bookkeeper, a designer or someone to fix their website. If you do that for work, offer it. That\'s a donation too.', next: 'sched' },
+      sched: {
+        speaker: 'ariel', text: 'And make it steady. One Saturday a month they can count on beats a big burst they can\'t plan around. Put it on your calendar like a meeting.',
+        choices: [{ text: 'Offering my skills.', effects: { rel: { ariel: 6 }, solidarity: 10, trust: { bedstuy: 3 }, toast: 'POCKET CIVICS · VOLUNTEER YOUR SKILLS, ON A SCHEDULE' } }],
+      },
+      after: { speaker: 'ariel', text: 'Your skills, on a schedule. That\'s how a small group grows.' },
+    },
+  },
+
   // ============================================================ NAIM · disability rights, 504 plans, asking the follow-up
   naim: {
     entries: [

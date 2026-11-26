@@ -123,6 +123,24 @@ export const NPCS: NpcDef[] = [
     idle: ['Sixty days. Twenty-five dollars. One street with no cars.', 'Every block party needs a showstopper.'],
   },
   {
+    id: 'alex', name: 'Alex', short: 'Alex', title: 'The Strategist', district: 'parkslope', spot: 'alex', color: '#8fb8ff',
+    look: { skin: '#d8a890', hair: '#9a9894', style: 'short', shirt: '#1c2a44', pants: '#2a2a30', shoes: '#111' },
+    bio: 'Helps nonprofits plan how they raise money. Manages a youth soccer team from the sideline with a clipboard and a five-year plan.',
+    idle: ['Never ask for "anything you can give." Ask for something.', 'Monthly beats once. Every time.'],
+  },
+  {
+    id: 'amy', name: 'Amy', short: 'Amy', title: 'The Operator', district: 'crownheights', spot: 'amy', color: '#ffc98a',
+    look: { skin: '#f0c8b0', hair: '#8a6248', style: 'long', shirt: '#c8a47e', pants: '#2a2a30', shoes: '#5a3a28' },
+    bio: 'Runs the operations of a big art museum: budgets, buildings, plans. Reads nonprofit tax returns for fun and recommends you do too.',
+    idle: ['Read the 990 before you write the check.', 'A mission is a plan with a budget.'],
+  },
+  {
+    id: 'ariel', name: 'Ariel', short: 'Ariel', title: 'The Planner', district: 'bedstuy', spot: 'ariel', color: '#c8f56a',
+    look: { skin: '#c48c68', hair: '#141414', style: 'curly', shirt: '#141414', pants: '#2a2a30', shoes: '#111', acc: 'glasses' },
+    bio: 'Project manager for a design studio that works with nonprofits. Ten years in the sector, and a first-grade special ed teacher before that. Grows vegetables in a community garden and talks about his toy poodle, Arthur.',
+    idle: ['Your skills are a donation too.', 'Pick a day. Put it on the calendar. Show up.'],
+  },
+  {
     id: 'naim', name: 'Naim', short: 'Naim', title: 'The Keeper', district: 'parkslope', spot: 'naim', color: '#7fe0ff',
     look: { skin: '#e2b08a', hair: '#2a1c14', style: 'curly', shirt: '#141414', pants: '#2b3a6b', shoes: '#f2f2f2', acc: 'glasses' },
     bio: 'Calls his ADHD a superpower. Active in student disability and disability awareness clubs, and will politely ask a city official the same question twice. Also: goalkeeper, baker, pianist, romantasy reader.',
