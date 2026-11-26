@@ -123,16 +123,16 @@ export const NPCS: NpcDef[] = [
     idle: ['Sixty days. Twenty-five dollars. One street with no cars.', 'Every block party needs a showstopper.'],
   },
   {
-    id: 'alex', name: 'Alex', short: 'Alex', title: 'The Strategist', district: 'parkslope', spot: 'alex', color: '#8fb8ff',
+    id: 'alex', name: 'Alex', short: 'Alex', title: 'The Fundraiser', district: 'parkslope', spot: 'alex', color: '#8fb8ff',
     look: { skin: '#d8a890', hair: '#9a9894', style: 'short', shirt: '#1c2a44', pants: '#2a2a30', shoes: '#111' },
     bio: 'Helps nonprofits plan how they raise money. Manages a youth soccer team from the sideline with a clipboard and a five-year plan.',
     idle: ['Never ask for "anything you can give." Ask for something.', 'Monthly beats once. Every time.'],
   },
   {
-    id: 'amy', name: 'Amy', short: 'Amy', title: 'The Operator', district: 'crownheights', spot: 'amy', color: '#ffc98a',
+    id: 'amy', name: 'Amy', short: 'Amy', title: 'The Door-Opener', district: 'crownheights', spot: 'amy', color: '#ffc98a',
     look: { skin: '#f0c8b0', hair: '#8a6248', style: 'long', shirt: '#c8a47e', pants: '#2a2a30', shoes: '#5a3a28' },
-    bio: 'Runs the operations of a big art museum: budgets, buildings, plans. Reads nonprofit tax returns for fun and recommends you do too.',
-    idle: ['Read the 990 before you write the check.', 'A mission is a plan with a budget.'],
+    bio: 'Runs a big art museum and plans every budget around one idea: anyone, of any age or income, should be able to walk in and feel at home.',
+    idle: ['Glass walls, not velvet ropes.', 'A museum belongs to everyone who walks past it.'],
   },
   {
     id: 'ariel', name: 'Ariel', short: 'Ariel', title: 'The Planner', district: 'bedstuy', spot: 'ariel', color: '#c8f56a',

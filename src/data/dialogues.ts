@@ -477,24 +477,25 @@ export const DIALOGUES: Record<string, Dialogue> = {
     },
   },
 
-  // ============================================================ AMY · read a nonprofit's Form 990 before you give
+  // ============================================================ AMY · museums belong to everyone: use them, bring someone, back the free programs
   amy: {
     entries: [{ cond: { notFlag: 'met_amy' }, node: 'intro' }, { node: 'after' }],
     nodes: {
       intro: {
-        speaker: 'amy', text: 'I run operations for a big museum. Budgets, buildings, five-year plans. Want to know the most useful document in the nonprofit world? It\'s a tax form.',
+        speaker: 'amy', text: 'I run a big art museum. Budgets, buildings, five-year plans. And every plan starts with one question: who isn\'t coming in, and why?',
         choices: [
-          { text: 'A tax form?', next: 'form', effects: { rel: { amy: 5 }, flags: { met_amy: true } } },
-          { text: 'Why does a museum need a plan?', next: 'plan', effects: { rel: { amy: 3 }, flags: { met_amy: true } } },
+          { text: 'Who isn\'t?', next: 'who', effects: { rel: { amy: 5 }, flags: { met_amy: true } } },
+          { text: 'Museums aren\'t really for me.', next: 'forme', effects: { rel: { amy: 3 }, flags: { met_amy: true } } },
         ],
       },
-      plan: { speaker: 'amy', text: 'Because a mission without a budget is a wish. The plan is where you decide what you\'ll actually do, and what you\'ll say no to.', next: 'form' },
-      form: { speaker: 'amy', text: 'The Form 990. Most nonprofits file one with the IRS every year, and it\'s public. Who runs it, what they spend, what they pay their leaders.', next: 'form2' },
-      form2: {
-        speaker: 'amy', text: 'ProPublica\'s Nonprofit Explorer puts them online for free. Five minutes of reading before you give, and you\'ll know more than most board members.',
-        choices: [{ text: 'Reading one tonight.', effects: { rel: { amy: 6 }, solidarity: 10, trust: { crownheights: 3 }, toast: 'POCKET CIVICS · READ THE 990' } }],
+      forme: { speaker: 'amy', text: 'That feeling is exactly what I\'m trying to fix. You don\'t need to know art history. You need to walk in and look. That\'s the whole skill.', next: 'who' },
+      who: { speaker: 'amy', text: 'Kids, grandparents, people who think a ticket costs too much, people who never saw anyone like them on the walls. A museum is a nonprofit. It\'s supposed to belong to all of them.', next: 'glass' },
+      glass: { speaker: 'amy', text: 'So I want glass walls, not velvet ropes. Show people what happens inside, bring the neighborhood in, and make the free hours, free programs and free days easy to find.', next: 'ask' },
+      ask: {
+        speaker: 'amy', text: 'Your part: go. Bring someone who\'s never been. And if you give, give to the programs that keep the door open for people who can\'t pay.',
+        choices: [{ text: 'Bringing someone this month.', effects: { rel: { amy: 6 }, solidarity: 10, trust: { crownheights: 3 }, toast: 'POCKET CIVICS · MUSEUMS BELONG TO EVERYONE' } }],
       },
-      after: { speaker: 'amy', text: 'Read the 990 before you write the check.' },
+      after: { speaker: 'amy', text: 'Bring someone who\'s never been. That\'s how a museum gets bigger.' },
     },
   },
 
